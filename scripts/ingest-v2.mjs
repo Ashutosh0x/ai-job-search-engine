@@ -147,12 +147,56 @@ const { jobs, report, state } = await runIngest({
 /* ---------------------------------- output --------------------------------- */
 
 mkdirSync(dirname(OUT), { recursive: true })
+
+// Two artefacts, deliberately.
+//
+// The full record carries everything a job detail page or the debug view could
+// want -- full descriptions, per-rule validation issues, evidence spans. At
+// ~97k jobs that is ~290MB, and loading it to answer a search is absurd: the
+// search path needs a snippet, not the whole posting.
+//
+// So the search index gets a slim projection (~1/5 the size) and the heavy
+// fields stay in the archive, fetched by id only when something actually needs
+// them. This is the cheap version of the eventual move to Postgres; it does not
+// change the schema, only what gets loaded per request.
+const SNIPPET = 600
+
+const slim = jobs.map((j) => ({
+  id: j.id, source: j.source,
+  company: j.company, companySlug: j.companySlug, companyDomain: j.companyDomain,
+  title: j.title, normalizedTitle: j.normalizedTitle,
+  // A snippet is enough to rank and to show; the full text lives in the archive.
+  description: (j.description || '').slice(0, SNIPPET),
+  locationRaw: j.locationRaw, locationDisplay: j.locationDisplay,
+  city: j.city, state: j.state, country: j.country,
+  remote: j.remote, workplaceType: j.workplaceType, workplaceDisplay: j.workplaceDisplay,
+  remoteScope: j.remoteScope, remoteCountries: j.remoteCountries,
+  officeDaysPerWeek: j.officeDaysPerWeek,
+  employmentType: j.employmentType, seniority: j.seniority,
+  department: j.department, team: j.team,
+  salaryMin: j.salaryMin, salaryMax: j.salaryMax, salaryCurrency: j.salaryCurrency,
+  skills: j.skills,
+  postedAt: j.postedAt, freshnessScore: j.freshnessScore,
+  applicationUrl: j.applicationUrl, isDirectApplication: j.isDirectApplication,
+  visaStatus: j.visaStatus, visaTypes: j.visaTypes,
+  // One quoted line is what the UI shows; the rest is archive.
+  visaEvidence: (j.visaEvidence || []).slice(0, 1),
+  qualityScore: j.qualityScore, ghostRisk: j.ghostRisk, ghostLabel: j.ghostLabel,
+  companyValuationUsd: j.companyValuationUsd,
+  duplicateConfidence: j.duplicateConfidence,
+  sourceCount: (j.sourceUrls || []).length,
+}))
+
 writeFileSync(OUT, JSON.stringify({
   generatedAt: report.finishedAt,
-  jobCount: jobs.length,
+  jobCount: slim.length,
   report: { ...report, runs: undefined }, // runs are large; keep them out of the index
-  jobs,
+  jobs: slim,
 }))
+
+// Full records, for job detail and the debug view.
+const ARCHIVE = OUT.replace(/.json$/, '-full.json')
+writeFileSync(ARCHIVE, JSON.stringify({ generatedAt: report.finishedAt, jobs }))
 writeFileSync(STATE, JSON.stringify(state))
 
 const pct = (n, d) => (d ? `${((n / d) * 100).toFixed(1)}%` : 'n/a')
