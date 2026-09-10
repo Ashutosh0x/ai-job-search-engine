@@ -26,6 +26,7 @@ const limit = Number(val('limit', Infinity))
 const concurrency = Number(val('concurrency', 8))
 const sourceFilter = val('sources', null)?.split(',').map((s) => s.trim())
 const doEnrich = !has('no-enrich')
+const hydrate = Number(val('hydrate', 0))
 const OUT = val('out', 'public/data/jobs-v2.json')
 const STATE = '.ingest-state.json'
 
@@ -117,6 +118,7 @@ const { jobs, report, state } = await runIngest({
   concurrency,
   previous,
   enrich: doEnrich ? enrichValuations : undefined,
+  hydrateDescriptions: hydrate > 0 ? { maxJobs: hydrate, concurrency: 8 } : undefined,
   onProgress: (done, total) => {
     const pct = Math.floor((done / total) * 100)
     if (pct >= lastPct + 10) { lastPct = pct; process.stdout.write(`  ${pct}%\r`) }
@@ -163,6 +165,7 @@ console.log(`Jobs with posted date:      ${R.jobsWithPostedDate.toLocaleString()
 console.log()
 console.log(`Companies with valuation:   ${R.companiesWithValuation}`)
 console.log(`Enrichment ran:             ${R.enrichmentRan}${R.enrichmentError ? `  (error: ${R.enrichmentError})` : ''}`)
+console.log(`Descriptions hydrated:      ${(R.descriptionsHydrated ?? 0).toLocaleString()}`)
 console.log()
 console.log(`Sources crawled OK:         ${R.sourcesSucceeded}`)
 console.log(`Sources failed:             ${R.sourcesFailed}`)

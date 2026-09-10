@@ -217,6 +217,51 @@ export class SmartRecruitersAdapter extends BaseAdapter {
 
     return { jobs: all, incremental: false, warnings }
   }
+
+  /**
+   * Fetch one posting's full text.
+   *
+   * The listing endpoint returns no description at all, which matters far more
+   * than it sounds: visa-sponsorship language lives almost entirely in the
+   * description, so without this SmartRecruiters postings can only ever be
+   * classified "not mentioned". Called from the optional hydration stage, which
+   * is bounded and failure-isolated.
+   */
+  async fetchJob(target: SourceTarget, id: string): Promise<RawJob | null> {
+    const url = `https://api.smartrecruiters.com/v1/companies/${encodeURIComponent(target.token)}/postings/${encodeURIComponent(id)}`
+    const d = await this.json<any>(url, { cacheTtlMs: this.ttl.jobDetail, retries: 1 })
+    if (!d) return null
+
+    const sections = d.jobAd?.sections ?? {}
+    // Order matters: the requirements section is where sponsorship statements
+    // usually sit, so it must not be truncated away.
+    const description = ['jobDescription', 'qualifications', 'additionalInformation', 'companyDescription']
+      .map((k) => sections[k]?.text ?? '')
+      .filter(Boolean)
+      .join('\n\n')
+
+    if (!description) return null
+
+    const loc = [d.location?.city, d.location?.region, d.location?.country].filter(Boolean).join(', ') || null
+    return {
+      source: this.id,
+      target,
+      sourceId: String(d.id),
+      requisitionId: d.refNumber ? String(d.refNumber) : String(d.id),
+      title: String(d.name ?? '').trim(),
+      company: d.company?.name ?? target.companyName ?? null,
+      companyDomain: target.companyDomain ?? null,
+      locationRaw: loc,
+      descriptionHtml: description,
+      department: d.department?.label ?? d.function?.label ?? null,
+      employmentType: d.typeOfEmployment?.label ?? null,
+      remoteFlag: typeof d.location?.remote === 'boolean' ? d.location.remote : null,
+      postedAt: toIso(d.releasedDate ?? d.createdOn),
+      updatedAt: toIso(d.updatedOn),
+      applicationUrl: String(d.applyUrl ?? ''),
+      canonicalUrl: String(d.postingUrl ?? d.ref ?? ''),
+    }
+  }
 }
 
 /* -------------------------------- Recruitee ------------------------------- */

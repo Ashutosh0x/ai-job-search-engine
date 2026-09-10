@@ -59,6 +59,7 @@ export interface IngestReport {
   companiesWithValuation: number
   enrichmentRan: boolean
   enrichmentError: string | null
+  descriptionsHydrated: number
 
   sourcesSucceeded: number
   sourcesFailed: number
@@ -93,6 +94,12 @@ export interface IngestOptions {
    */
   enrich?: (jobs: CanonicalJob[]) => Promise<Record<string, number | null>>
   enrichTimeoutMs?: number
+  /**
+   * Optionally hydrate missing descriptions via each adapter's fetchJob.
+   * Bounded and failure-isolated: a job whose detail fetch fails keeps the
+   * record it already had.
+   */
+  hydrateDescriptions?: { maxJobs: number; concurrency?: number }
   onProgress?: (done: number, total: number, label: string) => void
   signal?: AbortSignal
 }
@@ -211,6 +218,56 @@ export async function runIngest(options: IngestOptions): Promise<{
   const currentIds = new Set(jobs.map((j) => j.id))
   const closedJobs = previous.knownIds.filter((id) => !currentIds.has(id)).length
 
+  /* ----------------------- DESCRIPTION HYDRATION -------------------------- */
+  //
+  // Optional. Listing endpoints for SmartRecruiters and Workday carry no
+  // description, which caps visa classification at "not mentioned" for those
+  // sources. Re-classifying after hydration is what makes the visa feature work
+  // on more than a third of the corpus.
+
+  let hydrated = 0
+  if (options.hydrateDescriptions) {
+    const { maxJobs, concurrency: hc = 6 } = options.hydrateDescriptions
+    const needsText = jobs
+      .map((job, index) => ({ job, index }))
+      .filter(({ job }) => (job.description ?? '').length < 200)
+      .slice(0, maxJobs)
+
+    await pooled(needsText, hc, async ({ job, index }) => {
+      const adapter = getAdapter(job.source)
+      if (!adapter?.fetchJob) return
+      try {
+        const target: SourceTarget = { source: job.source, token: job.id.split(':')[1] }
+        const detail = await adapter.fetchJob(target, job.sourceId)
+        if (!detail) return
+        // Re-normalise so visa/workplace/skills all see the new text.
+        const renormalized = normalizeJob({ ...detail, target })
+        jobs[index] = {
+          ...jobs[index],
+          description: renormalized.description,
+          visaStatus: renormalized.visaStatus,
+          visaConfidence: renormalized.visaConfidence,
+          visaEvidence: renormalized.visaEvidence,
+          visaTypes: renormalized.visaTypes,
+          visaCountries: renormalized.visaCountries,
+          workAuthorizationRequired: renormalized.workAuthorizationRequired,
+          workplaceType: renormalized.workplaceType,
+          workplaceDisplay: renormalized.workplaceDisplay,
+          workplaceEvidence: renormalized.workplaceEvidence,
+          remoteScope: renormalized.remoteScope,
+          remoteCountries: renormalized.remoteCountries,
+          officeDaysPerWeek: renormalized.officeDaysPerWeek,
+          remote: renormalized.remote,
+          skills: renormalized.skills,
+          technologies: renormalized.technologies,
+        }
+        hydrated++
+      } catch {
+        // Keep the un-hydrated record; a detail fetch failure is not fatal.
+      }
+    })
+  }
+
   /* ------------------------------- ENRICH --------------------------------- */
   //
   // Optional and isolated. Jobs are already final at this point; enrichment can
@@ -297,6 +354,7 @@ export async function runIngest(options: IngestOptions): Promise<{
     ).size,
     enrichmentRan,
     enrichmentError,
+    descriptionsHydrated: hydrated,
 
     sourcesSucceeded: runs.filter((r) => r.ok).length,
     sourcesFailed: runs.filter((r) => !r.ok).length,

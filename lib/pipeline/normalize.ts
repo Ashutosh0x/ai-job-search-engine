@@ -4,6 +4,8 @@ import { parseLocation, parseLocations } from '../location'
 import { extractSkills, normalizedTitleOf, inferSeniority } from './skills'
 import { normalizeTitle } from './dedupe'
 import { isAggregatorUrl } from '../sources/detector'
+import { classifyVisa } from './visa'
+import { classifyWorkplace, workplaceDisplay } from './workplace'
 
 /**
  * RawJob -> CanonicalJob.
@@ -41,9 +43,26 @@ export function normalizeJob(raw: RawJob, opts: { companySlug?: string; companyN
     : [parseLocation(null)]
   const primary = parsedList[0]
 
-  const remote =
-    raw.remoteFlag === true || parsedList.some((p) => p.isRemote)
-  const locationType = locationTypeOf(remote, raw.locationRaw ?? null, description)
+  // Workplace: evidence-based, and UNKNOWN when the posting does not say.
+  // The previous locationTypeOf() defaulted anything with a location string to
+  // "onsite", which reported 84.1% onsite from an assumption rather than a
+  // statement.
+  const workplace = classifyWorkplace({
+    title: raw.title,
+    locationRaw: raw.locationRaw,
+    description,
+    providerRemoteFlag: raw.remoteFlag ?? null,
+  })
+  const remote = workplace.type === 'REMOTE' || parsedList.some((p) => p.isRemote)
+  const locationType: LocationType =
+    workplace.type === 'REMOTE' ? 'remote'
+    : workplace.type === 'HYBRID' ? 'hybrid'
+    : workplace.type === 'ONSITE' ? 'onsite'
+    : 'unknown'
+
+  // Visa: title + description only. Silence stays NOT_MENTIONED.
+  const visa = classifyVisa(`${raw.title}
+${description}`, { country: primary.country })
 
   const skills = extractSkills(`${raw.title}\n${description}`)
 
@@ -114,6 +133,23 @@ export function normalizeJob(raw: RawJob, opts: { companySlug?: string; companyN
     technologies: skills.technologies,
 
     companyValuationUsd: null, // filled by the (optional) enrichment stage
+
+    visaStatus: visa.status,
+    visaConfidence: visa.confidence,
+    visaEvidence: visa.evidence.map((e) => ({ quote: e.quote, polarity: e.polarity, rule: e.rule })),
+    visaTypes: visa.visaTypes,
+    visaCountries: visa.visaCountries,
+    workAuthorizationRequired: visa.workAuthorizationRequired,
+
+    workplaceType: workplace.type,
+    workplaceConfidence: workplace.confidence,
+    workplaceEvidence: workplace.evidence,
+    workplaceDisplay: workplaceDisplay(workplace, primary.display),
+    remoteScope: workplace.remoteScope,
+    remoteCountries: workplace.remoteCountries,
+    remoteRegions: workplace.remoteRegions,
+    remoteTimezones: workplace.remoteTimezones,
+    officeDaysPerWeek: workplace.officeDaysPerWeek,
 
     status: 'OPEN',
     freshnessScore: 0, // filled by the freshness stage

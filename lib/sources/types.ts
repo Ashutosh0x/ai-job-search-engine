@@ -142,6 +142,25 @@ export interface CanonicalJob {
 
   companyValuationUsd: number | null
 
+  /** Visa sponsorship classification (see lib/pipeline/visa.ts). */
+  visaStatus: string
+  visaConfidence: number
+  visaEvidence: { quote: string; polarity: string; rule: string }[]
+  visaTypes: string[]
+  visaCountries: string[]
+  workAuthorizationRequired: boolean
+
+  /** Workplace classification (see lib/pipeline/workplace.ts). */
+  workplaceType: string
+  workplaceConfidence: number
+  workplaceEvidence: string[]
+  workplaceDisplay: string
+  remoteScope: string | null
+  remoteCountries: string[]
+  remoteRegions: string[]
+  remoteTimezones: string[]
+  officeDaysPerWeek: number | null
+
   status: JobStatus
   freshnessScore: number
   sourceConfidence: number
@@ -244,19 +263,43 @@ export function toIso(value: unknown): string | null {
 
 export function htmlToText(html: string | null | undefined): string {
   if (!html) return ''
-  return html
-    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
-    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
-    .replace(/<br\s*\/?>/gi, '\n')
-    .replace(/<\/(p|div|li|h[1-6])>/gi, '\n')
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&#39;|&apos;/g, "'")
-    .replace(/&quot;/g, '"')
+
+  // ORDER MATTERS. Entities must be decoded BEFORE the final tag strip.
+  // Greenhouse (and others) serve content that is HTML-escaped inside HTML, so
+  // the body contains "&lt;br&gt;". Stripping tags first and decoding after
+  // turns that escaped markup into live markup, and it then survives into the
+  // text -- which is how raw "<br><span class=...>" ended up inside quoted
+  // visa evidence.
+  const decode = (t: string) =>
+    t
+      .replace(/&nbsp;/gi, ' ')
+      .replace(/&#(\d+);/g, (_, d) => String.fromCharCode(Number(d)))
+      .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCharCode(parseInt(h, 16)))
+      .replace(/&lt;/gi, '<')
+      .replace(/&gt;/gi, '>')
+      .replace(/&quot;/gi, '"')
+      .replace(/&#39;|&apos;/gi, "'")
+      .replace(/&amp;/gi, '&')
+
+  const stripTags = (t: string) =>
+    t
+      .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+      .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+      .replace(/<br\s*\/?>/gi, '\n')
+      .replace(/<\/(p|div|li|h[1-6]|tr)>/gi, '\n')
+      .replace(/<[^>]+>/g, ' ')
+
+  // Two passes: strip, decode, strip again. The second pass removes any markup
+  // that only became visible once entities were decoded.
+  let text = stripTags(html)
+  text = decode(text)
+  if (/<[a-z/][^>]*>/i.test(text)) text = stripTags(text)
+  // Entities can also be doubly escaped ("&amp;nbsp;"), so decode once more.
+  if (/&[a-z#0-9]+;/i.test(text)) text = decode(text)
+
+  return text
     .replace(/[ \t]+/g, ' ')
     .replace(/\n{3,}/g, '\n\n')
     .trim()
 }
+
