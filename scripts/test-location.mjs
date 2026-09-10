@@ -75,5 +75,24 @@ for (const real of ['Japan','New Zealand','Portugal','Israel']) {
   const r = parseLocation(real)
   t(`"${real}" is still recognised as a country`, r.country===real, r)
 }
+
+// Regression: postal addresses must not become cities or countries.
+{
+  const r = parseLocation('No.16 Hongfeng Road, Nanjing, China')
+  t('street dropped, real city kept', r.city==='Nanjing' && r.country==='China', r)
+}
+{
+  const r = parseLocation('Jalan Molek 3/20, Johor Bahru, Malaysia')
+  t('non-English street form handled', r.city==='Johor Bahru' && r.country==='Malaysia', r)
+}
+{
+  const r = parseLocation('Whitefield RD - Adm: Intl Tech Park, Bangalore, Gurugram')
+  t('campus name dropped', r.city==='Bangalore', r)
+  t('unresolvable trailing token is not a country', r.country===null, r)
+}
+{
+  const r = parseLocation('San Francisco, CA, USA')
+  t('ordinary US address unaffected', r.city==='San Francisco' && r.region==='California' && r.country==='United States', r)
+}
 console.log(`\n${pass} passed, ${fail} failed`)
 process.exit(fail === 0 ? 0 : 1)

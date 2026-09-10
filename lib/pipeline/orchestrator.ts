@@ -3,6 +3,7 @@ import { getAdapter } from '../sources/registry'
 import { normalizeJob, computeFreshness, detectReposts } from './normalize'
 import { deduplicate, type DedupeResult } from './dedupe'
 import { resolveAmbiguousLocations } from './resolve-locations'
+import { assessJob } from './quality'
 import { httpStats } from '../sources/http'
 
 /**
@@ -62,6 +63,9 @@ export interface IngestReport {
   enrichmentError: string | null
   descriptionsHydrated: number
   locationsResolved: number
+  rejectedByValidation: number
+  suspectedGhostJobs: number
+  avgQualityScore: number
 
   sourcesSucceeded: number
   sourcesFailed: number
@@ -210,6 +214,28 @@ export async function runIngest(options: IngestOptions): Promise<{
     ...job,
     freshnessScore: computeFreshness(job).score,
   }))
+
+  /* --------------------- QUALITY + GHOST ASSESSMENT ----------------------- */
+  //
+  // Ghost risk is an inference and is treated as one: a suspected posting is
+  // ranked lower and labelled with its evidence, never removed. Only a
+  // CRITICAL validation failure keeps a job out of the index.
+  let rejected = 0
+  const assessed = jobs.map((job) => {
+    const a = assessJob(job, { firstSeenAt: job.firstSeenAt })
+    if (!a.shouldIndex) rejected++
+    return {
+      ...job,
+      qualityScore: a.qualityScore,
+      qualityIssues: a.issues,
+      ghostRisk: a.ghostRisk,
+      ghostLabel: a.ghostLabel,
+      ghostSignals: a.ghostSignals.map((s) => ({ signal: s.signal, evidence: s.evidence })),
+      shouldIndex: a.shouldIndex,
+    }
+  })
+  jobs = assessed.filter((j) => (j as any).shouldIndex).map(({ shouldIndex, ...rest }: any) => rest)
+  const rejectedByValidation = rejected
 
   /* --------------------------- CHANGE DETECTION --------------------------- */
 
@@ -366,6 +392,11 @@ export async function runIngest(options: IngestOptions): Promise<{
     enrichmentError,
     descriptionsHydrated: hydrated,
     locationsResolved,
+    rejectedByValidation,
+    suspectedGhostJobs: jobs.filter((j: any) => (j.ghostRisk ?? 0) >= 0.5).length,
+    avgQualityScore:
+      jobs.length === 0 ? 0
+      : Math.round((jobs.reduce((s, j: any) => s + (j.qualityScore ?? 0), 0) / jobs.length) * 1000) / 1000,
 
     sourcesSucceeded: runs.filter((r) => r.ok).length,
     sourcesFailed: runs.filter((r) => !r.ok).length,

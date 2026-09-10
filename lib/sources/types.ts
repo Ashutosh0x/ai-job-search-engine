@@ -163,6 +163,13 @@ export interface CanonicalJob {
   remoteTimezones: string[]
   officeDaysPerWeek: number | null
 
+  /** Posting quality and ghost-risk assessment (lib/pipeline/quality.ts). */
+  qualityScore: number
+  qualityIssues: { rule: string; severity: string; message: string }[]
+  ghostRisk: number
+  ghostLabel: string | null
+  ghostSignals: { signal: string; evidence: string }[]
+
   status: JobStatus
   freshnessScore: number
   sourceConfidence: number

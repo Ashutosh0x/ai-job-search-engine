@@ -156,6 +156,31 @@ function canonCity(token: string): string {
 }
 
 /**
+ * Does this component look like a street address rather than a city?
+ *
+ * Employers routinely put the full postal address in the location field
+ * ("No.16 Hongfeng Road, Nanjing, China"). Taking the first component as the
+ * city then files the posting under a city called "No.16 Hongfeng Road", which
+ * fragments the city facet with one-off entries.
+ */
+function looksLikeStreetAddress(token: string): boolean {
+  const t = token.trim()
+  if (!t) return false
+  // A leading building/house number, or a postcode-style alphanumeric block.
+  if (/^\d+[\w-]*\s/.test(t)) return true
+  if (/^[A-Z]?\d{3,}[A-Z]{0,2}\b/i.test(t)) return true
+  // Thoroughfare words, in the languages that show up in ATS data.
+  if (/\b(road|rd|street|st|avenue|ave|lane|ln|drive|dr|boulevard|blvd|highway|hwy|suite|ste|floor|building|bldg|block|plot|jalan|calle|rua|strasse|straße|via)\b/i.test(t)) {
+    return true
+  }
+  // "Tech Park", "Business Park", "Industrial Estate" -- campus names, not cities.
+  if (/\b(tech\s*park|business\s*park|industrial\s*(estate|park)|campus|tower|plaza)\b/i.test(t)) {
+    return true
+  }
+  return false
+}
+
+/**
  * Parse one location string. Handles the Workday "US-CA-San Francisco" form,
  * comma-separated forms, and bare remote markers.
  */
@@ -231,6 +256,10 @@ export function parseLocation(raw: string | null | undefined): ParsedLocation {
         city = canonCity(only)
       }
     } else if (parts.length >= 2) {
+      // Drop leading street-address components so the city slot holds a city.
+      // "No.16 Hongfeng Road, Nanjing, China" -> Nanjing, China.
+      while (parts.length > 2 && looksLikeStreetAddress(parts[0])) parts.shift()
+
       city = canonCity(parts[0])
       const second = parts[1].trim()
       const secondUpper = second.toUpperCase()
@@ -266,8 +295,23 @@ export function parseLocation(raw: string | null | undefined): ParsedLocation {
         if (parts.length === 2) {
           country = asCountry
         } else {
-          region = titleCase(second)
-          country = canonCountry(parts[2]) ?? titleCase(parts[2])
+          // Scan the remaining components for a real country rather than
+          // assuming the third one is it. Multi-line addresses put the country
+          // last ("Street, City, Region, Country"), and the old
+          // `?? titleCase(parts[2])` fallback promoted whatever sat in slot 2
+          // to a country -- which is how "Jalan Molek 3/20", "No.16 Hongfeng
+          // Road" and "3500GS Utrecht" became countries.
+          const tail = parts.slice(2)
+          const found = tail.map(canonCountry).find((c): c is string => c !== null)
+          country = found ?? null
+          // Only claim a region when we actually resolved a country; otherwise
+          // the components are address noise and guessing at them adds nothing.
+          region = found ? titleCase(second) : null
+          if (!found) {
+            // The first component is still the most likely city; the rest is
+            // an address we cannot interpret, and it is preserved in `raw`.
+            city = canonCity(parts[0])
+          }
         }
       }
     }

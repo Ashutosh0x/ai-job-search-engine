@@ -153,6 +153,14 @@ ${description}`, { country: primary.country })
     remoteTimezones: workplace.remoteTimezones,
     officeDaysPerWeek: workplace.officeDaysPerWeek,
 
+    // Filled by the quality stage; declared here so the record is complete
+    // the moment it is created rather than half-built.
+    qualityScore: 0,
+    qualityIssues: [],
+    ghostRisk: 0,
+    ghostLabel: null,
+    ghostSignals: [],
+
     status: 'OPEN',
     freshnessScore: 0, // filled by the freshness stage
     sourceConfidence,
