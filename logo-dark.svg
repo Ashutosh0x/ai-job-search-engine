@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="40" viewBox="0 0 160 40" role="img" aria-label="JobSpark">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#8B5CF6"/>
+      <stop offset="100%" stop-color="#A78BFA"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="160" height="40" rx="8" fill="url(#g)"/>
+  <text x="80" y="26" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="18" fill="#ffffff">JobSpark</text>
+</svg>

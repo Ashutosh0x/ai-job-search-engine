@@ -1,0 +1,396 @@
+---
+title: 'AI Job Matching'
+description: 'Intelligent job matching powered by AI algorithms'
+---
+
+# AI Job Matching
+
+JobSpark AI's intelligent job matching system uses advanced machine learning algorithms to connect you with the most relevant job opportunities based on your skills, experience, and preferences.
+
+## Overview
+
+Our AI Job Matching system analyzes multiple factors to provide personalized job recommendations:
+
+- **Skill Alignment** - Matches your technical and soft skills with job requirements
+- **Experience Level** - Considers your years of experience and career progression
+- **Location Preferences** - Factors in your preferred work location and remote preferences
+- **Salary Expectations** - Aligns with your compensation requirements
+- **Company Culture** - Matches your work style and values with company culture
+- **Industry Focus** - Prioritizes opportunities in your preferred industries
+
+## How It Works
+
+<Steps>
+  <Step title="Profile Analysis">
+    Our AI analyzes your profile, resume, and preferences to understand your career goals
+  </Step>
+  <Step title="Job Database Scan">
+    We scan thousands of job postings from multiple sources in real-time
+  </Step>
+  <Step title="Intelligent Matching">
+    Advanced algorithms score and rank jobs based on multiple criteria
+  </Step>
+  <Step title="Personalized Results">
+    You receive a curated list of the most relevant opportunities
+  </Step>
+</Steps>
+
+## Matching Algorithm
+
+### Skill-Based Matching
+
+<CardGroup cols={2}>
+  <Card title="Technical Skills">
+    - Programming languages
+    - Frameworks and libraries
+    - Tools and platforms
+    - Certifications
+    - Domain expertise
+  </Card>
+  <Card title="Soft Skills">
+    - Communication abilities
+    - Leadership qualities
+    - Problem-solving skills
+    - Team collaboration
+    - Adaptability
+  </Card>
+</CardGroup>
+
+### Experience Matching
+
+<CardGroup cols={3}>
+  <Card title="Entry Level (0-2 years)">
+    - Junior positions
+    - Internship opportunities
+    - Training programs
+    - Mentorship roles
+  </Card>
+  <Card title="Mid Level (3-7 years)">
+    - Senior positions
+    - Team lead roles
+    - Specialized expertise
+    - Project management
+  </Card>
+  <Card title="Senior Level (8+ years)">
+    - Leadership positions
+    - Management roles
+    - Strategic positions
+    - Executive opportunities
+  </Card>
+</CardGroup>
+
+### Location Intelligence
+
+<CardGroup cols={2}>
+  <Card title="Geographic Matching">
+    - City and state preferences
+    - Commute time considerations
+    - Relocation willingness
+    - Time zone compatibility
+  </Card>
+  <Card title="Remote Work Options">
+    - Fully remote opportunities
+    - Hybrid work arrangements
+    - Flexible scheduling
+    - Travel requirements
+  </Card>
+</CardGroup>
+
+## Features
+
+### Smart Recommendations
+
+<CardGroup cols={2}>
+  <Card title="Daily Job Alerts">
+    - Personalized job notifications
+    - New opportunity alerts
+    - Salary range updates
+    - Company news and updates
+  </Card>
+  <Card title="Match Score">
+    - Percentage-based matching
+    - Detailed breakdown of factors
+    - Improvement suggestions
+    - Skill gap analysis
+  </Card>
+</CardGroup>
+
+### Advanced Filtering
+
+<CardGroup cols={2}>
+  <Card title="Job Filters">
+    - Salary range
+    - Experience level
+    - Job type (Full-time, Part-time, Contract)
+    - Industry sector
+    - Company size
+    - Remote work options
+  </Card>
+  <Card title="Company Filters">
+    - Company culture ratings
+    - Glassdoor reviews
+    - Benefits and perks
+    - Growth opportunities
+    - Work-life balance
+  </Card>
+</CardGroup>
+
+### Application Tracking
+
+<CardGroup cols={2}>
+  <Card title="Application Status">
+    - Applied jobs tracking
+    - Interview scheduling
+    - Follow-up reminders
+    - Response tracking
+  </Card>
+  <Card title="Analytics">
+    - Application success rate
+    - Interview performance
+    - Response time analysis
+    - Salary negotiation insights
+  </Card>
+</CardGroup>
+
+## API Integration
+
+### Job Matching Endpoint
+
+```typescript
+GET /api/jobs/matching
+```
+
+**Query Parameters:**
+```json
+{
+  "userId": "user_id",
+  "location": "San Francisco, CA",
+  "salaryMin": 80000,
+  "salaryMax": 150000,
+  "remote": true,
+  "experience": "mid",
+  "skills": ["JavaScript", "React", "Node.js"]
+}
+```
+
+**Response:**
+```json
+{
+  "jobs": [
+    {
+      "id": "job_123",
+      "title": "Senior Frontend Engineer",
+      "company": "Tech Corp",
+      "location": "San Francisco, CA",
+      "salary": "$120,000 - $150,000",
+      "matchScore": 92,
+      "skills": ["JavaScript", "React", "TypeScript"],
+      "description": "We're looking for a senior frontend engineer...",
+      "postedDate": "2024-01-15",
+      "applicationUrl": "https://techcorp.com/careers"
+    }
+  ],
+  "totalCount": 45,
+  "filters": {
+    "applied": ["job_456"],
+    "saved": ["job_789"]
+  }
+}
+```
+
+### Job Details Endpoint
+
+```typescript
+GET /api/jobs/{jobId}
+```
+
+**Response:**
+```json
+{
+  "job": {
+    "id": "job_123",
+    "title": "Senior Frontend Engineer",
+    "company": {
+      "name": "Tech Corp",
+      "logo": "https://logo.url",
+      "size": "500-1000",
+      "industry": "Technology",
+      "rating": 4.2
+    },
+    "location": {
+      "city": "San Francisco",
+      "state": "CA",
+      "country": "USA",
+      "remote": true
+    },
+    "salary": {
+      "min": 120000,
+      "max": 150000,
+      "currency": "USD",
+      "period": "yearly"
+    },
+    "requirements": {
+      "experience": "3-5 years",
+      "skills": ["JavaScript", "React", "TypeScript"],
+      "education": "Bachelor's degree"
+    },
+    "benefits": [
+      "Health insurance",
+      "401k matching",
+      "Remote work",
+      "Professional development"
+    ]
+  }
+}
+```
+
+## User Interface
+
+### Job Discovery
+
+<CardGroup cols={2}>
+  <Card title="Job Feed">
+    - Infinite scroll interface
+    - Quick apply buttons
+    - Save job functionality
+    - Share job options
+  </Card>
+  <Card title="Search & Filters">
+    - Advanced search bar
+    - Filter sidebar
+    - Sort options
+    - Saved searches
+  </Card>
+</CardGroup>
+
+### Job Details
+
+<CardGroup cols={2}>
+  <Card title="Job Information">
+    - Detailed job description
+    - Company information
+    - Benefits and perks
+    - Application requirements
+  </Card>
+  <Card title="Application Tools">
+    - One-click apply
+    - Resume optimization
+    - Cover letter generator
+    - Interview preparation
+  </Card>
+</CardGroup>
+
+## Best Practices
+
+### Optimize Your Profile
+
+<CardGroup cols={2}>
+  <Card title="Complete Profile">
+    - Fill all profile sections
+    - Add relevant skills
+    - Include certifications
+    - Update experience regularly
+  </Card>
+  <Card title="Resume Optimization">
+    - Use relevant keywords
+    - Quantify achievements
+    - Include industry terms
+    - Keep it updated
+  </Card>
+</CardGroup>
+
+### Job Search Strategy
+
+<CardGroup cols={2}>
+  <Card title="Set Preferences">
+    - Define salary expectations
+    - Specify location preferences
+    - Choose industry focus
+    - Set experience level
+  </Card>
+  <Card title="Active Engagement">
+    - Apply to relevant jobs
+    - Save interesting positions
+    - Follow companies
+    - Network with recruiters
+  </Card>
+</CardGroup>
+
+## Analytics & Insights
+
+### Job Search Analytics
+
+<CardGroup cols={2}>
+  <Card title="Application Tracking">
+    - Total applications
+    - Response rate
+    - Interview invitations
+    - Offer rate
+  </Card>
+  <Card title="Market Insights">
+    - Salary trends
+    - Skill demand
+    - Industry growth
+    - Location opportunities
+  </Card>
+</CardGroup>
+
+### Performance Metrics
+
+<CardGroup cols={3}>
+  <Card title="Match Quality">
+    - Average match score
+    - Skill alignment
+    - Experience fit
+    - Location compatibility
+  </Card>
+  <Card title="Application Success">
+    - Response rate
+    - Interview rate
+    - Offer rate
+    - Time to hire
+  </Card>
+  <Card title="Market Position">
+    - Salary competitiveness
+    - Skill marketability
+    - Industry demand
+    - Geographic opportunities
+  </Card>
+</CardGroup>
+
+## Troubleshooting
+
+### Common Issues
+
+<CardGroup cols={2}>
+  <Card title="No Job Matches">
+    - Expand location preferences
+    - Adjust salary expectations
+    - Add more skills
+    - Update experience level
+  </Card>
+  <Card title="Low Match Scores">
+    - Complete profile information
+    - Add relevant skills
+    - Update resume
+    - Adjust preferences
+  </Card>
+</CardGroup>
+
+### Performance Optimization
+
+- **Profile Updates**: Keep your profile current
+- **Skill Addition**: Add new skills as you learn them
+- **Preference Refinement**: Regularly update preferences
+- **Active Engagement**: Apply to jobs to improve matching
+
+## Support
+
+Need help with job matching?
+
+- 📧 **Email**: support@jobspark.ai
+- 💬 **Live Chat**: Available 24/7
+- 📚 **Documentation**: Browse our guides
+- 🎥 **Tutorials**: Video walkthroughs available
+
+Ready to find your next opportunity? [Start job matching now](/jobs) or [optimize your profile](/profile) for better results.

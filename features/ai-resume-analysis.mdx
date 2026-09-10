@@ -1,0 +1,315 @@
+---
+title: 'AI Resume Analysis'
+description: 'Get instant AI-powered feedback and optimization suggestions for your resume'
+---
+
+# AI Resume Analysis
+
+JobSpark AI's intelligent resume analysis feature uses advanced machine learning algorithms to provide comprehensive feedback on your resume, helping you optimize it for better job opportunities.
+
+## Overview
+
+Our AI Resume Analysis system evaluates your resume across multiple dimensions:
+
+- **ATS Compatibility** - Ensures your resume passes Applicant Tracking Systems
+- **Skill Gap Analysis** - Identifies missing skills for your target roles
+- **Content Optimization** - Suggests improvements for clarity and impact
+- **Keyword Analysis** - Recommends relevant keywords for your industry
+- **Format Assessment** - Evaluates layout and formatting effectiveness
+
+## How It Works
+
+<Steps>
+  <Step title="Upload Resume">
+    Upload your resume in PDF or DOCX format through our secure interface
+  </Step>
+  <Step title="AI Processing">
+    Our AI analyzes your resume using multiple algorithms and industry benchmarks
+  </Step>
+  <Step title="Generate Report">
+    Receive a comprehensive analysis report with actionable insights
+  </Step>
+  <Step title="Apply Suggestions">
+    Use our recommendations to optimize your resume for better results
+  </Step>
+</Steps>
+
+## Analysis Components
+
+### ATS Compatibility Score
+
+<CardGroup cols={2}>
+  <Card title="Format Check">
+    - File format compatibility
+    - Font usage and readability
+    - Layout structure
+    - Section organization
+  </Card>
+  <Card title="Content Optimization">
+    - Keyword density analysis
+    - Action verb usage
+    - Quantifiable achievements
+    - Industry-specific terminology
+  </Card>
+</CardGroup>
+
+### Skill Gap Analysis
+
+Our AI compares your current skills with job market requirements:
+
+<CardGroup cols={3}>
+  <Card title="Technical Skills">
+    - Programming languages
+    - Software proficiency
+    - Certifications
+    - Tools and platforms
+  </Card>
+  <Card title="Soft Skills">
+    - Communication abilities
+    - Leadership qualities
+    - Problem-solving skills
+    - Team collaboration
+  </Card>
+  <Card title="Industry Knowledge">
+    - Domain expertise
+    - Market trends
+    - Best practices
+    - Regulatory compliance
+  </Card>
+</CardGroup>
+
+### Content Optimization
+
+<CardGroup cols={2}>
+  <Card title="Writing Improvements">
+    - Grammar and spelling checks
+    - Sentence structure optimization
+    - Professional tone enhancement
+    - Clarity improvements
+  </Card>
+  <Card title="Impact Enhancement">
+    - Achievement quantification
+    - Result-oriented language
+    - Power word suggestions
+    - Action verb recommendations
+  </Card>
+</CardGroup>
+
+## API Integration
+
+### Resume Analysis Endpoint
+
+```typescript
+POST /api/analyze-resume
+```
+
+**Request Body:**
+```json
+{
+  "file": "base64_encoded_resume",
+  "fileType": "pdf|docx",
+  "targetRole": "Software Engineer",
+  "industry": "Technology"
+}
+```
+
+**Response:**
+```json
+{
+  "analysis": {
+    "atsScore": 85,
+    "skillGaps": ["React", "AWS"],
+    "suggestions": [
+      "Add quantifiable achievements",
+      "Include more action verbs"
+    ],
+    "keywordAnalysis": {
+      "missing": ["JavaScript", "API"],
+      "overused": ["responsible for"]
+    }
+  }
+}
+```
+
+### Resume Parsing Endpoint
+
+```typescript
+POST /api/parse-resume
+```
+
+Extracts structured data from your resume:
+
+```json
+{
+  "parsedData": {
+    "personalInfo": {
+      "name": "John Doe",
+      "email": "john@example.com",
+      "phone": "+1-555-0123"
+    },
+    "experience": [
+      {
+        "title": "Software Engineer",
+        "company": "Tech Corp",
+        "duration": "2020-2023",
+        "achievements": ["Led team of 5 developers"]
+      }
+    ],
+    "education": [...],
+    "skills": ["JavaScript", "React", "Node.js"]
+  }
+}
+```
+
+## Features
+
+### Real-time Analysis
+
+- **Instant Feedback**: Get analysis results within seconds
+- **Live Preview**: See changes in real-time as you edit
+- **Version Comparison**: Compare different versions of your resume
+- **Progress Tracking**: Monitor improvements over time
+
+### Industry-Specific Analysis
+
+<CardGroup cols={2}>
+  <Card title="Technology">
+    - Programming language trends
+    - Framework popularity
+    - Cloud platform skills
+    - DevOps practices
+  </Card>
+  <Card title="Marketing">
+    - Digital marketing tools
+    - Analytics platforms
+    - Campaign metrics
+    - Social media trends
+  </Card>
+  <Card title="Finance">
+    - Financial modeling
+    - Regulatory compliance
+    - Risk management
+    - Investment analysis
+  </Card>
+  <Card title="Healthcare">
+    - Medical terminology
+    - Patient care systems
+    - Regulatory standards
+    - Clinical protocols
+  </Card>
+</CardGroup>
+
+### Customization Options
+
+<CardGroup cols={2}>
+  <Card title="Target Role Analysis">
+    - Specific job title optimization
+    - Industry-specific keywords
+    - Role-based skill requirements
+    - Salary level alignment
+  </Card>
+  <Card title="Company-Specific Optimization">
+    - Company culture alignment
+    - Mission statement integration
+    - Values-based content
+    - Brand-specific terminology
+  </Card>
+</CardGroup>
+
+## Best Practices
+
+### Before Analysis
+
+<CardGroup cols={2}>
+  <Card title="Prepare Your Resume">
+    - Ensure it's in PDF or DOCX format
+    - Remove personal information if needed
+    - Update with recent experience
+    - Check for typos and grammar
+  </Card>
+  <Card title="Set Your Goals">
+    - Define target roles
+    - Specify industry preferences
+    - Set salary expectations
+    - Identify key skills to highlight
+  </Card>
+</CardGroup>
+
+### After Analysis
+
+<CardGroup cols={2}>
+  <Card title="Review Feedback">
+    - Read all suggestions carefully
+    - Prioritize high-impact changes
+    - Consider industry context
+    - Validate recommendations
+  </Card>
+  <Card title="Implement Changes">
+    - Apply formatting suggestions
+    - Add missing keywords
+    - Quantify achievements
+    - Improve clarity
+  </Card>
+</CardGroup>
+
+## Pricing
+
+AI Resume Analysis is available across all plans:
+
+<CardGroup cols={3}>
+  <Card title="Basic">
+    - 5 analyses per month
+    - Basic ATS scoring
+    - General suggestions
+    - Email support
+  </Card>
+  <Card title="Pro Plus">
+    - Unlimited analyses
+    - Advanced AI insights
+    - Industry-specific analysis
+    - Priority support
+  </Card>
+  <Card title="Enterprise">
+    - Custom AI models
+    - API access
+    - White-label options
+    - Dedicated support
+  </Card>
+</CardGroup>
+
+## Troubleshooting
+
+### Common Issues
+
+<CardGroup cols={2}>
+  <Card title="File Upload Problems">
+    - Ensure file is under 10MB
+    - Check file format (PDF/DOCX only)
+    - Clear browser cache
+    - Try different browser
+  </Card>
+  <Card title="Analysis Errors">
+    - Verify file is not corrupted
+    - Check internet connection
+    - Contact support if persistent
+    - Try uploading again
+  </Card>
+</CardGroup>
+
+### Performance Tips
+
+- **File Size**: Keep resumes under 5MB for faster processing
+- **Format**: Use PDF for best compatibility
+- **Content**: Ensure text is selectable (not image-based)
+- **Timing**: Avoid peak usage hours for faster results
+
+## Support
+
+Need help with AI Resume Analysis?
+
+- 📧 **Email**: support@jobspark.ai
+- 💬 **Live Chat**: Available 24/7
+- 📚 **Documentation**: Browse our guides
+- 🎥 **Tutorials**: Video walkthroughs available
+
+Ready to optimize your resume? [Start your analysis now](/resume) or explore our [resume builder](/features/resume-builder) for more tools.

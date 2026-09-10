@@ -1,0 +1,111 @@
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "JobSpark AI",
+  "logo": {
+    "dark": "/logo-dark.svg",
+    "light": "/logo-light.svg"
+  },
+  "favicon": "/favicon.ico",
+  "colors": {
+    "primary": "#8B5CF6",
+    "light": "#A78BFA",
+    "dark": "#7C3AED",
+    "anchors": {
+      "from": "#8B5CF6",
+      "to": "#A78BFA"
+    }
+  },
+  "topbarLinks": [
+    {
+      "name": "Support",
+      "url": "mailto:support@jobspark.ai"
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "Get Started",
+    "url": "https://jobspark.ai"
+  },
+  "anchors": [
+    {
+      "name": "Discord",
+      "icon": "discord",
+      "url": "https://discord.gg/jobspark"
+    },
+    {
+      "name": "GitHub",
+      "icon": "github",
+      "url": "https://github.com/jobspark-ai"
+    }
+  ],
+  "navigation": [
+    {
+      "group": "Getting Started",
+      "pages": [
+        "introduction",
+        "quickstart",
+        "authentication",
+        "installation"
+      ]
+    },
+    {
+      "group": "Core Features",
+      "pages": [
+        "features/ai-resume-analysis",
+        "features/job-matching",
+        "features/resume-builder",
+        "features/profile-management",
+        "features/job-tracking",
+        "features/analytics-dashboard"
+      ]
+    },
+    {
+      "group": "User Management",
+      "pages": [
+        "user-management/profile-settings",
+        "user-management/preferences",
+        "user-management/security",
+        "user-management/localization"
+      ]
+    },
+    {
+      "group": "API Reference",
+      "pages": [
+        "api/authentication",
+        "api/resume-analysis",
+        "api/job-matching",
+        "api/profile-management",
+        "api/upload-endpoints"
+      ]
+    },
+    {
+      "group": "Guides",
+      "pages": [
+        "guides/resume-optimization",
+        "guides/job-search-strategy",
+        "guides/profile-completion",
+        "guides/security-best-practices"
+      ]
+    },
+    {
+      "group": "Pricing & Plans",
+      "pages": [
+        "pricing/plans",
+        "pricing/features-comparison",
+        "pricing/billing"
+      ]
+    },
+    {
+      "group": "Troubleshooting",
+      "pages": [
+        "troubleshooting/common-issues",
+        "troubleshooting/error-codes",
+        "troubleshooting/performance"
+      ]
+    }
+  ],
+  "footerSocials": {
+    "twitter": "https://twitter.com/jobspark_ai",
+    "github": "https://github.com/jobspark-ai",
+    "linkedin": "https://linkedin.com/company/jobspark-ai"
+  }
+}

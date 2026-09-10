@@ -1,0 +1,276 @@
+---
+title: 'Profile Management'
+description: 'Manage your professional profile and personal information'
+---
+
+# Profile Management
+
+Comprehensive profile management system for maintaining your professional information and preferences.
+
+## Overview
+
+Our profile management system allows you to maintain a complete professional profile that enhances your job search experience and helps our AI provide better recommendations.
+
+## Key Features
+
+### Complete Profile Information
+
+- **Personal Details**: Name, email, phone, location
+- **Professional Summary**: AI-generated summaries
+- **Work Experience**: Detailed job history
+- **Education**: Degrees, certifications, coursework
+- **Skills**: Technical and soft skills with proficiency levels
+- **Preferences**: Job preferences, salary expectations, location preferences
+
+### AI-Powered Profile Enhancement
+
+- **Smart suggestions** for profile completion
+- **Skill gap analysis** based on target roles
+- **Content optimization** for better visibility
+- **Professional summary generation**
+
+### Privacy and Control
+
+- **Profile visibility settings** (public, private, selective)
+- **Data export** capabilities
+- **Account deletion** options
+- **Privacy controls** for sensitive information
+
+## Profile Sections
+
+### Personal Information
+
+```typescript
+interface PersonalInfo {
+  fullName: string;
+  email: string;
+  phone?: string;
+  location: {
+    city: string;
+    state: string;
+    country: string;
+  };
+  avatar?: string;
+  bio?: string;
+}
+```
+
+### Professional Summary
+
+AI-generated summaries that adapt to your experience:
+
+```typescript
+// Example professional summary
+const summary = {
+  length: '2-3 sentences',
+  focus: 'Key achievements and value proposition',
+  keywords: 'Industry-specific terminology',
+  tone: 'Professional and confident'
+}
+```
+
+### Work Experience
+
+Detailed job history with achievements:
+
+```typescript
+interface WorkExperience {
+  company: string;
+  title: string;
+  startDate: string;
+  endDate?: string;
+  current: boolean;
+  description: string;
+  achievements: string[];
+  skills: string[];
+}
+```
+
+### Education
+
+Academic background and certifications:
+
+```typescript
+interface Education {
+  institution: string;
+  degree: string;
+  field: string;
+  startDate: string;
+  endDate?: string;
+  gpa?: number;
+  certifications: string[];
+}
+```
+
+### Skills
+
+Organized skills with proficiency levels:
+
+```typescript
+interface Skill {
+  name: string;
+  category: 'technical' | 'soft' | 'industry';
+  proficiency: 'beginner' | 'intermediate' | 'advanced' | 'expert';
+  yearsOfExperience?: number;
+}
+```
+
+## Profile Completion
+
+### Completion Score
+
+Track your profile completion with our scoring system:
+
+- **0-25%**: Basic information only
+- **26-50%**: Personal and contact information
+- **51-75%**: Work experience and education added
+- **76-100%**: Complete profile with skills and preferences
+
+### AI Suggestions
+
+Our AI provides smart suggestions to improve your profile:
+
+```typescript
+// AI suggestion types
+const suggestions = {
+  missingInfo: 'Add missing sections',
+  contentEnhancement: 'Improve descriptions',
+  skillGaps: 'Add relevant skills',
+  keywordOptimization: 'Include industry keywords'
+}
+```
+
+## Privacy Settings
+
+### Profile Visibility
+
+Control who can see your profile:
+
+- **Public**: Visible to all users and employers
+- **Private**: Only visible to you
+- **Selective**: Choose specific information to share
+
+### Data Control
+
+Manage your data and privacy:
+
+```typescript
+interface PrivacySettings {
+  profileVisibility: 'public' | 'private' | 'selective';
+  showContactInfo: boolean;
+  showSalaryInfo: boolean;
+  allowMessages: boolean;
+  dataSharing: {
+    analytics: boolean;
+    jobRecommendations: boolean;
+    thirdParty: boolean;
+  };
+}
+```
+
+## Profile Optimization
+
+### SEO for Job Search
+
+Optimize your profile for better job matching:
+
+1. **Use relevant keywords** in your summary and experience
+2. **Include industry-specific terminology**
+3. **Quantify achievements** with metrics
+4. **Keep information current** and accurate
+
+### ATS Optimization
+
+Ensure your profile passes Applicant Tracking Systems:
+
+```typescript
+// ATS optimization tips
+const atsTips = {
+  useStandardTitles: 'Use common job titles',
+  includeKeywords: 'Match job description keywords',
+  quantifyAchievements: 'Use numbers and metrics',
+  keepFormattingSimple: 'Avoid complex formatting'
+}
+```
+
+## Integration Features
+
+### Job Matching Integration
+
+Your profile directly influences job recommendations:
+
+```typescript
+// Profile-job matching factors
+const matchingFactors = {
+  skills: 'Skill overlap with job requirements',
+  experience: 'Years of relevant experience',
+  location: 'Geographic preferences',
+  salary: 'Salary expectations alignment',
+  industry: 'Industry experience relevance'
+}
+```
+
+### Resume Builder Integration
+
+Profile information automatically populates resume builder:
+
+- **Auto-fill templates** with profile data
+- **Consistent information** across platforms
+- **Easy updates** from profile changes
+
+## Data Management
+
+### Export Your Data
+
+Download your profile information:
+
+```typescript
+// Export formats
+const exportFormats = {
+  json: 'Complete profile data',
+  pdf: 'Formatted profile summary',
+  csv: 'Structured data for analysis'
+}
+```
+
+### Account Deletion
+
+Permanently delete your account and data:
+
+- **Immediate deletion** of all personal data
+- **Confirmation process** to prevent accidental deletion
+- **Data recovery** options within 30 days
+
+## Best Practices
+
+### Profile Maintenance
+
+1. **Update regularly** - Keep information current
+2. **Add new skills** - Include newly acquired skills
+3. **Update experience** - Add new roles and achievements
+4. **Review privacy settings** - Ensure appropriate visibility
+
+### Content Quality
+
+1. **Be specific** - Use detailed descriptions
+2. **Quantify achievements** - Include metrics and results
+3. **Use action verbs** - Start descriptions with strong verbs
+4. **Include keywords** - Use industry-specific terminology
+
+### Professional Image
+
+1. **Professional photo** - Use a high-quality headshot
+2. **Consistent branding** - Maintain professional appearance
+3. **Regular updates** - Keep profile fresh and current
+4. **Quality content** - Ensure all information is accurate
+
+## Support
+
+Need help with your profile?
+
+- 📧 **Email Support**: profile-support@jobspark.ai
+- 💬 **Live Chat**: Available during business hours
+- 📚 **Profile Guide**: Step-by-step optimization guide
+- 🎯 **Profile Review**: Professional profile assessment
+
+Ready to optimize your profile? [Update your profile now](/profile) or explore our [profile optimization guide](/guides/profile-completion).

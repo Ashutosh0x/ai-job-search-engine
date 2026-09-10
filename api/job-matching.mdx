@@ -1,0 +1,387 @@
+---
+title: 'Job Matching API'
+description: 'AI-powered job matching and recommendation endpoints'
+---
+
+# Job Matching API
+
+Intelligent job matching and recommendation system through our RESTful API endpoints.
+
+## Overview
+
+Our Job Matching API uses advanced AI algorithms to match candidates with relevant job opportunities based on skills, experience, preferences, and market data.
+
+## Base URL
+
+```
+https://api.jobspark.ai/v1
+```
+
+## Authentication
+
+All API requests require authentication. Include your API key in the Authorization header:
+
+```bash
+Authorization: Bearer YOUR_API_KEY
+```
+
+## Endpoints
+
+### Get Job Recommendations
+
+Get personalized job recommendations based on user profile and preferences.
+
+```bash
+GET /api/job-recommendations
+```
+
+**Query Parameters:**
+```json
+{
+  "userId": "user123",
+  "limit": 20,
+  "location": "San Francisco, CA",
+  "remote": true,
+  "experience": "mid-level"
+}
+```
+
+**Response:**
+```json
+{
+  "recommendations": [
+    {
+      "jobId": "job_abc123",
+      "title": "Senior Software Engineer",
+      "company": "Tech Corp",
+      "location": "San Francisco, CA",
+      "matchScore": 92,
+      "salary": "$120,000 - $150,000",
+      "skills": ["JavaScript", "React", "Node.js"],
+      "matchReasons": [
+        "Skills alignment: 95%",
+        "Experience level: Perfect match",
+        "Location preference: Matched"
+      ]
+    }
+  ],
+  "totalResults": 45,
+  "filters": {
+    "applied": ["location", "remote", "experience"],
+    "available": ["salary", "industry", "company_size"]
+  }
+}
+```
+
+### Match Resume to Job
+
+Analyze how well a resume matches a specific job posting.
+
+```bash
+POST /api/match-resume
+```
+
+**Request Body:**
+```json
+{
+  "resume": "base64_encoded_resume_content",
+  "jobId": "job_abc123",
+  "analysisType": "comprehensive"
+}
+```
+
+**Response:**
+```json
+{
+  "matchScore": 87,
+  "skillMatch": {
+    "required": ["JavaScript", "React", "Python"],
+    "matched": ["JavaScript", "React"],
+    "missing": ["Python"],
+    "score": 67
+  },
+  "experienceMatch": {
+    "required": "3-5 years",
+    "candidate": "4 years",
+    "score": 95
+  },
+  "recommendations": [
+    "Add Python experience to your resume",
+    "Highlight React projects more prominently",
+    "Include specific metrics for achievements"
+  ]
+}
+```
+
+### Search Jobs
+
+Search for jobs with advanced filtering and AI-powered ranking.
+
+```bash
+GET /api/search-jobs
+```
+
+**Query Parameters:**
+```json
+{
+  "query": "software engineer",
+  "location": "San Francisco",
+  "remote": true,
+  "experience": "mid-level",
+  "salary_min": 80000,
+  "salary_max": 150000,
+  "skills": ["JavaScript", "React"],
+  "page": 1,
+  "limit": 20
+}
+```
+
+**Response:**
+```json
+{
+  "jobs": [
+    {
+      "id": "job_abc123",
+      "title": "Senior Software Engineer",
+      "company": "Tech Corp",
+      "location": "San Francisco, CA",
+      "remote": true,
+      "salary": "$120,000 - $150,000",
+      "description": "We're looking for a senior engineer...",
+      "requirements": ["JavaScript", "React", "Node.js"],
+      "posted_date": "2024-01-15",
+      "application_count": 45
+    }
+  ],
+  "totalResults": 156,
+  "page": 1,
+  "totalPages": 8,
+  "filters": {
+    "applied": ["location", "remote", "experience"],
+    "available": ["salary", "skills", "company_size"]
+  }
+}
+```
+
+## Matching Algorithms
+
+### Skill-Based Matching
+
+Our AI analyzes skill requirements and candidate skills:
+
+```typescript
+interface SkillMatch {
+  requiredSkills: string[];
+  candidateSkills: string[];
+  matchScore: number;
+  missingSkills: string[];
+  skillImportance: 'critical' | 'important' | 'nice-to-have';
+}
+```
+
+### Experience Matching
+
+Experience level and duration matching:
+
+```typescript
+interface ExperienceMatch {
+  requiredLevel: 'entry' | 'mid-level' | 'senior' | 'lead';
+  candidateLevel: 'entry' | 'mid-level' | 'senior' | 'lead';
+  requiredYears: number;
+  candidateYears: number;
+  matchScore: number;
+}
+```
+
+### Location Matching
+
+Geographic and remote work preferences:
+
+```typescript
+interface LocationMatch {
+  preferredLocation: string;
+  jobLocation: string;
+  remotePreference: boolean;
+  jobRemote: boolean;
+  distanceScore: number;
+}
+```
+
+## Filtering Options
+
+### Job Filters
+
+```typescript
+interface JobFilters {
+  location?: string;
+  remote?: boolean;
+  experience?: 'entry' | 'mid-level' | 'senior' | 'lead';
+  salary_min?: number;
+  salary_max?: number;
+  skills?: string[];
+  industry?: string;
+  company_size?: 'startup' | 'mid-size' | 'enterprise';
+  job_type?: 'full-time' | 'part-time' | 'contract';
+}
+```
+
+### User Preferences
+
+```typescript
+interface UserPreferences {
+  preferredLocations: string[];
+  remotePreference: boolean;
+  salaryExpectations: {
+    min: number;
+    max: number;
+  };
+  experienceLevel: 'entry' | 'mid-level' | 'senior' | 'lead';
+  preferredIndustries: string[];
+  skills: string[];
+}
+```
+
+## Error Handling
+
+### Common Error Codes
+
+| Status Code | Error Type | Description |
+|-------------|------------|-------------|
+| `400` | Bad Request | Invalid search parameters |
+| `401` | Unauthorized | Invalid or missing API key |
+| `404` | Not Found | Job or user not found |
+| `429` | Too Many Requests | Rate limit exceeded |
+| `500` | Internal Server Error | Server processing error |
+
+### Error Response Format
+
+```json
+{
+  "error": {
+    "code": "INVALID_FILTERS",
+    "message": "Invalid filter parameters provided",
+    "details": {
+      "invalidFilters": ["salary_range"],
+      "validFilters": ["location", "remote", "experience"]
+    }
+  }
+}
+```
+
+## Rate Limiting
+
+API requests are rate-limited to ensure fair usage:
+
+- **Free Tier**: 50 requests per hour
+- **Pro Tier**: 500 requests per hour
+- **Enterprise Tier**: 5000 requests per hour
+
+### Rate Limit Headers
+
+```http
+X-RateLimit-Limit: 500
+X-RateLimit-Remaining: 485
+X-RateLimit-Reset: 1640995200
+```
+
+## Integration Examples
+
+### JavaScript/Node.js
+
+```javascript
+const getJobRecommendations = async (userId, filters) => {
+  const params = new URLSearchParams({
+    userId,
+    ...filters
+  });
+  
+  const response = await fetch(`https://api.jobspark.ai/v1/job-recommendations?${params}`, {
+    headers: {
+      'Authorization': `Bearer ${API_KEY}`
+    }
+  });
+  
+  return response.json();
+};
+```
+
+### Python
+
+```python
+import requests
+
+def get_job_recommendations(user_id, filters, api_key):
+    url = "https://api.jobspark.ai/v1/job-recommendations"
+    params = {"userId": user_id, **filters}
+    headers = {"Authorization": f"Bearer {api_key}"}
+    
+    response = requests.get(url, params=params, headers=headers)
+    return response.json()
+```
+
+### cURL
+
+```bash
+curl -X GET "https://api.jobspark.ai/v1/job-recommendations?userId=user123&location=San%20Francisco" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+## Best Practices
+
+### Search Optimization
+
+1. **Use specific keywords** for better matching
+2. **Include location preferences** for relevant results
+3. **Specify experience level** to filter appropriately
+4. **Add skill requirements** for precise matching
+
+### Performance Tips
+
+1. **Cache results** when appropriate
+2. **Implement pagination** for large result sets
+3. **Use filters** to reduce response size
+4. **Handle rate limits** gracefully
+
+### Error Handling
+
+1. **Check status codes** before processing responses
+2. **Implement exponential backoff** for retries
+3. **Log errors** for debugging
+4. **Provide user-friendly error messages**
+
+## SDK Support
+
+### Official SDKs
+
+- **JavaScript/TypeScript**: `@jobspark/ai-sdk`
+- **Python**: `jobspark-ai`
+- **Java**: `jobspark-ai-java`
+- **C#**: `JobSpark.AI`
+
+### SDK Installation
+
+```bash
+# JavaScript
+npm install @jobspark/ai-sdk
+
+# Python
+pip install jobspark-ai
+
+# Java
+<dependency>
+  <groupId>ai.jobspark</groupId>
+  <artifactId>jobspark-ai</artifactId>
+  <version>1.0.0</version>
+</dependency>
+```
+
+## Support
+
+Need help with the Job Matching API?
+
+- 📧 **Email Support**: api-support@jobspark.ai
+- 📚 **API Documentation**: [Full API Reference](/api)
+- 💬 **Developer Chat**: Available 24/7
+- 🔧 **SDK Documentation**: [SDK Guides](/api/sdk)
+
+Ready to integrate? [Get your API key](/api/keys) or explore our [SDK documentation](/api/sdk).

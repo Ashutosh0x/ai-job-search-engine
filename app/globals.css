@@ -1,0 +1,412 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 262 83% 58%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 262 83% 58%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 262 83% 58%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 262 83% 58%;
+  }
+  .theme {
+    --animate-marquee: marquee var(--duration) infinite linear;
+    --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-purple-600 hover:bg-purple-700 text-white font-medium px-4 sm:px-6 py-2 sm:py-3 rounded-full transition-all duration-200 hover:shadow-lg hover:shadow-purple-500/25 hover:scale-105;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-900 dark:text-white font-medium px-4 sm:px-6 py-2 sm:py-3 rounded-full border border-gray-300 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:shadow-gray-500/10;
+  }
+
+  .card-glow {
+    @apply bg-white dark:bg-gray-800/50 backdrop-blur-sm border border-gray-200 dark:border-gray-700/50 rounded-xl shadow-xl hover:shadow-purple-500/10 transition-all duration-300;
+  }
+
+  /* Auto-typing cursor animation */
+  @keyframes blink {
+    0%,
+    50% {
+      opacity: 1;
+    }
+    51%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  .typing-cursor {
+    animation: blink 1s infinite;
+  }
+
+  /* Optional subtle glow in case TrueFocus lib is not available */
+  .focus-glow {
+    position: relative;
+  }
+  .focus-glow::after {
+    content: "";
+    position: absolute;
+    inset: -4px -6px;
+    border-radius: 9999px;
+    background: radial-gradient(closest-side, rgba(168,85,247,0.35), transparent 70%);
+    filter: blur(6px);
+    pointer-events: none;
+    opacity: 0.7;
+  }
+
+  /* TrueFocus-like effect: blur surroundings, highlight focus word with neon brackets */
+  .truefocus-blur {
+    filter: blur(2.2px) saturate(0.85);
+    opacity: 0.6;
+    transition: filter 300ms ease, opacity 300ms ease;
+  }
+  .focus-brackets { animation: focus-pop 300ms ease; }
+  @keyframes focus-pop { from { transform: scale(0.98); } to { transform: scale(1); } }
+
+  .focus-brackets {
+    position: relative;
+    display: inline-block;
+    margin: 0 6px;
+  }
+
+  .focus-word {
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 1px 0 rgba(0,0,0,0.05);
+  }
+
+  .focus-brackets .corner {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-color: #22c55e; /* emerald-500 */
+    filter: drop-shadow(0 0 6px rgba(34,197,94,0.8));
+  }
+  .focus-brackets .corner.tl { top: -14px; left: -18px; border-top: 3px solid; border-left: 3px solid; border-radius: 6px 0 0 0; }
+  .focus-brackets .corner.tr { top: -14px; right: -18px; border-top: 3px solid; border-right: 3px solid; border-radius: 0 6px 0 0; }
+  .focus-brackets .corner.bl { bottom: -14px; left: -18px; border-bottom: 3px solid; border-left: 3px solid; border-radius: 0 0 0 6px; }
+  .focus-brackets .corner.br { bottom: -14px; right: -18px; border-bottom: 3px solid; border-right: 3px solid; border-radius: 0 0 6px 0; }
+
+  @media (max-width: 640px) {
+    .truefocus-blur { filter: blur(1.5px); opacity: 0.7; }
+    .focus-brackets .corner { width: 12px; height: 12px; }
+    .focus-brackets .corner.tl, .focus-brackets .corner.tr { top: -10px; }
+    .focus-brackets .corner.bl, .focus-brackets .corner.br { bottom: -10px; }
+    .focus-brackets .corner.tl, .focus-brackets .corner.bl { left: -12px; }
+    .focus-brackets .corner.tr, .focus-brackets .corner.br { right: -12px; }
+  }
+
+  /* Glassmorphism effect for the search box */
+  .glass-effect {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .dark .glass-effect {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Resume score animations */
+  .score-pulse {
+    animation: score-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes score-pulse {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+  }
+
+  .fade-in-up {
+    animation: fade-in-up 0.7s ease-out forwards;
+  }
+
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Staggered animation delays for cards */
+  .stagger-1 { animation-delay: 0ms; }
+  .stagger-2 { animation-delay: 150ms; }
+  .stagger-3 { animation-delay: 300ms; }
+  .stagger-4 { animation-delay: 450ms; }
+  .stagger-5 { animation-delay: 600ms; }
+  .stagger-6 { animation-delay: 750ms; }
+
+  /* Performance optimizations for animations */
+  .fade-in-up {
+    will-change: opacity, transform;
+    backface-visibility: hidden;
+    /* Avoid setting transform/opacity here to not override keyframe animation */
+  }
+
+  /* Mobile animation optimizations */
+  @media (max-width: 768px) {
+    .fade-in-up {
+      animation-duration: 0.5s;
+    }
+
+    .stagger-1, .stagger-2, .stagger-3, .stagger-4, .stagger-5 {
+      animation-delay: 0ms;
+    }
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .fade-in-up {
+      animation: none;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .stagger-1, .stagger-2, .stagger-3, .stagger-4, .stagger-5 {
+      animation-delay: 0ms;
+    }
+  }
+
+  /* Smooth card hover effects */
+  .card-hover {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  /* Solid card appearance */
+  .solid-card {
+    box-shadow: 
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+
+  .dark .solid-card {
+    box-shadow: 
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      0 4px 6px -1px rgba(0, 0, 0, 0.3),
+      0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Gradient animation for score circle */
+  .gradient-spin {
+    animation: gradient-spin 3s linear infinite;
+  }
+
+  @keyframes gradient-spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Mobile-specific utilities */
+  .mobile-scroll {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Responsive text utilities */
+  .text-responsive {
+    @apply text-sm sm:text-base lg:text-lg;
+  }
+
+  .text-responsive-lg {
+    @apply text-base sm:text-lg lg:text-xl;
+  }
+
+  .text-responsive-xl {
+    @apply text-lg sm:text-xl lg:text-2xl;
+  }
+
+  /* Mobile-friendly touch targets */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  /* Safe area padding for mobile devices */
+  .safe-area-padding {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Responsive spacing */
+  .spacing-responsive {
+    @apply space-y-4 sm:space-y-6 lg:space-y-8;
+  }
+
+  /* Mobile-optimized card */
+  .card-mobile {
+    @apply rounded-lg sm:rounded-xl shadow-lg sm:shadow-xl;
+  }
+
+  /* Responsive grid */
+  .grid-responsive {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
+  }
+
+  /* Mobile navigation */
+  .mobile-nav {
+    @apply fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 p-2 sm:hidden;
+  }
+
+  /* Responsive container */
+  .container-responsive {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+}
+
+/* Custom scrollbar for webkit browsers */
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(156 163 175) transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: rgb(156 163 175);
+    border-radius: 3px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(107 114 128);
+  }
+}
+
+/* Mobile viewport fixes */
+@supports (-webkit-touch-callout: none) {
+  .min-h-screen {
+    min-height: -webkit-fill-available;
+  }
+}
+
+/* Prevent zoom on input focus on iOS */
+@media screen and (max-width: 768px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  textarea,
+  select {
+    font-size: 16px;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .card-glow {
+    @apply border-2 border-gray-900 dark:border-gray-100;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .btn-primary,
+  .btn-secondary,
+  .card-glow {
+    @apply transition-none;
+  }
+
+  .hover\:scale-105:hover {
+    transform: none;
+  }
+
+  .typing-cursor,
+  .score-pulse,
+  .gradient-spin {
+    animation: none;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@theme inline {
+  @keyframes marquee {
+  from {
+    transform: translateX(0);
+    }
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
+    }
+  }
+  @keyframes marquee-vertical {
+  from {
+    transform: translateY(0);
+    }
+  to {
+    transform: translateY(calc(-100% - var(--gap)));
+    }
+  }
+}

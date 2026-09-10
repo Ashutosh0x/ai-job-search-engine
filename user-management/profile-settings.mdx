@@ -1,0 +1,449 @@
+---
+title: 'Profile Settings'
+description: 'Manage your profile information and preferences'
+---
+
+# Profile Settings
+
+Comprehensive profile management system to customize your account settings, personal information, and privacy preferences.
+
+## Overview
+
+Our profile settings system allows you to manage all aspects of your account, from basic information to advanced privacy controls and notification preferences.
+
+## Key Features
+
+### Account Information
+
+- **Personal details** management and updates
+- **Contact information** verification and editing
+- **Profile picture** upload and management
+- **Account credentials** and security settings
+- **Email preferences** and notification settings
+
+### Privacy Controls
+
+- **Profile visibility** settings and controls
+- **Data sharing** preferences and permissions
+- **Contact information** privacy options
+- **Search engine** indexing controls
+- **Third-party** integration permissions
+
+### Customization Options
+
+- **Theme preferences** (light/dark mode)
+- **Language settings** and localization
+- **Notification preferences** and schedules
+- **Display options** and layout customization
+- **Accessibility** settings and accommodations
+
+## Profile Sections
+
+### Personal Information
+
+Manage your basic profile details:
+
+```typescript
+interface PersonalInfo {
+  firstName: string;
+  lastName: string;
+  displayName: string;
+  email: string;
+  phone?: string;
+  location: {
+    city: string;
+    state: string;
+    country: string;
+    timezone: string;
+  };
+  bio: string;
+  profilePicture: string;
+  dateOfBirth?: Date;
+  gender?: 'male' | 'female' | 'non-binary' | 'prefer-not-to-say';
+}
+```
+
+### Professional Information
+
+Track your professional details:
+
+```typescript
+interface ProfessionalInfo {
+  currentRole: string;
+  company: string;
+  industry: string;
+  experienceLevel: 'entry' | 'mid-level' | 'senior' | 'lead' | 'executive';
+  yearsOfExperience: number;
+  skills: string[];
+  certifications: Certification[];
+  education: Education[];
+  languages: Language[];
+}
+```
+
+### Contact Preferences
+
+Manage how others can contact you:
+
+```typescript
+interface ContactPreferences {
+  emailVisibility: 'public' | 'private' | 'connections-only';
+  phoneVisibility: 'public' | 'private' | 'connections-only';
+  messagingEnabled: boolean;
+  connectionRequests: boolean;
+  recruiterContact: boolean;
+  spamFilter: boolean;
+}
+```
+
+## Privacy Settings
+
+### Profile Visibility
+
+Control who can see your profile:
+
+```typescript
+interface ProfileVisibility {
+  profileVisibility: 'public' | 'private' | 'connections-only';
+  searchEngineIndexing: boolean;
+  profileCompleteness: 'show' | 'hide';
+  onlineStatus: 'show' | 'hide';
+  lastActive: 'show' | 'hide';
+  activityStatus: 'show' | 'hide';
+}
+```
+
+### Data Sharing
+
+Manage your data sharing preferences:
+
+```typescript
+interface DataSharing {
+  analyticsSharing: boolean;
+  researchParticipation: boolean;
+  marketingEmails: boolean;
+  thirdPartyIntegrations: {
+    linkedin: boolean;
+    google: boolean;
+    github: boolean;
+    twitter: boolean;
+  };
+  dataExport: boolean;
+  dataDeletion: boolean;
+}
+```
+
+### Security Settings
+
+Enhance your account security:
+
+```typescript
+interface SecuritySettings {
+  twoFactorAuth: boolean;
+  loginNotifications: boolean;
+  suspiciousActivityAlerts: boolean;
+  sessionManagement: {
+    maxSessions: number;
+    sessionTimeout: number;
+    deviceTracking: boolean;
+  };
+  passwordPolicy: {
+    minLength: number;
+    requireSpecialChars: boolean;
+    requireNumbers: boolean;
+    requireUppercase: boolean;
+  };
+}
+```
+
+## Notification Preferences
+
+### Email Notifications
+
+Customize your email notification settings:
+
+```typescript
+interface EmailNotifications {
+  jobAlerts: boolean;
+  applicationUpdates: boolean;
+  interviewReminders: boolean;
+  networkActivity: boolean;
+  securityAlerts: boolean;
+  marketingEmails: boolean;
+  newsletter: boolean;
+  frequency: 'immediate' | 'daily' | 'weekly' | 'never';
+}
+```
+
+### Push Notifications
+
+Manage mobile and browser notifications:
+
+```typescript
+interface PushNotifications {
+  jobMatches: boolean;
+  applicationStatus: boolean;
+  interviewReminders: boolean;
+  messages: boolean;
+  networkActivity: boolean;
+  securityAlerts: boolean;
+  quietHours: {
+    enabled: boolean;
+    startTime: string;
+    endTime: string;
+    timezone: string;
+  };
+}
+```
+
+### In-App Notifications
+
+Control in-app notification preferences:
+
+```typescript
+interface InAppNotifications {
+  showBadgeCount: boolean;
+  soundEnabled: boolean;
+  vibrationEnabled: boolean;
+  notificationCenter: boolean;
+  toastNotifications: boolean;
+  bannerNotifications: boolean;
+}
+```
+
+## Theme and Appearance
+
+### Visual Preferences
+
+Customize your interface appearance:
+
+```typescript
+interface VisualPreferences {
+  theme: 'light' | 'dark' | 'system';
+  colorScheme: 'default' | 'high-contrast' | 'colorblind-friendly';
+  fontSize: 'small' | 'medium' | 'large' | 'extra-large';
+  fontFamily: 'default' | 'serif' | 'monospace';
+  animations: boolean;
+  reducedMotion: boolean;
+}
+```
+
+### Layout Customization
+
+Personalize your dashboard layout:
+
+```typescript
+interface LayoutCustomization {
+  sidebarPosition: 'left' | 'right';
+  dashboardLayout: 'grid' | 'list' | 'compact';
+  cardSize: 'small' | 'medium' | 'large';
+  showWelcomeMessage: boolean;
+  showTips: boolean;
+  showProgressIndicators: boolean;
+}
+```
+
+## Language and Localization
+
+### Language Settings
+
+Manage your language preferences:
+
+```typescript
+interface LanguageSettings {
+  primaryLanguage: string;
+  secondaryLanguages: string[];
+  interfaceLanguage: string;
+  contentLanguage: string;
+  autoTranslate: boolean;
+  translationQuality: 'basic' | 'advanced' | 'professional';
+}
+```
+
+### Regional Settings
+
+Configure regional preferences:
+
+```typescript
+interface RegionalSettings {
+  timezone: string;
+  dateFormat: 'MM/DD/YYYY' | 'DD/MM/YYYY' | 'YYYY-MM-DD';
+  timeFormat: '12-hour' | '24-hour';
+  currency: string;
+  numberFormat: '1,234.56' | '1.234,56' | '1 234.56';
+  temperatureUnit: 'celsius' | 'fahrenheit';
+  distanceUnit: 'metric' | 'imperial';
+}
+```
+
+## Account Management
+
+### Account Status
+
+Monitor your account status and limits:
+
+```typescript
+interface AccountStatus {
+  accountType: 'free' | 'pro' | 'enterprise';
+  subscriptionStatus: 'active' | 'expired' | 'cancelled';
+  storageUsed: number;
+  storageLimit: number;
+  apiUsage: number;
+  apiLimit: number;
+  lastLogin: Date;
+  accountCreated: Date;
+}
+```
+
+### Subscription Management
+
+Manage your subscription and billing:
+
+```typescript
+interface SubscriptionManagement {
+  currentPlan: Plan;
+  billingCycle: 'monthly' | 'yearly';
+  nextBillingDate: Date;
+  paymentMethod: PaymentMethod;
+  billingHistory: BillingRecord[];
+  planUpgrades: PlanUpgrade[];
+  cancellationPolicy: CancellationPolicy;
+}
+```
+
+### Data Management
+
+Control your data and privacy:
+
+```typescript
+interface DataManagement {
+  dataExport: {
+    format: 'json' | 'csv' | 'pdf';
+    includeFiles: boolean;
+    includeAnalytics: boolean;
+    scheduledExport: boolean;
+  };
+  dataDeletion: {
+    accountDeletion: boolean;
+    dataRetention: number; // days
+    backupBeforeDeletion: boolean;
+  };
+  privacyControls: {
+    dataPortability: boolean;
+    rightToBeForgotten: boolean;
+    consentManagement: boolean;
+  };
+}
+```
+
+## Integration Settings
+
+### Third-Party Integrations
+
+Manage external service connections:
+
+```typescript
+interface ThirdPartyIntegrations {
+  linkedin: {
+    connected: boolean;
+    permissions: string[];
+    lastSync: Date;
+  };
+  google: {
+    connected: boolean;
+    calendarSync: boolean;
+    driveSync: boolean;
+  };
+  github: {
+    connected: boolean;
+    repositoryAccess: boolean;
+    profileSync: boolean;
+  };
+  slack: {
+    connected: boolean;
+    notifications: boolean;
+    workspace: string;
+  };
+}
+```
+
+### API Access
+
+Manage API keys and integrations:
+
+```typescript
+interface ApiAccess {
+  apiKeys: ApiKey[];
+  webhooks: Webhook[];
+  rateLimits: RateLimit[];
+  usageAnalytics: UsageAnalytics;
+  ipWhitelist: string[];
+  permissions: Permission[];
+}
+```
+
+## Security Features
+
+### Two-Factor Authentication
+
+Enhanced security with 2FA:
+
+```typescript
+interface TwoFactorAuth {
+  enabled: boolean;
+  method: 'sms' | 'email' | 'authenticator' | 'hardware-key';
+  backupCodes: string[];
+  trustedDevices: Device[];
+  recoveryEmail: string;
+  lastUsed: Date;
+}
+```
+
+### Login Security
+
+Monitor and secure your login activity:
+
+```typescript
+interface LoginSecurity {
+  recentLogins: LoginAttempt[];
+  suspiciousActivity: SecurityAlert[];
+  deviceManagement: Device[];
+  sessionTimeout: number;
+  forceLogout: boolean;
+  loginHistory: LoginRecord[];
+}
+```
+
+## Best Practices
+
+### Profile Optimization
+
+1. **Complete your profile** - Fill all required fields for better visibility
+2. **Use professional photos** - High-quality, professional headshots
+3. **Keep information current** - Regular updates ensure accuracy
+4. **Optimize for search** - Use relevant keywords in your bio and skills
+
+### Privacy Management
+
+1. **Review settings regularly** - Check privacy settings monthly
+2. **Limit data sharing** - Only share what's necessary
+3. **Monitor activity** - Regularly review login history
+4. **Use strong passwords** - Enable 2FA for enhanced security
+
+### Security Best Practices
+
+1. **Enable 2FA** - Use two-factor authentication
+2. **Monitor logins** - Check for suspicious activity
+3. **Update regularly** - Keep information current
+4. **Use unique passwords** - Don't reuse passwords across accounts
+
+## Support
+
+Need help with profile settings?
+
+- 📧 **Email Support**: profile-support@jobspark.ai
+- 💬 **Live Chat**: Available during business hours
+- 📚 **Settings Guide**: Step-by-step configuration
+- 🔧 **Privacy Help**: Data protection assistance
+
+Ready to customize your profile? [Update your settings](/profile/settings) or explore our [privacy controls](/privacy).

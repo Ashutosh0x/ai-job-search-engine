@@ -1,0 +1,575 @@
+---
+title: 'Features Comparison'
+description: 'Detailed comparison of features across all pricing plans'
+---
+
+# Features Comparison
+
+Comprehensive comparison of features and capabilities across our Basic, Pro Plus, and Enterprise plans to help you choose the right plan for your needs.
+
+## Overview
+
+Our pricing plans are designed to meet the needs of different users, from individual job seekers to enterprise teams. Each plan includes core features with additional capabilities as you upgrade.
+
+## Plan Comparison
+
+### Basic Plan
+
+**Perfect for individual job seekers getting started**
+
+```typescript
+interface BasicPlan {
+  price: {
+    monthly: number;
+    yearly: number;
+    savings: number;
+  };
+  features: {
+    core: string[];
+    limitations: string[];
+    included: boolean;
+  };
+  limits: {
+    resumeUploads: number;
+    jobApplications: number;
+    aiAnalysis: number;
+    storage: string;
+  };
+}
+```
+
+**Included Features**:
+- ✅ **Resume Analysis** (5 per month)
+- ✅ **Job Matching** (basic algorithm)
+- ✅ **Profile Management** (basic)
+- ✅ **Job Search** (standard filters)
+- ✅ **Application Tracking** (manual)
+- ✅ **Email Notifications** (basic)
+- ✅ **Mobile Access** (responsive web)
+- ✅ **Basic Analytics** (simple metrics)
+
+**Limitations**:
+- ❌ **Advanced AI Features** (limited)
+- ❌ **Priority Support** (community only)
+- ❌ **Custom Integrations** (not available)
+- ❌ **Team Management** (not available)
+- ❌ **Advanced Analytics** (not available)
+
+### Pro Plus Plan
+
+**Ideal for active job seekers and professionals**
+
+```typescript
+interface ProPlusPlan {
+  price: {
+    monthly: number;
+    yearly: number;
+    savings: number;
+  };
+  features: {
+    core: string[];
+    advanced: string[];
+    included: boolean;
+  };
+  limits: {
+    resumeUploads: number;
+    jobApplications: number;
+    aiAnalysis: number;
+    storage: string;
+  };
+}
+```
+
+**Included Features**:
+- ✅ **Everything in Basic**
+- ✅ **Advanced Resume Analysis** (unlimited)
+- ✅ **AI-Powered Job Matching** (advanced algorithm)
+- ✅ **Resume Builder** (AI-powered)
+- ✅ **Cover Letter Generator** (AI-powered)
+- ✅ **Interview Preparation** (AI coaching)
+- ✅ **Advanced Analytics** (detailed insights)
+- ✅ **Priority Support** (email + chat)
+- ✅ **Custom Templates** (resume & cover letter)
+- ✅ **Skill Gap Analysis** (detailed)
+- ✅ **Salary Insights** (market data)
+- ✅ **Application Automation** (basic)
+- ✅ **Advanced Notifications** (smart alerts)
+- ✅ **Export Options** (multiple formats)
+- ✅ **API Access** (limited)
+
+**Advanced Features**:
+- 🚀 **Unlimited AI Analysis**
+- 🚀 **Advanced Job Matching**
+- 🚀 **Resume Optimization**
+- 🚀 **Interview Coaching**
+- 🚀 **Salary Negotiation Tools**
+- 🚀 **Career Path Planning**
+
+### Enterprise Plan
+
+**For teams, recruiters, and organizations**
+
+```typescript
+interface EnterprisePlan {
+  price: {
+    custom: boolean;
+    contactSales: boolean;
+    volumeDiscount: boolean;
+  };
+  features: {
+    core: string[];
+    advanced: string[];
+    enterprise: string[];
+    included: boolean;
+  };
+  limits: {
+    users: string;
+    storage: string;
+    customIntegrations: boolean;
+  };
+}
+```
+
+**Included Features**:
+- ✅ **Everything in Pro Plus**
+- ✅ **Team Management** (unlimited users)
+- ✅ **Advanced Analytics** (team insights)
+- ✅ **Custom Integrations** (API access)
+- ✅ **White-label Solutions** (branding)
+- ✅ **Dedicated Support** (24/7)
+- ✅ **Custom Training** (onboarding)
+- ✅ **SLA Guarantees** (uptime)
+- ✅ **Data Export** (bulk operations)
+- ✅ **Advanced Security** (SSO, 2FA)
+- ✅ **Compliance** (GDPR, SOC2)
+- ✅ **Custom Workflows** (automation)
+- ✅ **Advanced Reporting** (custom dashboards)
+- ✅ **Multi-language Support** (global)
+- ✅ **Advanced Permissions** (role-based)
+
+**Enterprise Features**:
+- 🏢 **Team Collaboration**
+- 🏢 **Advanced Security**
+- 🏢 **Custom Integrations**
+- 🏢 **Dedicated Support**
+- 🏢 **Compliance & Audit**
+- 🏢 **White-label Options**
+
+## Feature Details
+
+### Resume Analysis
+
+**AI-powered resume analysis and optimization**:
+
+```typescript
+interface ResumeAnalysisFeatures {
+  basic: {
+    atsScore: boolean;
+    basicSuggestions: boolean;
+    formatCheck: boolean;
+    grammarCheck: boolean;
+  };
+  proPlus: {
+    advancedAnalysis: boolean;
+    skillExtraction: boolean;
+    keywordOptimization: boolean;
+    industrySpecific: boolean;
+    multipleVersions: boolean;
+  };
+  enterprise: {
+    customAnalysis: boolean;
+    teamTemplates: boolean;
+    bulkProcessing: boolean;
+    advancedMetrics: boolean;
+  };
+}
+```
+
+### Job Matching
+
+**Intelligent job matching algorithms**:
+
+```typescript
+interface JobMatchingFeatures {
+  basic: {
+    simpleMatching: boolean;
+    basicFilters: boolean;
+    emailAlerts: boolean;
+  };
+  proPlus: {
+    aiMatching: boolean;
+    advancedFilters: boolean;
+    smartRecommendations: boolean;
+    skillGapAnalysis: boolean;
+    salaryMatching: boolean;
+  };
+  enterprise: {
+    customAlgorithms: boolean;
+    teamPreferences: boolean;
+    advancedAnalytics: boolean;
+    marketInsights: boolean;
+  };
+}
+```
+
+### Application Tracking
+
+**Comprehensive application management**:
+
+```typescript
+interface ApplicationTrackingFeatures {
+  basic: {
+    manualTracking: boolean;
+    basicStatus: boolean;
+    simpleNotes: boolean;
+  };
+  proPlus: {
+    automatedTracking: boolean;
+    advancedStatus: boolean;
+    detailedNotes: boolean;
+    followUpReminders: boolean;
+    interviewScheduling: boolean;
+  };
+  enterprise: {
+    teamTracking: boolean;
+    advancedWorkflows: boolean;
+    customFields: boolean;
+    bulkOperations: boolean;
+    reporting: boolean;
+  };
+}
+```
+
+### Analytics & Insights
+
+**Data-driven career insights**:
+
+```typescript
+interface AnalyticsFeatures {
+  basic: {
+    simpleMetrics: boolean;
+    basicCharts: boolean;
+    exportData: boolean;
+  };
+  proPlus: {
+    advancedAnalytics: boolean;
+    detailedInsights: boolean;
+    performanceTracking: boolean;
+    marketData: boolean;
+    customReports: boolean;
+  };
+  enterprise: {
+    teamAnalytics: boolean;
+    customDashboards: boolean;
+    advancedReporting: boolean;
+    dataExport: boolean;
+    apiAccess: boolean;
+  };
+}
+```
+
+## Usage Limits
+
+### Monthly Limits
+
+**Plan-specific usage limits**:
+
+```typescript
+interface UsageLimits {
+  basic: {
+    resumeUploads: 5;
+    aiAnalysis: 5;
+    jobApplications: 50;
+    storage: '100MB';
+    apiCalls: 100;
+  };
+  proPlus: {
+    resumeUploads: 'unlimited';
+    aiAnalysis: 'unlimited';
+    jobApplications: 'unlimited';
+    storage: '5GB';
+    apiCalls: 1000;
+  };
+  enterprise: {
+    resumeUploads: 'unlimited';
+    aiAnalysis: 'unlimited';
+    jobApplications: 'unlimited';
+    storage: 'unlimited';
+    apiCalls: 'unlimited';
+  };
+}
+```
+
+### Feature Access
+
+**Feature availability by plan**:
+
+```typescript
+interface FeatureAccess {
+  basic: {
+    coreFeatures: boolean;
+    basicSupport: boolean;
+    communityAccess: boolean;
+  };
+  proPlus: {
+    allBasicFeatures: boolean;
+    advancedFeatures: boolean;
+    prioritySupport: boolean;
+    apiAccess: boolean;
+  };
+  enterprise: {
+    allProPlusFeatures: boolean;
+    enterpriseFeatures: boolean;
+    dedicatedSupport: boolean;
+    customIntegrations: boolean;
+  };
+}
+```
+
+## Support Comparison
+
+### Support Levels
+
+**Support options by plan**:
+
+```typescript
+interface SupportLevels {
+  basic: {
+    community: boolean;
+    emailSupport: boolean;
+    responseTime: string;
+    hours: string;
+  };
+  proPlus: {
+    priorityEmail: boolean;
+    liveChat: boolean;
+    responseTime: string;
+    hours: string;
+  };
+  enterprise: {
+    dedicatedSupport: boolean;
+    phoneSupport: boolean;
+    responseTime: string;
+    hours: string;
+    slaGuarantee: boolean;
+  };
+}
+```
+
+### Response Times
+
+**Guaranteed response times**:
+
+```typescript
+interface ResponseTimes {
+  basic: {
+    email: '48 hours';
+    community: '24 hours';
+    sla: false;
+  };
+  proPlus: {
+    email: '24 hours';
+    chat: '4 hours';
+    sla: false;
+  };
+  enterprise: {
+    email: '4 hours';
+    phone: '2 hours';
+    chat: '1 hour';
+    sla: true;
+  };
+}
+```
+
+## Security & Compliance
+
+### Security Features
+
+**Security capabilities by plan**:
+
+```typescript
+interface SecurityFeatures {
+  basic: {
+    sslEncryption: boolean;
+    dataBackup: boolean;
+    basicAuth: boolean;
+  };
+  proPlus: {
+    advancedEncryption: boolean;
+    twoFactorAuth: boolean;
+    sessionManagement: boolean;
+    auditLogs: boolean;
+  };
+  enterprise: {
+    ssoIntegration: boolean;
+    advancedSecurity: boolean;
+    complianceTools: boolean;
+    customSecurity: boolean;
+  };
+}
+```
+
+### Compliance
+
+**Compliance standards**:
+
+```typescript
+interface ComplianceStandards {
+  basic: {
+    gdpr: boolean;
+    basicPrivacy: boolean;
+  };
+  proPlus: {
+    gdpr: boolean;
+    advancedPrivacy: boolean;
+    dataPortability: boolean;
+  };
+  enterprise: {
+    gdpr: boolean;
+    soc2: boolean;
+    iso27001: boolean;
+    customCompliance: boolean;
+  };
+}
+```
+
+## Integration Capabilities
+
+### API Access
+
+**API capabilities by plan**:
+
+```typescript
+interface ApiAccess {
+  basic: {
+    readOnly: boolean;
+    basicEndpoints: boolean;
+    rateLimits: boolean;
+  };
+  proPlus: {
+    fullAccess: boolean;
+    advancedEndpoints: boolean;
+    higherLimits: boolean;
+    webhooks: boolean;
+  };
+  enterprise: {
+    unlimitedAccess: boolean;
+    customEndpoints: boolean;
+    noLimits: boolean;
+    dedicatedSupport: boolean;
+  };
+}
+```
+
+### Third-party Integrations
+
+**Integration options**:
+
+```typescript
+interface Integrations {
+  basic: {
+    linkedin: boolean;
+    google: boolean;
+    basicIntegrations: boolean;
+  };
+  proPlus: {
+    advancedIntegrations: boolean;
+    customWebhooks: boolean;
+    apiAccess: boolean;
+  };
+  enterprise: {
+    customIntegrations: boolean;
+    whiteLabel: boolean;
+    dedicatedSupport: boolean;
+  };
+}
+```
+
+## Migration & Upgrades
+
+### Plan Upgrades
+
+**Upgrade options and process**:
+
+```typescript
+interface PlanUpgrades {
+  upgradeProcess: {
+    instant: boolean;
+    prorated: boolean;
+    dataMigration: boolean;
+    support: boolean;
+  };
+  downgradeProcess: {
+    allowed: boolean;
+    dataRetention: boolean;
+    refundPolicy: string;
+  };
+  customUpgrades: {
+    available: boolean;
+    contactSales: boolean;
+    customPricing: boolean;
+  };
+}
+```
+
+### Data Migration
+
+**Data handling during plan changes**:
+
+```typescript
+interface DataMigration {
+  upgrade: {
+    automatic: boolean;
+    dataPreservation: boolean;
+    featureAccess: boolean;
+  };
+  downgrade: {
+    dataRetention: boolean;
+    featureLimitation: boolean;
+    exportOptions: boolean;
+  };
+  cancellation: {
+    dataExport: boolean;
+    retentionPeriod: string;
+    deletionProcess: boolean;
+  };
+}
+```
+
+## FAQ
+
+### Common Questions
+
+**Frequently asked questions about plans**:
+
+```typescript
+interface PlanFAQ {
+  billing: {
+    paymentMethods: string[];
+    billingCycles: string[];
+    refundPolicy: string;
+    cancellationPolicy: string;
+  };
+  features: {
+    featureAvailability: string;
+    usageLimits: string;
+    dataRetention: string;
+  };
+  support: {
+    supportChannels: string[];
+    responseTimes: string;
+    slaGuarantees: string;
+  };
+}
+```
+
+## Support
+
+Need help choosing a plan?
+
+- 📧 **Email Sales**: sales@jobspark.ai
+- 💬 **Live Chat**: Available during business hours
+- 📞 **Phone Support**: Enterprise customers only
+- 📚 **Plan Comparison**: Detailed feature breakdown
+
+Ready to upgrade? [Contact our sales team](/contact) or explore our [enterprise solutions](/enterprise).

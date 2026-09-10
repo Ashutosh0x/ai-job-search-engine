@@ -1,0 +1,38 @@
+---
+title: 'Authentication'
+description: 'Sign up, sign in, and secure access'
+---
+
+# Authentication
+
+Learn how users authenticate with JobSpark AI.
+
+- For REST API token-based auth, see [API Authentication](/api/authentication)
+- For app login (email/password, magic link, OAuth), follow the quick steps below.
+
+## Email + Password
+
+```bash
+POST /api/auth/login
+```
+
+1) Enter your email and password in the app login form.
+2) On success, a session is created and stored securely.
+
+## Magic Link
+
+```bash
+POST /api/auth/magic-link
+```
+
+Check your email for a one-time link to sign in without a password.
+
+## OAuth
+
+Sign in with Google, GitHub, or other providers when enabled.
+
+## Security
+
+- Sessions are short-lived and refreshable
+- 2FA can be enabled in profile settings
+- RLS protects user data at the database level

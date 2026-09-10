@@ -1,0 +1,18 @@
+---
+title: 'Error Codes'
+description: 'Reference for common error codes and how to resolve them'
+---
+
+# Error Codes
+
+Understand and resolve common errors.
+
+| Code | Meaning | Resolution |
+|------|---------|------------|
+| 400 | Bad Request | Verify parameters and payload |
+| 401 | Unauthorized | Check token or login again |
+| 403 | Forbidden | Insufficient permissions (RLS) |
+| 404 | Not Found | Verify endpoint/ID |
+| 409 | Conflict | Retry with updated state |
+| 429 | Rate Limited | Backoff and retry later |
+| 500 | Server Error | Retry; contact support if persistent |

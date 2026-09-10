@@ -1,0 +1,675 @@
+---
+title: 'Common Issues'
+description: 'Solutions to frequently encountered problems and issues'
+---
+
+# Common Issues
+
+Quick solutions to the most frequently encountered problems and issues with our AI Job Search Engine platform.
+
+## Overview
+
+This guide provides solutions to common problems users may encounter while using our platform, from technical issues to account-related problems.
+
+## Authentication Issues
+
+### Login Problems
+
+**Problem**: Unable to log in to your account
+
+**Solutions**:
+
+```typescript
+interface LoginTroubleshooting {
+  checkCredentials: {
+    verifyEmail: string;
+    checkPassword: string;
+    resetPassword: boolean;
+  };
+  browserIssues: {
+    clearCache: boolean;
+    disableExtensions: boolean;
+    tryIncognito: boolean;
+    updateBrowser: boolean;
+  };
+  accountStatus: {
+    checkSuspension: boolean;
+    verifyEmail: boolean;
+    contactSupport: boolean;
+  };
+}
+```
+
+**Common Causes**:
+- Incorrect email or password
+- Browser cache issues
+- Account suspension
+- Email verification required
+
+### Password Reset Issues
+
+**Problem**: Password reset not working
+
+**Solutions**:
+
+```typescript
+interface PasswordResetTroubleshooting {
+  emailDelivery: {
+    checkSpam: boolean;
+    verifyEmail: string;
+    resendEmail: boolean;
+  };
+  linkExpiration: {
+    checkExpiry: boolean;
+    requestNewLink: boolean;
+    contactSupport: boolean;
+  };
+  browserIssues: {
+    clearCache: boolean;
+    tryDifferentBrowser: boolean;
+    disableExtensions: boolean;
+  };
+}
+```
+
+### Two-Factor Authentication Issues
+
+**Problem**: 2FA not working or locked out
+
+**Solutions**:
+
+```typescript
+interface TwoFactorTroubleshooting {
+  authenticatorApp: {
+    checkTimeSync: boolean;
+    regenerateCodes: boolean;
+    backupCodes: string[];
+  };
+  smsIssues: {
+    checkPhoneNumber: string;
+    requestNewCode: boolean;
+    alternativeMethod: boolean;
+  };
+  accountRecovery: {
+    contactSupport: boolean;
+    provideIdentity: boolean;
+    recoveryProcess: string;
+  };
+}
+```
+
+## Resume Upload Issues
+
+### File Upload Problems
+
+**Problem**: Resume upload failing
+
+**Solutions**:
+
+```typescript
+interface UploadTroubleshooting {
+  fileIssues: {
+    checkFormat: string[];
+    verifySize: number;
+    scanVirus: boolean;
+    renameFile: boolean;
+  };
+  browserIssues: {
+    clearCache: boolean;
+    disableExtensions: boolean;
+    tryDifferentBrowser: boolean;
+    checkConnection: boolean;
+  };
+  serverIssues: {
+    checkStatus: boolean;
+    retryUpload: boolean;
+    contactSupport: boolean;
+  };
+}
+```
+
+**Supported Formats**:
+- PDF (recommended)
+- DOC/DOCX
+- TXT
+- Maximum size: 10MB
+
+### Processing Issues
+
+**Problem**: Resume analysis not completing
+
+**Solutions**:
+
+```typescript
+interface ProcessingTroubleshooting {
+  contentIssues: {
+    checkTextExtraction: boolean;
+    verifyFormat: boolean;
+    resubmitFile: boolean;
+  };
+  serverIssues: {
+    checkQueue: boolean;
+    retryProcessing: boolean;
+    contactSupport: boolean;
+  };
+  timeoutIssues: {
+    reduceFileSize: boolean;
+    simplifyFormat: boolean;
+    tryLater: boolean;
+  };
+}
+```
+
+## Job Search Issues
+
+### Search Not Working
+
+**Problem**: Job search returning no results
+
+**Solutions**:
+
+```typescript
+interface SearchTroubleshooting {
+  queryIssues: {
+    broadenSearch: boolean;
+    checkKeywords: string[];
+    trySynonyms: boolean;
+    removeFilters: boolean;
+  };
+  filterIssues: {
+    resetFilters: boolean;
+    checkLocation: string;
+    adjustSalary: boolean;
+    expandRadius: boolean;
+  };
+  technicalIssues: {
+    refreshPage: boolean;
+    clearCache: boolean;
+    checkConnection: boolean;
+  };
+}
+```
+
+### Job Matching Issues
+
+**Problem**: Poor job match recommendations
+
+**Solutions**:
+
+```typescript
+interface MatchingTroubleshooting {
+  profileIssues: {
+    completeProfile: boolean;
+    updateSkills: string[];
+    addExperience: boolean;
+    verifyPreferences: boolean;
+  };
+  algorithmIssues: {
+    refreshMatches: boolean;
+    updatePreferences: boolean;
+    contactSupport: boolean;
+  };
+  dataIssues: {
+    verifyResume: boolean;
+    checkSkills: string[];
+    updateLocation: string;
+  };
+}
+```
+
+## Application Tracking Issues
+
+### Application Not Saving
+
+**Problem**: Job applications not being tracked
+
+**Solutions**:
+
+```typescript
+interface ApplicationTroubleshooting {
+  trackingIssues: {
+    enableTracking: boolean;
+    checkPermissions: boolean;
+    refreshPage: boolean;
+  };
+  dataIssues: {
+    verifyApplication: boolean;
+    checkStatus: string;
+    contactSupport: boolean;
+  };
+  browserIssues: {
+    clearCache: boolean;
+    disableExtensions: boolean;
+    tryDifferentBrowser: boolean;
+  };
+}
+```
+
+### Status Updates Not Working
+
+**Problem**: Application status not updating
+
+**Solutions**:
+
+```typescript
+interface StatusTroubleshooting {
+  syncIssues: {
+    refreshData: boolean;
+    checkConnection: boolean;
+    manualUpdate: boolean;
+  };
+  notificationIssues: {
+    checkSettings: boolean;
+    verifyEmail: string;
+    enableNotifications: boolean;
+  };
+  dataIssues: {
+    contactSupport: boolean;
+    provideDetails: string;
+    checkTimeline: boolean;
+  };
+}
+```
+
+## Profile Management Issues
+
+### Profile Not Saving
+
+**Problem**: Profile changes not being saved
+
+**Solutions**:
+
+```typescript
+interface ProfileTroubleshooting {
+  saveIssues: {
+    checkConnection: boolean;
+    verifyFields: string[];
+    tryAgain: boolean;
+  };
+  validationIssues: {
+    checkRequiredFields: string[];
+    verifyFormat: boolean;
+    fixErrors: string[];
+  };
+  browserIssues: {
+    clearCache: boolean;
+    refreshPage: boolean;
+    tryDifferentBrowser: boolean;
+  };
+}
+```
+
+### Profile Picture Issues
+
+**Problem**: Profile picture not uploading or displaying
+
+**Solutions**:
+
+```typescript
+interface PictureTroubleshooting {
+  uploadIssues: {
+    checkFormat: string[];
+    verifySize: number;
+    compressImage: boolean;
+  };
+  displayIssues: {
+    clearCache: boolean;
+    refreshPage: boolean;
+    checkPermissions: boolean;
+  };
+  processingIssues: {
+    waitProcessing: boolean;
+    tryAgain: boolean;
+    contactSupport: boolean;
+  };
+}
+```
+
+## Notification Issues
+
+### Email Notifications Not Working
+
+**Problem**: Not receiving email notifications
+
+**Solutions**:
+
+```typescript
+interface EmailTroubleshooting {
+  deliveryIssues: {
+    checkSpam: boolean;
+    verifyEmail: string;
+    whitelistDomain: string;
+  };
+  settingsIssues: {
+    checkPreferences: boolean;
+    enableNotifications: boolean;
+    verifyFrequency: string;
+  };
+  technicalIssues: {
+    contactSupport: boolean;
+    checkServerStatus: boolean;
+    tryAlternativeEmail: string;
+  };
+}
+```
+
+### Push Notifications Not Working
+
+**Problem**: Push notifications not appearing
+
+**Solutions**:
+
+```typescript
+interface PushTroubleshooting {
+  browserIssues: {
+    checkPermissions: boolean;
+    enableNotifications: boolean;
+    refreshPage: boolean;
+  };
+  settingsIssues: {
+    verifySettings: boolean;
+    checkQuietHours: boolean;
+    enableAllNotifications: boolean;
+  };
+  technicalIssues: {
+    clearCache: boolean;
+    tryDifferentBrowser: boolean;
+    contactSupport: boolean;
+  };
+}
+```
+
+## Performance Issues
+
+### Slow Loading Times
+
+**Problem**: Pages loading slowly
+
+**Solutions**:
+
+```typescript
+interface PerformanceTroubleshooting {
+  connectionIssues: {
+    checkInternet: boolean;
+    tryDifferentNetwork: boolean;
+    contactISP: boolean;
+  };
+  browserIssues: {
+    clearCache: boolean;
+    disableExtensions: boolean;
+    updateBrowser: boolean;
+  };
+  deviceIssues: {
+    restartDevice: boolean;
+    closeOtherTabs: boolean;
+    checkMemory: boolean;
+  };
+}
+```
+
+### Feature Not Working
+
+**Problem**: Specific features not functioning
+
+**Solutions**:
+
+```typescript
+interface FeatureTroubleshooting {
+  compatibilityIssues: {
+    checkBrowser: string[];
+    updateBrowser: boolean;
+    tryDifferentBrowser: boolean;
+  };
+  permissionIssues: {
+    checkPermissions: boolean;
+    enableFeatures: boolean;
+    contactSupport: boolean;
+  };
+  technicalIssues: {
+    refreshPage: boolean;
+    clearCache: boolean;
+    contactSupport: boolean;
+  };
+}
+```
+
+## Account Issues
+
+### Account Locked
+
+**Problem**: Account temporarily locked
+
+**Solutions**:
+
+```typescript
+interface AccountLockTroubleshooting {
+  securityIssues: {
+    verifyIdentity: boolean;
+    resetPassword: boolean;
+    contactSupport: boolean;
+  };
+  activityIssues: {
+    checkActivity: boolean;
+    provideExplanation: string;
+    waitPeriod: number;
+  };
+  technicalIssues: {
+    contactSupport: boolean;
+    provideDetails: string;
+    followInstructions: string;
+  };
+}
+```
+
+### Subscription Issues
+
+**Problem**: Subscription or billing problems
+
+**Solutions**:
+
+```typescript
+interface SubscriptionTroubleshooting {
+  paymentIssues: {
+    checkPaymentMethod: boolean;
+    updateBilling: boolean;
+    contactBilling: boolean;
+  };
+  planIssues: {
+    checkPlanStatus: boolean;
+    upgradePlan: boolean;
+    contactSupport: boolean;
+  };
+  accessIssues: {
+    checkPermissions: boolean;
+    verifySubscription: boolean;
+    contactSupport: boolean;
+  };
+}
+```
+
+## Mobile App Issues
+
+### App Not Working
+
+**Problem**: Mobile app not functioning properly
+
+**Solutions**:
+
+```typescript
+interface MobileAppTroubleshooting {
+  installationIssues: {
+    reinstallApp: boolean;
+    checkStorage: boolean;
+    updateOS: boolean;
+  };
+  connectionIssues: {
+    checkInternet: boolean;
+    tryWiFi: boolean;
+    restartDevice: boolean;
+  };
+  performanceIssues: {
+    clearCache: boolean;
+    closeOtherApps: boolean;
+    restartDevice: boolean;
+  };
+}
+```
+
+### Sync Issues
+
+**Problem**: Data not syncing between devices
+
+**Solutions**:
+
+```typescript
+interface SyncTroubleshooting {
+  connectionIssues: {
+    checkInternet: boolean;
+    tryDifferentNetwork: boolean;
+    restartApp: boolean;
+  };
+  accountIssues: {
+    verifyLogin: boolean;
+    checkPermissions: boolean;
+    contactSupport: boolean;
+  };
+  dataIssues: {
+    forceSync: boolean;
+    clearCache: boolean;
+    contactSupport: boolean;
+  };
+}
+```
+
+## Browser Compatibility
+
+### Supported Browsers
+
+**Recommended browsers**:
+
+```typescript
+interface BrowserCompatibility {
+  chrome: {
+    version: '90+';
+    features: string[];
+    knownIssues: string[];
+  };
+  firefox: {
+    version: '88+';
+    features: string[];
+    knownIssues: string[];
+  };
+  safari: {
+    version: '14+';
+    features: string[];
+    knownIssues: string[];
+  };
+  edge: {
+    version: '90+';
+    features: string[];
+    knownIssues: string[];
+  };
+}
+```
+
+### Browser-Specific Issues
+
+**Common browser problems**:
+
+```typescript
+interface BrowserIssues {
+  chrome: {
+    extensions: boolean;
+    cacheIssues: boolean;
+    permissions: boolean;
+  };
+  firefox: {
+    privacySettings: boolean;
+    cacheIssues: boolean;
+    permissions: boolean;
+  };
+  safari: {
+    privacySettings: boolean;
+    cacheIssues: boolean;
+    permissions: boolean;
+  };
+}
+```
+
+## Contact Support
+
+### When to Contact Support
+
+**Contact support when**:
+
+```typescript
+interface SupportCriteria {
+  technicalIssues: {
+    persistentErrors: boolean;
+    featureNotWorking: boolean;
+    dataLoss: boolean;
+  };
+  accountIssues: {
+    securityConcerns: boolean;
+    billingProblems: boolean;
+    accessDenied: boolean;
+  };
+  urgentIssues: {
+    accountLocked: boolean;
+    dataBreach: boolean;
+    paymentFailed: boolean;
+  };
+}
+```
+
+### Support Information
+
+**How to contact support**:
+
+```typescript
+interface SupportContact {
+  email: string;
+  phone: string;
+  liveChat: boolean;
+  responseTime: string;
+  hours: string;
+  languages: string[];
+}
+```
+
+## Prevention Tips
+
+### Best Practices
+
+**Prevent common issues**:
+
+```typescript
+interface PreventionTips {
+  security: {
+    useStrongPassword: boolean;
+    enable2FA: boolean;
+    regularUpdates: boolean;
+  };
+  maintenance: {
+    clearCache: boolean;
+    updateBrowser: boolean;
+    checkSettings: boolean;
+  };
+  backup: {
+    exportData: boolean;
+    saveImportantInfo: boolean;
+    documentSettings: boolean;
+  };
+}
+```
+
+## Support
+
+Need help with a specific issue?
+
+- 📧 **Email Support**: support@jobspark.ai
+- 💬 **Live Chat**: Available 24/7
+- 📚 **Knowledge Base**: Comprehensive guides
+- 🔧 **Technical Support**: Expert assistance
+
+Can't find your issue? [Contact our support team](/support) or explore our [knowledge base](/help).

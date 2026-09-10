@@ -1,0 +1,370 @@
+---
+title: 'Resume Analysis API'
+description: 'AI-powered resume analysis and optimization endpoints'
+---
+
+# Resume Analysis API
+
+AI-powered resume analysis and optimization through our RESTful API endpoints.
+
+## Overview
+
+Our Resume Analysis API provides intelligent analysis of resumes, offering insights on ATS optimization, skill gaps, content quality, and improvement recommendations.
+
+## Base URL
+
+```
+https://api.jobspark.ai/v1
+```
+
+## Authentication
+
+All API requests require authentication. Include your API key in the Authorization header:
+
+```bash
+Authorization: Bearer YOUR_API_KEY
+```
+
+## Endpoints
+
+### Analyze Resume
+
+Analyze a resume and get comprehensive insights.
+
+```bash
+POST /api/analyze-resume
+```
+
+**Request Body:**
+```json
+{
+  "resume": "base64_encoded_resume_content",
+  "targetRole": "Software Engineer",
+  "targetIndustry": "Technology",
+  "analysisType": "comprehensive"
+}
+```
+
+**Response:**
+```json
+{
+  "analysis": {
+    "atsScore": 85,
+    "skillGaps": [
+      {
+        "skill": "React.js",
+        "importance": "high",
+        "suggestion": "Add React.js experience to your resume"
+      }
+    ],
+    "contentQuality": {
+      "score": 78,
+      "suggestions": [
+        "Quantify achievements with specific metrics",
+        "Use more action verbs in descriptions"
+      ]
+    },
+    "keywordOptimization": {
+      "matchedKeywords": ["JavaScript", "Python", "AWS"],
+      "missingKeywords": ["Docker", "Kubernetes"],
+      "suggestions": ["Add containerization technologies"]
+    }
+  },
+  "recommendations": [
+    "Add quantifiable achievements",
+    "Include more technical skills",
+    "Optimize for ATS systems"
+  ]
+}
+```
+
+### Parse Resume
+
+Extract structured data from resume content.
+
+```bash
+POST /api/parse-resume
+```
+
+**Request Body:**
+```json
+{
+  "resume": "base64_encoded_resume_content",
+  "format": "pdf"
+}
+```
+
+**Response:**
+```json
+{
+  "parsedData": {
+    "personalInfo": {
+      "name": "John Doe",
+      "email": "john@example.com",
+      "phone": "+1-555-0123",
+      "location": "San Francisco, CA"
+    },
+    "experience": [
+      {
+        "company": "Tech Corp",
+        "title": "Senior Developer",
+        "duration": "2020-2023",
+        "description": "Led development team..."
+      }
+    ],
+    "education": [
+      {
+        "institution": "University of Technology",
+        "degree": "Bachelor of Science",
+        "field": "Computer Science",
+        "graduationYear": "2020"
+      }
+    ],
+    "skills": ["JavaScript", "Python", "React", "Node.js"]
+  }
+}
+```
+
+### Upload Resume
+
+Upload a resume file for analysis.
+
+```bash
+POST /api/upload-resume
+```
+
+**Request Body (multipart/form-data):**
+```
+file: resume.pdf
+metadata: {
+  "userId": "user123",
+  "analysisType": "comprehensive"
+}
+```
+
+**Response:**
+```json
+{
+  "uploadId": "upload_abc123",
+  "status": "uploaded",
+  "analysisUrl": "/api/analyze-resume/upload_abc123"
+}
+```
+
+## Analysis Types
+
+### Comprehensive Analysis
+
+Full analysis including all aspects:
+
+```typescript
+const comprehensiveAnalysis = {
+  atsOptimization: true,
+  skillGapAnalysis: true,
+  contentQuality: true,
+  keywordOptimization: true,
+  industryAlignment: true,
+  improvementRecommendations: true
+}
+```
+
+### ATS Optimization
+
+Focus on Applicant Tracking System compatibility:
+
+```typescript
+const atsAnalysis = {
+  keywordMatching: true,
+  formattingCompliance: true,
+  contentStructure: true,
+  fileFormat: true
+}
+```
+
+### Skill Gap Analysis
+
+Identify missing skills for target roles:
+
+```typescript
+const skillGapAnalysis = {
+  requiredSkills: string[],
+  currentSkills: string[],
+  missingSkills: string[],
+  skillImportance: 'high' | 'medium' | 'low'
+}
+```
+
+## Error Handling
+
+### Common Error Codes
+
+| Status Code | Error Type | Description |
+|-------------|------------|-------------|
+| `400` | Bad Request | Invalid request format or missing parameters |
+| `401` | Unauthorized | Invalid or missing API key |
+| `413` | Payload Too Large | Resume file exceeds size limit |
+| `422` | Unprocessable Entity | Unsupported file format |
+| `429` | Too Many Requests | Rate limit exceeded |
+| `500` | Internal Server Error | Server processing error |
+
+### Error Response Format
+
+```json
+{
+  "error": {
+    "code": "INVALID_FILE_FORMAT",
+    "message": "Unsupported file format. Please upload PDF, DOC, or DOCX files.",
+    "details": {
+      "supportedFormats": ["pdf", "doc", "docx"],
+      "fileSize": "10MB maximum"
+    }
+  }
+}
+```
+
+## Rate Limiting
+
+API requests are rate-limited to ensure fair usage:
+
+- **Free Tier**: 10 requests per hour
+- **Pro Tier**: 100 requests per hour
+- **Enterprise Tier**: 1000 requests per hour
+
+### Rate Limit Headers
+
+```http
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 95
+X-RateLimit-Reset: 1640995200
+```
+
+## File Requirements
+
+### Supported Formats
+
+- **PDF**: Preferred format for best results
+- **DOC**: Microsoft Word documents
+- **DOCX**: Modern Word documents
+- **TXT**: Plain text files
+
+### File Size Limits
+
+- **Maximum Size**: 10MB per file
+- **Recommended**: Under 5MB for faster processing
+
+### Content Requirements
+
+```typescript
+const contentRequirements = {
+  minimumLength: '100 characters',
+  maximumLength: '50,000 characters',
+  language: 'English (primary)',
+  encoding: 'UTF-8'
+}
+```
+
+## Integration Examples
+
+### JavaScript/Node.js
+
+```javascript
+const analyzeResume = async (resumeFile) => {
+  const formData = new FormData();
+  formData.append('file', resumeFile);
+  
+  const response = await fetch('https://api.jobspark.ai/v1/upload-resume', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${API_KEY}`
+    },
+    body: formData
+  });
+  
+  return response.json();
+};
+```
+
+### Python
+
+```python
+import requests
+
+def analyze_resume(file_path, api_key):
+    url = "https://api.jobspark.ai/v1/upload-resume"
+    
+    with open(file_path, 'rb') as file:
+        files = {'file': file}
+        headers = {'Authorization': f'Bearer {api_key}'}
+        
+        response = requests.post(url, files=files, headers=headers)
+        return response.json()
+```
+
+### cURL
+
+```bash
+curl -X POST https://api.jobspark.ai/v1/upload-resume \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -F "file=@resume.pdf" \
+  -F "metadata={\"userId\":\"user123\"}"
+```
+
+## Best Practices
+
+### File Preparation
+
+1. **Use PDF format** for best compatibility
+2. **Keep file size under 5MB** for faster processing
+3. **Ensure text is selectable** (not image-based)
+4. **Use standard fonts** (Arial, Calibri, Times New Roman)
+
+### API Usage
+
+1. **Implement retry logic** for failed requests
+2. **Handle rate limits** gracefully
+3. **Cache results** when appropriate
+4. **Validate responses** before processing
+
+### Error Handling
+
+1. **Check status codes** before processing responses
+2. **Implement exponential backoff** for retries
+3. **Log errors** for debugging
+4. **Provide user-friendly error messages**
+
+## SDK Support
+
+### Official SDKs
+
+- **JavaScript/TypeScript**: `@jobspark/ai-sdk`
+- **Python**: `jobspark-ai`
+- **Java**: `jobspark-ai-java`
+- **C#**: `JobSpark.AI`
+
+### SDK Installation
+
+```bash
+# JavaScript
+npm install @jobspark/ai-sdk
+
+# Python
+pip install jobspark-ai
+
+# Java
+<dependency>
+  <groupId>ai.jobspark</groupId>
+  <artifactId>jobspark-ai</artifactId>
+  <version>1.0.0</version>
+</dependency>
+```
+
+## Support
+
+Need help with the Resume Analysis API?
+
+- 📧 **Email Support**: api-support@jobspark.ai
+- 📚 **API Documentation**: [Full API Reference](/api)
+- 💬 **Developer Chat**: Available 24/7
+- 🔧 **SDK Documentation**: [SDK Guides](/api/sdk)
+
+Ready to integrate? [Get your API key](/api/keys) or explore our [SDK documentation](/api/sdk).

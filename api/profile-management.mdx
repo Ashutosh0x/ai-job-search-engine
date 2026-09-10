@@ -1,0 +1,44 @@
+---
+title: 'Profile Management API'
+description: 'Endpoints to read and update user profiles'
+---
+
+# Profile Management API
+
+Manage user profile data programmatically.
+
+## Get Profile
+
+```bash
+GET /api/profile/{userId}
+```
+
+Response:
+```json
+{
+  "id": "user_123",
+  "full_name": "Jane Doe",
+  "avatar_url": "https://...",
+  "preferences": { "theme": "dark" }
+}
+```
+
+## Update Profile
+
+```bash
+PATCH /api/profile/{userId}
+Content-Type: application/json
+```
+
+Body:
+```json
+{
+  "full_name": "Jane Doe",
+  "avatar_url": "https://...",
+  "preferences": { "theme": "light" }
+}
+```
+
+## Security
+- Requires authenticated token
+- RLS ensures users can update only their own profile

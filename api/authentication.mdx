@@ -1,0 +1,123 @@
+---
+title: 'Authentication'
+description: 'Learn how to authenticate with the JobSpark AI API'
+---
+
+# Authentication
+
+JobSpark AI provides multiple authentication methods to secure your API requests.
+
+## Overview
+
+All API endpoints require authentication. You can authenticate using:
+
+- **Email/Password**: Traditional username and password authentication
+- **Magic Link**: Passwordless authentication via email
+- **OAuth**: Social login with Google, Facebook, or Apple
+
+## Authentication Methods
+
+### Email/Password Authentication
+
+```bash
+curl -X POST https://api.jobspark.ai/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "user@example.com",
+    "password": "your-password"
+  }'
+```
+
+**Response:**
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "refresh_token": "refresh_token_here",
+  "user": {
+    "id": "user_id",
+    "email": "user@example.com",
+    "full_name": "John Doe"
+  }
+}
+```
+
+### Magic Link Authentication
+
+```bash
+curl -X POST https://api.jobspark.ai/auth/magic-link \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "user@example.com"
+  }'
+```
+
+### OAuth Authentication
+
+```bash
+# Redirect users to this URL for OAuth
+https://api.jobspark.ai/auth/oauth/google
+```
+
+## Using Access Tokens
+
+Include your access token in the Authorization header:
+
+```bash
+curl -X GET https://api.jobspark.ai/profile \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+```
+
+## Error Handling
+
+Common authentication errors:
+
+| Error Code | Description |
+|------------|-------------|
+| `401` | Invalid credentials |
+| `403` | Insufficient permissions |
+| `429` | Rate limit exceeded |
+
+## Security Best Practices
+
+1. **Store tokens securely**: Never expose tokens in client-side code
+2. **Use HTTPS**: Always use HTTPS in production
+3. **Rotate tokens**: Regularly refresh access tokens
+4. **Validate tokens**: Verify token validity on each request
+
+## Row Level Security (RLS)
+
+Our API uses Supabase's Row Level Security to ensure users can only access their own data:
+
+```sql
+-- Example RLS policy
+CREATE POLICY "Users can only access their own profile"
+ON profiles FOR ALL
+USING (auth.uid() = id);
+```
+
+## SDK Integration
+
+```javascript
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(
+  'https://your-project.supabase.co',
+  'your-anon-key'
+)
+
+// Sign in
+const { data, error } = await supabase.auth.signInWithPassword({
+  email: 'user@example.com',
+  password: 'password'
+})
+```
+
+## Testing Authentication
+
+Use our testing endpoints to verify your authentication setup:
+
+```bash
+# Test authentication
+curl -X GET https://api.jobspark.ai/auth/test \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```

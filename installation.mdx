@@ -1,0 +1,415 @@
+---
+title: 'Installation'
+description: 'Set up JobSpark AI for development and production'
+---
+
+# Installation
+
+This guide will help you set up JobSpark AI for both development and production environments.
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+<CardGroup cols={2}>
+  <Card title="Required Software">
+    - Node.js 18+ 
+    - npm or yarn
+    - Git
+    - Modern web browser
+  </Card>
+  <Card title="Optional Tools">
+    - VS Code (recommended)
+    - Postman (for API testing)
+    - Supabase CLI
+    - Docker (for containerization)
+  </Card>
+</CardGroup>
+
+## Quick Installation
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/jobspark-ai/jobspark.git
+cd jobspark
+```
+
+### 2. Install Dependencies
+
+```bash
+npm install
+# or
+yarn install
+```
+
+### 3. Environment Setup
+
+Create a `.env.local` file in the root directory:
+
+```bash
+cp .env.example .env.local
+```
+
+Fill in your environment variables:
+
+```env
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+
+# Google AI Configuration
+GOOGLE_AI_API_KEY=your_google_ai_key
+
+# Email Configuration (Resend)
+RESEND_API_KEY=your_resend_api_key
+
+# Stripe Configuration
+STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_your_stripe_publishable_key
+STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret
+
+# Stripe Price IDs (create under each Product → Prices)
+STRIPE_BASIC_PRICE_ID=price_basic_plan_id
+STRIPE_PRO_PRICE_ID=price_pro_plan_id
+STRIPE_PREMIUM_PRICE_ID=price_premium_plan_id
+
+# Application Configuration
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXTAUTH_SECRET=your_nextauth_secret
+NEXTAUTH_URL=http://localhost:3000
+```
+
+### 4. Database Setup
+
+<Steps>
+  <Step title="Install Supabase CLI">
+    ```bash
+    npm install -g supabase
+    ```
+  </Step>
+  <Step title="Login to Supabase">
+    ```bash
+    supabase login
+    ```
+  </Step>
+  <Step title="Initialize Project">
+    ```bash
+    supabase init
+    ```
+  </Step>
+  <Step title="Start Local Development">
+    ```bash
+    supabase start
+    ```
+  </Step>
+</Steps>
+
+### 5. Run Database Migrations
+
+```bash
+npm run db:migrate
+# or
+supabase db reset
+```
+
+### 6. Start Development Server
+
+```bash
+npm run dev
+# or
+yarn dev
+```
+
+Your application will be available at [http://localhost:3000](http://localhost:3000)
+
+## Detailed Setup
+
+### Supabase Configuration
+
+<CardGroup cols={2}>
+  <Card title="Create Supabase Project">
+    1. Go to [supabase.com](https://supabase.com)
+    2. Create a new project
+    3. Note your project URL and API keys
+    4. Enable required services
+  </Card>
+  <Card title="Configure Authentication">
+    1. Set up email authentication
+    2. Configure OAuth providers (optional)
+    3. Set up password reset
+    4. Configure email templates
+  </Card>
+</CardGroup>
+
+### Google AI Setup
+
+<Steps>
+  <Step title="Create Google AI Project">
+    Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
+  </Step>
+  <Step title="Generate API Key">
+    Create a new API key for your project
+  </Step>
+  <Step title="Configure Permissions">
+    Set appropriate usage limits and permissions
+  </Step>
+  <Step title="Test Integration">
+    Verify the API key works with your application
+  </Step>
+</Steps>
+
+### Email Service Setup
+
+<CardGroup cols={2}>
+  <Card title="Resend Configuration">
+    1. Sign up at [resend.com](https://resend.com)
+    2. Verify your domain
+    3. Generate API key
+    4. Configure email templates
+  </Card>
+  <Card title="Email Templates">
+    1. Welcome emails
+    2. Password reset emails
+    3. Job alerts
+    4. Application confirmations
+  </Card>
+</CardGroup>
+
+## Development Environment
+
+### Local Development
+
+<CardGroup cols={2}>
+  <Card title="Development Server">
+    ```bash
+    npm run dev
+    ```
+    - Hot reload enabled
+    - Development optimizations
+    - Debug information
+  </Card>
+  <Card title="Build for Production">
+    ```bash
+    npm run build
+    npm start
+    ```
+    - Production optimizations
+    - Minified code
+    - Performance optimizations
+  </Card>
+</CardGroup>
+
+### Code Quality Tools
+
+<CardGroup cols={2}>
+  <Card title="Linting">
+    ```bash
+    npm run lint
+    ```
+    - ESLint configuration
+    - TypeScript checking
+    - Code formatting
+  </Card>
+  <Card title="Type Checking">
+    ```bash
+    npm run type-check
+    ```
+    - TypeScript validation
+    - Type safety checks
+    - Interface validation
+  </Card>
+</CardGroup>
+
+### Testing
+
+<CardGroup cols={2}>
+  <Card title="Unit Tests">
+    ```bash
+    npm run test
+    ```
+    - Component testing
+    - API testing
+    - Utility function testing
+  </Card>
+  <Card title="E2E Tests">
+    ```bash
+    npm run test:e2e
+    ```
+    - End-to-end testing
+    - User flow testing
+    - Integration testing
+  </Card>
+</CardGroup>
+
+## Production Deployment
+
+### Vercel Deployment
+
+<Steps>
+  <Step title="Connect Repository">
+    Connect your GitHub repository to Vercel
+  </Step>
+  <Step title="Configure Environment">
+    Add all environment variables in Vercel dashboard
+  </Step>
+  <Step title="Deploy">
+    Vercel will automatically deploy on push to main branch
+  </Step>
+  <Step title="Custom Domain">
+    Configure your custom domain in Vercel settings
+  </Step>
+</Steps>
+
+### Docker Deployment
+
+<CardGroup cols={2}>
+  <Card title="Dockerfile">
+    ```dockerfile
+    FROM node:18-alpine
+    WORKDIR /app
+    COPY package*.json ./
+    RUN npm ci --only=production
+    COPY . .
+    RUN npm run build
+    EXPOSE 3000
+    CMD ["npm", "start"]
+    ```
+  </Card>
+  <Card title="Docker Compose">
+    ```yaml
+    version: '3.8'
+    services:
+      app:
+        build: .
+        ports:
+          - "3000:3000"
+        environment:
+          - NODE_ENV=production
+    ```
+  </Card>
+</CardGroup>
+
+### Environment Variables
+
+<CardGroup cols={2}>
+  <Card title="Required Variables">
+    ```env
+    NEXT_PUBLIC_SUPABASE_URL=
+    NEXT_PUBLIC_SUPABASE_ANON_KEY=
+    SUPABASE_SERVICE_ROLE_KEY=
+    GOOGLE_AI_API_KEY=
+    RESEND_API_KEY=
+    STRIPE_SECRET_KEY=
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
+    ```
+  </Card>
+  <Card title="Optional Variables">
+    ```env
+    NEXTAUTH_SECRET=
+    NEXTAUTH_URL=
+    NEXT_PUBLIC_APP_URL=
+    DATABASE_URL=
+    STRIPE_WEBHOOK_SECRET=
+    STRIPE_BASIC_PRICE_ID=
+    STRIPE_PRO_PRICE_ID=
+    STRIPE_PREMIUM_PRICE_ID=
+    ```
+  </Card>
+</CardGroup>
+
+## Troubleshooting
+
+### Common Issues
+
+<CardGroup cols={2}>
+  <Card title="Build Errors">
+    - Check Node.js version (18+)
+    - Clear npm cache: `npm cache clean --force`
+    - Delete node_modules and reinstall
+    - Check for TypeScript errors
+  </Card>
+  <Card title="Database Issues">
+    - Verify Supabase connection
+    - Check environment variables
+    - Run migrations: `npm run db:migrate`
+    - Reset database if needed
+  </Card>
+  <Card title="Authentication Problems">
+    - Verify Supabase configuration
+    - Check OAuth provider settings
+    - Test email configuration
+    - Review RLS policies
+  </Card>
+  <Card title="API Errors">
+    - Check Google AI API key
+    - Verify API quotas and limits
+    - Test API endpoints
+    - Review error logs
+  </Card>
+</CardGroup>
+
+### Performance Optimization
+
+<CardGroup cols={2}>
+  <Card title="Development">
+    - Use development mode for debugging
+    - Enable source maps
+    - Use React DevTools
+    - Monitor bundle size
+  </Card>
+  <Card title="Production">
+    - Enable compression
+    - Use CDN for static assets
+    - Implement caching strategies
+    - Monitor performance metrics
+  </Card>
+</CardGroup>
+
+## Security Considerations
+
+### Environment Security
+
+<CardGroup cols={2}>
+  <Card title="API Keys">
+    - Never commit API keys to version control
+    - Use environment variables
+    - Rotate keys regularly
+    - Use least privilege principle
+  </Card>
+  <Card title="Database Security">
+    - Enable Row Level Security (RLS)
+    - Use prepared statements
+    - Implement proper authentication
+    - Regular security audits
+  </Card>
+</CardGroup>
+
+### Production Security
+
+<CardGroup cols={2}>
+  <Card title="HTTPS">
+    - Enable SSL/TLS certificates
+    - Force HTTPS redirects
+    - Use secure cookies
+    - Implement CSP headers
+  </Card>
+  <Card title="Monitoring">
+    - Set up error tracking
+    - Monitor API usage
+    - Log security events
+    - Regular backups
+  </Card>
+</CardGroup>
+
+## Support
+
+Need help with installation?
+
+- 📧 **Email**: support@jobspark.ai
+- 💬 **Live Chat**: Available 24/7
+- 📚 **Documentation**: Browse our guides
+- 🐛 **GitHub Issues**: Report bugs and issues
+
+Ready to get started? [Follow the quick start guide](/quickstart) or [explore our features](/features/ai-resume-analysis).
