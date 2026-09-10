@@ -148,7 +148,8 @@ async function loadV2(): Promise<Snapshot | null> {
         seniority: j.seniority ?? null,
         freshnessScore: j.freshnessScore ?? 0,
         isDirectApplication: j.isDirectApplication ?? true,
-        sourceUrls: j.sourceUrls ?? [],
+        // The slim index carries the count; the URLs themselves stay in the archive.
+        sourceCount: j.sourceCount ?? (j.sourceUrls ?? []).length,
       })),
       warnings: [],
     } as unknown as Snapshot

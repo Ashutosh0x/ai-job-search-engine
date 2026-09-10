@@ -3,6 +3,12 @@ import { readFileSync } from 'fs'
 const d = JSON.parse(readFileSync('public/data/jobs-v2.json','utf8'))
 const jobs = d.jobs, R = d.report
 
+// sourceUrls lives in the full archive, not the slim search index -- this is an
+// analysis script, so it can afford the bigger parse. Fall back gracefully so
+// the rest of the report still prints when only the index has been built.
+let fullJobs = jobs
+try { fullJobs = JSON.parse(readFileSync('public/data/jobs-v2-full.json','utf8')).jobs } catch {}
+
 console.log('MULTI-PLATFORM DISCOVERY')
 const bySrc = {}
 for (const j of jobs) bySrc[j.source] = (bySrc[j.source]||0)+1
@@ -16,7 +22,7 @@ console.log(`  canonical after dedupe  ${R.totalJobsCanonical.toLocaleString()}`
 console.log(`  duplicates collapsed    ${R.duplicatesRemoved.toLocaleString()} (${(R.duplicatesRemoved/R.totalJobsRaw*100).toFixed(1)}%)`)
 for (const [tier,n] of Object.entries(R.dedupeTiers)) console.log(`    ${tier.padEnd(16)} ${n}`)
 
-const merged = jobs.filter(j => j.sourceUrls.length > 1)
+const merged = fullJobs.filter(j => (j.sourceUrls ?? []).length > 1)
 console.log(`\n  jobs holding >1 source URL: ${merged.length}`)
 for (const j of merged.slice(0,3)) {
   console.log(`\n  "${j.title}" @ ${j.company}`)
