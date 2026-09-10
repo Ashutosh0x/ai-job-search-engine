@@ -1,0 +1,240 @@
+[
+  {
+    "provider": "ashby",
+    "token": "clickhouse",
+    "companySlug": "clickhouse",
+    "openRoles": 184
+  },
+  {
+    "provider": "ashby",
+    "token": "cohere",
+    "companySlug": "cohere",
+    "openRoles": 143
+  },
+  {
+    "provider": "ashby",
+    "token": "elevenlabs",
+    "companySlug": "elevenlabs",
+    "openRoles": 249
+  },
+  {
+    "provider": "ashby",
+    "token": "linear",
+    "companySlug": "linear",
+    "openRoles": 29
+  },
+  {
+    "provider": "ashby",
+    "token": "notion",
+    "companySlug": "notion",
+    "openRoles": 129
+  },
+  {
+    "provider": "ashby",
+    "token": "openai",
+    "companySlug": "openai",
+    "openRoles": 784
+  },
+  {
+    "provider": "ashby",
+    "token": "posthog",
+    "companySlug": "posthog",
+    "openRoles": 10
+  },
+  {
+    "provider": "ashby",
+    "token": "ramp",
+    "companySlug": "ramp",
+    "openRoles": 145
+  },
+  {
+    "provider": "ashby",
+    "token": "replit",
+    "companySlug": "replit",
+    "openRoles": 78
+  },
+  {
+    "provider": "ashby",
+    "token": "supabase",
+    "companySlug": "supabase",
+    "openRoles": 59
+  },
+  {
+    "provider": "greenhouse",
+    "token": "affirm",
+    "companySlug": "affirm",
+    "openRoles": 200
+  },
+  {
+    "provider": "greenhouse",
+    "token": "airbnb",
+    "companySlug": "airbnb",
+    "openRoles": 167
+  },
+  {
+    "provider": "greenhouse",
+    "token": "anthropic",
+    "companySlug": "anthropic",
+    "openRoles": 599
+  },
+  {
+    "provider": "greenhouse",
+    "token": "brex",
+    "companySlug": "brex",
+    "openRoles": 271
+  },
+  {
+    "provider": "greenhouse",
+    "token": "cloudflare",
+    "companySlug": "cloudflare",
+    "openRoles": 352
+  },
+  {
+    "provider": "greenhouse",
+    "token": "coinbase",
+    "companySlug": "coinbase",
+    "openRoles": 219
+  },
+  {
+    "provider": "greenhouse",
+    "token": "databricks",
+    "companySlug": "databricks",
+    "openRoles": 873
+  },
+  {
+    "provider": "greenhouse",
+    "token": "discord",
+    "companySlug": "discord",
+    "openRoles": 45
+  },
+  {
+    "provider": "greenhouse",
+    "token": "dropbox",
+    "companySlug": "dropbox",
+    "openRoles": 41
+  },
+  {
+    "provider": "greenhouse",
+    "token": "figma",
+    "companySlug": "figma",
+    "openRoles": 158
+  },
+  {
+    "provider": "greenhouse",
+    "token": "flexport",
+    "companySlug": "flexport",
+    "openRoles": 175
+  },
+  {
+    "provider": "greenhouse",
+    "token": "gitlab",
+    "companySlug": "gitlab",
+    "openRoles": 230
+  },
+  {
+    "provider": "greenhouse",
+    "token": "instacart",
+    "companySlug": "instacart",
+    "openRoles": 102
+  },
+  {
+    "provider": "greenhouse",
+    "token": "lyft",
+    "companySlug": "lyft",
+    "openRoles": 159
+  },
+  {
+    "provider": "greenhouse",
+    "token": "monzo",
+    "companySlug": "monzo",
+    "openRoles": 67
+  },
+  {
+    "provider": "greenhouse",
+    "token": "pinterest",
+    "companySlug": "pinterest",
+    "openRoles": 180
+  },
+  {
+    "provider": "greenhouse",
+    "token": "reddit",
+    "companySlug": "reddit",
+    "openRoles": 148
+  },
+  {
+    "provider": "greenhouse",
+    "token": "robinhood",
+    "companySlug": "robinhood",
+    "openRoles": 130
+  },
+  {
+    "provider": "greenhouse",
+    "token": "samsara",
+    "companySlug": "samsara",
+    "openRoles": 259
+  },
+  {
+    "provider": "greenhouse",
+    "token": "scaleai",
+    "companySlug": "scale-ai",
+    "openRoles": 219
+  },
+  {
+    "provider": "greenhouse",
+    "token": "sofi",
+    "companySlug": "sofi",
+    "openRoles": 61
+  },
+  {
+    "provider": "greenhouse",
+    "token": "stripe",
+    "companySlug": "stripe",
+    "openRoles": 614
+  },
+  {
+    "provider": "greenhouse",
+    "token": "twilio",
+    "companySlug": "twilio",
+    "openRoles": 152
+  },
+  {
+    "provider": "greenhouse",
+    "token": "wise",
+    "companySlug": "wise",
+    "openRoles": 18
+  },
+  {
+    "provider": "lever",
+    "token": "leverdemo",
+    "companySlug": "lever-demo",
+    "openRoles": 13
+  },
+  {
+    "provider": "lever",
+    "token": "palantir",
+    "companySlug": "palantir",
+    "openRoles": 310
+  },
+  {
+    "provider": "lever",
+    "token": "spotify",
+    "companySlug": "spotify",
+    "openRoles": 76
+  },
+  {
+    "provider": "workday",
+    "token": "adobe",
+    "companySlug": "adobe",
+    "site": "external_experienced",
+    "host": "adobe.wd5.myworkdayjobs.com",
+    "openRoles": 723
+  },
+  {
+    "provider": "workday",
+    "token": "salesforce",
+    "companySlug": "salesforce",
+    "site": "External_Career_Site",
+    "host": "salesforce.wd12.myworkdayjobs.com",
+    "openRoles": 1436
+  }
+]

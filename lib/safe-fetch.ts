@@ -34,15 +34,79 @@ function isPrivateIPv4(ip: string): boolean {
   return false
 }
 
+/**
+ * Expand an IPv6 address to its eight 16-bit groups.
+ * Returns null when the input is not parseable, so callers can fail closed.
+ */
+function expandIPv6(addr: string): number[] | null {
+  let text = addr
+  // A trailing dotted quad (::ffff:1.2.3.4) becomes two hex groups.
+  const dotted = text.match(/(.*:)(\d+\.\d+\.\d+\.\d+)$/)
+  if (dotted) {
+    const octets = dotted[2].split('.').map(Number)
+    if (octets.length !== 4 || octets.some((o) => !Number.isInteger(o) || o < 0 || o > 255)) {
+      return null
+    }
+    const hi = ((octets[0] << 8) | octets[1]).toString(16)
+    const lo = ((octets[2] << 8) | octets[3]).toString(16)
+    text = `${dotted[1]}${hi}:${lo}`
+  }
+
+  const halves = text.split('::')
+  if (halves.length > 2) return null
+
+  const parse = (part: string) =>
+    part ? part.split(':').filter((g) => g !== '').map((g) => parseInt(g, 16)) : []
+
+  const head = parse(halves[0])
+  const tail = halves.length === 2 ? parse(halves[1]) : []
+  if ([...head, ...tail].some((g) => !Number.isInteger(g) || g < 0 || g > 0xffff)) return null
+
+  if (halves.length === 2) {
+    const fill = 8 - head.length - tail.length
+    if (fill < 0) return null
+    return [...head, ...Array(fill).fill(0), ...tail]
+  }
+  return head.length === 8 ? head : null
+}
+
 function isPrivateIPv6(ip: string): boolean {
   const addr = ip.toLowerCase().replace(/^\[|\]$/g, '')
-  if (addr === '::' || addr === '::1') return true // unspecified / loopback
-  if (addr.startsWith('fe80')) return true // link-local
-  if (addr.startsWith('fc') || addr.startsWith('fd')) return true // unique local
-  if (addr.startsWith('ff')) return true // multicast
-  // IPv4-mapped (::ffff:169.254.169.254) must be checked as IPv4.
-  const mapped = addr.match(/::ffff:(\d+\.\d+\.\d+\.\d+)$/)
-  if (mapped) return isPrivateIPv4(mapped[1])
+
+  const groups = expandIPv6(addr)
+  if (!groups) return true // unparseable -- fail closed
+
+  // IPv4-mapped (::ffff:a.b.c.d) and IPv4-compatible (::a.b.c.d) addresses
+  // must be judged by their embedded IPv4 address. Note that the WHATWG URL
+  // parser rewrites "::ffff:169.254.169.254" to its hex form
+  // "::ffff:a9fe:a9fe", so matching only the dotted spelling let that through.
+  const firstFiveZero = groups.slice(0, 5).every((g) => g === 0)
+  if (firstFiveZero && (groups[5] === 0xffff || groups[5] === 0)) {
+    const embedded = [
+      (groups[6] >> 8) & 0xff,
+      groups[6] & 0xff,
+      (groups[7] >> 8) & 0xff,
+      groups[7] & 0xff,
+    ].join('.')
+    // ::  and ::1 fall out of this as 0.0.0.0 / 0.0.0.1, both already blocked.
+    return isPrivateIPv4(embedded)
+  }
+
+  // NAT64 well-known prefix 64:ff9b::/96 also embeds an IPv4 destination.
+  if (groups[0] === 0x64 && groups[1] === 0xff9b && groups.slice(2, 6).every((g) => g === 0)) {
+    const embedded = [
+      (groups[6] >> 8) & 0xff,
+      groups[6] & 0xff,
+      (groups[7] >> 8) & 0xff,
+      groups[7] & 0xff,
+    ].join('.')
+    return isPrivateIPv4(embedded)
+  }
+
+  const first = groups[0]
+  if ((first & 0xffc0) === 0xfe80) return true // fe80::/10 link-local
+  if ((first & 0xfe00) === 0xfc00) return true // fc00::/7 unique local
+  if ((first & 0xff00) === 0xff00) return true // ff00::/8 multicast
   return false
 }
 
