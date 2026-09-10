@@ -1,5 +1,9 @@
 import { type NextRequest, NextResponse } from "next/server"
-import pdf from "pdf-parse"
+// Import the library directly rather than the package root. pdf-parse@1.1.1's
+// index.js runs a debug branch guarded by `!module.parent`, which is always
+// true once webpack bundles it -- it then reads ./test/data/05-versions-space.pdf,
+// a fixture that is not shipped, and `next build` dies with ENOENT.
+import pdf from "pdf-parse/lib/pdf-parse.js"
 import mammoth from "mammoth"
 import { createClient } from '@supabase/supabase-js'
 import { requireUser } from '@/lib/api-auth'

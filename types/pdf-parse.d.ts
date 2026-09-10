@@ -4,7 +4,7 @@
  * actually use keeps `tsc --noEmit` clean without pulling in a stale
  * @types package.
  */
-declare module 'pdf-parse' {
+declare module 'pdf-parse/lib/pdf-parse.js' {
   interface PDFInfo {
     PDFFormatVersion?: string
     IsAcroFormPresent?: boolean
