@@ -76,8 +76,34 @@ const CITY_ALIASES: Record<string, string> = {
 const REMOTE_RE = /\b(remote|anywhere|work from home|wfh|distributed|virtual)\b/i
 const HYBRID_RE = /\bhybrid\b/i
 
-/** Strings that are a work arrangement, not a place. */
-const NON_PLACE = /^(in[- ]?office|on[- ]?site|onsite|hybrid|various|multiple locations|flexible|tbd|n\/a|-)$/i
+/**
+ * The full country names we recognise. Built from the alias table's values plus
+ * the common names that have no abbreviation in it.
+ *
+ * Without this, a bare "United States" fell through to the city branch (the
+ * alias table keys on "us"/"usa", not the full name) and 259 postings were
+ * filed under a CITY called "United States".
+ */
+const KNOWN_COUNTRIES = new Set<string>([
+  ...Object.values(COUNTRY_ALIASES),
+  'Australia', 'New Zealand', 'Japan', 'China', 'Singapore', 'Malaysia',
+  'Indonesia', 'Philippines', 'Thailand', 'Vietnam', 'South Korea', 'Taiwan',
+  'Hong Kong', 'Turkey', 'Greece', 'Romania', 'Hungary', 'Bulgaria', 'Croatia',
+  'Serbia', 'Ukraine', 'Estonia', 'Latvia', 'Lithuania', 'Slovakia', 'Slovenia',
+  'Luxembourg', 'Iceland', 'Egypt', 'Nigeria', 'Kenya', 'Morocco', 'Chile',
+  'Colombia', 'Peru', 'Uruguay', 'Costa Rica', 'Panama', 'Qatar', 'Saudi Arabia',
+  'Kuwait', 'Bahrain', 'Oman', 'Pakistan', 'Bangladesh', 'Sri Lanka', 'Nepal',
+].map((c) => c.toLowerCase()))
+
+/**
+ * Strings that are a work arrangement or a placeholder, not a place.
+ *
+ * "2 Locations" / "Multiple Locations" are what Workday and Greenhouse emit
+ * when a requisition spans sites; treating them as a city produced a bogus
+ * facet entry with 315 postings under it.
+ */
+const NON_PLACE =
+  /^(in[- ]?office|on[- ]?site|onsite|hybrid|various|flexible|tbd|n\/a|none|-|\d+\s*locations?|multiple\s+locations?|multiple|other|worldwide|global|international|emea|apac|amer|americas|nam|latam)$/i
 
 function titleCase(s: string): string {
   return s
@@ -161,8 +187,15 @@ export function parseLocation(raw: string | null | undefined): ParsedLocation {
     if (parts.length === 1) {
       const only = parts[0]
       const asCountry = canonCountry(only)
-      // A single token that is a known country is a country, otherwise a city.
-      if (asCountry && (only.length <= 3 || COUNTRY_ALIASES[only.toLowerCase()])) {
+      // A single token that names a known country IS a country. Checking only
+      // the abbreviation table missed every full name ("United States",
+      // "Germany"), which then became a phantom city.
+      const isKnownCountry =
+        asCountry !== null &&
+        (only.length <= 3 ||
+          COUNTRY_ALIASES[only.toLowerCase()] !== undefined ||
+          KNOWN_COUNTRIES.has(asCountry.toLowerCase()))
+      if (isKnownCountry) {
         country = asCountry
       } else {
         city = canonCity(only)

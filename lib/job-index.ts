@@ -63,8 +63,111 @@ interface Snapshot {
 let cache: { data: Snapshot; loadedAt: number } | null = null
 const CACHE_TTL_MS = 5 * 60 * 1000
 
+/**
+ * Load the search index.
+ *
+ * Prefers the v2 pipeline output (multi-source, deduplicated, freshness-scored)
+ * and falls back to the v1 snapshot when v2 has not been generated. The two
+ * differ in field names, so v2 records are mapped onto the shape the UI reads
+ * rather than changing every component -- the canonical schema is the source of
+ * truth, this is the presentation adapter.
+ */
+async function loadV2(): Promise<Snapshot | null> {
+  try {
+    const file = path.join(process.cwd(), 'public', 'data', 'jobs-v2.json')
+    const raw = await readFile(file, 'utf8')
+    const v2 = JSON.parse(raw) as { generatedAt: string; jobs: any[]; report?: any }
+    if (!Array.isArray(v2.jobs) || v2.jobs.length === 0) return null
+
+    // Companies are derived from the jobs themselves: the v2 pipeline discovers
+    // employers rather than reading them from a curated list.
+    const companyMap = new Map<string, any>()
+    for (const j of v2.jobs) {
+      const existing = companyMap.get(j.companySlug)
+      if (existing) {
+        existing.openRoles++
+        if (!existing.valuationUsd && j.companyValuationUsd) existing.valuationUsd = j.companyValuationUsd
+      } else {
+        // Join back to the curated registry for the metadata a crawl cannot
+        // derive -- industry, HQ, and crucially the valuation's SOURCE and
+        // AS-OF DATE. Carrying the figure without its provenance would present
+        // a possibly-years-old private round as a current fact.
+        const curated = COMPANY_BY_SLUG.get(j.companySlug)
+        companyMap.set(j.companySlug, {
+          slug: j.companySlug,
+          name: curated?.name ?? j.company,
+          domain: curated?.domain ?? j.companyDomain ?? `${j.companySlug}.com`,
+          boards: curated?.boards ?? [{ provider: j.source, token: j.companySlug }],
+          industry: curated?.industry,
+          hqLocation: curated?.hqLocation,
+          foundedYear: curated?.foundedYear,
+          ticker: curated?.ticker,
+          valuationKind: curated?.valuationKind ?? (j.companyValuationUsd ? 'public' : 'unknown'),
+          valuationUsd: j.companyValuationUsd ?? curated?.reportedValuationUsd ?? undefined,
+          valuationAsOf: curated?.valuationAsOf,
+          valuationSource: curated?.valuationSource,
+          openRoles: 1,
+        })
+      }
+    }
+
+    return {
+      generatedAt: v2.generatedAt,
+      sources: [...new Set(v2.jobs.map((j) => j.source))],
+      companies: [...companyMap.values()],
+      jobs: v2.jobs.map((j) => ({
+        externalId: j.id,
+        provider: j.source,
+        companySlug: j.companySlug,
+        companyName: j.company,
+        companyDomain: j.companyDomain || `${j.companySlug}.com`,
+        title: j.title,
+        location: j.locationRaw,
+        department: j.department,
+        employmentType: j.employmentType,
+        isRemote: j.remote,
+        descriptionText: (j.description || '').slice(0, 1200),
+        postedAt: j.postedAt,
+        applyUrl: j.applicationUrl,
+        salaryMin: j.salaryMin,
+        salaryMax: j.salaryMax,
+        salaryCurrency: j.salaryCurrency,
+        locationDisplay: j.locationDisplay,
+        city: j.city,
+        region: j.state,
+        country: j.country,
+        // Rebuild match keys from the normalised fields.
+        locationKeys: [j.city, j.state, j.country, j.locationRaw]
+          .filter(Boolean)
+          .map((v: string) => v.toLowerCase())
+          .concat(j.remote ? ['remote', 'anywhere'] : []),
+        // v2-only fields surfaced to the UI.
+        skills: j.skills ?? [],
+        seniority: j.seniority ?? null,
+        freshnessScore: j.freshnessScore ?? 0,
+        isDirectApplication: j.isDirectApplication ?? true,
+        sourceUrls: j.sourceUrls ?? [],
+      })),
+      warnings: [],
+    } as unknown as Snapshot
+  } catch {
+    return null
+  }
+}
+
 export async function loadIndex(): Promise<Snapshot | null> {
   if (cache && Date.now() - cache.loadedAt < CACHE_TTL_MS) return cache.data
+
+  const v2 = await loadV2()
+  if (v2) {
+    v2.companies = v2.companies.map((c) => ({
+      ...c,
+      logoUrl: companyLogoUrl(c.domain),
+      valuationTier: valuationTier(c.valuationUsd),
+    }))
+    cache = { data: v2, loadedAt: Date.now() }
+    return v2
+  }
 
   try {
     const file = path.join(process.cwd(), 'public', 'data', 'jobs-snapshot.json')

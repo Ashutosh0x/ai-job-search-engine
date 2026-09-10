@@ -1,4 +1,4 @@
-import { assertPublicHttpUrl, UnsafeUrlError } from './lib/safe-fetch.ts'
+import { assertPublicHttpUrl, UnsafeUrlError } from '../lib/safe-fetch.ts'
 const mustBlock = [
   'http://169.254.169.254/latest/meta-data/iam/security-credentials/',
   'http://metadata.google.internal/computeMetadata/v1/',
