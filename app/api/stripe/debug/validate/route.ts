@@ -1,8 +1,22 @@
 import { NextResponse } from 'next/server'
 import { stripe, stripeConfig } from '@/lib/stripe'
 
+/**
+ * Debug helper. Never expose this in production: it reveals Stripe
+ * configuration and can drive the Stripe API without authentication.
+ */
+function blockedInProduction() {
+  if (process.env.NODE_ENV === 'production' && process.env.ENABLE_STRIPE_DEBUG_ROUTES !== 'true') {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  }
+  return null
+}
+
 export async function GET() {
   try {
+    const blocked = blockedInProduction()
+    if (blocked) return blocked
+
     const checks: Array<{
       name: string
       id?: string

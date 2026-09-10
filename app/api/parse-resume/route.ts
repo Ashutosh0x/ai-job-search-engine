@@ -2,6 +2,9 @@ import { type NextRequest, NextResponse } from "next/server"
 import pdf from "pdf-parse"
 import mammoth from "mammoth"
 import { createClient } from '@supabase/supabase-js'
+import { requireUser } from '@/lib/api-auth'
+import { checkRateLimit } from '@/lib/rate-limit'
+import { safeFetch, UnsafeUrlError } from '@/lib/safe-fetch'
 
 // Ensure this route runs on the Node.js runtime (required for pdf-parse/mammoth)
 export const runtime = 'nodejs'
@@ -16,13 +19,21 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
+/** Resumes are documents, not archives. */
+const MAX_FILE_BYTES = 10 * 1024 * 1024 // 10 MB
+
 // Helper function to extract information from parsed text
 const extractInfoFromText = (text: string) => {
-  const nameMatch = text.match(/^([A-Z][a-z]+(?:\s[A-Z][a-z]+){1,2})\n/);
+  // Anchoring at ^ with a required trailing \n missed resumes that begin with a
+  // blank line or leading whitespace, which is most PDF extractions.
+  const nameMatch = text.trimStart().match(/^([A-Z][a-zA-Z'-]+(?:\s+[A-Z][a-zA-Z'-]+){1,2})\s*(?:\n|$)/);
   const emailMatch = text.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/);
   const phoneMatch = text.match(/\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/);
-  const skillsMatch = text.match(/(skills|technical skills|proficiencies)\n([\s\S]+?)(?:\n\n|\Z)/i);
-  const experienceMatch = text.match(/(experience|work experience)\n([\s\S]+?)(?:\n\n|\Z)/i);
+  // NOTE: these used to end with (?:\n\n|\Z). JavaScript has no \Z anchor -- it
+  // is parsed as a literal "Z" -- so a section running to the end of the
+  // document only terminated if it happened to contain a capital Z.
+  const skillsMatch = text.match(/(skills|technical skills|proficiencies)\s*\n([\s\S]+?)(?:\n\s*\n|$)/i);
+  const experienceMatch = text.match(/(experience|work experience|employment history)\s*\n([\s\S]+?)(?:\n\s*\n|$)/i);
 
   const skills = skillsMatch ? skillsMatch[2].split(/\n|\s*•\s*/).map(s => s.trim()).filter(s => s.length > 0) : [];
   const experience = experienceMatch ? experienceMatch[2].trim() : "";
@@ -40,6 +51,18 @@ const extractInfoFromText = (text: string) => {
 
 export async function POST(request: NextRequest) {
   try {
+    // This endpoint performs server-side fetches and CPU-heavy parsing, so it
+    // must not be reachable anonymously.
+    const auth = await requireUser(request)
+    if ('response' in auth) return auth.response
+
+    if (checkRateLimit(`parse-resume:${auth.user.id}`, { windowMs: 60 * 60 * 1000, max: 30 })) {
+      return NextResponse.json(
+        { error: 'Too many parse requests. Please try again later.' },
+        { status: 429 }
+      )
+    }
+
     let parsedText = ""
 
     // Support both multipart/form-data uploads and JSON payload with fileUrl
@@ -49,6 +72,12 @@ export async function POST(request: NextRequest) {
       const file = formData.get('file') as File | null
       if (!file) {
         return NextResponse.json({ error: 'No file provided' }, { status: 400 })
+      }
+      if (file.size > MAX_FILE_BYTES) {
+        return NextResponse.json(
+          { error: `File is too large. Maximum size is ${MAX_FILE_BYTES / 1024 / 1024} MB.` },
+          { status: 413 }
+        )
       }
       const bytes = await file.arrayBuffer()
       const buffer = Buffer.from(bytes)
@@ -71,13 +100,23 @@ export async function POST(request: NextRequest) {
       if (!fileUrl) {
         return NextResponse.json({ error: 'fileUrl missing' }, { status: 400 })
       }
-      const resp = await fetch(fileUrl)
-      if (!resp.ok) {
-        return NextResponse.json({ error: `Failed to fetch file: ${resp.status}` }, { status: 404 })
+      // fileUrl comes straight from the request body. Fetching it directly made
+      // this an SSRF proxy: a caller could aim it at cloud instance metadata
+      // (169.254.169.254, which hands out credentials) or any internal service
+      // the server can reach. safeFetch resolves the host, rejects private and
+      // link-local targets, refuses redirects and caps the response size.
+      let buffer: Buffer
+      let ct: string
+      try {
+        const fetched = await safeFetch(fileUrl, { maxBytes: MAX_FILE_BYTES })
+        buffer = fetched.buffer
+        ct = fetched.contentType
+      } catch (e) {
+        if (e instanceof UnsafeUrlError) {
+          return NextResponse.json({ error: e.message }, { status: 400 })
+        }
+        throw e
       }
-      const arrayBuf = await resp.arrayBuffer()
-      const buffer = Buffer.from(arrayBuf)
-      const ct = resp.headers.get('content-type') || ''
       const isPdf = ct.includes('pdf') || fileUrl.toLowerCase().endsWith('.pdf')
       const isDoc = fileUrl.toLowerCase().endsWith('.doc') || fileUrl.toLowerCase().endsWith('.docx') || ct.includes('word')
       if (isPdf) {

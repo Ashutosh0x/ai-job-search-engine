@@ -1,12 +1,40 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { stripe, getPlanById } from '@/lib/stripe'
 import { getSupabaseServerClient } from '@/lib/supabase'
+import { requireUser } from '@/lib/api-auth'
+
+export const runtime = 'nodejs'
+
+/**
+ * Only these origins may be used to build success/cancel URLs. The origin
+ * header is attacker-controlled, so echoing it into a Stripe redirect turns
+ * checkout into an open redirect.
+ */
+function resolveOrigin(requestOrigin: string | null): string {
+  const configured = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+  const allowed = new Set(
+    [configured, process.env.NEXT_PUBLIC_SITE_URL, 'http://localhost:3000']
+      .filter(Boolean)
+      .map((u) => {
+        try { return new URL(u as string).origin } catch { return null }
+      })
+      .filter(Boolean) as string[]
+  )
+  if (requestOrigin && allowed.has(requestOrigin)) return requestOrigin
+  return new URL(configured).origin
+}
 
 export async function POST(request: NextRequest) {
   try {
-    console.log('=== Stripe Checkout Session Request ===')
-    const { planId, userId } = await request.json()
-    console.log('Received planId:', planId, 'userId:', userId)
+    // userId used to be read from the request body, so anyone could open a
+    // checkout session against another account (and learn its email address
+    // via the admin lookup below). Identity now comes from the caller's token.
+    const auth = await requireUser(request)
+    if ('response' in auth) return auth.response
+    const user = auth.user
+    const userId = user.id
+
+    const { planId } = await request.json()
 
     if (!planId) {
       return NextResponse.json(
@@ -15,15 +43,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    if (!userId) {
-      return NextResponse.json(
-        { error: 'User ID is required' },
-        { status: 400 }
-      )
-    }
-
     const plan = getPlanById(planId)
-    console.log('Found plan:', plan)
     if (!plan) {
       console.error('Plan not found for planId:', planId)
       return NextResponse.json(
@@ -52,25 +72,9 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create Supabase client
-    const supabase = getSupabaseServerClient()
-
-    // Get user details from Supabase auth
-    const { data: authUser, error: userError } = await supabase.auth.admin.getUserById(userId)
-
-    if (userError || !authUser.user) {
-      console.error('User lookup error:', userError)
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
-      )
-    }
-
-    const user = authUser.user
-    console.log('Found user:', user.email)
-
-    // Determine origin dynamically to avoid wrong port issues in dev
-    const origin = request.headers.get('origin') || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+    // The verified token already carries the email; no admin lookup needed, and
+    // no PII in the logs.
+    const origin = resolveOrigin(request.headers.get('origin'))
 
     // Create Stripe checkout session
     const session = await stripe.checkout.sessions.create({

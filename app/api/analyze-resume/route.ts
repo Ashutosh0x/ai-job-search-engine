@@ -1,6 +1,22 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { createClient } from '@supabase/supabase-js'
 import { GoogleGenerativeAI } from '@google/generative-ai'
+import { requireUser } from '@/lib/api-auth'
+import { checkRateLimit } from '@/lib/rate-limit'
+
+export const runtime = 'nodejs'
+
+/**
+ * Model id is configurable so a retirement does not require a code change.
+ * gemini-1.5-pro (the previous hard-coded value) is retired -- calls against it
+ * now fail, which is why every analysis was silently falling back to the
+ * canned result below.
+ */
+const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash'
+
+/** Keep prompt size bounded: cost and latency scale with it, and a huge resume
+ *  is usually a sign of a bad parse rather than a real document. */
+const MAX_RESUME_CHARS = 24_000
 
 // Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -41,15 +57,52 @@ interface ATSAnalysis {
 }
 
 export async function POST(request: NextRequest) {
+  // Read the body exactly once. The previous version called request.json()
+  // again inside the catch block to mark the row failed; a request body is a
+  // single-use stream, so that second read always threw and the status was
+  // never updated.
+  let resumeId: string | undefined
+
   try {
+    const auth = await requireUser(request)
+    if ('response' in auth) return auth.response
+    const userId = auth.user.id
+
+    if (checkRateLimit(`analyze-resume:${userId}`, { windowMs: 60 * 60 * 1000, max: 30 })) {
+      return NextResponse.json(
+        { error: 'Too many analysis requests. Please try again later.' },
+        { status: 429 }
+      )
+    }
+
     const body: AnalysisRequest = await request.json()
-    const { resumeId, parsedText, parsedInfo } = body
+    const { parsedInfo } = body
+    let { parsedText } = body
+    resumeId = body.resumeId
 
     if (!resumeId || !parsedText) {
       return NextResponse.json(
         { error: "Missing resumeId or parsedText" },
         { status: 400 }
       )
+    }
+
+    // This route holds the service-role key, which bypasses RLS. Without an
+    // explicit ownership check any caller could analyse -- and overwrite -- any
+    // other user's resume row by guessing its id.
+    const { data: ownedResume, error: ownershipError } = await supabase
+      .from('resumes')
+      .select('id')
+      .eq('id', resumeId)
+      .eq('user_id', userId)
+      .maybeSingle()
+
+    if (ownershipError || !ownedResume) {
+      return NextResponse.json({ error: 'Resume not found' }, { status: 404 })
+    }
+
+    if (parsedText.length > MAX_RESUME_CHARS) {
+      parsedText = parsedText.slice(0, MAX_RESUME_CHARS)
     }
 
     // Update status to analyzing
@@ -120,7 +173,7 @@ Provide realistic scores (0-100) and actionable recommendations.
 `
 
     // Generate analysis using Gemini with structured output and retries
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" })
+    const model = genAI.getGenerativeModel({ model: GEMINI_MODEL })
     let analysis: ATSAnalysis | null = null
     const maxAttempts = 2
     let lastError: unknown = null
@@ -147,21 +200,19 @@ Provide realistic scores (0-100) and actionable recommendations.
       }
     }
     if (!analysis) {
+      // Previously this substituted a hard-coded "score 70" analysis and saved
+      // it as though the model had produced it. That is worse than an error:
+      // the user acts on advice nobody generated, and the failure is invisible.
+      // Fail loudly instead and leave the row marked failed.
       console.error('Failed to get valid analysis from Gemini:', lastError)
-      analysis = {
-        overallScore: 70,
-        sections: {
-          contactInfo: { score: 80, feedback: ["Contact information present"], recommendations: ["Add more details"] },
-          experience: { score: 70, feedback: ["Experience section found"], recommendations: ["Add more details"] },
-          skills: { score: 60, feedback: ["Skills section present"], recommendations: ["Add more skills"] },
-          education: { score: 80, feedback: ["Education information present"], recommendations: ["Add more details"] },
-          formatting: { score: 75, feedback: ["Basic formatting present"], recommendations: ["Improve formatting"] }
+      await supabase.from('resumes').update({ status: 'failed' }).eq('id', resumeId)
+      return NextResponse.json(
+        {
+          error: 'Analysis is temporarily unavailable',
+          details: 'The analysis service did not return a usable result. Your resume was saved -- please try analysing it again in a moment.',
         },
-        keywordAnalysis: { found: [], missing: [], suggestions: ["Add more industry-specific keywords"] },
-        strengths: ["Resume uploaded successfully"],
-        improvements: ["Add more detailed information"],
-        tips: ["Provide more specific details in each section"]
-      }
+        { status: 503 }
+      )
     }
 
     // Calculate insights
@@ -204,27 +255,23 @@ Provide realistic scores (0-100) and actionable recommendations.
   } catch (error) {
     console.error('Error analyzing resume:', error)
 
-    // Update status to failed if resumeId is available
-    if (request.body) {
+    // resumeId was captured before the body was consumed, so this actually
+    // runs -- the old code re-read the request stream here and always threw.
+    if (resumeId) {
       try {
-        const body = await request.json()
-        const resumeId = body.resumeId
-        if (resumeId) {
-          await supabase
-            .from('resumes')
-            .update({ status: 'failed' })
-            .eq('id', resumeId)
-        }
+        await supabase
+          .from('resumes')
+          .update({ status: 'failed' })
+          .eq('id', resumeId)
       } catch (e) {
         console.error('Failed to update status to failed:', e)
       }
     }
 
+    // Internal error text can carry table names and key fragments; keep it in
+    // the logs rather than the response body.
     return NextResponse.json(
-      {
-        error: "Failed to analyze resume",
-        details: error instanceof Error ? error.message : "Unknown error occurred"
-      },
+      { error: "Failed to analyze resume" },
       { status: 500 }
     )
   }

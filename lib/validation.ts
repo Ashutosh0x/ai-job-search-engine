@@ -5,6 +5,15 @@ export const validateEmail = (email: string) => {
   return { isValid: errors.length === 0, errors }
 }
 
+/**
+ * Upper bound exists only to stop absurd payloads reaching the hashing step;
+ * it is not a complexity control. The old limit was 20 characters, which
+ * rejected ordinary passphrases and anything a password manager generates.
+ * NIST SP 800-63B asks for at least 64 to be accepted.
+ */
+export const PASSWORD_MIN_LENGTH = 8;
+export const PASSWORD_MAX_LENGTH = 128;
+
 export const validatePassword = (password: string, isSignup: boolean) => {
   const checks = {
     length: false,
@@ -16,21 +25,23 @@ export const validatePassword = (password: string, isSignup: boolean) => {
   };
 
   if (isSignup) {
-    checks.length = password.length >= 8;
+    checks.length = password.length >= PASSWORD_MIN_LENGTH;
     checks.uppercase = /[A-Z]/.test(password);
     checks.lowercase = /[a-z]/.test(password);
     checks.number = /\d/.test(password);
     checks.specialChar = /[^a-zA-Z0-9]/.test(password);
-    checks.maxLength = password.length <= 20;
+    checks.maxLength = password.length <= PASSWORD_MAX_LENGTH;
   }
 
   const isValid = isSignup ? Object.values(checks).every(Boolean) : !!password;
   const errors: string[] = [];
   if (isSignup && !isValid) {
-    if (password.length > 20) {
-      errors.push("Password must not exceed 20 characters");
+    if (password.length > PASSWORD_MAX_LENGTH) {
+      errors.push(`Password must not exceed ${PASSWORD_MAX_LENGTH} characters`);
+    } else if (password.length < PASSWORD_MIN_LENGTH) {
+      errors.push(`Password must be at least ${PASSWORD_MIN_LENGTH} characters`);
     } else {
-      errors.push("Password does not meet all requirements.");
+      errors.push("Password must include upper and lower case letters, a number and a symbol.");
     }
   }
 
@@ -75,6 +86,8 @@ export const getPasswordStrength = (password: string) => {
     score: strengthIndex,
     label: labels[strengthIndex],
     color: colors[strengthIndex],
-    percentage: ((strengthIndex + 1) / 5) * 100,
+    // Was ((strengthIndex + 1) / 5) * 100, so an empty or hopeless password
+    // still rendered a 20%-filled bar that never reached 0.
+    percentage: (score / 5) * 100,
   };
 };

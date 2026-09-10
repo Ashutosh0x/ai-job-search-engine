@@ -1,28 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
+import { randomInt } from 'crypto';
+import { checkRateLimit } from '@/lib/rate-limit';
+
+export const runtime = 'nodejs';
 
 // Use service role on the server for privileged operations
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
-
-// Simple in-memory rate limiter (best-effort; use Redis/Upstash in production)
-type WindowConfig = { windowMs: number; max: number }
-const emailAttempts = new Map<string, number[]>()
-const ipAttempts = new Map<string, number[]>()
-
-function isRateLimited(key: string, store: Map<string, number[]>, cfg: WindowConfig) {
-  const now = Date.now()
-  const cutoff = now - cfg.windowMs
-  const arr = store.get(key) || []
-  const recent = arr.filter((t) => t > cutoff)
-  if (recent.length >= cfg.max) return true
-  recent.push(now)
-  store.set(key, recent)
-  return false
-}
 
 function getClientIp(req: NextRequest) {
   const xff = req.headers.get('x-forwarded-for') || ''
@@ -31,7 +19,10 @@ function getClientIp(req: NextRequest) {
 }
 
 function generateOTP() {
-  return Math.floor(100000 + Math.random() * 900000).toString();
+  // Math.random() is not a CSPRNG: its output is predictable from prior values,
+  // which for an account-recovery code means it can be guessed rather than
+  // brute-forced. randomInt() draws from the OS entropy source.
+  return randomInt(100000, 1000000).toString();
 }
 
 async function verifyTurnstileToken(req: NextRequest, tokenFromBody?: string) {
@@ -66,10 +57,11 @@ export async function POST(req: NextRequest) {
 
   // Basic rate limits
   const ip = getClientIp(req)
-  if (isRateLimited(email.toLowerCase(), emailAttempts, { windowMs: 10 * 60 * 1000, max: 5 })) {
+  const normalizedEmail = String(email).trim().toLowerCase()
+  if (checkRateLimit(`request-otp:email:${normalizedEmail}`, { windowMs: 10 * 60 * 1000, max: 5 })) {
     return NextResponse.json({ error: 'Too many OTP requests for this email. Try again later.' }, { status: 429 })
   }
-  if (isRateLimited(ip, ipAttempts, { windowMs: 60 * 60 * 1000, max: 20 })) {
+  if (checkRateLimit(`request-otp:ip:${ip}`, { windowMs: 60 * 60 * 1000, max: 20 })) {
     return NextResponse.json({ error: 'Too many requests from this IP. Try again later.' }, { status: 429 })
   }
 
@@ -79,7 +71,7 @@ export async function POST(req: NextRequest) {
   // Upsert OTP
   const { error: upsertError } = await supabase
     .from('otp_resets')
-    .upsert({ email, otp, expires_at: expiresAt });
+    .upsert({ email: normalizedEmail, otp, expires_at: expiresAt, attempts: 0 });
 
   if (upsertError) {
     return NextResponse.json({ error: 'Failed to store OTP' }, { status: 500 });
@@ -89,8 +81,8 @@ export async function POST(req: NextRequest) {
   const resend = new Resend(process.env.RESEND_API_KEY!);
   try {
     await resend.emails.send({
-      from: 'jobspark@resend.dev',
-      to: email,
+      from: process.env.RESEND_FROM_EMAIL || 'jobspark@resend.dev',
+      to: normalizedEmail,
       subject: 'Your JobSpark AI OTP Code',
       text: `Your OTP code is: ${otp}\nIt is valid for 10 minutes. If you did not request this, please ignore this email.`,
     });
@@ -103,7 +95,7 @@ export async function POST(req: NextRequest) {
     await supabase.from('audit_logs').insert({
       user_id: null,
       action: 'request_otp',
-      details: { email, ip },
+      details: { email: normalizedEmail, ip },
     })
   } catch {}
 
