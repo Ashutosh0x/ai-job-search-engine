@@ -1,0 +1,11 @@
+const url='https://www.amazon.jobs/en/search.json?result_limit=100&offset=0&sort=recent'
+const r1 = await fetch(url, { headers:{'User-Agent':'Mozilla/5.0'} })
+const t1 = await r1.text()
+console.log('plain fetch      len:', t1.length)
+const r2 = await fetch(url, { headers:{'User-Agent':'Mozilla/5.0'}, redirect:'follow' })
+const t2 = await r2.text()
+console.log('with redirect    len:', t2.length)
+const c = new AbortController(); const timer=setTimeout(()=>c.abort(), 20000)
+const r3 = await fetch(url, { headers:{'User-Agent':'Mozilla/5.0'}, signal:c.signal })
+const t3 = await r3.text(); clearTimeout(timer)
+console.log('with signal      len:', t3.length)

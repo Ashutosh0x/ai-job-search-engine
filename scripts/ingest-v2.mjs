@@ -61,6 +61,25 @@ if (existsSync('scripts/discovered-boards.json')) {
   }
 }
 
+// Boards seeded from external reports, already ATS-verified.
+if (existsSync('scripts/report-boards.json')) {
+  const rep = JSON.parse(readFileSync('scripts/report-boards.json', 'utf8'))
+  const seen = new Set(targets.map((t) => `${t.source}|${t.token.toLowerCase()}`))
+  let added = 0
+  for (const b of rep.boards ?? []) {
+    const key = `${b.provider}|${b.token.toLowerCase()}`
+    if (seen.has(key)) continue
+    seen.add(key)
+    targets.push({
+      source: b.provider, token: b.token,
+      companySlug: b.companySlug, companyName: b.companyName, companyDomain: b.companyDomain,
+      discoveredVia: b.discoveredVia, confidence: 0.95,
+    })
+    added++
+  }
+  if (added) console.log(`+${added} boards seeded from report-boards.json`)
+}
+
 const selected = targets
   .filter((t) => !sourceFilter || sourceFilter.includes(t.source))
   .slice(0, limit)

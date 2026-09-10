@@ -1,0 +1,385 @@
+{
+  "seededAt": "2026-09-10T16:30:38.227Z",
+  "sourceFile": "report-companies.json",
+  "companiesIn": 66,
+  "verified": 41,
+  "totalOpenRoles": 7766,
+  "bySource": {
+    "greenhouse": 19,
+    "ashby": 18,
+    "lever": 1,
+    "smartrecruiters": 2,
+    "workable": 1
+  },
+  "boards": [
+    {
+      "provider": "greenhouse",
+      "token": "databricks",
+      "companySlug": "databricks",
+      "companyName": "Databricks",
+      "companyDomain": "databricks.com",
+      "openRoles": 874,
+      "discoveredVia": "report:slug-probe (API verified)"
+    },
+    {
+      "provider": "ashby",
+      "token": "openai",
+      "companySlug": "openai",
+      "companyName": "OpenAI",
+      "companyDomain": "openai.com",
+      "openRoles": 786,
+      "discoveredVia": "report:slug-probe (API verified)"
+    },
+    {
+      "provider": "greenhouse",
+      "token": "stripe",
+      "companySlug": "stripe",
+      "companyName": "Stripe",
+      "companyDomain": "stripe.com",
+      "openRoles": 612,
+      "discoveredVia": "report:slug-probe (API verified)"
+    },
+    {
+      "provider": "greenhouse",
+      "token": "anthropic",
+      "companySlug": "anthropic",
+      "companyName": "Anthropic",
+      "companyDomain": "anthropic.com",
+      "openRoles": 599,
+      "discoveredVia": "report:url"
+    },
+    {
+      "provider": "greenhouse",
+      "token": "datadog",
+      "companySlug": "datadog",
+      "companyName": "Datadog",
+      "companyDomain": "datadoghq.com",
+      "openRoles": 451,
+      "discoveredVia": "report:slug-probe (API verified)"
+    },
+    {
+      "provider": "greenhouse",
+      "token": "mongodb",
+      "companySlug": "mongodb",
+      "companyName": "MongoDB",
+      "companyDomain": "mongodb.com",
+      "openRoles": 405,
+      "discoveredVia": "report:slug-probe (API verified)"
+    },
+    {
+      "provider": "ashby",
+      "token": "snowflake",
+      "companySlug": "snowflake",
+      "companyName": "Snowflake",
+      "companyDomain": "snowflake.com",
+      "openRoles": 362,
+      "discoveredVia": "report:slug-probe (API verified)"
+    },
+    {
+      "provider": "greenhouse",
+      "token": "cloudflare",
+      "companySlug": "cloudflare",
+      "companyName": "Cloudflare",
+      "companyDomain": "cloudflare.com",
+      "openRoles": 353,
+      "discoveredVia": "report:slug-probe (API verified)"
+    },
+    {
+      "provider": "ashby",
+      "token": "harvey",
+      "companySlug": "harvey-ai",
+      "companyName": "Harvey AI",
+      "companyDomain": "harvey.ai",
+      "openRoles": 326,
+      "discoveredVia": "report:url"
+    },
+    {
+      "provider": "lever",
+      "token": "palantir",
+      "companySlug": "palantir",
+      "companyName": "Palantir",
+      "companyDomain": "palantir.com",
+      "openRoles": 310,
+      "discoveredVia": "report:url"
+    },
+    {
+      "provider": "greenhouse",
+      "token": "celonis",
+      "companySlug": "celonis",
+      "companyName": "Celonis",
+      "companyDomain": "celonis.com",
+      "openRoles": 282,
+      "discoveredVia": "report:slug-probe (API verified)"
+    },
+    {
+      "provider": "ashby",
+      "token": "elevenlabs",
+      "companySlug": "elevenlabs",
+      "companyName": "ElevenLabs",
+      "companyDomain": "elevenlabs.io",
+      "openRoles": 248,
+      "discoveredVia": "report:url"
+    },
+    {
+      "provider": "greenhouse",
+      "token": "gitlab",
+      "companySlug": "gitlab",
+      "companyName": "Gitlab",
+      "companyDomain": "gitlab.com",
+      "openRoles": 230,
+      "discoveredVia": "report:slug-probe (API verified)"
+    },
+    {
+      "provider": "greenhouse",
+      "token": "natera",
+      "companySlug": "natera",
+      "companyName": "Natera",
+      "companyDomain": "natera.com",
+      "openRoles": 208,
+      "discoveredVia": "report:url"
+    },
+    {
+      "provider": "ashby",
+      "token": "ramp",
+      "companySlug": "ramp",
+      "companyName": "Ramp",
+      "companyDomain": "ramp.com",
+      "openRoles": 145,
+      "discoveredVia": "report:slug-probe (API verified)"
+    },
+    {
+      "provider": "ashby",
+      "token": "cohere",
+      "companySlug": "cohere",
+      "companyName": "Cohere",
+      "companyDomain": "cohere.com",
+      "openRoles": 143,
+      "discoveredVia": "report:page-content"
+    },
+    {
+      "provider": "ashby",
+      "token": "decagon",
+      "companySlug": "decagon",
+      "companyName": "Decagon",
+      "companyDomain": "decagon.ai",
+      "openRoles": 140,
+      "discoveredVia": "report:url"
+    },
+    {
+      "provider": "ashby",
+      "token": "cursor",
+      "companySlug": "cursor-anysphere",
+      "companyName": "Cursor (Anysphere)",
+      "companyDomain": "cursor.com",
+      "openRoles": 127,
+      "discoveredVia": "report:slug-probe (API verified)"
+    },
+    {
+      "provider": "greenhouse",
+      "token": "intercom",
+      "companySlug": "intercom",
+      "companyName": "Intercom",
+      "companyDomain": "intercom.com",
+      "openRoles": 121,
+      "discoveredVia": "report:slug-probe (API verified)"
+    },
+    {
+      "provider": "greenhouse",
+      "token": "gleanwork",
+      "companySlug": "glean",
+      "companyName": "Glean",
+      "companyDomain": "glean.com",
+      "openRoles": 112,
+      "discoveredVia": "report:url"
+    },
+    {
+      "provider": "smartrecruiters",
+      "token": "servicenow",
+      "companySlug": "servicenow",
+      "companyName": "ServiceNow",
+      "companyDomain": "servicenow.com",
+      "openRoles": 100,
+      "discoveredVia": "report:slug-probe (API verified)"
+    },
+    {
+      "provider": "smartrecruiters",
+      "token": "Freshworks",
+      "companySlug": "freshworks",
+      "companyName": "Freshworks",
+      "companyDomain": "freshworks.com",
+      "openRoles": 100,
+      "discoveredVia": "report:page-content"
+    },
+    {
+      "provider": "greenhouse",
+      "token": "cresta",
+      "companySlug": "cresta",
+      "companyName": "Cresta",
+      "companyDomain": "cresta.com",
+      "openRoles": 94,
+      "discoveredVia": "report:url"
+    },
+    {
+      "provider": "ashby",
+      "token": "baseten",
+      "companySlug": "baseten",
+      "companyName": "Baseten",
+      "companyDomain": "baseten.co",
+      "openRoles": 88,
+      "discoveredVia": "report:url"
+    },
+    {
+      "provider": "greenhouse",
+      "token": "vercel",
+      "companySlug": "vercel",
+      "companyName": "Vercel",
+      "companyDomain": "vercel.com",
+      "openRoles": 87,
+      "discoveredVia": "report:slug-probe (API verified)"
+    },
+    {
+      "provider": "ashby",
+      "token": "profound",
+      "companySlug": "profound",
+      "companyName": "Profound",
+      "companyDomain": "profound.co",
+      "openRoles": 74,
+      "discoveredVia": "report:url"
+    },
+    {
+      "provider": "greenhouse",
+      "token": "postman",
+      "companySlug": "postman",
+      "companyName": "Postman",
+      "companyDomain": "postman.com",
+      "openRoles": 67,
+      "discoveredVia": "report:url"
+    },
+    {
+      "provider": "greenhouse",
+      "token": "abnormalsecurity",
+      "companySlug": "abnormal-security",
+      "companyName": "Abnormal Security",
+      "companyDomain": "abnormalsecurity.com",
+      "openRoles": 66,
+      "discoveredVia": "report:slug-probe (API verified)"
+    },
+    {
+      "provider": "ashby",
+      "token": "exa",
+      "companySlug": "exa-ai",
+      "companyName": "Exa AI",
+      "companyDomain": "exa.ai",
+      "openRoles": 55,
+      "discoveredVia": "report:url"
+    },
+    {
+      "provider": "ashby",
+      "token": "factory",
+      "companySlug": "factory-ai",
+      "companyName": "Factory AI",
+      "companyDomain": "factory.ai",
+      "openRoles": 53,
+      "discoveredVia": "report:url"
+    },
+    {
+      "provider": "ashby",
+      "token": "firecrawl",
+      "companySlug": "firecrawl",
+      "companyName": "Firecrawl",
+      "companyDomain": "firecrawl.dev",
+      "openRoles": 25,
+      "discoveredVia": "report:url"
+    },
+    {
+      "provider": "greenhouse",
+      "token": "dominodatalab",
+      "companySlug": "domino-data-lab",
+      "companyName": "Domino Data Lab",
+      "companyDomain": "boards.greenhouse.io",
+      "openRoles": 22,
+      "discoveredVia": "report:url"
+    },
+    {
+      "provider": "ashby",
+      "token": "gecko-robotics",
+      "companySlug": "gecko-robotics",
+      "companyName": "Gecko Robotics",
+      "companyDomain": "geckorobotics.com",
+      "openRoles": 20,
+      "discoveredVia": "report:url"
+    },
+    {
+      "provider": "greenhouse",
+      "token": "raft",
+      "companySlug": "raft",
+      "companyName": "Raft",
+      "companyDomain": "teamraft.com",
+      "openRoles": 19,
+      "discoveredVia": "report:url"
+    },
+    {
+      "provider": "ashby",
+      "token": "withclutch",
+      "companySlug": "clutch",
+      "companyName": "Clutch",
+      "companyDomain": "withclutch.com",
+      "openRoles": 14,
+      "discoveredVia": "report:url"
+    },
+    {
+      "provider": "ashby",
+      "token": "mercura",
+      "companySlug": "mercura",
+      "companyName": "Mercura",
+      "companyDomain": "mercura.io",
+      "openRoles": 12,
+      "discoveredVia": "report:url"
+    },
+    {
+      "provider": "greenhouse",
+      "token": "orcasecurity",
+      "companySlug": "orca-security",
+      "companyName": "Orca Security",
+      "companyDomain": "orca.security",
+      "openRoles": 11,
+      "discoveredVia": "report:slug-probe (API verified)"
+    },
+    {
+      "provider": "ashby",
+      "token": "northslope-technologies",
+      "companySlug": "northslope",
+      "companyName": "Northslope",
+      "companyDomain": "northslope.ai",
+      "openRoles": 10,
+      "discoveredVia": "report:url"
+    },
+    {
+      "provider": "ashby",
+      "token": "haast",
+      "companySlug": "haast",
+      "companyName": "Haast",
+      "companyDomain": "haast.ai",
+      "openRoles": 7,
+      "discoveredVia": "report:url"
+    },
+    {
+      "provider": "workable",
+      "token": "huggingface",
+      "companySlug": "hugging-face",
+      "companyName": "Hugging Face",
+      "companyDomain": "apply.workable.com",
+      "openRoles": 6,
+      "discoveredVia": "report:url"
+    },
+    {
+      "provider": "greenhouse",
+      "token": "remote",
+      "companySlug": "remote-com",
+      "companyName": "Remote.com",
+      "companyDomain": "remote.com",
+      "openRoles": 2,
+      "discoveredVia": "report:slug-probe (API verified)"
+    }
+  ]
+}

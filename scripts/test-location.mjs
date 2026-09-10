@@ -60,5 +60,20 @@ const emea = parseLocation('EMEA')
 t('"EMEA" region marker is not a city', emea.city===null, emea)
 const stillCity = parseLocation('Paris')
 t('a real bare city is still a city', stillCity.city==='Paris', stillCity)
+
+// Regression: cities and US states must never be classified as countries.
+// At scale the old permissive rule produced 669 distinct "countries".
+for (const notACountry of ['Kobe','Auckland','Nagoya-shi','Tours','Albi']) {
+  const r = parseLocation(notACountry)
+  t(`"${notACountry}" is a city, not a country`, r.country===null && r.city!==null, r)
+}
+for (const state of ['Iowa','Wyoming','Kansas']) {
+  const r = parseLocation(state)
+  t(`"${state}" is not a country`, r.country===null, r)
+}
+for (const real of ['Japan','New Zealand','Portugal','Israel']) {
+  const r = parseLocation(real)
+  t(`"${real}" is still recognised as a country`, r.country===real, r)
+}
 console.log(`\n${pass} passed, ${fail} failed`)
 process.exit(fail === 0 ? 0 : 1)

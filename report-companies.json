@@ -1,0 +1,332 @@
+[
+{
+"name": "Palantir",
+"careersUrl": "https://jobs.lever.co/palantir/dab396d4-2f14-4796-aac0-0d82883dccf0",
+"website": "https://palantir.com"
+},
+{
+"name": "OpenAI",
+"careersUrl": "https://openai.com/careers/forward-deployed-engineer",
+"website": "https://openai.com"
+},
+{
+"name": "Anthropic",
+"careersUrl": "https://job-boards.greenhouse.io/anthropic/jobs/4985877008",
+"website": "https://anthropic.com"
+},
+{
+"name": "Google",
+"careersUrl": "https://www.google.com/about/careers/applications/jobs/results/102008123228594886-forward-deployed-engineer-i/",
+"website": "https://cloud.google.com"
+},
+{
+"name": "Databricks",
+"careersUrl": "https://www.databricks.com/company/careers/professional-services-operations/ai-engineer---fde-forward-deployed-engineer-8189900002",
+"website": "https://databricks.com"
+},
+{
+"name": "Snowflake",
+"careersUrl": "https://careers.snowflake.com/us/en/job/SNFLUSR24690/Forward-Deployed-Engineer",
+"website": "https://snowflake.com"
+},
+{
+"name": "Scale AI",
+"careersUrl": "https://scale.com/careers",
+"website": "https://scale.com"
+},
+{
+"name": "Salesforce",
+"careersUrl": "https://careers.salesforce.com/en/jobs/jr305198/ai-forward-deployed-engineer-seniorleadprincipal/",
+"website": "https://salesforce.com"
+},
+{
+"name": "Glean",
+"careersUrl": "https://job-boards.greenhouse.io/gleanwork/jobs/4651990005",
+"website": "https://glean.com"
+},
+{
+"name": "Harvey AI",
+"careersUrl": "https://jobs.ashbyhq.com/harvey/24f97125-c406-4ae3-9f94-07dd1310e511",
+"website": "https://harvey.ai"
+},
+{
+"name": "Decagon",
+"careersUrl": "https://jobs.ashbyhq.com/decagon/95dadea4-8bd2-421a-bf3f-51c04e102ee2",
+"website": "https://decagon.ai"
+},
+{
+"name": "Cresta",
+"careersUrl": "https://job-boards.greenhouse.io/cresta/jobs/4759347008",
+"website": "https://cresta.com"
+},
+{
+"name": "Hebbia",
+"careersUrl": "https://job-boards.greenhouse.io/hebbia/jobs/4545725005",
+"website": "https://hebbia.ai"
+},
+{
+"name": "Hippocratic AI",
+"careersUrl": "https://job-boards.greenhouse.io/hippocraticai",
+"website": "https://hippocratic.ai"
+},
+{
+"name": "ElevenLabs",
+"careersUrl": "https://jobs.ashbyhq.com/elevenlabs/6c4c57c1-ec72-42ba-af3a-eb7aebbde2e6",
+"website": "https://elevenlabs.io"
+},
+{
+"name": "Factory AI",
+"careersUrl": "https://jobs.ashbyhq.com/factory/9b4262d3-4468-4e74-9d47-6ac3ae2804ec",
+"website": "https://factory.ai"
+},
+{
+"name": "Baseten",
+"careersUrl": "https://jobs.ashbyhq.com/baseten/84c1801c-1a65-49fb-aaaa-beeafd530e7e",
+"website": "https://baseten.co"
+},
+{
+"name": "Firecrawl",
+"careersUrl": "https://jobs.ashbyhq.com/firecrawl/e1543e63-bc33-48df-a823-24c3241748ee",
+"website": "https://firecrawl.dev"
+},
+{
+"name": "Exa AI",
+"careersUrl": "https://jobs.ashbyhq.com/exa/8932d319-b456-4ee0-9efd-16d82be8de80",
+"website": "https://exa.ai"
+},
+{
+"name": "Profound",
+"careersUrl": "https://jobs.ashbyhq.com/Profound/0f989037-9a2a-4cbe-a086-67b3fba56f9e",
+"website": "https://profound.co"
+},
+{
+"name": "Synthflow AI",
+"careersUrl": "https://jobs.ashbyhq.com/synthflow/5e7b11f1-b915-46f2-bab4-ec2782118373",
+"website": "https://synthflow.ai"
+},
+{
+"name": "Gecko Robotics",
+"careersUrl": "https://jobs.ashbyhq.com/gecko-robotics/1ae83c3f-565a-48c9-85f7-55ab1c75593d",
+"website": "https://geckorobotics.com"
+},
+{
+"name": "Prelude Security",
+"careersUrl": "https://jobs.ashbyhq.com/preludesecurity/75d4cece-45f2-4ad7-9491-55dd8e216298",
+"website": "https://preludesecurity.com"
+},
+{
+"name": "Clutch",
+"careersUrl": "https://jobs.ashbyhq.com/withclutch/888a232e-6680-45fc-8992-608f70b81c82",
+"website": "https://withclutch.com"
+},
+{
+"name": "Postman",
+"careersUrl": "https://job-boards.greenhouse.io/postman/jobs/6535743003",
+"website": "https://postman.com"
+},
+{
+"name": "Raft",
+"careersUrl": "https://job-boards.greenhouse.io/raft/jobs/5806772004",
+"website": "https://teamraft.com"
+},
+{
+"name": "Northslope",
+"careersUrl": "https://jobs.ashbyhq.com/northslope-technologies/7ccd126f-b127-4526-87f1-57408919c30a",
+"website": "https://northslope.ai"
+},
+{
+"name": "Mercura",
+"careersUrl": "https://jobs.ashbyhq.com/mercura/c3311550-1d26-46fb-8439-9a74805ad943",
+"website": "https://mercura.io"
+},
+{
+"name": "Haast",
+"careersUrl": "https://jobs.ashbyhq.com/haast/8d123db2-7e16-4cb7-8423-9324fa80666e",
+"website": "https://haast.ai"
+},
+{
+"name": "Anduril Industries",
+"careersUrl": "https://linkedin.com/jobs",
+"website": "https://www.anduril.com/open-roles/"
+},
+{
+"name": "Cloudflare",
+"careersUrl": "https://www.cloudflare.com/careers/jobs/",
+"website": "https://cloudflare.com"
+},
+{
+"name": "Stripe",
+"careersUrl": "https://stripe.com/jobs",
+"website": "https://stripe.com"
+},
+{
+"name": "Ramp",
+"careersUrl": "https://ramp.com/careers",
+"website": "https://ramp.com"
+},
+{
+"name": "Microsoft",
+"careersUrl": "https://careers.microsoft.com",
+"website": "https://microsoft.com"
+},
+{
+"name": "Amazon Web Services (AWS)",
+"careersUrl": "https://www.amazon.jobs/en/teams/aws-solutions-architecture",
+"website": "https://aws.amazon.com"
+},
+{
+"name": "NVIDIA",
+"careersUrl": "https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite",
+"website": "https://nvidia.com"
+},
+{
+"name": "Cohere",
+"careersUrl": "https://cohere.com/careers",
+"website": "https://cohere.com"
+},
+{
+"name": "Palo Alto Networks",
+"careersUrl": "https://jobs.paloaltonetworks.com",
+"website": "https://paloaltonetworks.com"
+},
+{
+"name": "CrowdStrike",
+"careersUrl": "https://crowdstrike.wd5.myworkdayjobs.com/crowdstrikecareers",
+"website": "https://crowdstrike.com"
+},
+{
+"name": "Wiz",
+"careersUrl": "https://www.wiz.io/careers",
+"website": "https://wiz.io"
+},
+{
+"name": "Datadog",
+"careersUrl": "https://careers.datadoghq.com",
+"website": "https://datadoghq.com"
+},
+{
+"name": "EY (Ernst & Young)",
+"careersUrl": "https://careers.ey.com/ey/jobs",
+"website": "https://ey.com"
+},
+{
+"name": "Domino Data Lab",
+"careersUrl": "https://boards.greenhouse.io/dominodatalab/jobs/7275081",
+"website": "https://boards.greenhouse.io/dominodatalab"
+},
+{
+"name": "Natera",
+"careersUrl": "https://job-boards.greenhouse.io/natera/jobs/5991157004",
+"website": "https://natera.com"
+},
+{
+"name": "Hugging Face",
+"careersUrl": "https://linkedin.com/jobs",
+"website": "https://apply.workable.com/huggingface/"
+},
+{
+"name": "Cursor (Anysphere)",
+"careersUrl": "https://cursor.com/careers",
+"website": "https://cursor.com"
+},
+{
+"name": "Mistral AI",
+"careersUrl": "https://mistral.ai/company/careers/",
+"website": "https://mistral.ai"
+},
+{
+"name": "Vercel",
+"careersUrl": "https://vercel.com/careers",
+"website": "https://vercel.com"
+},
+{
+"name": "Gitlab",
+"careersUrl": "https://about.gitlab.com/jobs/",
+"website": "https://gitlab.com"
+},
+{
+"name": "MongoDB",
+"careersUrl": "https://www.mongodb.com/careers",
+"website": "https://mongodb.com"
+},
+{
+"name": "Weights & Biases",
+"careersUrl": "https://wandb.ai/site/careers",
+"website": "https://wandb.ai"
+},
+{
+"name": "ServiceNow",
+"careersUrl": "https://careers.servicenow.com",
+"website": "https://servicenow.com"
+},
+{
+"name": "Celonis",
+"careersUrl": "https://www.celonis.com/careers/jobs/",
+"website": "https://celonis.com"
+},
+{
+"name": "Rippling",
+"careersUrl": "https://www.rippling.com/careers",
+"website": "https://rippling.com"
+},
+{
+"name": "Deel",
+"careersUrl": "https://www.deel.com/careers",
+"website": "https://deel.com"
+},
+{
+"name": "Abnormal Security",
+"careersUrl": "https://abnormalsecurity.com/about/careers",
+"website": "https://abnormalsecurity.com"
+},
+{
+"name": "Freshworks",
+"careersUrl": "https://www.freshworks.com/company/careers/",
+"website": "https://freshworks.com"
+},
+{
+"name": "Fortinet",
+"careersUrl": "https://www.fortinet.com/corporate/about-us/careers.html",
+"website": "https://fortinet.com"
+},
+{
+"name": "Orca Security",
+"careersUrl": "https://orca.security/company/careers/",
+"website": "https://orca.security"
+},
+{
+"name": "Tesla",
+"careersUrl": "https://www.tesla.com/careers/search",
+"website": "https://tesla.com"
+},
+{
+"name": "Workday",
+"careersUrl": "https://workday.wd5.myworkdayjobs.com",
+"website": "https://workday.com"
+},
+{
+"name": "MuleSoft (Salesforce)",
+"careersUrl": "https://salesforce.com/careers",
+"website": "https://mulesoft.com"
+},
+{
+"name": "Remote.com",
+"careersUrl": "https://remote.com/jobs",
+"website": "https://remote.com"
+},
+{
+"name": "Harness",
+"careersUrl": "https://harness.io/company/careers",
+"website": "https://harness.io"
+},
+{
+"name": "Interface.ai",
+"careersUrl": "https://job-boards.greenhouse.io/interfaceai/jobs/4579161006",
+"website": "https://interface.ai"
+},
+{
+"name": "Intercom",
+"careersUrl": "https://www.intercom.com/careers",
+"website": "https://intercom.com"
+}
+]

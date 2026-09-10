@@ -96,6 +96,8 @@ ${description}`, { country: primary.country })
     state: primary.region,
     country: primary.country,
     locationType,
+    // Carried so the corpus-wide resolver can revisit this row.
+    locationAmbiguous: primary.ambiguousCode ?? null,
     locations: parsedList.map((p) => ({
       display: p.display,
       city: p.city,

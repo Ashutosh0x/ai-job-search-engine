@@ -1,5 +1,7 @@
 import { readFile } from 'fs/promises'
 import path from 'path'
+import { parseIntent, describeIntent, type ParsedIntent } from './search/intent'
+import { rankJob, explainRank, DEFAULT_WEIGHTS } from './search/rank'
 import {
   COMPANY_BY_SLUG,
   companyLogoUrl,
@@ -426,3 +428,126 @@ export async function getCompany(
 }
 
 export { COMPANY_BY_SLUG }
+
+
+/* ------------------------- natural-language search ------------------------ */
+
+/**
+ * Vocabulary for the intent parser, derived from the live index.
+ *
+ * Deriving it from the corpus rather than a static gazetteer means the parser
+ * only ever recognises places and companies we can actually return, so a query
+ * never gets filtered down to nothing by a term the index has never seen.
+ */
+let vocabCache: {
+  cities: Set<string>
+  countries: Set<string>
+  companies: Map<string, string>
+  cityCountries: Map<string, string>
+  loadedAt: number
+} | null = null
+
+async function buildVocabulary() {
+  if (vocabCache && Date.now() - vocabCache.loadedAt < CACHE_TTL_MS) return vocabCache
+  const index = await loadIndex()
+  if (!index) return null
+
+  const cities = new Set<string>()
+  const countries = new Set<string>()
+  const cityCountries = new Map<string, string>()
+  for (const j of index.jobs as any[]) {
+    if (j.city) {
+      cities.add(j.city)
+      if (j.country && !cityCountries.has(j.city.toLowerCase())) {
+        cityCountries.set(j.city.toLowerCase(), j.country)
+      }
+    }
+    if (j.country) countries.add(j.country)
+  }
+  const companies = new Map<string, string>()
+  for (const c of index.companies) companies.set(c.name, c.slug)
+
+  vocabCache = { cities, countries, companies, cityCountries, loadedAt: Date.now() }
+  return vocabCache
+}
+
+export interface SmartSearchResult extends SearchResult {
+  intent: ParsedIntent
+  intentSummary: string[]
+}
+
+/**
+ * Natural-language search: parse the sentence into constraints, apply them as
+ * real filters, then rank what survives with the explainable scorer.
+ */
+export async function smartSearch(
+  rawQuery: string,
+  overrides: Partial<JobQuery> = {}
+): Promise<SmartSearchResult | null> {
+  const vocab = await buildVocabulary()
+  const intent = parseIntent(rawQuery, vocab ?? {})
+
+  // Constraints extracted from the sentence become structured filters, unless
+  // the caller has explicitly overridden them from the UI.
+  const query: JobQuery = {
+    q: undefined, // topic is scored, not used as a hard text filter
+    cities: intent.locations.length ? intent.locations : undefined,
+    countries: intent.countries.length ? intent.countries : undefined,
+    companies: intent.companies.length ? intent.companies : undefined,
+    remote: intent.remoteOnly || undefined,
+    postedWithinDays: intent.postedWithinDays ?? undefined,
+    minSalary: intent.salaryMin ?? undefined,
+    pageSize: 200,
+    page: 1,
+    ...overrides,
+  }
+
+  const base = await searchJobs(query)
+  if (!base) return null
+
+  // Re-rank the candidate set with the transparent scorer.
+  const ranked = base.jobs
+    .map((job: any) => {
+      const r = rankJob(
+        {
+          title: job.title,
+          description: job.descriptionText,
+          skills: job.skills ?? [],
+          city: job.city, state: job.region, country: job.country,
+          remote: job.isRemote,
+          workplaceType: job.workplaceType ?? (job.isRemote ? 'REMOTE' : 'UNKNOWN'),
+          remoteCountries: job.remoteCountries ?? [],
+          remoteScope: job.remoteScope ?? null,
+          seniority: job.seniority ?? null,
+          visaStatus: job.visaStatus ?? 'SPONSORSHIP_NOT_MENTIONED',
+          postedAt: job.postedAt,
+          freshnessScore: job.freshnessScore ?? 0,
+          sourceConfidence: job.company?.sourceConfidence ?? 0.95,
+          isDirectApplication: job.isDirectApplication ?? true,
+          salaryMin: job.salaryMin, salaryMax: job.salaryMax,
+          department: job.department,
+          duplicateConfidence: job.duplicateConfidence ?? 0,
+          companyValuationUsd: job.company?.valuationUsd ?? null,
+        },
+        intent,
+        DEFAULT_WEIGHTS
+      )
+      return { ...job, rankScore: r.score, matchReasons: r.matchReasons, rankSignals: r.signals, rankExplain: explainRank(r) }
+    })
+    .sort((a, b) => b.rankScore - a.rankScore)
+
+  const pageSize = overrides.pageSize ?? 20
+  const page = overrides.page ?? 1
+  const start = (page - 1) * pageSize
+
+  return {
+    ...base,
+    jobs: ranked.slice(start, start + pageSize),
+    total: ranked.length,
+    page,
+    pageSize,
+    totalPages: Math.max(1, Math.ceil(ranked.length / pageSize)),
+    intent,
+    intentSummary: describeIntent(intent),
+  }
+}

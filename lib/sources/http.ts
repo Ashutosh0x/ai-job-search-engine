@@ -232,6 +232,15 @@ export async function httpGet(url: string, options: HttpOptions = {}): Promise<H
         const headers: Record<string, string> = {
           'User-Agent': DEFAULT_UA,
           Accept: 'application/json, text/html;q=0.9, */*;q=0.8',
+          // Pin the content codings we can actually decode.
+          //
+          // Node's fetch advertises zstd but only decodes the first frame of a
+          // multi-frame zstd stream, so a chunked zstd response is silently
+          // truncated -- amazon.jobs returned a 200 with exactly 1024 bytes of
+          // a ~500KB document, which then failed to parse as JSON. Truncated
+          // data arriving under a success status is the worst failure mode
+          // there is, because nothing downstream can tell it happened.
+          'Accept-Encoding': 'gzip, deflate, br',
           ...(init.headers as Record<string, string> | undefined),
         }
         // Conditional request: lets the server say "unchanged" cheaply.

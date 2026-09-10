@@ -32,6 +32,11 @@ export interface ParsedLocation {
   display: string
   /** Lowercase tokens for matching, includes aliases. */
   searchKeys: string[]
+  /**
+   * Set when the second component was a code meaning both a US state and a
+   * country (IN, CA, DE...). Resolved later from corpus evidence.
+   */
+  ambiguousCode?: string | null
 }
 
 const US_STATES: Record<string, string> = {
@@ -84,16 +89,32 @@ const HYBRID_RE = /\bhybrid\b/i
  * alias table keys on "us"/"usa", not the full name) and 259 postings were
  * filed under a CITY called "United States".
  */
-const KNOWN_COUNTRIES = new Set<string>([
-  ...Object.values(COUNTRY_ALIASES),
-  'Australia', 'New Zealand', 'Japan', 'China', 'Singapore', 'Malaysia',
-  'Indonesia', 'Philippines', 'Thailand', 'Vietnam', 'South Korea', 'Taiwan',
-  'Hong Kong', 'Turkey', 'Greece', 'Romania', 'Hungary', 'Bulgaria', 'Croatia',
-  'Serbia', 'Ukraine', 'Estonia', 'Latvia', 'Lithuania', 'Slovakia', 'Slovenia',
-  'Luxembourg', 'Iceland', 'Egypt', 'Nigeria', 'Kenya', 'Morocco', 'Chile',
-  'Colombia', 'Peru', 'Uruguay', 'Costa Rica', 'Panama', 'Qatar', 'Saudi Arabia',
-  'Kuwait', 'Bahrain', 'Oman', 'Pakistan', 'Bangladesh', 'Sri Lanka', 'Nepal',
-].map((c) => c.toLowerCase()))
+/**
+ * Every ISO 3166-1 region name, derived at runtime from the ICU data that
+ * ships with the JS engine. This is a real global country database rather than
+ * a hand-maintained list, so it stays correct without maintenance and covers
+ * territories a curated list would miss.
+ */
+const KNOWN_COUNTRIES: Set<string> = (() => {
+  const set = new Set<string>()
+  try {
+    const dn = new Intl.DisplayNames(['en'], { type: 'region' })
+    for (let a = 65; a <= 90; a++) {
+      for (let b = 65; b <= 90; b++) {
+        const code = String.fromCharCode(a) + String.fromCharCode(b)
+        try {
+          const name = dn.of(code)
+          if (name && name !== code) set.add(name.toLowerCase())
+        } catch { /* not a valid region code */ }
+      }
+    }
+  } catch { /* Intl unavailable: fall back to the alias table alone */ }
+  // Common forms ICU spells differently.
+  for (const extra of Object.values(COUNTRY_ALIASES)) set.add(extra.toLowerCase())
+  set.add('united states').add('united kingdom').add('south korea').add('russia')
+  set.add('vietnam').add('czechia').add('czech republic').add('turkey')
+  return set
+})()
 
 /**
  * Strings that are a work arrangement or a placeholder, not a place.
@@ -112,12 +133,20 @@ function titleCase(s: string): string {
     .join(' ')
 }
 
+/**
+ * Resolve a token to a country, or null.
+ *
+ * This USED to title-case any alphabetic string longer than three characters
+ * and call it a country. At scale that produced 669 distinct "countries" from
+ * 195 real ones -- Kobe, Auckland, Iowa and Wyoming were all filed as
+ * countries. Membership in the ISO list is now required: an unrecognised token
+ * is not a country, and the caller treats it as a city instead.
+ */
 function canonCountry(token: string): string | null {
   const t = token.trim().toLowerCase()
   if (!t) return null
   if (COUNTRY_ALIASES[t]) return COUNTRY_ALIASES[t]
-  // Already a full country name?
-  if (t.length > 3 && /^[a-z .'-]+$/.test(t)) return titleCase(t)
+  if (KNOWN_COUNTRIES.has(t)) return titleCase(t)
   return null
 }
 
@@ -175,6 +204,7 @@ export function parseLocation(raw: string | null | undefined): ParsedLocation {
   let city: string | null = null
   let region: string | null = null
   let country: string | null = null
+  let ambiguousCode: string | null = null
 
   // Workday: "US-CA-San Francisco" or "USA-NY-New York"
   const wd = work.match(/^([A-Z]{2,3})-([A-Z]{2})-(.+)$/)
@@ -204,7 +234,31 @@ export function parseLocation(raw: string | null | undefined): ParsedLocation {
       city = canonCity(parts[0])
       const second = parts[1].trim()
       const secondUpper = second.toUpperCase()
-      if (US_STATES[secondUpper]) {
+
+      // AMBIGUOUS TWO-LETTER CODES.
+      //
+      // "IN" is both Indiana and India; likewise CA (California/Canada),
+      // DE (Delaware/Germany), ID, LA, MO, MT, NE, PA, SC. Resolving these
+      // blindly as US states put 210 Bangalore jobs in Indiana, United States.
+      //
+      // There is no way to settle it from the string alone, so the ambiguity is
+      // RECORDED rather than guessed: `ambiguousCode` is set, and a later pass
+      // over the whole corpus resolves it from unambiguous sightings of the
+      // same city (see resolveAmbiguousLocations). Guessing here would be a
+      // fabrication; deferring is not.
+      const isAmbiguous =
+        US_STATES[secondUpper] !== undefined &&
+        COUNTRY_ALIASES[second.toLowerCase()] !== undefined &&
+        parts.length === 2
+
+      if (isAmbiguous) {
+        ambiguousCode = secondUpper
+        // Default to the US-state reading only because the abbreviation style
+        // ("City, ST") is a US convention; the resolver overrides it whenever
+        // the corpus disagrees.
+        region = US_STATES[secondUpper]
+        country = 'United States'
+      } else if (US_STATES[secondUpper]) {
         region = US_STATES[secondUpper]
         country = parts[2] ? canonCountry(parts[2]) ?? 'United States' : 'United States'
       } else {
@@ -240,7 +294,7 @@ export function parseLocation(raw: string | null | undefined): ParsedLocation {
     if (city === full) keys.add(alias)
   }
 
-  return { raw: original, city, region, country, isRemote, display, searchKeys: [...keys] }
+  return { raw: original, city, region, country, isRemote, display, searchKeys: [...keys], ambiguousCode }
 }
 
 /**

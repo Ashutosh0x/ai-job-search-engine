@@ -5,6 +5,7 @@ import {
   WorkableAdapter,
 } from './adapters/ats'
 import { CustomSiteAdapter } from './adapters/custom'
+import { EightfoldAdapter, AmazonAdapter } from './adapters/enterprise'
 import { detectFromUrl } from './detector'
 
 /**
@@ -25,12 +26,20 @@ const ADAPTERS: JobSource[] = [
   new TeamtailorAdapter(),
   new PersonioAdapter(),
   new WorkableAdapter(),
+  new EightfoldAdapter(),
   new CustomSiteAdapter(),
 ]
 
 const BY_ID = new Map<SourceId, JobSource>(ADAPTERS.map((a) => [a.id, a]))
 
-export function getAdapter(id: SourceId): JobSource | null {
+const AMAZON = new AmazonAdapter()
+
+/**
+ * Amazon's portal is bespoke, so it shares the `custom` SourceId rather than
+ * claiming a platform of its own. Route by target token when one is supplied.
+ */
+export function getAdapter(id: SourceId, token?: string): JobSource | null {
+  if (id === 'custom' && token === 'amazon') return AMAZON
   return BY_ID.get(id) ?? null
 }
 

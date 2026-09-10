@@ -102,6 +102,8 @@ export interface CanonicalJob {
   state: string | null
   country: string | null
   locationType: LocationType
+  /** Ambiguous country/state code awaiting corpus resolution (IN, CA, DE...). */
+  locationAmbiguous?: string | null
   /** Every location the posting names, normalised. */
   locations: {
     display: string

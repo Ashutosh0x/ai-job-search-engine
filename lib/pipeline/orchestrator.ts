@@ -2,6 +2,7 @@ import type { CanonicalJob, SourceTarget, SourceId, RawJob } from '../sources/ty
 import { getAdapter } from '../sources/registry'
 import { normalizeJob, computeFreshness, detectReposts } from './normalize'
 import { deduplicate, type DedupeResult } from './dedupe'
+import { resolveAmbiguousLocations } from './resolve-locations'
 import { httpStats } from '../sources/http'
 
 /**
@@ -60,6 +61,7 @@ export interface IngestReport {
   enrichmentRan: boolean
   enrichmentError: string | null
   descriptionsHydrated: number
+  locationsResolved: number
 
   sourcesSucceeded: number
   sourcesFailed: number
@@ -147,7 +149,7 @@ export async function runIngest(options: IngestOptions): Promise<{
   let done = 0
   await pooled(targets, concurrency, async (target) => {
     const t0 = Date.now()
-    const adapter = getAdapter(target.source)
+    const adapter = getAdapter(target.source, target.token)
 
     if (!adapter) {
       runs.push({
@@ -188,9 +190,17 @@ export async function runIngest(options: IngestOptions): Promise<{
     }
   }
 
+  /* -------------------- AMBIGUOUS LOCATION RESOLUTION --------------------- */
+  //
+  // Runs before dedupe so duplicate detection compares corrected locations.
+  // A code like "IN" cannot be settled from one row; the corpus can settle it.
+  const locationResolution = resolveAmbiguousLocations(normalized)
+  const locationsResolved = locationResolution.report.resolvedRows
+  const resolvedJobs = locationResolution.jobs
+
   /* -------------------------------- DEDUPE -------------------------------- */
 
-  const dedupeResult: DedupeResult = deduplicate(normalized)
+  const dedupeResult: DedupeResult = deduplicate(resolvedJobs)
   let jobs = dedupeResult.jobs
 
   /* ------------------------- FRESHNESS + REPOSTS -------------------------- */
@@ -234,7 +244,7 @@ export async function runIngest(options: IngestOptions): Promise<{
       .slice(0, maxJobs)
 
     await pooled(needsText, hc, async ({ job, index }) => {
-      const adapter = getAdapter(job.source)
+      const adapter = getAdapter(job.source, job.id.split(':')[1])
       if (!adapter?.fetchJob) return
       try {
         const target: SourceTarget = { source: job.source, token: job.id.split(':')[1] }
@@ -355,6 +365,7 @@ export async function runIngest(options: IngestOptions): Promise<{
     enrichmentRan,
     enrichmentError,
     descriptionsHydrated: hydrated,
+    locationsResolved,
 
     sourcesSucceeded: runs.filter((r) => r.ok).length,
     sourcesFailed: runs.filter((r) => !r.ok).length,

@@ -219,6 +219,19 @@ export function canonicalSkill(input: string): string {
 
 export const KNOWN_SKILLS = Object.keys(SKILL_ALIASES)
 
+/**
+ * Every surface form users might type, paired with its canonical skill.
+ *
+ * Query parsing has to match what people WRITE ("ML", "K8s", "GCP"), not the
+ * canonical names the index stores. Matching only canonical names meant a
+ * search for "ML engineer" extracted no skill at all.
+ *
+ * Longest-first so "machine learning" is tried before "ml".
+ */
+export const SKILL_SURFACE_FORMS: [string, string][] = Object.entries(SKILL_ALIASES)
+  .flatMap(([canonical, forms]) => forms.map((f) => [f, canonical] as [string, string]))
+  .sort((a, b) => b[0].length - a[0].length)
+
 /* -------------------------------- seniority ------------------------------- */
 
 const SENIORITY_RULES: [RegExp, string][] = [
