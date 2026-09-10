@@ -439,6 +439,12 @@ export { COMPANY_BY_SLUG }
  * only ever recognises places and companies we can actually return, so a query
  * never gets filtered down to nothing by a term the index has never seen.
  */
+/**
+ * How many candidates retrieval hands to the ranker.
+ * Large enough that ranking has real choice, small enough to stay fast.
+ */
+const CANDIDATE_POOL = 400
+
 let vocabCache: {
   cities: Set<string>
   countries: Set<string>
@@ -487,23 +493,40 @@ export async function smartSearch(
   const vocab = await buildVocabulary()
   const intent = parseIntent(rawQuery, vocab ?? {})
 
-  // Constraints extracted from the sentence become structured filters, unless
-  // the caller has explicitly overridden them from the UI.
+  // Two-stage search: RETRIEVE a candidate pool, then RANK it.
+  //
+  // The topic has to narrow retrieval, not merely influence the score. Scoring
+  // alone over an unfiltered pool is how a search for "senior machine learning
+  // engineer" returned a French supermarket cashier role -- nothing excluded
+  // it, so it survived to be ranked, and with no competition it placed.
+  const { page: outPage, pageSize: outPageSize, ...filterOverrides } = overrides
+
   const query: JobQuery = {
-    q: undefined, // topic is scored, not used as a hard text filter
+    // The topic is the retrieval query; the lifted constraints are filters.
+    q: intent.topic || undefined,
     cities: intent.locations.length ? intent.locations : undefined,
     countries: intent.countries.length ? intent.countries : undefined,
     companies: intent.companies.length ? intent.companies : undefined,
     remote: intent.remoteOnly || undefined,
     postedWithinDays: intent.postedWithinDays ?? undefined,
     minSalary: intent.salaryMin ?? undefined,
-    pageSize: 200,
+    ...filterOverrides,
+    // Pool size is a retrieval concern and must not be overwritten by the
+    // caller's display page size, or the ranker only ever sees one page.
+    pageSize: CANDIDATE_POOL,
     page: 1,
-    ...overrides,
   }
 
-  const base = await searchJobs(query)
+  let base = await searchJobs(query)
   if (!base) return null
+
+  // If the topic was too specific to match anything, fall back to the
+  // constraints alone rather than returning nothing -- the user's filters are
+  // still meaningful even when their wording finds no literal match.
+  if (base.total === 0 && query.q) {
+    base = await searchJobs({ ...query, q: undefined })
+    if (!base) return null
+  }
 
   // Re-rank the candidate set with the transparent scorer.
   const ranked = base.jobs
@@ -536,8 +559,8 @@ export async function smartSearch(
     })
     .sort((a, b) => b.rankScore - a.rankScore)
 
-  const pageSize = overrides.pageSize ?? 20
-  const page = overrides.page ?? 1
+  const pageSize = outPageSize ?? 20
+  const page = outPage ?? 1
   const start = (page - 1) * pageSize
 
   return {
