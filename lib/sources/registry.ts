@@ -5,7 +5,7 @@ import {
   WorkableAdapter,
 } from './adapters/ats'
 import { CustomSiteAdapter } from './adapters/custom'
-import { EightfoldAdapter, AmazonAdapter } from './adapters/enterprise'
+import { EightfoldAdapter, AmazonAdapter, OracleRecruitingAdapter } from './adapters/enterprise'
 import { detectFromUrl } from './detector'
 
 /**
@@ -33,13 +33,17 @@ const ADAPTERS: JobSource[] = [
 const BY_ID = new Map<SourceId, JobSource>(ADAPTERS.map((a) => [a.id, a]))
 
 const AMAZON = new AmazonAdapter()
+const ORACLE_RECRUITING = new OracleRecruitingAdapter()
 
 /**
  * Amazon's portal is bespoke, so it shares the `custom` SourceId rather than
  * claiming a platform of its own. Route by target token when one is supplied.
  */
-export function getAdapter(id: SourceId, token?: string): JobSource | null {
+export function getAdapter(id: SourceId, token?: string, host?: string): JobSource | null {
   if (id === 'custom' && token === 'amazon') return AMAZON
+  // Oracle Recruiting Cloud also rides the `custom` id, routed by its host --
+  // the token is a site number (CX_1), which is not distinctive on its own.
+  if (id === 'custom' && host && /oraclecloud\.com$/i.test(host)) return ORACLE_RECRUITING
   return BY_ID.get(id) ?? null
 }
 

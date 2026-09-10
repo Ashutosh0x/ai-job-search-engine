@@ -5,6 +5,7 @@
  *   npx tsx scripts/ingest-v2.mjs --limit 60            # bounded
  *   npx tsx scripts/ingest-v2.mjs --no-enrich           # prove §36: jobs unaffected
  *   npx tsx scripts/ingest-v2.mjs --sources workday,ashby
+ *   npx tsx scripts/ingest-v2.mjs --only barclays,jane-street   (named companies)
  *
  * Writes public/data/jobs-v2.json (index) and .ingest-state.json (cursors and
  * hashes for the next incremental run).
@@ -80,9 +81,18 @@ if (existsSync('scripts/report-boards.json')) {
   if (added) console.log(`+${added} boards seeded from report-boards.json`)
 }
 
+const onlyFilter = val('only', null)?.split(',').map((s) => s.trim().toLowerCase())
+
 const selected = targets
   .filter((t) => !sourceFilter || sourceFilter.includes(t.source))
+  .filter((t) => !onlyFilter || onlyFilter.includes((t.companySlug ?? '').toLowerCase()))
   .slice(0, limit)
+
+if (onlyFilter && !selected.length) {
+  console.error(`--only matched no boards. Known slugs: ${
+    [...new Set(targets.map((t) => t.companySlug).filter(Boolean))].sort().join(', ')}`)
+  process.exit(1)
+}
 
 const bySourceCount = {}
 for (const t of selected) bySourceCount[t.source] = (bySourceCount[t.source] ?? 0) + 1

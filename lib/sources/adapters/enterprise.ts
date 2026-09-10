@@ -38,13 +38,25 @@ export class EightfoldAdapter extends BaseAdapter {
     const warnings: string[] = []
     const domain = target.companyDomain || `${target.token}.com`
     const all: RawJob[] = []
-    const PAGE = 100
+    // The server caps a page at 10 and silently ignores a larger `num`.
+    // Asking for 100 and then stopping because "fewer than 100 came back"
+    // ended every crawl after one page -- HSBC reported 1,611 jobs and yielded
+    // 10. Page size must match what the API will actually return.
+    const PAGE = 10
     let start = 0
-    const maxPages = opts.maxPages ?? 60
+    // 1,611 jobs at 10 a page needs ~162 requests, so the page ceiling has to
+    // be high enough for the largest board rather than tuned for a small one.
+    const maxPages = opts.maxPages ?? 400
+
+    // Most tenants sit at {token}.eightfold.ai, but an employer can front the
+    // same API on its own hostname -- Netflix serves it from
+    // explore.jobs.netflix.net. Honour an explicit host when one is given
+    // rather than assuming the vendor domain.
+    const host = target.host || `${target.token}.eightfold.ai`
 
     for (let page = 0; page < maxPages; page++) {
       const url =
-        `https://${encodeURIComponent(target.token)}.eightfold.ai/api/apply/v2/jobs` +
+        `https://${host}/api/apply/v2/jobs` +
         `?domain=${encodeURIComponent(domain)}&start=${start}&num=${PAGE}`
       const data = await this.json<{ positions?: any[]; count?: number }>(url, {
         cacheTtlMs: this.ttl.jobListing,
@@ -76,16 +88,19 @@ export class EightfoldAdapter extends BaseAdapter {
           postedAt: toIso(p.t_create ?? p.t_update),
           updatedAt: toIso(p.t_update),
           applicationUrl: String(
-            p.canonicalPositionUrl ?? `https://${target.token}.eightfold.ai/careers/job/${p.id}`
+            p.canonicalPositionUrl ?? `https://${host}/careers/job/${p.id}`
           ),
           canonicalUrl: String(p.canonicalPositionUrl ?? ''),
           extra: { workLocationOption: p.work_location_option ?? null },
         }
       }, warnings))
 
-      start += PAGE
+      start += positions.length
       const total = Number(data?.count ?? 0)
-      if (positions.length < PAGE || (total > 0 && start >= total)) break
+      // Stop on the reported total or an empty page -- never on a short one.
+      // A short page here means the server trimmed the batch, not that the
+      // board is exhausted.
+      if (total > 0 && start >= total) break
     }
 
     return { jobs: all, incremental: false, warnings }
@@ -158,6 +173,112 @@ export class AmazonAdapter extends BaseAdapter {
       // `hits` caps at 10000 and is not a real total, so a short page is the
       // only trustworthy stop condition.
       if (jobs.length < PAGE) break
+    }
+
+    return { jobs: all, incremental: false, warnings }
+  }
+}
+
+/* --------------------------- Oracle Recruiting Cloud ---------------------- */
+
+/**
+ * Oracle Recruiting Cloud (ORC), the ATS inside Oracle Fusion HCM.
+ *
+ * Each customer gets its own Fusion pod, so the host varies
+ * (`eeho.fa.us2.oraclecloud.com`, `<tenant>.fa.em2.oraclecloud.com`, ...) and
+ * the careers site within it is identified by a `siteNumber` such as `CX_1`.
+ * Both are supplied per target: `host` and `token`.
+ *
+ *   GET {host}/hcmRestApi/resources/latest/recruitingCEJobRequisitions
+ *       ?onlyData=true&expand=requisitionList
+ *       &finder=findReqs;siteNumber={site},limit=,offset=
+ *
+ * The response nests the page inside `items[0].requisitionList`, and the true
+ * total arrives as `items[0].TotalJobsCount` -- read once, because later pages
+ * report it inconsistently. This is the same trap Workday sets, where trusting
+ * a per-page total truncated a 1,436-job board to 40.
+ */
+export class OracleRecruitingAdapter extends BaseAdapter {
+  readonly id: SourceId = 'custom'
+  readonly displayName = 'Oracle Recruiting Cloud'
+  readonly hostPatterns = [/(^|\.)oraclecloud\.com$/i]
+  protected discoveryPattern = '*.oraclecloud.com/hcmRestApi/*'
+  protected healthUrl() {
+    return (
+      'https://eeho.fa.us2.oraclecloud.com/hcmRestApi/resources/latest/' +
+      'recruitingCEJobRequisitions?onlyData=true&expand=requisitionList' +
+      '&finder=findReqs;siteNumber=CX_1,limit=1'
+    )
+  }
+
+  async fetchJobs(target: SourceTarget, opts: FetchOptions = {}): Promise<FetchResult> {
+    const warnings: string[] = []
+    const all: RawJob[] = []
+    const host = target.host
+    const site = target.token || 'CX_1'
+    if (!host) {
+      return { jobs: [], incremental: false, warnings: ['Oracle target has no host'] }
+    }
+
+    const PAGE = 200
+    let offset = 0
+    let total = Infinity
+    const maxPages = opts.maxPages ?? 60
+
+    for (let page = 0; page < maxPages; page++) {
+      const url =
+        `https://${host}/hcmRestApi/resources/latest/recruitingCEJobRequisitions` +
+        `?onlyData=true&expand=requisitionList` +
+        `&finder=findReqs;siteNumber=${encodeURIComponent(site)},limit=${PAGE},offset=${offset}`
+
+      const data = await this.json<{ items?: any[] }>(url, {
+        cacheTtlMs: this.ttl.jobListing,
+        signal: opts.signal,
+      })
+
+      const item = data?.items?.[0]
+      const rows: any[] = item?.requisitionList ?? []
+      if (rows.length === 0) break
+
+      // Only the first page's count is trustworthy.
+      if (page === 0) {
+        const reported = Number(item?.TotalJobsCount ?? 0)
+        if (reported > 0) total = reported
+      }
+
+      all.push(...this.mapRows(rows, target, (r) => {
+        const id = String(r.Id ?? r.RequisitionId ?? '')
+        const others: string[] = Array.isArray(r.OtherLocations) ? r.OtherLocations : []
+        return {
+          source: this.id,
+          target,
+          sourceId: id,
+          requisitionId: r.RequisitionId ? String(r.RequisitionId) : id,
+          title: String(r.Title ?? '').trim(),
+          company: target.companyName ?? null,
+          companyDomain: target.companyDomain ?? null,
+          locationRaw: r.PrimaryLocation ?? null,
+          additionalLocations: others,
+          descriptionHtml: r.ShortDescriptionStr ?? r.ExternalDescriptionStr ?? null,
+          department: r.JobFamily ?? r.Category ?? null,
+          employmentType: r.JobType ?? null,
+          // ORC states the workplace explicitly; do not infer it from prose.
+          remoteFlag: r.WorkplaceTypeCode
+            ? /remote/i.test(String(r.WorkplaceTypeCode))
+            : null,
+          postedAt: toIso(r.PostedDate),
+          updatedAt: toIso(r.PostedDate),
+          applicationUrl: `https://${host}/hcmUI/CandidateExperience/en/sites/${site}/job/${id}`,
+          canonicalUrl: `https://${host}/hcmUI/CandidateExperience/en/sites/${site}/job/${id}`,
+          extra: { workplaceTypeCode: r.WorkplaceTypeCode ?? null },
+        }
+      }, warnings))
+
+      // Advance by what actually arrived. ORC returns slightly fewer than the
+      // limit on some pages (offset=200 yields 199), so treating a short page
+      // as the end of the board truncated Oracle from 2,197 jobs to 306.
+      offset += rows.length
+      if (offset >= total) break
     }
 
     return { jobs: all, incremental: false, warnings }

@@ -1,3 +1,4 @@
+import { canonicalCountryName, isCountryName, stripFacilityDecoration } from '../location'
 import type { CanonicalJob } from '../sources/types'
 
 /**
@@ -33,6 +34,17 @@ export interface ResolutionReport {
   unresolvedRows: number
   /** city -> chosen country, for auditing. */
   decisions: { city: string; from: string; to: string; evidence: number; against: number }[]
+
+  /** Rows that had a city but no country at all. */
+  orphanRows: number
+  /** Filled because the "city" is itself an ISO country/territory. */
+  filledAsCityState: number
+  /** Filled from corpus evidence about that city. */
+  filledFromEvidence: number
+  /** Left alone because the evidence was too thin to trust. */
+  orphansLeftUnfilled: number
+  /** City names cleaned of legal-entity / facility decoration. */
+  citiesCleaned: number
 }
 
 /** Country each ambiguous code maps to when read as a country rather than a state. */
@@ -53,6 +65,8 @@ export function resolveAmbiguousLocations(
 ): { jobs: CanonicalJob[]; report: ResolutionReport } {
   const report: ResolutionReport = {
     ambiguousRows: 0, resolvedRows: 0, unresolvedRows: 0, decisions: [],
+    orphanRows: 0, filledAsCityState: 0, filledFromEvidence: 0,
+    orphansLeftUnfilled: 0, citiesCleaned: 0,
   }
 
   // --- 1. Gather evidence from rows that were never ambiguous.
@@ -120,5 +134,113 @@ export function resolveAmbiguousLocations(
     }
   })
 
-  return { jobs: out, report }
+  return { jobs: fillMissingCountries(out, report), report }
+}
+
+/* -------------------------- missing-country backfill ------------------------ */
+
+/**
+ * Fill in the country for rows that have a city and no country.
+ *
+ * Bank ATS feeds are full of these: NatWest writes "Bangalore", MUFG writes
+ * "Mufg Global Service Private Ltd. - Bengaluru (bcit)". Both are plainly in
+ * India, and both were invisible to a country filter -- 47% of one bank crawl
+ * had a city but no country.
+ *
+ * Two rules, in order of confidence:
+ *
+ *   1. The "city" is itself an ISO region. Singapore, Hong Kong, Luxembourg and
+ *      Macao are city-states or territories, so the country is not being
+ *      inferred at all -- it is already written in the field.
+ *
+ *   2. Corpus evidence, under a deliberately strict gate. The naive version of
+ *      this rule is dangerous: a plain majority vote assigned Hong Kong to
+ *      SINGAPORE on the strength of three mislabelled rows. So a fill requires
+ *      MIN_EVIDENCE rows AND DOMINANCE of the vote, and rule 1 runs first so
+ *      that territories never reach the vote at all.
+ *
+ * Anything that fails both rules keeps its null country and is counted, so the
+ * remaining gap stays visible instead of being papered over.
+ */
+const MIN_EVIDENCE = 5
+const DOMINANCE = 0.8
+
+function fillMissingCountries(
+  jobs: CanonicalJob[],
+  report: ResolutionReport
+): CanonicalJob[] {
+  // Evidence only from rows that already have both parts.
+  const evidence = new Map<string, Map<string, number>>()
+  for (const j of jobs) {
+    if (!j.city || !j.country) continue
+    const key = j.city.toLowerCase()
+    const inner = evidence.get(key) ?? new Map<string, number>()
+    inner.set(j.country, (inner.get(j.country) ?? 0) + 1)
+    evidence.set(key, inner)
+  }
+
+  const voteCache = new Map<string, string | null>()
+  const vote = (city: string): string | null => {
+    const key = city.toLowerCase()
+    if (voteCache.has(key)) return voteCache.get(key)!
+    const counts = evidence.get(key)
+    let choice: string | null = null
+    if (counts) {
+      const total = [...counts.values()].reduce((a, b) => a + b, 0)
+      const [best, n] = [...counts].sort((a, b) => b[1] - a[1])[0]
+      if (n >= MIN_EVIDENCE && n / total >= DOMINANCE) choice = best
+    }
+    voteCache.set(key, choice)
+    return choice
+  }
+
+  return jobs.map((job) => {
+    // Clean the city name regardless of whether the country is known, so the
+    // same office stops appearing as several different cities.
+    let city = job.city
+    let cleaned = false
+    if (city) {
+      const stripped = stripFacilityDecoration(city)
+      if (stripped !== city) { city = stripped; cleaned = true; report.citiesCleaned++ }
+    }
+
+    if (!city) return job
+    if (job.country) return cleaned ? withCity(job, city) : job
+
+    report.orphanRows++
+
+    // Rule 1: the city is itself a country or territory. Store the canonical
+    // spelling so "Hong Kong" and "Hong Kong SAR China" do not become two
+    // separate entries in the country facet.
+    const asRegion = canonicalCountryName(city)
+    if (asRegion) {
+      report.filledAsCityState++
+      return withCity(job, city, asRegion)
+    }
+
+    // Rule 2: corpus evidence, strictly gated.
+    const voted = vote(city)
+    if (voted) {
+      report.filledFromEvidence++
+      return withCity(job, city, voted)
+    }
+
+    report.orphansLeftUnfilled++
+    return cleaned ? withCity(job, city) : job
+  })
+}
+
+/** Rewrite city (and optionally country), keeping display strings consistent. */
+function withCity(job: CanonicalJob, city: string, country?: string): CanonicalJob {
+  const nextCountry = country ?? job.country
+  const display = [city, job.state, nextCountry].filter(Boolean).join(', ')
+  return {
+    ...job,
+    city,
+    country: nextCountry,
+    locationDisplay: display,
+    locations: job.locations.map((l, i) =>
+      i === 0 ? { ...l, city, country: nextCountry, display } : l
+    ),
+  }
 }

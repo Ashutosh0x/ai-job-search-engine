@@ -153,7 +153,7 @@ export async function runIngest(options: IngestOptions): Promise<{
   let done = 0
   await pooled(targets, concurrency, async (target) => {
     const t0 = Date.now()
-    const adapter = getAdapter(target.source, target.token)
+    const adapter = getAdapter(target.source, target.token, target.host)
 
     if (!adapter) {
       runs.push({

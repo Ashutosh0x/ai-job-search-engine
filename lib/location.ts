@@ -181,6 +181,151 @@ function looksLikeStreetAddress(token: string): boolean {
 }
 
 /**
+ * Everyday spellings of ISO regions -> the canonical ICU name.
+ *
+ * ICU decorates several region names in ways nobody writes in a job posting:
+ * "Hong Kong SAR China", "Macao SAR China", "Congo - Kinshasa",
+ * "Côte d'Ivoire" with a curly apostrophe. An employer writes "Hong Kong".
+ * Matching only the decorated form meant Hong Kong was not recognised as a
+ * region at all, so its postings fell through to a majority vote that put them
+ * in Singapore.
+ *
+ * Rather than hand-maintain the exceptions, each ICU name is reduced to the
+ * forms people actually type, and every variant points back at the canonical
+ * name so one spelling is stored.
+ */
+const COUNTRY_LOOKUP: Map<string, string> = (() => {
+  const map = new Map<string, string>()
+
+  const variants = (name: string): string[] => {
+    const out = new Set<string>()
+    const base = name.trim()
+    out.add(base)
+    // Strip diacritics and normalise curly apostrophes: "Côte d’Ivoire".
+    const plain = base.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[’‘]/g, "'")
+    out.add(plain)
+    for (const v of [...out]) {
+      // "Hong Kong SAR China" -> "Hong Kong"; "Macao SAR China" -> "Macao".
+      const noSar = v.replace(/\s+SAR\b.*$/i, '').trim()
+      if (noSar) out.add(noSar)
+      // "Congo - Kinshasa" -> "Congo".
+      const noDash = v.split(' - ')[0].trim()
+      if (noDash) out.add(noDash)
+    }
+    return [...out].filter(Boolean)
+  }
+
+  const add = (canonical: string) => {
+    for (const v of variants(canonical)) {
+      const key = v.toLowerCase()
+      // First writer wins, so a decorated name never overwrites a plain one.
+      if (!map.has(key)) map.set(key, canonical)
+    }
+  }
+
+  // ICU first: it is the only source with correct casing, and "first writer
+  // wins" means whatever runs first supplies the canonical spelling. Seeding
+  // from the lowercased KNOWN_COUNTRIES set first made "Singapore" resolve to
+  // "singapore", which then showed up lowercased in the country facet.
+  try {
+    const dn = new Intl.DisplayNames(['en'], { type: 'region' })
+    for (let a = 65; a <= 90; a++) {
+      for (let b = 65; b <= 90; b++) {
+        const code = String.fromCharCode(a) + String.fromCharCode(b)
+        try {
+          const name = dn.of(code)
+          if (name && name !== code) add(name)
+        } catch { /* not a valid region code */ }
+      }
+    }
+  } catch { /* Intl unavailable */ }
+  // Then the alias set, title-cased, for anything ICU does not emit.
+  for (const name of KNOWN_COUNTRIES) add(titleCase(name))
+
+  // Spellings ICU does not emit at all.
+  for (const [alias, canonical] of [
+    ['macau', 'Macao SAR China'],
+    ['hongkong', 'Hong Kong SAR China'],
+    ['uae', 'United Arab Emirates'],
+    ['holland', 'Netherlands'],
+  ] as const) {
+    if (!map.has(alias)) map.set(alias, canonical)
+  }
+  return map
+})()
+
+/**
+ * The canonical ISO region name for a string, or null if it names no region.
+ *
+ * Returns the canonical spelling so that "Hong Kong", "hongkong" and
+ * "Hong Kong SAR China" all store one value instead of three facet entries.
+ */
+export function canonicalCountryName(s: string | null | undefined): string | null {
+  if (!s) return null
+  const key = s.trim().toLowerCase().replace(/[’‘]/g, "'")
+  return (
+    COUNTRY_LOOKUP.get(key) ??
+    COUNTRY_LOOKUP.get(key.normalize('NFD').replace(/[̀-ͯ]/g, '')) ??
+    null
+  )
+}
+
+/**
+ * Is this string the name of an ISO 3166-1 region (country or territory)?
+ *
+ * Used to recognise city-states and territories. Employers write "Singapore"
+ * or "Hong Kong" as the whole location, which parses as a city with no
+ * country -- and then the posting is invisible to a country filter even though
+ * the country is sitting right there in the string.
+ */
+export function isCountryName(s: string | null | undefined): boolean {
+  return canonicalCountryName(s) !== null
+}
+
+/**
+ * Strip the legal-entity and facility decoration employers wrap city names in.
+ *
+ * Real examples from bank ATS feeds:
+ *   "Mufg Global Service Private Ltd. - Bengaluru (bcit)" -> "Bengaluru"
+ *   "Pune - Business Bay"                                 -> "Pune"
+ *   "Sydney Cbd Area"                                     -> "Sydney"
+ *   "Glasgow Campus"                                      -> "Glasgow"
+ *
+ * Each of these otherwise becomes its own one-off entry in the city facet, so
+ * the same office shows up as several different "cities".
+ *
+ * Only decoration is removed. If stripping would leave nothing, or leave
+ * something that no longer looks like a place name, the original is kept --
+ * mangling a city we simply do not recognise is worse than leaving it alone.
+ */
+export function stripFacilityDecoration(city: string): string {
+  let t = city.trim()
+  if (!t) return city
+
+  // "<Legal entity> - <City> (code)" -- take the segment after the last dash,
+  // which is where the place name sits in this pattern.
+  if (/\b(ltd|limited|pvt|private|inc|llc|gmbh|plc|corp|corporation|services?|solutions)\b/i.test(t) && t.includes('-')) {
+    const tail = t.split('-').pop()?.trim()
+    if (tail && tail.length > 2) t = tail
+  }
+
+  // Trailing parenthetical site codes: "Bengaluru (bcit)".
+  t = t.replace(/\s*\([^)]*\)\s*$/, '').trim()
+
+  // Facility words appended to a real city name.
+  t = t
+    .replace(/\s*[-–,]\s*(business\s*bay|tech\s*park|business\s*park|campus|office|branch|site|hub|centre|center|tower|plaza|building)\b.*$/i, '')
+    .replace(/\s+(cbd\s*area|cbd|metro\s*area|metropolitan\s*area|campus|office|branch|site|hub)$/i, '')
+    .trim()
+
+  t = t.replace(/[\s,\-–]+$/, '').trim()
+
+  // Refuse to return something that is no longer a plausible place name.
+  if (t.length < 2 || /^\d+$/.test(t)) return city
+  return t
+}
+
+/**
  * Parse one location string. Handles the Workday "US-CA-San Francisco" form,
  * comma-separated forms, and bare remote markers.
  */
