@@ -171,6 +171,36 @@ mkdirSync(dirname(OUT), { recursive: true })
 // change the schema, only what gets loaded per request.
 const SNIPPET = 600
 
+/**
+ * Government sponsor licences, if scripts/build-sponsors.mjs has been run.
+ *
+ * This is kept strictly separate from `visaStatus`. visaStatus is inferred from
+ * what the posting says; a licence is a published fact about the EMPLOYER. An
+ * employer holding a Skilled Worker licence does not mean this particular role
+ * is open to sponsorship, so the two are never merged into one field.
+ *
+ * Only licences covering a skilled-work route are attached: the register also
+ * lists religious, charity and seasonal routes, which are irrelevant here and,
+ * where they are the only routes held, usually indicate a different
+ * organisation that happens to share a name.
+ */
+let sponsorsBySlug = {}
+if (existsSync('public/data/sponsors.json')) {
+  try {
+    const s = JSON.parse(readFileSync('public/data/sponsors.json', 'utf8'))
+    for (const [slug, rec] of Object.entries(s.companies ?? {})) {
+      const good = (rec.licences ?? []).filter((l) => l.coversSkilledWork && !l.lowConfidence)
+      if (good.length) sponsorsBySlug[slug] = good
+    }
+    console.log(`sponsor licences loaded for ${Object.keys(sponsorsBySlug).length} companies`)
+  } catch (e) {
+    console.warn(`could not read sponsors.json: ${e.message}`)
+  }
+}
+
+const sponsorCountriesFor = (slug) =>
+  (sponsorsBySlug[slug] ?? []).map((l) => l.country)
+
 const slim = jobs.map((j) => ({
   id: j.id, source: j.source,
   company: j.company, companySlug: j.companySlug, companyDomain: j.companyDomain,
@@ -191,6 +221,9 @@ const slim = jobs.map((j) => ({
   visaStatus: j.visaStatus, visaTypes: j.visaTypes,
   // One quoted line is what the UI shows; the rest is archive.
   visaEvidence: (j.visaEvidence || []).slice(0, 1),
+  // Countries whose government register lists this EMPLOYER as licensed to
+  // sponsor skilled workers. Not a claim about this role.
+  sponsorCountries: sponsorCountriesFor(j.companySlug),
   qualityScore: j.qualityScore, ghostRisk: j.ghostRisk, ghostLabel: j.ghostLabel,
   companyValuationUsd: j.companyValuationUsd,
   duplicateConfidence: j.duplicateConfidence,
@@ -201,6 +234,9 @@ writeFileSync(OUT, JSON.stringify({
   generatedAt: report.finishedAt,
   jobCount: slim.length,
   report: { ...report, runs: undefined }, // runs are large; keep them out of the index
+  // Full licence detail (matched legal name, routes, source, publish date) for
+  // the company page; the per-job field carries only the country codes.
+  sponsors: sponsorsBySlug,
   jobs: slim,
 }))
 
