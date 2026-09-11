@@ -19,12 +19,22 @@ import {
 } from "lucide-react"
 import Navigation from "@/components/navigation"
 
+// Mirrors JobSearchResult in app/api/jobs/route.ts. The previous shape here
+// (numeric `id`, `absolute_url`) was the Greenhouse board API's, left over from
+// when this page read one company's board directly. Nothing served that shape
+// any more, and the `typeof job.id === "number"` guard below silently discarded
+// every row the API returned.
 interface Job {
-  id: number
+  id: string
   title: string
-  location: string
-  department: string
-  absolute_url: string
+  company: string
+  companySlug: string
+  location: string | null
+  department: string | null
+  employmentType: string | null
+  isRemote: boolean
+  postedAt: string | null
+  applyUrl: string
 }
 
 interface JobsResponse {
@@ -59,13 +69,16 @@ export default function ExploreJobsPage() {
 
       if (data.success && Array.isArray(data.jobs)) {
         // Ensure all job properties are properly typed
+        // Require only what the card cannot render without. `location` and
+        // `department` are legitimately null for many employers -- Workday's
+        // list endpoint publishes neither -- and demanding them here threw away
+        // real postings.
         const validJobs = data.jobs.filter(
           (job) =>
             job &&
-            typeof job.id === "number" &&
+            typeof job.id === "string" &&
             typeof job.title === "string" &&
-            typeof job.location === "string" &&
-            typeof job.department === "string",
+            typeof job.applyUrl === "string",
         )
 
         setJobs(validJobs)
@@ -101,8 +114,9 @@ export default function ExploreJobsPage() {
       filtered = filtered.filter(
         (job) =>
           job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          job.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          job.department.toLowerCase().includes(searchQuery.toLowerCase()),
+          (job.company ?? "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (job.location ?? "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (job.department ?? "").toLowerCase().includes(searchQuery.toLowerCase()),
       )
     }
 
@@ -114,7 +128,9 @@ export default function ExploreJobsPage() {
   }, [jobs, searchQuery, selectedDepartment])
 
   // Get unique departments for filter
-  const departments = Array.from(new Set(jobs.map((job) => job.department))).sort()
+  const departments = Array.from(
+    new Set(jobs.map((job) => job.department).filter((d): d is string => Boolean(d)))
+  ).sort()
 
   const handleRetry = () => {
     fetchJobs()
@@ -332,9 +348,13 @@ export default function ExploreJobsPage() {
                           <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white leading-tight mb-2">
                             {String(job.title || "Untitled Position")}
                           </CardTitle>
+                          <div className="flex items-center text-sm font-medium text-gray-800 dark:text-gray-200 mb-1">
+                            <Building2 className="w-4 h-4 mr-1 flex-shrink-0" />
+                            <span className="truncate">{String(job.company || "Unknown employer")}</span>
+                          </div>
                           <div className="flex items-center text-sm text-gray-600 dark:text-gray-400 mb-2">
                             <MapPin className="w-4 h-4 mr-1 flex-shrink-0" />
-                            <span className="truncate">{String(job.location || "Location TBD")}</span>
+                            <span className="truncate">{String(job.location || "Location not stated")}</span>
                           </div>
                         </div>
                         <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center ml-3">
@@ -351,14 +371,24 @@ export default function ExploreJobsPage() {
                         >
                           {String(job.department || "General")}
                         </Badge>
+                        {job.isRemote && (
+                          <Badge
+                            variant="secondary"
+                            className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300"
+                          >
+                            Remote
+                          </Badge>
+                        )}
                       </div>
 
                       <div className="flex items-center justify-between">
-                        <div className="text-sm text-gray-500 dark:text-gray-400">
-                          Job ID: {String(job.id || "N/A")}
+                        <div className="text-sm text-gray-500 dark:text-gray-400 truncate">
+                          {job.postedAt
+                            ? new Date(job.postedAt).toLocaleDateString()
+                            : "Date not published"}
                         </div>
                         <Button asChild className="bg-orange-500 hover:bg-orange-600 text-white text-sm px-4 py-2">
-                          <a href={String(job.absolute_url || "#")} target="_blank" rel="noopener noreferrer">
+                          <a href={job.applyUrl} target="_blank" rel="noopener noreferrer">
                             Apply Now
                             <ExternalLink className="w-3 h-3 ml-1" />
                           </a>
