@@ -187,7 +187,22 @@ export async function runIngest(options: IngestOptions): Promise<{
   const normalized: CanonicalJob[] = []
   for (const raw of rawJobs) {
     try {
-      normalized.push(normalizeJob(raw))
+      // Carry the CURATED slug through. Without it normalizeJob falls back to
+      // slugifying the domain, which silently diverges from the registry key
+      // for 36 of 143 entries -- so `COMPANY_BY_SLUG.get(job.companySlug)` at
+      // index time missed, and those employers lost their curated industry, HQ
+      // and (worst) the valuation's source and as-of date.
+      //
+      // It also MERGED companies that must stay apart: figure.ai and figure.com
+      // are different employers -- humanoid robotics and a lending business --
+      // and both derive to `figure`, so robotics roles were being filed under
+      // the fintech. The registry slug is the identity; the domain is not.
+      normalized.push(
+        normalizeJob(raw, {
+          companySlug: raw.target.companySlug,
+          companyName: raw.target.companyName,
+        })
+      )
     } catch {
       // Normalisation is pure, but a pathological posting should still not
       // take the batch down.

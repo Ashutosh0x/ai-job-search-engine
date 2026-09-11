@@ -50,6 +50,18 @@ export interface SourceTarget {
   /** Employer domain when known -- used to link to the company record. */
   companyDomain?: string
   companyName?: string
+  /**
+   * Curated registry slug, when this target came from the registry.
+   *
+   * This is the employer's IDENTITY and must survive into the canonical job.
+   * Deriving a slug from the domain instead diverges from the registry key for
+   * 36 of 143 entries -- and collapses genuinely different employers that share
+   * a domain stem (figure.ai and figure.com are unrelated companies).
+   *
+   * Optional because auto-discovered targets have no curated entry; those still
+   * fall back to the domain, which is the best identity available for them.
+   */
+  companySlug?: string
   /** Where this target came from, for the feedback loop. */
   discoveredVia?: string
   /** 0-1. How sure are we this target is what we think it is. */

@@ -260,6 +260,61 @@ export const COMPANIES: CompanyRecord[] = [
     industry: 'Aerospace & Defense', hqLocation: 'Arlington, VA', foundedYear: 1916,
     boards: [{ provider: 'workday', token: 'boeing', site: 'EXTERNAL_CAREERS', host: 'boeing.wd1.myworkdayjobs.com' }] },
 
+  // ---- Solana ecosystem, verified live 11 Sep 2026 ------------------------
+  //
+  // A note on what "Solana" means as an employer, because it is not one thing:
+  //
+  //   solana.com/careers  302s to jobs.solana.com, which is an ECOSYSTEM board
+  //     aggregating postings from independent companies building on Solana. It
+  //     is not Solana Labs' own board, and treating it as one would file other
+  //     companies' jobs under Solana.
+  //
+  //   Solana Labs' own board is Ashby `solanalabs`. SOLANA MOBILE IS NOT A
+  //     SEPARATE EMPLOYER -- its roles post to the same board and are
+  //     distinguished by Ashby's `team` field ("Solana Mobile" vs "Solana
+  //     Labs"). Registering it separately would double-count the same postings.
+  //
+  // The ecosystem companies below were discovered from that board's own links
+  // and each verified against its ATS before being added here.
+  { slug: 'solana-labs', name: 'Solana Labs', domain: 'solanalabs.com', valuationKind: 'unknown',
+    industry: 'Blockchain Infrastructure', hqLocation: 'San Francisco, CA', foundedYear: 2018,
+    boards: [{ provider: 'ashby', token: 'solanalabs' }] },
+  { slug: 'phantom', name: 'Phantom', domain: 'phantom.com', valuationKind: 'private',
+    reportedValuationUsd: 3_000_000_000, valuationAsOf: '2025-01-01',
+    valuationSource: 'Series C, reported Jan 2025',
+    industry: 'Crypto Wallet', hqLocation: 'Remote-first', foundedYear: 2021,
+    boards: [{ provider: 'ashby', token: 'phantom' }] },
+  { slug: 'ondo-finance', name: 'Ondo Finance', domain: 'ondo.finance', valuationKind: 'unknown',
+    industry: 'Tokenised Securities', hqLocation: 'New York, NY', foundedYear: 2021,
+    boards: [{ provider: 'greenhouse', token: 'ondofinance' }] },
+  { slug: 'wormhole-labs', name: 'Wormhole Labs', domain: 'wormhole.com', valuationKind: 'unknown',
+    industry: 'Cross-chain Infrastructure', hqLocation: 'Remote-first', foundedYear: 2021,
+    boards: [{ provider: 'ashby', token: 'wormholelabs' }] },
+  // Ashby token carries the .xyz -- `dourolabs` alone 404s, same trap as Mistral.
+  { slug: 'douro-labs', name: 'Douro Labs', domain: 'dourolabs.xyz', valuationKind: 'unknown',
+    industry: 'Blockchain Oracles (Pyth)', hqLocation: 'Remote-first', foundedYear: 2023,
+    boards: [{ provider: 'ashby', token: 'dourolabs.xyz' }] },
+  { slug: 'magic-eden', name: 'Magic Eden', domain: 'magiceden.io', valuationKind: 'private',
+    reportedValuationUsd: 1_600_000_000, valuationAsOf: '2022-06-01',
+    valuationSource: 'Series B, Jun 2022 -- note the age of this figure',
+    industry: 'NFT Marketplace', hqLocation: 'Remote-first', foundedYear: 2021,
+    boards: [{ provider: 'ashby', token: 'magiceden' }] },
+  { slug: 'helius', name: 'Helius', domain: 'helius.dev', valuationKind: 'unknown',
+    industry: 'Blockchain RPC Infrastructure', hqLocation: 'Remote-first', foundedYear: 2022,
+    boards: [{ provider: 'ashby', token: 'helius' }] },
+  { slug: 'rain-cards', name: 'Rain', domain: 'rain.xyz', valuationKind: 'unknown',
+    industry: 'Crypto Card Issuing', hqLocation: 'Remote-first', foundedYear: 2021,
+    boards: [{ provider: 'ashby', token: 'rain' }] },
+  { slug: 'baton', name: 'Baton', domain: 'baton.finance', valuationKind: 'unknown',
+    industry: 'Crypto Finance', hqLocation: 'Remote-first',
+    boards: [{ provider: 'ashby', token: 'batoncorporation' }] },
+  { slug: 'edisyl', name: 'Edisyl', domain: 'edisyl.com', valuationKind: 'unknown',
+    industry: 'Crypto', hqLocation: 'Remote-first',
+    boards: [{ provider: 'ashby', token: 'edisyl' }] },
+  { slug: 'fomo-labs', name: 'Fomo Labs', domain: 'fomo.xyz', valuationKind: 'unknown',
+    industry: 'Crypto', hqLocation: 'Remote-first',
+    boards: [{ provider: 'ashby', token: 'fomo-labs' }] },
+
   { slug: 'stripe', name: 'Stripe', domain: 'stripe.com', valuationKind: 'private',
     reportedValuationUsd: 106_500_000_000, valuationAsOf: '2025-02-27',
     valuationSource: 'Tender offer, Feb 2025',
