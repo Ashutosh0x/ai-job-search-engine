@@ -384,6 +384,47 @@ export const COMPANIES: CompanyRecord[] = [
     industry: 'Venture Capital (Crypto)', hqLocation: 'San Francisco, CA', foundedYear: 2018,
     boards: [{ provider: 'greenhouse', token: 'paradigm' }] },
 
+  // ---- Stablecoins, custody and security audit, verified 11 Sep 2026 ------
+  // The employers behind tokenised-dollar rails and the firms that audit them.
+  { slug: 'blackrock', name: 'BlackRock', domain: 'blackrock.com', ticker: 'BLK', valuationKind: 'public',
+    industry: 'Asset Management', hqLocation: 'New York, NY', foundedYear: 1988,
+    boards: [{ provider: 'workday', token: 'blackrock', site: 'BlackRock_Professional', host: 'blackrock.wd1.myworkdayjobs.com' }] },
+  // Recruitee, not the usual three -- found by following tether.io/careers.
+  { slug: 'tether', name: 'Tether', domain: 'tether.io', valuationKind: 'unknown',
+    industry: 'Stablecoin Issuer (USDT)', hqLocation: 'El Salvador', foundedYear: 2014,
+    boards: [{ provider: 'recruitee', token: 'tether' }] },
+  { slug: 'paxos', name: 'Paxos', domain: 'paxos.com', valuationKind: 'unknown',
+    industry: 'Stablecoin Infrastructure (USDP/PYUSD)', hqLocation: 'New York, NY', foundedYear: 2012,
+    boards: [{ provider: 'ashby', token: 'paxos' }] },
+  // Ashby token carries the TLD: `kraken.com`, not `kraken`. Third instance of
+  // this shape in the registry (Mistral, Douro Labs) -- it is a convention some
+  // employers pick at setup, not a one-off.
+  { slug: 'kraken', name: 'Kraken', domain: 'kraken.com', valuationKind: 'unknown',
+    industry: 'Crypto Exchange', hqLocation: 'San Francisco, CA', foundedYear: 2011,
+    boards: [{ provider: 'ashby', token: 'kraken.com' }] },
+  { slug: 'animoca-brands', name: 'Animoca Brands', domain: 'animocabrands.com', valuationKind: 'unknown',
+    industry: 'Web3 Gaming & Ventures', hqLocation: 'Hong Kong', foundedYear: 2014,
+    boards: [{ provider: 'lever', token: 'animocabrands' }] },
+
+  // Security audit and bug-bounty firms. They sit next to the issuers in the
+  // same supply chain, and they hire the reverse-engineering skill set that has
+  // no other obvious home in this registry.
+  { slug: 'certik', name: 'CertiK', domain: 'certik.com', valuationKind: 'unknown',
+    industry: 'Smart Contract Auditing', hqLocation: 'New York, NY', foundedYear: 2018,
+    boards: [{ provider: 'lever', token: 'certik' }] },
+  { slug: 'openzeppelin', name: 'OpenZeppelin', domain: 'openzeppelin.com', valuationKind: 'unknown',
+    industry: 'Smart Contract Security', hqLocation: 'Remote-first', foundedYear: 2015,
+    boards: [{ provider: 'greenhouse', token: 'openzeppelin' }] },
+  { slug: 'trail-of-bits', name: 'Trail of Bits', domain: 'trailofbits.com', valuationKind: 'unknown',
+    industry: 'Security Research & Auditing', hqLocation: 'New York, NY', foundedYear: 2012,
+    boards: [{ provider: 'workable', token: 'trailofbits' }] },
+  { slug: 'hackerone', name: 'HackerOne', domain: 'hackerone.com', valuationKind: 'unknown',
+    industry: 'Bug Bounty Platform', hqLocation: 'San Francisco, CA', foundedYear: 2012,
+    boards: [{ provider: 'ashby', token: 'hackerone' }] },
+  { slug: 'bugcrowd', name: 'Bugcrowd', domain: 'bugcrowd.com', valuationKind: 'unknown',
+    industry: 'Bug Bounty Platform', hqLocation: 'San Francisco, CA', foundedYear: 2012,
+    boards: [{ provider: 'greenhouse', token: 'bugcrowd' }] },
+
   { slug: 'stripe', name: 'Stripe', domain: 'stripe.com', valuationKind: 'private',
     reportedValuationUsd: 106_500_000_000, valuationAsOf: '2025-02-27',
     valuationSource: 'Tender offer, Feb 2025',
