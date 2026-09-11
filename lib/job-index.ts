@@ -1,6 +1,7 @@
 import { readFile } from 'fs/promises'
 import path from 'path'
 import { parseIntent, describeIntent, type ParsedIntent } from './search/intent'
+import { buildIndex, retrieve, type BuiltIndex } from './search/inverted-index'
 import { rankJob, explainRank, DEFAULT_WEIGHTS } from './search/rank'
 import {
   COMPANY_BY_SLUG,
@@ -52,6 +53,12 @@ export interface IndexedJob {
   region?: string | null
   country?: string | null
   locationKeys?: string[]
+  /** v2-only fields the loader attaches; optional so the v1 snapshot still types. */
+  skills?: string[]
+  seniority?: string | null
+  freshnessScore?: number
+  isDirectApplication?: boolean
+  sourceCount?: number
 }
 
 export interface IndexedCompany extends CompanyRecord {
@@ -71,6 +78,16 @@ interface Snapshot {
 
 let cache: { data: Snapshot; loadedAt: number } | null = null
 const CACHE_TTL_MS = 5 * 60 * 1000
+
+/**
+ * How many candidates the inverted index returns before filtering and ranking.
+ *
+ * This is the recall/latency dial. Too small and a narrow structured filter
+ * (say country=Vietnam) can empty an otherwise good candidate set; too large
+ * and we are back to scanning. 1,500 keeps the pool wide enough that the
+ * filters below still have material to work with.
+ */
+const RETRIEVAL_DEPTH = 1500
 
 /**
  * Load the search index.
@@ -262,6 +279,11 @@ export interface SearchResult {
   page: number
   pageSize: number
   totalPages: number
+  /**
+   * Present when a keyword query ran. `matchedInCorpus` is how many postings
+   * contain a query term; `examined` is how many the ranker actually saw.
+   */
+  retrieval?: { matchedInCorpus: number | null; examined: number; truncated: boolean }
   facets: {
     departments: { value: string; count: number }[]
     companies: { value: string; label: string; count: number }[]
@@ -276,6 +298,30 @@ export interface SearchResult {
   source: 'snapshot'
 }
 
+/**
+ * Inverted index over the loaded snapshot.
+ *
+ * Built lazily on first keyword search and keyed by the snapshot object itself,
+ * so a snapshot reload naturally invalidates it without any explicit cache
+ * plumbing. Building costs one pass; not building costs a full corpus scan on
+ * every single request.
+ */
+let bm25: { forSnapshot: unknown; index: BuiltIndex } | null = null
+
+function indexFor(snapshot: Snapshot): BuiltIndex {
+  if (bm25 && bm25.forSnapshot === snapshot) return bm25.index
+  const built = buildIndex(
+    snapshot.jobs.map((j) => ({
+      title: j.title,
+      department: j.department,
+      descriptionText: j.descriptionText,
+      skills: j.skills,
+    }))
+  )
+  bm25 = { forSnapshot: snapshot, index: built }
+  return built
+}
+
 export async function searchJobs(query: JobQuery): Promise<SearchResult | null> {
   const index = await loadIndex()
   if (!index) return null
@@ -287,11 +333,38 @@ export async function searchJobs(query: JobQuery): Promise<SearchResult | null> 
     ? Date.now() - query.postedWithinDays * 24 * 60 * 60 * 1000
     : null
 
-  let rows = index.jobs.map((job) => ({
-    ...job,
-    company: companyBySlug.get(job.companySlug) ?? null,
-    score: relevance(job, qTokens),
-  }))
+  // RETRIEVE, then score. Spreading all 225k rows before filtering was the
+  // single largest cost in this function; the inverted index visits only the
+  // postings that contain a query term. With no keyword query there is nothing
+  // to retrieve on, so the structured filters below do the narrowing instead.
+  let rows: (IndexedJob & { company: IndexedCompany | null; score: number })[]
+  // Corpus-wide match count, so `total` never reports the retrieval depth as
+  // though it were the number of matching jobs.
+  let retrievalTotal: number | null = null
+  let retrievalTruncated = false
+
+  if (qTokens.length) {
+    const result = retrieve(indexFor(index), query.q!, RETRIEVAL_DEPTH)
+    retrievalTotal = result.totalMatched
+    retrievalTruncated = result.truncated
+    rows = result.candidates.map((c) => {
+      const job = index.jobs[c.doc]
+      return {
+        ...job,
+        company: companyBySlug.get(job.companySlug) ?? null,
+        // BM25 is on a different scale from the old field-boost sum. Scale it
+        // so downstream consumers comparing against historical values are not
+        // silently surprised by a 30x shift in magnitude.
+        score: c.score * 5,
+      }
+    })
+  } else {
+    rows = index.jobs.map((job) => ({
+      ...job,
+      company: companyBySlug.get(job.companySlug) ?? null,
+      score: 0,
+    }))
+  }
 
   // ---- Filters ------------------------------------------------------------
   if (qTokens.length) {
@@ -413,6 +486,15 @@ export async function searchJobs(query: JobQuery): Promise<SearchResult | null> 
     facets,
     generatedAt: index.generatedAt,
     source: 'snapshot',
+    // Retrieval is depth-capped, so `total` counts what survived filtering
+    // WITHIN that cap -- it is not the corpus-wide match count. Saying so is
+    // the difference between an honest "showing the top 1,500 of 8,214" and a
+    // silent "1,500 results" that looks like the whole truth.
+    ...(retrievalTruncated
+      ? { retrieval: { matchedInCorpus: retrievalTotal, examined: RETRIEVAL_DEPTH, truncated: true } }
+      : retrievalTotal !== null
+        ? { retrieval: { matchedInCorpus: retrievalTotal, examined: retrievalTotal, truncated: false } }
+        : {}),
   }
 }
 

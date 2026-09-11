@@ -40,6 +40,21 @@ const onlyTag = argv.includes('--only') ? argv[argv.indexOf('--only') + 1] : nul
 /* ------------------------------ judgment helpers -------------------------- */
 
 const text = (j) => `${j.title ?? ''} ${(j.skills ?? []).join(' ')}`.toLowerCase()
+/**
+ * Company name, whichever shape the record is in.
+ *
+ * smartSearch returns `company` as a display string; a raw index row carries
+ * `companyName` and may carry `company` as the joined company OBJECT. Reading
+ * `.toLowerCase()` blindly crashes on the object form, which is why the pool
+ * computation -- which runs over raw rows -- blew up while the result-side
+ * checks passed.
+ */
+const companyName = (j) => {
+  const c = j.company
+  if (typeof c === 'string') return c.toLowerCase()
+  if (c && typeof c.name === 'string') return c.name.toLowerCase()
+  return String(j.companyName ?? '').toLowerCase()
+}
 const titleHas = (j, ...words) => words.some((w) => (j.title ?? '').toLowerCase().includes(w))
 const anyText = (j, ...words) => words.some((w) => text(j).includes(w))
 const inCountry = (j, c) => (j.country ?? '').toLowerCase() === c.toLowerCase()
@@ -154,11 +169,11 @@ const QUERIES = [
 
   // --- company ------------------------------------------------------------
   { q: 'jobs at NVIDIA', tags: ['company'],
-    rel: (j) => (j.company ?? '').toLowerCase().includes('nvidia') },
+    rel: (j) => companyName(j).includes('nvidia') },
   { q: 'engineering jobs at JPMorgan', tags: ['company'],
-    rel: (j) => (j.company ?? '').toLowerCase().includes('jpmorgan') },
+    rel: (j) => companyName(j).includes('jpmorgan') },
   { q: 'AI jobs at OpenAI', tags: ['company'],
-    rel: (j) => (j.company ?? '').toLowerCase().includes('openai') },
+    rel: (j) => companyName(j).includes('openai') },
 ]
 
 /* --------------------------------- metrics -------------------------------- */
