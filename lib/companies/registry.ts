@@ -121,6 +121,64 @@ export const COMPANIES: CompanyRecord[] = [
     valuationSource: 'Series K, reported Aug 2025',
     industry: 'Data & AI Platform', hqLocation: 'San Francisco, CA', foundedYear: 2013,
     boards: [{ provider: 'greenhouse', token: 'databricks' }] },
+  // ---- Frontier AI labs and AI-native products, verified 11 Sep 2026 ------
+  // Valuations here are last publicly reported post-money rounds. They are
+  // curated with a source and an as-of date because no free API reports private
+  // valuations; the UI must show the date rather than imply currency.
+  { slug: 'xai', name: 'xAI', domain: 'x.ai', valuationKind: 'private',
+    reportedValuationUsd: 200_000_000_000, valuationAsOf: '2025-12-31',
+    valuationSource: 'Last widely reported private round; figure is contested -- treat as approximate',
+    industry: 'Artificial Intelligence', hqLocation: 'Palo Alto, CA', foundedYear: 2023,
+    boards: [{ provider: 'greenhouse', token: 'xai' }] },
+  { slug: 'perplexity', name: 'Perplexity AI', domain: 'perplexity.ai', valuationKind: 'private',
+    reportedValuationUsd: 20_000_000_000, valuationAsOf: '2025-09-01',
+    valuationSource: 'Reported funding round, Sep 2025',
+    industry: 'AI Search', hqLocation: 'San Francisco, CA', foundedYear: 2022,
+    boards: [{ provider: 'ashby', token: 'perplexity' }] },
+  { slug: 'cursor-anysphere', name: 'Cursor (Anysphere)', domain: 'cursor.com', valuationKind: 'private',
+    reportedValuationUsd: 29_300_000_000, valuationAsOf: '2025-11-01',
+    valuationSource: 'Series D, reported Nov 2025',
+    industry: 'AI Developer Tools', hqLocation: 'San Francisco, CA', foundedYear: 2022,
+    boards: [{ provider: 'ashby', token: 'cursor' }] },
+  { slug: 'harvey', name: 'Harvey', domain: 'harvey.ai', valuationKind: 'private',
+    reportedValuationUsd: 8_000_000_000, valuationAsOf: '2025-06-01',
+    valuationSource: 'Series E, reported Jun 2025',
+    industry: 'Legal AI', hqLocation: 'San Francisco, CA', foundedYear: 2022,
+    boards: [{ provider: 'ashby', token: 'harvey' }] },
+  { slug: 'sierra', name: 'Sierra', domain: 'sierra.ai', valuationKind: 'private',
+    reportedValuationUsd: 10_000_000_000, valuationAsOf: '2025-09-01',
+    valuationSource: 'Reported round, Sep 2025',
+    industry: 'Conversational AI', hqLocation: 'San Francisco, CA', foundedYear: 2023,
+    boards: [{ provider: 'ashby', token: 'sierra' }] },
+  { slug: 'cognition', name: 'Cognition', domain: 'cognition.ai', valuationKind: 'private',
+    reportedValuationUsd: 10_200_000_000, valuationAsOf: '2025-08-01',
+    valuationSource: 'Reported round following Windsurf acquisition, Aug 2025',
+    industry: 'AI Software Engineering', hqLocation: 'San Francisco, CA', foundedYear: 2023,
+    boards: [{ provider: 'ashby', token: 'cognition' }] },
+  { slug: 'suno', name: 'Suno', domain: 'suno.com', valuationKind: 'private',
+    reportedValuationUsd: 2_450_000_000, valuationAsOf: '2025-11-01',
+    valuationSource: 'Series C, reported Nov 2025',
+    industry: 'Generative Audio', hqLocation: 'Cambridge, MA', foundedYear: 2022,
+    boards: [{ provider: 'ashby', token: 'suno' }] },
+  // Two distinct employers share the name "Figure" and they are NOT the same
+  // company: `figureai` is the humanoid-robotics firm, `figure` is Figure
+  // Technologies, a lending/fintech business. Merging them on name would
+  // attribute robotics roles to a mortgage company. Separate slugs, separate
+  // domains, and this comment so nobody "fixes" it later.
+  { slug: 'figure-ai', name: 'Figure AI', domain: 'figure.ai', valuationKind: 'private',
+    reportedValuationUsd: 39_000_000_000, valuationAsOf: '2025-09-01',
+    valuationSource: 'Series C, reported Sep 2025',
+    industry: 'Humanoid Robotics', hqLocation: 'San Jose, CA', foundedYear: 2022,
+    boards: [{ provider: 'greenhouse', token: 'figureai' }] },
+  { slug: 'figure-technologies', name: 'Figure Technologies', domain: 'figure.com', valuationKind: 'unknown',
+    industry: 'Fintech / Lending', hqLocation: 'New York, NY', foundedYear: 2018,
+    boards: [{ provider: 'greenhouse', token: 'figure' }] },
+  { slug: 'runway', name: 'Runway', domain: 'runwayml.com', valuationKind: 'private',
+    reportedValuationUsd: 3_000_000_000, valuationAsOf: '2025-04-01',
+    valuationSource: 'Series D, reported Apr 2025',
+    industry: 'Generative Video', hqLocation: 'New York, NY', foundedYear: 2018,
+    boards: [{ provider: 'ashby', token: 'runway' }] },
+
   { slug: 'stripe', name: 'Stripe', domain: 'stripe.com', valuationKind: 'private',
     reportedValuationUsd: 106_500_000_000, valuationAsOf: '2025-02-27',
     valuationSource: 'Tender offer, Feb 2025',
@@ -311,6 +369,13 @@ export const COMPANIES: CompanyRecord[] = [
     boards: [{ provider: 'workday', token: 'paypal', site: 'jobs', host: 'paypal.wd1.myworkdayjobs.com' }] },
   { slug: 'mastercard', name: 'Mastercard', domain: 'mastercard.com', ticker: 'MA', valuationKind: 'public', industry: 'Fintech / Payments', hqLocation: 'Purchase, NY', foundedYear: 1966,
     boards: [{ provider: 'workday', token: 'mastercard', site: 'CorporateCareers', host: 'mastercard.wd1.myworkdayjobs.com' }] },
+  // Visa was missed by an earlier shard sweep that guessed `visa.wd1` with site
+  // names like `External` and `Jobs`. It is actually wd5 with the site literally
+  // named `Visa`. Found by following corporate.visa.com/en/jobs/, which 302s
+  // straight to the board -- the general lesson being that the employer's own
+  // careers link resolves a tenant faster than guessing shard/site pairs.
+  { slug: 'visa', name: 'Visa', domain: 'visa.com', ticker: 'V', valuationKind: 'public', industry: 'Fintech / Payments', hqLocation: 'San Francisco, CA', foundedYear: 1958,
+    boards: [{ provider: 'workday', token: 'visa', site: 'Visa', host: 'visa.wd5.myworkdayjobs.com' }] },
   { slug: 'intel', name: 'Intel', domain: 'intel.com', ticker: 'INTC', valuationKind: 'public', industry: 'Semiconductors', hqLocation: 'Santa Clara, CA', foundedYear: 1968,
     boards: [{ provider: 'workday', token: 'intel', site: 'External', host: 'intel.wd1.myworkdayjobs.com' }] },
   { slug: 'workday-inc', name: 'Workday', domain: 'workday.com', ticker: 'WDAY', valuationKind: 'public', industry: 'Enterprise Software / HR', hqLocation: 'Pleasanton, CA', foundedYear: 2005,
