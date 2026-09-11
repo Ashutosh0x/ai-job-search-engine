@@ -27,6 +27,7 @@ const SUITES = [
   'test-location.mjs',
   'test-retrieval.mjs',
   'test-registry-slugs.mjs',
+  'test-merge.mjs',
   'test-hydration.mjs',
   'test-resume.mjs',
   'test-resume-falsepos.mjs',

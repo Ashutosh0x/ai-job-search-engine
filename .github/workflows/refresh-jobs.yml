@@ -1,0 +1,80 @@
+name: Refresh job index
+
+# Tiered polling, because the platforms differ by two orders of magnitude in
+# cost. Measured per-board averages from this repo's own crawl reports:
+#   Greenhouse ~0.4s, Ashby ~0.7s   -> cheap, poll often
+#   SmartRecruiters ~1-6s           -> moderate
+#   Workday ~23-101s, Eightfold ~50s -> expensive, poll daily
+#
+# Polling everything on the fast cadence would be one continuous crawl against
+# 1,200 employers and would still leave each board ~20 minutes stale, so it
+# would cost far more and deliver less.
+on:
+  schedule:
+    - cron: '*/15 * * * *'   # hot   — Greenhouse/Ashby/Lever/Workable
+    - cron: '0 */3 * * *'    # warm  — SmartRecruiters/Recruitee/Teamtailor
+    - cron: '0 4 * * *'      # cold  — Workday/Eightfold/Oracle, nightly
+  workflow_dispatch:
+    inputs:
+      tier:
+        description: 'Which tier to refresh'
+        required: true
+        default: hot
+        type: choice
+        options: [hot, warm, cold, all]
+
+concurrency:
+  # Never let two refreshes write the index at once: the second would merge
+  # against a file the first is still writing.
+  group: refresh-job-index
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - run: npm ci
+
+      # The index is too large to keep in git, so it is restored from cache.
+      # A cache miss means there is nothing to merge into, which the refresh
+      # script detects and reports rather than writing a partial index.
+      - name: Restore job index
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            public/data/jobs-v2.json
+            .ingest-state.json
+          key: job-index-${{ github.run_id }}
+          restore-keys: job-index-
+
+      - name: Pick tier from schedule
+        id: tier
+        run: |
+          case "${{ github.event.schedule }}" in
+            "*/15 * * * *") echo "tier=hot"  >> "$GITHUB_OUTPUT" ;;
+            "0 */3 * * *")  echo "tier=warm" >> "$GITHUB_OUTPUT" ;;
+            "0 4 * * *")    echo "tier=cold" >> "$GITHUB_OUTPUT" ;;
+            *)              echo "tier=${{ inputs.tier || 'hot' }}" >> "$GITHUB_OUTPUT" ;;
+          esac
+
+      - name: Refresh
+        run: node --max-old-space-size=8192 scripts/refresh.mjs --tier ${{ steps.tier.outputs.tier }}
+
+      - name: Save job index
+        if: success()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            public/data/jobs-v2.json
+            .ingest-state.json
+          key: job-index-${{ github.run_id }}

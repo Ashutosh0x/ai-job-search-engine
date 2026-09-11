@@ -1,0 +1,215 @@
+/**
+ * Incremental refresh: keep the live index current without a full re-crawl.
+ *
+ *   node scripts/refresh.mjs --tier hot          # fast boards, minutes
+ *   node scripts/refresh.mjs --tier warm
+ *   node scripts/refresh.mjs --tier all --concurrency 12
+ *   node scripts/refresh.mjs --tier hot --loop 900   # run forever, every 15 min
+ *
+ * WHY THIS EXISTS RATHER THAN JUST RUNNING THE FULL INGEST MORE OFTEN
+ * ==================================================================
+ * A full ingest crawls every registered board and rewrites a ~275MB index. It
+ * takes ~20 minutes and saturates the network the whole time, so running it
+ * every 15 minutes is not "fresher data" -- it is one continuous crawl that
+ * hammers 1,200 employers and still leaves any individual board 20 minutes
+ * stale on average.
+ *
+ * Refresh inverts the economics: crawl a SUBSET, merge the result INTO the
+ * existing index, leave everything else untouched. A hot-tier pass over the
+ * fast platforms finishes in seconds, so those boards can be polled every few
+ * minutes while the long tail is refreshed daily.
+ *
+ * WHAT "REAL-TIME" HONESTLY MEANS HERE
+ * ------------------------------------
+ * There are no webhooks. Every ATS in this system is poll-only, so freshness is
+ * bounded by poll interval and nothing else. What is achievable:
+ *
+ *   Greenhouse / Ashby / Lever   small JSON, ~0.5s per board  -> minutes
+ *   SmartRecruiters / Recruitee  paginated, ~1-5s per board   -> tens of minutes
+ *   Workday / Eightfold / ORC    ~20-60s per board            -> hours
+ *
+ * Calling any of that "real-time" without saying which tier would be a claim
+ * about latency we cannot meet for most of the corpus. The report prints the
+ * tier and the elapsed time so the claim stays checkable.
+ *
+ * MERGE SAFETY -- THE PART THAT MATTERS
+ * ------------------------------------
+ * A refresh must never lose jobs. Two rules:
+ *
+ *   1. Only boards that were ACTUALLY CRAWLED in this pass may have their jobs
+ *      replaced. Everything else is copied through untouched. Without this, a
+ *      hot-tier pass would delete every Workday job in the index.
+ *
+ *   2. `firstSeenAt` is preserved from the existing record. It is the cursor
+ *      /api/jobs/delta pages on and the basis of ghost-job staleness, so
+ *      resetting it on every refresh would make every job look new forever.
+ */
+
+import { readFileSync, writeFileSync, existsSync, mkdirSync, openSync, writeSync, closeSync } from 'fs'
+import { dirname } from 'path'
+
+const { runIngest } = await import('../lib/pipeline/orchestrator.ts')
+const { COMPANIES } = await import('../lib/companies/registry.ts')
+const { mergeRefresh, boardKeyOfTarget, unsafeMergeReason } = await import('../lib/pipeline/merge.ts')
+
+const args = process.argv.slice(2)
+const val = (n, d) => { const i = args.indexOf(`--${n}`); return i !== -1 && args[i + 1] ? args[i + 1] : d }
+const has = (n) => args.includes(`--${n}`)
+
+const TIER = val('tier', 'hot')
+const OUT = val('out', 'public/data/jobs-v2.json')
+const STATE = '.ingest-state.json'
+const concurrency = Number(val('concurrency', 8))
+const loopSeconds = Number(val('loop', 0))
+const dryRun = has('dry-run')
+
+/**
+ * Tiers by how expensive a board is to poll, which in practice means how the
+ * platform paginates. These are measured averages from this repo's own crawl
+ * reports, not guesses: Greenhouse ~436ms, Ashby ~700ms, SmartRecruiters
+ * ~1.2-5.6s, Workday ~23-101s per board.
+ */
+const TIERS = {
+  hot: ['greenhouse', 'ashby', 'lever', 'workable'],
+  warm: ['smartrecruiters', 'recruitee', 'teamtailor', 'personio'],
+  cold: ['workday', 'eightfold', 'custom'],
+}
+TIERS.all = [...TIERS.hot, ...TIERS.warm, ...TIERS.cold]
+
+const wanted = TIERS[TIER]
+if (!wanted) {
+  console.error(`Unknown tier "${TIER}". Use: ${Object.keys(TIERS).join(', ')}`)
+  process.exit(1)
+}
+
+/* ------------------------------ write helper ------------------------------ */
+//
+// Same streaming writer as the full ingest: JSON.stringify of the whole corpus
+// exceeds Node's 512MB max string length and throws at the very end, after all
+// the work is done.
+function writeJsonStream(path, head, arrayKey, rows) {
+  const fd = openSync(path, 'w')
+  try {
+    const parts = Object.entries(head).map(([k, v]) => `${JSON.stringify(k)}:${JSON.stringify(v)}`)
+    writeSync(fd, `{${parts.join(',')},${JSON.stringify(arrayKey)}:[`)
+    let buf = ''
+    for (let i = 0; i < rows.length; i++) {
+      buf += (i ? ',' : '') + JSON.stringify(rows[i])
+      if (buf.length > 4_000_000) { writeSync(fd, buf); buf = '' }
+    }
+    if (buf) writeSync(fd, buf)
+    writeSync(fd, ']}')
+  } finally {
+    closeSync(fd)
+  }
+}
+
+/* --------------------------------- one pass -------------------------------- */
+
+async function refreshOnce() {
+  const started = Date.now()
+
+  if (!existsSync(OUT)) {
+    console.error(`No index at ${OUT}. Run a full ingest first: npx tsx scripts/ingest-v2.mjs`)
+    process.exit(1)
+  }
+
+  const existing = JSON.parse(readFileSync(OUT, 'utf8'))
+  const existingJobs = existing.jobs ?? []
+
+  const targets = []
+  for (const c of COMPANIES) {
+    for (const b of c.boards) {
+      if (!wanted.includes(b.provider)) continue
+      targets.push({
+        source: b.provider, token: b.token, site: b.site, host: b.host,
+        companySlug: c.slug, companyName: c.name, companyDomain: c.domain,
+        discoveredVia: 'curated', confidence: 1,
+      })
+    }
+  }
+
+  console.log(`tier=${TIER}  ${targets.length} boards  (index has ${existingJobs.length.toLocaleString()} jobs)`)
+  if (!targets.length) { console.log('nothing to refresh'); return }
+
+  const previous = existsSync(STATE)
+    ? JSON.parse(readFileSync(STATE, 'utf8'))
+    : { hashes: {}, firstPosted: {}, knownIds: [] }
+
+  const { jobs: fresh, report } = await runIngest({ targets, concurrency, previous })
+
+  /* ------------------------------- the merge ------------------------------- */
+  //
+  // Delegated to lib/pipeline/merge.ts so the rules are unit-tested rather than
+  // trusted. This is the one pipeline operation that can destroy data, and the
+  // first version of the board key here was wrong in a way no crawl would have
+  // revealed: it read the job id's third segment as a "site", but ids are
+  // `source:token:sourceId` and carry no site, so every board looked empty.
+
+  const now = new Date().toISOString()
+  const crawledBoards = new Set(
+    report.runs.filter((r) => r.ok).map((r) => boardKeyOfTarget(r.target))
+  )
+
+  const { jobs: merged, added, updated, removed, carriedThrough } = mergeRefresh({
+    existing: existingJobs,
+    fresh,
+    crawledBoards,
+    now,
+  })
+
+  const elapsed = ((Date.now() - started) / 1000).toFixed(1)
+  console.log(
+    `  crawled ${report.sourcesSucceeded}/${targets.length} boards` +
+      `  +${added} new  ~${updated} seen again  -${removed} gone` +
+      `  (${carriedThrough.toLocaleString()} untouched)  ${elapsed}s`
+  )
+
+  const H = report.http ?? {}
+  if (H.requests?.blocked) console.log(`  ${H.requests.blocked} requests blocked`)
+  if (report.sourcesFailed) console.log(`  ${report.sourcesFailed} boards failed`)
+
+  // A refresh that lost most of the index is a bug, not a result. Refuse rather
+  // than overwrite: a bad write here is unrecoverable without a full re-crawl.
+  const unsafe = unsafeMergeReason(existingJobs.length, merged.length)
+  if (unsafe) {
+    console.error(`\nREFUSING TO WRITE: ${unsafe}`)
+    process.exitCode = 1
+    return
+  }
+
+  if (dryRun) { console.log('  --dry-run: not writing'); return }
+
+  mkdirSync(dirname(OUT), { recursive: true })
+  writeJsonStream(
+    OUT,
+    {
+      generatedAt: now,
+      jobCount: merged.length,
+      refreshedTier: TIER,
+      refreshedBoards: crawledBoards.size,
+      // Keep the last FULL ingest report rather than overwriting it with a
+      // partial one -- a tier report would otherwise look like corpus truth.
+      report: existing.report ?? null,
+      lastRefresh: {
+        at: now, tier: TIER, boards: targets.length,
+        added, updated, removed, durationMs: Date.now() - started,
+      },
+    },
+    'jobs',
+    merged
+  )
+  console.log(`  wrote ${OUT} (${merged.length.toLocaleString()} jobs)`)
+}
+
+/* ----------------------------------- run ----------------------------------- */
+
+if (loopSeconds > 0) {
+  console.log(`refreshing tier=${TIER} every ${loopSeconds}s. Ctrl-C to stop.\n`)
+  for (;;) {
+    try { await refreshOnce() } catch (e) { console.error('refresh failed:', e.message) }
+    await new Promise((r) => setTimeout(r, loopSeconds * 1000))
+  }
+} else {
+  await refreshOnce()
+}

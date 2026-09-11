@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push: { branches: [master, main] }
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { submodules: false }
+      - uses: actions/setup-node@v4
+        with: { node-version: '20', cache: npm }
+      - run: npm ci
+
+      # Typecheck is a ratchet, not a gate: 51 errors are pre-existing and
+      # concentrated in a vendored sub-project. Fail only if the count GROWS,
+      # so the number can come down but never quietly up.
+      - name: Typecheck (ratchet at 51)
+        run: |
+          COUNT=$(npx tsc --noEmit 2>&1 | grep -c "error TS" || true)
+          echo "tsc errors: $COUNT (baseline 51)"
+          if [ "$COUNT" -gt 51 ]; then
+            echo "::error::Type errors increased from 51 to $COUNT"
+            npx tsc --noEmit 2>&1 | grep "error TS" | head -40
+            exit 1
+          fi
+
+      # The suites make live HTTP calls to ATS boards; a blocked runner should
+      # not fail the build, so those assertions are skipped in CI.
+      - name: Tests
+        run: npm test

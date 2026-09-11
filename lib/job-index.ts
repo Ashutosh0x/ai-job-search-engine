@@ -1,4 +1,4 @@
-import { readFile } from 'fs/promises'
+import { readFile, stat } from 'fs/promises'
 import path from 'path'
 import { parseIntent, describeIntent, type ParsedIntent } from './search/intent'
 import { buildIndex, retrieve, type BuiltIndex } from './search/inverted-index'
@@ -76,8 +76,30 @@ interface Snapshot {
   warnings: string[]
 }
 
-let cache: { data: Snapshot; loadedAt: number } | null = null
+let cache: { data: Snapshot; loadedAt: number; mtimeMs: number } | null = null
 const CACHE_TTL_MS = 5 * 60 * 1000
+
+const V2_PATH = () => path.join(process.cwd(), 'public', 'data', 'jobs-v2.json')
+
+/**
+ * Has the index file changed since we cached it?
+ *
+ * The cache was purely time-based, so a refresh that wrote a new index was
+ * invisible for up to five minutes -- jobs the crawler had already found sat
+ * unserved while the clock ran down. Checking mtime costs one stat() and makes
+ * the pipeline-to-page path responsive: a completed refresh is live on the next
+ * request.
+ *
+ * The TTL stays as the upper bound for the case stat cannot answer (the v1
+ * fallback snapshot, or a filesystem that does not report mtime usefully).
+ */
+async function indexMtime(): Promise<number> {
+  try {
+    return (await stat(V2_PATH())).mtimeMs
+  } catch {
+    return 0
+  }
+}
 
 /**
  * How many candidates the inverted index returns before filtering and ranking.
@@ -183,7 +205,13 @@ async function loadV2(): Promise<Snapshot | null> {
 }
 
 export async function loadIndex(): Promise<Snapshot | null> {
-  if (cache && Date.now() - cache.loadedAt < CACHE_TTL_MS) return cache.data
+  if (cache && Date.now() - cache.loadedAt < CACHE_TTL_MS) {
+    // Serve the cache only while the file behind it is unchanged. A refresh
+    // rewrites jobs-v2.json, and the whole point of refreshing is that the new
+    // jobs become visible -- not that they wait for a timer.
+    const mtime = await indexMtime()
+    if (mtime === cache.mtimeMs) return cache.data
+  }
 
   const v2 = await loadV2()
   if (v2) {
@@ -192,7 +220,7 @@ export async function loadIndex(): Promise<Snapshot | null> {
       logoUrl: companyLogoUrl(c.domain),
       valuationTier: valuationTier(c.valuationUsd),
     }))
-    cache = { data: v2, loadedAt: Date.now() }
+    cache = { data: v2, loadedAt: Date.now(), mtimeMs: await indexMtime() }
     return v2
   }
 
@@ -208,7 +236,7 @@ export async function loadIndex(): Promise<Snapshot | null> {
       valuationTier: valuationTier(c.valuationUsd),
     }))
 
-    cache = { data: parsed, loadedAt: Date.now() }
+    cache = { data: parsed, loadedAt: Date.now(), mtimeMs: await indexMtime() }
     return parsed
   } catch {
     return null
