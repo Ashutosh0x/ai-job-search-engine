@@ -52,7 +52,11 @@ export const PROVIDER_PATTERNS: {
 }[] = [
   {
     provider: 'workday',
-    urlPattern: '*.myworkdayjobs.com/*',
+    // Host-only, NOT '*.myworkdayjobs.com/*'. The index answers 502 to the
+    // wildcard-host-plus-path form -- it has to scan every path under every
+    // subdomain -- while the host-only form returns results immediately. The
+    // tenant is in the hostname anyway, which is all discovery needs.
+    urlPattern: '*.myworkdayjobs.com',
     extract: (url) => {
       // https://{tenant}.{shard}.myworkdayjobs.com/[{locale}/]{site}/...
       const m = url.match(
@@ -153,7 +157,38 @@ export async function* queryIndex(
     }
 
     if (res.status === 404) return // no more pages
-    if (!res.ok) return
+
+    // A 5xx is the index refusing the QUERY, not telling us there is nothing
+    // there. Returning silently made that indistinguishable from "no boards
+    // exist" -- a Workday discovery run reported "0 candidates" for months
+    // while the index was answering 502 to the pattern being sent.
+    //
+    // Retry once with backoff (the CC index rate-limits and sheds load), then
+    // surface the status so the caller can say what happened.
+    // Wildcard-host queries are expensive for the index and it sheds load
+    // under them -- measured, the SAME pattern returned 504 at limit=100 and
+    // 200 at limit=2000 seconds apart, so the status reflects instantaneous
+    // load rather than anything about the query. Retry patiently.
+    if (res.status >= 500 || res.status === 429) {
+      let recovered = false
+      for (let attempt = 1; attempt <= 4; attempt++) {
+        await new Promise((r) => setTimeout(r, 2000 * attempt))
+        try {
+          res = await fetch(url, { headers: { 'User-Agent': UA } })
+        } catch {
+          continue
+        }
+        if (res.ok) { recovered = true; break }
+      }
+      if (!recovered) {
+        throw new Error(
+          `Common Crawl index returned ${res.status} for pattern "${urlPattern}" ` +
+            'after 5 attempts. The index is shedding load; retry later.'
+        )
+      }
+    } else if (!res.ok) {
+      return
+    }
 
     const text = await res.text()
     const lines = text.split('\n').filter(Boolean)
