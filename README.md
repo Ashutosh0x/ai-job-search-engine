@@ -24,10 +24,10 @@
 </p>
 
 <p align="center">
-  <img alt="tests" src="https://img.shields.io/badge/tests-262_passing-2ea043?style=flat-square">
+  <img alt="tests" src="https://img.shields.io/badge/tests-432_passing-2ea043?style=flat-square">
   <img alt="sources" src="https://img.shields.io/badge/source_adapters-13-7cf2d0?style=flat-square">
-  <img alt="companies" src="https://img.shields.io/badge/curated_employers-104-a9b6ff?style=flat-square">
-  <img alt="jobs" src="https://img.shields.io/badge/roles_indexed-216%2C485-5b7cff?style=flat-square">
+  <img alt="companies" src="https://img.shields.io/badge/curated_employers-173-a9b6ff?style=flat-square">
+  <img alt="jobs" src="https://img.shields.io/badge/roles_indexed-241%2C586-5b7cff?style=flat-square">
 </p>
 
 ---
@@ -59,9 +59,10 @@ Three things follow from reading the source rather than an aggregator:
 |---|---|
 | **Natural-language search** | `"senior ML engineer in Bangalore with visa sponsorship posted this week"` is parsed into five hard filters and one topic — not bag-of-words. The API returns `intentSummary` so the user can see how their sentence was read, and correct it. |
 | **Explainable ranking** | Score is a sum of 13 named signals out of 100. Every result carries the breakdown; `?debug=1` returns it in full. Company prestige is capped at 3 points on purpose — the right small company should beat the wrong famous one. |
-| **Visa sponsorship, as fact and as inference** | Inferred sponsorship status is read from the posting's prose *and kept separate* from the UK Home Office and Dutch IND **official sponsor registers** (143,147 + 12,974 organisations). A licence means an employer *can* sponsor; it never silently becomes "this role is sponsored". |
+| **Visa sponsorship, as fact and as inference** | Inferred status is read from the posting's prose and kept *separate* from three **official government sources**: the UK Home Office register (143,147 orgs), the Dutch IND register (12,974), and the USCIS H-1B Employer Data Hub (28,060). Those are different kinds of fact and are not merged — UK/NL publish *licences* (permission, current), USCIS publishes *outcomes* (petitions actually approved, for a closed fiscal year). A licence means an employer *can* sponsor; it never silently becomes "this role is sponsored". |
 | **Ghost-job signals** | Stale and repost patterns are surfaced as *signals with evidence*, never as a verdict. Staleness is measured primarily from **`firstSeenAt`** — when this crawler first observed the posting, tracked in `.ingest-state.json` — not from the employer's `postedAt`. That matters because Workday publishes no date at list time; `postedAt` is only the fallback branch (`lib/pipeline/quality.ts:185`). Repost counts and talent-pipeline phrasing are also date-independent. A suspected ghost job is ranked lower and labelled, never hidden. |
 | **Company-level filters** | Valuation tier, hiring momentum (open-role count), and which ATS the employer runs. Aggregators expose headcount, not company value — so they cannot separate a 500-person unicorn from a 500-person agency. |
+| **Resume ↔ job matching, evidence-first** | A resume is scored against a *target job*, never in the abstract. Each requirement maps to the resume span that supports it, graded DIRECT / STRONG / WEAK / INSUFFICIENT / CONTRADICTED / ABSENT. Assertion detection means `"No hands-on experience with Kubernetes"`, `"Interested in learning Rust"` and `"Managed a team of Python developers"` never count as skills. |
 | **Cross-board dedupe** | The same requisition legitimately appears on several boards. A four-tier cascade (requisition id → apply URL → title+location → fuzzy) collapses them, keeps the most direct apply link, and records how certain the match was. |
 
 ## Provenance
@@ -99,12 +100,14 @@ CI                    ░░░░░░░░░░░░░░░░░░░�
 
 | | |
 |---|---|
-| Roles indexed | **216,485** canonical, from 270,091 raw |
-| Boards crawled | **1,239** companies / 1,251 sources — 0 adapter exceptions (see note) |
-| Duplicates collapsed | 53,494 (requisition 20,344 · title+location 27,345 · fuzzy 6,149) |
-| Direct apply links | 216,485 — **100%** |
-| Sponsor register orgs | 156,121 (UK 143,147 · NL 12,974) |
-| Run time | 19m 24s |
+| Roles indexed | **241,586** canonical, from 301,128 raw |
+| Boards crawled | **1,282** companies / 1,295 sources — 0 failures |
+| HTTP requests | **9,178 — 100% 2xx.** 0 blocked, 0 not-found, 0 network errors |
+| Duplicates collapsed | 59,476 (requisition 21,215 · title+location 32,026 · fuzzy 6,607) |
+| Direct apply links | 241,461 — **100%** |
+| Sponsor register orgs | 184,181 (UK 143,147 · US 28,060 · NL 12,974) |
+| Run time | 19m 38s |
+| Search latency | p50 **43ms**, p90 59ms (BM25 inverted index over the full corpus) |
 | Tests | **377 assertions, 17 suites, all passing** |
 
 > **On "0 failures".** That figure counts boards whose adapter threw. It is not
@@ -151,7 +154,7 @@ lib/
   sources/       adapters (13) + the JobSource contract + hardened HTTP
   pipeline/      normalize · dedupe · quality · visa · workplace · skills · orchestrator
   search/        intent parsing · explainable ranking
-  companies/     curated registry (104 employers) + market cap from SEC EDGAR
+  companies/     curated registry (173 employers) + market cap from SEC EDGAR
   visa/          UK Home Office + Dutch IND sponsor registers
   discovery/     Common Crawl board discovery
 app/api/         16 route handlers
@@ -183,6 +186,37 @@ Then search it:
 curl 'localhost:3000/api/smart-search?q=senior platform engineer in india&debug=1'
 ```
 
+### Keeping it current
+
+A full ingest is a 20-minute crawl of every board, so it is the wrong tool for
+staying fresh. `refresh` crawls a **tier** and merges into the existing index,
+leaving every other board untouched:
+
+```bash
+npx tsx scripts/refresh.mjs --tier hot     # Greenhouse/Ashby/Lever, ~60s
+npx tsx scripts/refresh.mjs --tier warm    # SmartRecruiters/Recruitee
+npx tsx scripts/refresh.mjs --tier cold    # Workday/Eightfold/Oracle
+```
+
+Tiers come from measured per-board cost: Greenhouse ~0.4s, Ashby ~0.7s,
+SmartRecruiters ~1-6s, Workday ~23-101s. Polling all of them on the fast
+cadence would cost far more and deliver less. `.github/workflows/refresh-jobs.yml`
+runs the three on their own crons.
+
+**There are no webhooks** — every ATS here is poll-only, so freshness is bounded
+by poll interval. Hot-tier boards are minutes fresh; Workday tenants (~47% of
+the corpus) are nightly. Calling the whole thing "real-time" would be a claim
+about latency we cannot meet for most of it.
+
+Clients poll the delta feed rather than re-reading a 275 MB index:
+
+```bash
+curl 'localhost:3000/api/jobs/delta?since=2026-09-11T04:54:00Z'
+```
+
+It cursors on `firstSeenAt` (when *we* first saw a posting), not `postedAt` —
+which is absent on ~47% of the corpus and is not monotonic with discovery.
+
 Setup in full: **[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)**.
 
 ## Documentation
@@ -196,28 +230,50 @@ Setup in full: **[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)**.
 | [Data model](docs/DATA-MODEL.md) | `CanonicalJob`, the company registry, the 23 migrations |
 | [Development](docs/DEVELOPMENT.md) | Env vars, scripts, tests, known gaps |
 | [Security](docs/SECURITY.md) | Threat model and the September 2026 audit |
+| [Resume intelligence](docs/resume-intelligence-audit.md) | Audit of the resume feature, the hardcode inventory, and the evidence-first design |
+| [Zero-cost architecture](docs/zero-cost-architecture.md) | Client-side/extension blueprint, with six verified corrections |
 | [Audit report](AUDIT-2026.md) | The full remediation write-up |
 
 ## Known gaps
 
 Stated plainly, because a README that only lists wins is not much use:
 
-- **Workday postings carry no posted date at list time.** The date lives on the
-  detail endpoint and `WorkdayAdapter` has no `fetchJob`, so hydration is a
-  no-op for ~55% of the corpus. Oracle Recruiting boards return 100% posted
-  dates; Workday boards return 0%.
+- **Descriptions are missing for ~80% of the corpus, and that caps everything
+  downstream.** Workday and SmartRecruiters list endpoints return no body text,
+  so skills sit at 11%, workplace type is mostly UNKNOWN and visa signal is
+  thin — every classifier is reading titles for most rows. Hydration is now
+  implemented (`WorkdayAdapter.fetchJob`, `--hydrate N`) and measured on 1,023
+  Workday postings it takes descriptions 0% → 100%, skills 6% → 76% and posted
+  dates 0% → 100%. It costs ~5.7x ingestion time, so it is opt-in and has not
+  been run corpus-wide. **This is the single highest-value thing left.**
+- **Search is lexical only.** BM25 with IDF and length normalisation, no dense
+  retrieval — there is no embedding model or vector index here. It cannot match
+  "AI infrastructure" to "ML platform", and searching `mistral` surfaces a
+  French H&M store called "Avignon Mistral" above the AI lab. Reciprocal Rank
+  Fusion is implemented and tested so a second retrieval stream can plug in
+  without rewriting the caller; calling this "hybrid search" today would
+  describe software that has not been written.
+- **No scoring model is calibrated.** The resume engine's score registry has
+  `calibration: null` on every model, which forces `confidence: 'uncalibrated'`
+  and integer precision. That is enforced by the types rather than by
+  convention, but it means no score here predicts an outcome.
 - **`ignoreBuildErrors` is still on** in `next.config.mjs`. It hid two critical
   bugs (see the audit). 51 type errors remain, 29 of them in the vendored
-  location sub-project.
+  location sub-project. CI ratchets the count so it can fall but never rise.
 - **Next.js 14.2.16 is old** (Oct 2024). The 2026 releases fixed middleware auth
   bypass, SSRF and cache poisoning.
-- **No CI.** The 14 test suites are real and pass; nothing runs them on push.
 - **Rate limiting is per-process**, so on serverless it is a speed bump rather
   than a guarantee — and it is the control protecting password reset.
-- **Some employers are not reachable.** Eightfold tenants (Qualcomm, Amex,
-  NAB's global portal) answer 403 to any non-browser client; AMD is on iCIMS,
-  for which there is no adapter yet; Goldman Sachs runs a bespoke portal with no
-  public feed. These are documented rather than faked.
+- **Supabase-backed features need a project.** Auth, profiles and resumes are
+  down whenever `NEXT_PUBLIC_SUPABASE_URL` points at a project that no longer
+  exists. The search engine itself needs none of it — it reads the snapshot.
+- **Some employers are not reachable, and are left out rather than faked.**
+  Eightfold tenants (Qualcomm, American Express) answer 403 to any non-browser
+  client. IBM, Tesla, Uber and dol.gov sit behind bot managers that answer a
+  challenge instead of the document — IBM's `robots.txt` even *allows* `/careers`
+  and publishes a sitemap whose child files then return 202. AMD is on iCIMS and
+  Goldman Sachs runs a bespoke portal; neither has an adapter. Where a public
+  feed genuinely does not exist, the employer is absent, not invented.
 
 ## Licence
 
