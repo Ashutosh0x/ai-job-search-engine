@@ -425,6 +425,42 @@ export const COMPANIES: CompanyRecord[] = [
     industry: 'Bug Bounty Platform', hqLocation: 'San Francisco, CA', foundedYear: 2012,
     boards: [{ provider: 'greenhouse', token: 'bugcrowd' }] },
 
+  // ---- Alphabet subsidiaries, verified live 11 Sep 2026 ------------------
+  //
+  // GOOGLE ITSELF IS DELIBERATELY ABSENT. www.google.com/robots.txt line 249:
+  //
+  //     Disallow: /about/careers/applications/jobs/results
+  //
+  // That is a prefix rule, so it covers the listing AND every individual job
+  // page. Google prohibits crawling its own job pages, and this project reads
+  // only what an employer permits -- the same rule that keeps LinkedIn and
+  // Indeed out (lib/ats/types.ts).
+  //
+  // Independently confirmed: Common Crawl, which honours robots.txt, has ZERO
+  // records for that path while returning results for careers.google.com's
+  // homepage. Two sources agreeing is what makes this a fact rather than a
+  // reading of the syntax.
+  //
+  // These subsidiaries are separate legal entities running ordinary public
+  // Greenhouse boards, so they are read the same way as any other employer.
+  { slug: 'waymo', name: 'Waymo', domain: 'waymo.com', valuationKind: 'private',
+    reportedValuationUsd: 45_000_000_000, valuationAsOf: '2024-10-25',
+    valuationSource: 'Series C, reported Oct 2024',
+    industry: 'Autonomous Vehicles', hqLocation: 'Mountain View, CA', foundedYear: 2009,
+    boards: [{ provider: 'greenhouse', token: 'waymo' }] },
+  { slug: 'wing', name: 'Wing', domain: 'wing.com', valuationKind: 'unknown',
+    industry: 'Drone Delivery', hqLocation: 'Palo Alto, CA', foundedYear: 2012,
+    boards: [{ provider: 'greenhouse', token: 'wing' }] },
+  // The board token is `moonshot`, not `x` or `xdevelopment` -- X's own
+  // shorthand for itself ("the moonshot factory"), and not derivable from
+  // either its legal or trading name.
+  { slug: 'x-development', name: 'X, the moonshot factory', domain: 'x.company', valuationKind: 'unknown',
+    industry: 'Advanced Technology R&D', hqLocation: 'Mountain View, CA', foundedYear: 2010,
+    boards: [{ provider: 'greenhouse', token: 'moonshot' }] },
+  { slug: 'isomorphic-labs', name: 'Isomorphic Labs', domain: 'isomorphiclabs.com', valuationKind: 'unknown',
+    industry: 'AI Drug Discovery', hqLocation: 'London, UK', foundedYear: 2021,
+    boards: [{ provider: 'greenhouse', token: 'isomorphiclabs' }] },
+
   { slug: 'stripe', name: 'Stripe', domain: 'stripe.com', valuationKind: 'private',
     reportedValuationUsd: 106_500_000_000, valuationAsOf: '2025-02-27',
     valuationSource: 'Tender offer, Feb 2025',
