@@ -176,6 +176,12 @@ async function loadV2(): Promise<Snapshot | null> {
         isRemote: j.remote,
         descriptionText: (j.description || '').slice(0, 1200),
         postedAt: j.postedAt,
+        // Must be carried, not just declared on the interface. The field was
+        // added to IndexedJob and to the snapshot writer but never mapped here,
+        // so /api/jobs/delta saw no cursor on any row and reported the index as
+        // predating incremental delivery -- while the file on disk had it on
+        // all 241,586 jobs.
+        firstSeenAt: j.firstSeenAt,
         applyUrl: j.applicationUrl,
         salaryMin: j.salaryMin,
         salaryMax: j.salaryMax,

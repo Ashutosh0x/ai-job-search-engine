@@ -133,7 +133,10 @@ export async function GET(request: NextRequest) {
     jobs: page.map((j: any) => ({
       id: j.id,
       title: j.title,
-      company: j.company,
+      // `companyName` is the field on IndexedJob; `company` is the raw v2 name
+      // and is absent after the loader's mapping. Reading only `company` here
+      // returned undefined for every row.
+      company: j.companyName ?? j.company,
       companySlug: j.companySlug,
       location: j.locationDisplay ?? j.locationRaw,
       country: j.country,
