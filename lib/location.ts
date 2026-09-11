@@ -255,6 +255,44 @@ const COUNTRY_LOOKUP: Map<string, string> = (() => {
 })()
 
 /**
+ * ISO 3166-1 alpha-2 code -> canonical country name, built from ICU.
+ *
+ * Deliberately SEPARATE from COUNTRY_LOOKUP. Two-letter codes cannot be folded
+ * into the general name lookup, because half of them collide with US state
+ * abbreviations -- MA is both Morocco and Massachusetts, IN both India and
+ * Indiana, CA both Canada and California, DE both Germany and Delaware.
+ * Resolving those blindly is the bug that once put 210 Bangalore jobs in
+ * Indiana, so this map is only consulted from positions where a US state
+ * abbreviation cannot appear (see parseLocation).
+ *
+ * Generated from ICU rather than hand-written, so it covers every region the
+ * runtime knows and needs no maintenance when a code changes.
+ */
+const ISO_ALPHA2: Map<string, string> = (() => {
+  const map = new Map<string, string>()
+  try {
+    const dn = new Intl.DisplayNames(['en'], { type: 'region' })
+    for (let a = 65; a <= 90; a++) {
+      for (let b = 65; b <= 90; b++) {
+        const code = String.fromCharCode(a) + String.fromCharCode(b)
+        try {
+          const name = dn.of(code)
+          if (name && name !== code) map.set(code.toLowerCase(), name)
+        } catch { /* not a valid region code */ }
+      }
+    }
+  } catch { /* Intl unavailable */ }
+  return map
+})()
+
+/** Country name for a bare alpha-2 code, or null. Case-insensitive. */
+export function countryFromCode(code: string | null | undefined): string | null {
+  if (!code) return null
+  const k = code.trim().toLowerCase()
+  return k.length === 2 ? ISO_ALPHA2.get(k) ?? null : null
+}
+
+/**
  * The canonical ISO region name for a string, or null if it names no region.
  *
  * Returns the canonical spelling so that "Hong Kong", "hongkong" and
@@ -479,7 +517,18 @@ export function parseLocation(raw: string | null | undefined): ParsedLocation {
           // to a country -- which is how "Jalan Molek 3/20", "No.16 Hongfeng
           // Road" and "3500GS Utrecht" became countries.
           const tail = parts.slice(2)
-          const found = tail.map(canonCountry).find((c): c is string => c !== null)
+          // Try full names first, then bare alpha-2 codes.
+          //
+          // Employers write "Beirut, Beirut Governorate, lb" and "Timișoara,
+          // TM, ro" -- the country IS stated, as a lowercase ISO code, and the
+          // name lookup alone never saw it. A code in the THIRD-or-later
+          // position cannot be a US state abbreviation: the US convention is
+          // "City, ST" (two parts) or "City, ST, USA", so nothing puts a bare
+          // state code here. That is what makes reading it as a country safe
+          // where doing the same in position two would not be.
+          const found =
+            tail.map(canonCountry).find((c): c is string => c !== null) ??
+            tail.map((t) => countryFromCode(t)).find((c): c is string => c !== null)
           country = found ?? null
           // Only claim a region when we actually resolved a country; otherwise
           // the components are address noise and guessing at them adds nothing.

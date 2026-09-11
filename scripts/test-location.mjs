@@ -120,5 +120,40 @@ for (const real of ['Japan','New Zealand','Portugal','Israel']) {
   const r = parseLocation('Embassy Park - Bengaluru')
   t('facility prefix is not mistaken for a country', r.country===null, r)
 }
+
+// Regression: a bare lowercase ISO alpha-2 code in the THIRD-or-later comma
+// position. Employers write "Beirut, Beirut Governorate, lb"; the country is
+// stated and the name lookup alone never saw it, because COUNTRY_LOOKUP is
+// built from ICU display names and full-name aliases only.
+//
+// Safe only in position three or later: the US convention is "City, ST" or
+// "City, ST, USA", so a bare state code never lands there. Position two must
+// stay ambiguous, and the last two cases assert that it still does.
+{
+  const r = parseLocation('Beirut, Beirut Governorate, lb')
+  t('lowercase ISO code in third position resolves', r.country==='Lebanon', r)
+}
+{
+  const r = parseLocation('Timișoara, TM, ro')
+  t('ISO code resolves even with a non-ASCII city', r.country==='Romania', r)
+}
+{
+  const r = parseLocation('Boston, MA, US')
+  t('a US address with a trailing code still reads as the US',
+    r.country==='United States' && r.region==='Massachusetts', r)
+}
+{
+  // MA is Morocco AND Massachusetts. In position two it must remain the state.
+  const r = parseLocation('Springfield, MA')
+  t('an ambiguous code in position two is still read as a US state',
+    r.region==='Massachusetts' && r.country==='United States', r)
+}
+{
+  // IN is India AND Indiana; this must keep deferring to the corpus resolver
+  // rather than being settled here by the new code path.
+  const r = parseLocation('Bangalore, IN')
+  t('position-two ambiguity is still deferred, not resolved by ISO lookup',
+    r.country==='United States' && r.region==='Indiana', r)
+}
 console.log(`\n${pass} passed, ${fail} failed`)
 process.exit(fail === 0 ? 0 : 1)
