@@ -47,8 +47,9 @@ const BUDGET_MB = Number(val('budget-mb', 30))
 const MAX_COMPANY_SHARE = Number(val('max-company-share', 0.04))
 
 console.log(`reading ${IN} ...`)
-const src = JSON.parse(readFileSync(IN, 'utf8'))
-const all = src.jobs ?? []
+// Streaming byte reader: the full index exceeds Node's ~512MB string cap.
+const { readIndexJobs } = await import('../lib/pipeline/read-index.mjs')
+const { head: src, jobs: all } = readIndexJobs(IN)
 console.log(`corpus: ${all.length.toLocaleString()} jobs`)
 
 /* ------------------------------- projection ------------------------------- */

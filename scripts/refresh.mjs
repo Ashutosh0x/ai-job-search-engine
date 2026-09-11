@@ -52,6 +52,8 @@ const { runIngest } = await import('../lib/pipeline/orchestrator.ts')
 const { COMPANIES } = await import('../lib/companies/registry.ts')
 const { mergeRefresh, boardKeyOfTarget, unsafeMergeReason } = await import('../lib/pipeline/merge.ts')
 const { humanizeToken } = await import('../lib/companies/discovered.ts')
+const { writeDeployIndex } = await import('../lib/pipeline/deploy-index.mjs')
+const { readIndexJobs } = await import('../lib/pipeline/read-index.mjs')
 
 const args = process.argv.slice(2)
 const val = (n, d) => { const i = args.indexOf(`--${n}`); return i !== -1 && args[i + 1] ? args[i + 1] : d }
@@ -61,6 +63,8 @@ const TIER = val('tier', 'hot')
 const OUT = val('out', 'public/data/jobs-v2.json')
 const STATE = '.ingest-state.json'
 const DISCOVERED = 'scripts/discovered-boards.json'
+const DEPLOY_OUT = val('deploy-out', 'public/data/jobs-deploy.json')
+const DEPLOY_BUDGET_MB = Number(val('deploy-budget-mb', 30))
 const concurrency = Number(val('concurrency', 8))
 const loopSeconds = Number(val('loop', 0))
 const dryRun = has('dry-run')
@@ -127,8 +131,10 @@ async function refreshOnce() {
     process.exit(1)
   }
 
-  const existing = JSON.parse(readFileSync(OUT, 'utf8'))
-  const existingJobs = existing.jobs ?? []
+  // Byte-level streaming read: the full index passed Node's ~512MB string
+  // ceiling at 530MB, so readFileSync(OUT,'utf8') throws ERR_STRING_TOO_LONG
+  // and refresh could no longer read its own base file.
+  const { head: existing, jobs: existingJobs } = readIndexJobs(OUT)
 
   const targets = []
   const seen = new Set()
@@ -224,6 +230,26 @@ async function refreshOnce() {
   if (dryRun) { console.log('  --dry-run: not writing'); return }
 
   mkdirSync(dirname(OUT), { recursive: true })
+
+  // Write the BOUNDED index too, from the array already in memory.
+  //
+  // The full index passed Node's ~512MB string ceiling at 530MB, which made it
+  // unreadable by everything that consumed it -- including the app loader,
+  // which silently fell back to a 14MB v1 snapshot and served 9,648 jobs while
+  // 238,620 sat on disk. Regenerating the bounded slice by RE-READING the full
+  // file would hit the same wall, so it is produced here instead, where the
+  // records are already parsed.
+  //
+  // This makes the serving path independent of the archive's size: jobs-v2.json
+  // can grow without limit, and jobs-deploy.json stays the thing that is loaded.
+  try {
+    const dep = writeDeployIndex(merged, DEPLOY_OUT, existing, DEPLOY_BUDGET_MB)
+    console.log(`  deploy index: ${dep.count.toLocaleString()} jobs -> ${DEPLOY_OUT}`)
+  } catch (e) {
+    // A failure here must not lose the crawl that just completed.
+    console.error(`  deploy index NOT written: ${e.message}`)
+  }
+
   writeJsonStream(
     OUT,
     {

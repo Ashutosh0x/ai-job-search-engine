@@ -147,16 +147,48 @@ const RETRIEVAL_DEPTH = 1500
  * rather than changing every component -- the canonical schema is the source of
  * truth, this is the presentation adapter.
  */
+/**
+ * Node cannot hold a string larger than ~512MB, so `readFile(f,'utf8')` throws
+ * ERR_STRING_TOO_LONG on a big index. That is a hard runtime ceiling, not a
+ * tuning knob: the full corpus passed it at 530MB.
+ */
+const NODE_MAX_STRING = 0x1fffffe8
+
+async function readIndexFile(file: string): Promise<any | null> {
+  const size = (await stat(file)).size
+  if (size > NODE_MAX_STRING) {
+    // Say it. This previously threw, got caught, and fell silently through to
+    // the 14MB v1 snapshot -- so the app served 9,648 jobs while a 238,620-job
+    // index sat on disk looking fine. A capacity limit must never present as
+    // "no data".
+    console.error(
+      `[job-index] ${file} is ${(size / 1048576).toFixed(0)}MB, over Node's ` +
+        `${(NODE_MAX_STRING / 1048576).toFixed(0)}MB string limit. Skipping it. ` +
+        'Build a bounded index with scripts/build-deploy-index.mjs.'
+    )
+    return null
+  }
+  return JSON.parse(await readFile(file, 'utf8'))
+}
+
 async function loadV2(): Promise<Snapshot | null> {
   try {
-    const file = await resolveIndexFile()
-    if (!file) return null
-    const raw = await readFile(file, 'utf8')
-    const v2 = JSON.parse(raw) as {
-      generatedAt: string; jobs: any[]; report?: any
-      deployment?: { bounded: boolean; corpusTotal: number; note: string }
+    // Try each candidate in turn rather than committing to the first that
+    // EXISTS. A file being present is not the same as it being loadable.
+    let v2: any = null
+    for (const name of INDEX_CANDIDATES) {
+      const path = dataPath(name)
+      try {
+        await stat(path)
+      } catch { continue }
+      try {
+        const parsed = await readIndexFile(path)
+        if (parsed && Array.isArray(parsed.jobs) && parsed.jobs.length) { v2 = parsed; break }
+      } catch (err) {
+        console.error(`[job-index] failed to load ${name}:`, (err as Error).message)
+      }
     }
-    if (!Array.isArray(v2.jobs) || v2.jobs.length === 0) return null
+    if (!v2) return null
 
     // Companies are derived from the jobs themselves: the v2 pipeline discovers
     // employers rather than reading them from a curated list.
@@ -196,9 +228,9 @@ async function loadV2(): Promise<Snapshot | null> {
       // index that does not announce itself is indistinguishable from a corpus
       // that simply has fewer jobs in it.
       deployment: v2.deployment ?? null,
-      sources: [...new Set(v2.jobs.map((j) => j.source))],
+      sources: [...new Set(v2.jobs.map((j: any) => j.source))],
       companies: [...companyMap.values()],
-      jobs: v2.jobs.map((j) => ({
+      jobs: v2.jobs.map((j: any) => ({
         externalId: j.id,
         provider: j.source,
         companySlug: j.companySlug,
