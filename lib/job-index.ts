@@ -132,11 +132,30 @@ async function indexMtime(): Promise<number> {
  * How many candidates the inverted index returns before filtering and ranking.
  *
  * This is the recall/latency dial. Too small and a narrow structured filter
- * (say country=Vietnam) can empty an otherwise good candidate set; too large
- * and we are back to scanning. 1,500 keeps the pool wide enough that the
- * filters below still have material to work with.
+ * (say country=Vietnam) can empty an otherwise good candidate set.
+ *
+ * IT WAS 1,500, WHICH WAS COSTING RECALL FOR NOTHING
+ * --------------------------------------------------
+ * The assumption behind the old value was that a bigger depth means more work.
+ * It does not. `retrieve` walks every posting for every query term and
+ * accumulates into a score map -- that pass is O(matches) whatever the limit
+ * is. The limit only decides how much of the sorted result is handed back.
+ *
+ * Measured over the 101,508-posting served index, 5 runs each:
+ *
+ *   query               depth 1,500   depth 10,000   depth 50,000   matched
+ *   "nvidia"                   8ms            5ms            5ms      2,009
+ *   "engineer"                81ms           84ms           81ms     24,332
+ *   "software engineer"       97ms          107ms          113ms     26,837
+ *
+ * "nvidia" is FASTER at the larger depth, and the two broad queries are flat.
+ * Meanwhile 1,500 truncated every employer bigger than that: searching NVIDIA
+ * returned 1,500 of 2,009, and no amount of paging could reach the rest.
+ *
+ * 10,000 covers the largest single employer in the corpus (JPMorgan, 7,464)
+ * with headroom, at no measurable cost.
  */
-const RETRIEVAL_DEPTH = 1500
+const RETRIEVAL_DEPTH = 10000
 
 /**
  * Load the search index.

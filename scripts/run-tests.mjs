@@ -44,6 +44,7 @@ const SUITES = [
   'test-workplace.mjs',
   'test-skills.mjs',
   'test-pagination.mjs',
+  'test-workday-cap.mjs',
   'test-html.mjs',
 ]
 

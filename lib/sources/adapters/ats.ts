@@ -312,6 +312,13 @@ export class RecruiteeAdapter extends BaseAdapter {
 
 /* --------------------------------- Workday -------------------------------- */
 
+/**
+ * Maximum results Workday's CxS search will page through. Past this the API
+ * clamps the offset and returns the same page forever, so a bigger board comes
+ * back as exactly this many postings with no error of any kind.
+ */
+const WORKDAY_RESULT_CAP = 2000
+
 export class WorkdayAdapter extends BaseAdapter {
   readonly id: SourceId = 'workday'
   readonly displayName = 'Workday'
@@ -348,28 +355,44 @@ export class WorkdayAdapter extends BaseAdapter {
     // Workday hard-caps the page size at 20; asking for more returns an empty
     // array rather than an error, which silently yields nothing.
     const PAGE = 20
-    let offset = 0
-    // `total` is reported only on the first response; later pages come back
-    // with total: 0 while still returning postings, so it is a hint, not a
-    // stop condition.
-    let total = Infinity
     const maxPages = opts.maxPages ?? 200
+    // Dedupe across facet partitions -- a posting can belong to several.
+    const seenPaths = new Set<string>()
 
-    for (let page = 0; page < maxPages; page++) {
-      const data = await this.postJson<{ jobPostings?: any[]; total?: number }>(
-        endpoint,
-        { appliedFacets: {}, limit: PAGE, offset, searchText: '' },
-        { cacheTtlMs: this.ttl.jobListing, signal: opts.signal }
-      )
-      const postings = data?.jobPostings ?? []
-      if (postings.length === 0) break
+    /**
+     * Page one search (optionally facet-filtered) to exhaustion.
+     * Returns what the board REPORTED as the total for that search.
+     */
+    const drain = async (facets: Record<string, string[]>): Promise<number> => {
+      let offset = 0
+      // `total` is reported only on the first response; later pages come back
+      // with total: 0 while still returning postings, so it is a hint, not a
+      // stop condition.
+      let total = Infinity
+      let reportedTotal = 0
 
-      if (page === 0) {
-        const reported = Number(data?.total ?? 0)
-        if (reported > 0) total = reported
-      }
+      for (let page = 0; page < maxPages; page++) {
+        const data = await this.postJson<{ jobPostings?: any[]; total?: number }>(
+          endpoint,
+          { appliedFacets: facets, limit: PAGE, offset, searchText: '' },
+          { cacheTtlMs: this.ttl.jobListing, signal: opts.signal }
+        )
+        const postings = data?.jobPostings ?? []
+        if (postings.length === 0) break
 
-      all.push(...this.mapRows(postings, target, (j) => {
+        if (page === 0) {
+          reportedTotal = Number(data?.total ?? 0)
+          if (reportedTotal > 0) total = reportedTotal
+        }
+
+        const fresh = postings.filter((j: any) => {
+          const path = String(j.externalPath ?? '')
+          if (!path || seenPaths.has(path)) return false
+          seenPaths.add(path)
+          return true
+        })
+
+        all.push(...this.mapRows(fresh, target, (j) => {
         const path = String(j.externalPath ?? '')
         return {
           source: this.id,
@@ -389,10 +412,70 @@ export class WorkdayAdapter extends BaseAdapter {
           canonicalUrl: path ? `https://${host}/${site}${path}` : '',
           extra: { jobFamily: j.jobFamily ?? null },
         }
-      }, warnings))
+        }, warnings))
 
-      offset += PAGE
-      if (postings.length < PAGE || offset >= total) break
+        offset += PAGE
+        if (postings.length < PAGE || offset >= total) break
+      }
+      return reportedTotal
+    }
+
+    const reported = await drain({})
+
+    /**
+     * WORKDAY WILL NOT PAGE PAST 2,000 RESULTS
+     * ----------------------------------------
+     * An unfiltered search reports `total: 2000` and clamps: offsets 2000,
+     * 2200 and 3000 all return the SAME page. So a board with more than 2,000
+     * openings silently yields exactly 2,000 and looks complete -- there is no
+     * error, no short page, nothing to notice.
+     *
+     * NVIDIA's facet counts sum to 2,636. We were indexing 2,000 of them and
+     * had been for every crawl. Four other employers sat at exactly 2,000:
+     * Citi, Applied Materials, ABB and Circle K. A round number is the tell.
+     *
+     * The way out is to ask smaller questions. `jobFamilyGroup` partitions the
+     * board into buckets that are each under the cap (NVIDIA's largest is
+     * Engineering at 1,740), and the facet counts come back on every response
+     * whether or not they were requested. Postings can belong to several
+     * partitions, so results are deduped by externalPath.
+     */
+    if (reported >= WORKDAY_RESULT_CAP) {
+      const facets = await this.postJson<{ facets?: any[] }>(
+        endpoint,
+        { appliedFacets: {}, limit: 1, offset: 0, searchText: '' },
+        { cacheTtlMs: this.ttl.jobListing, signal: opts.signal }
+      )
+      const group = (facets?.facets ?? []).find(
+        (f: any) => f?.facetParameter === 'jobFamilyGroup'
+      )
+      const values: any[] = group?.values ?? []
+      const trueTotal = values.reduce((n, v) => n + (Number(v?.count) || 0), 0)
+
+      if (!values.length) {
+        warnings.push(
+          `workday:${target.token} hit the ${WORKDAY_RESULT_CAP} result cap and exposes no ` +
+          'jobFamilyGroup facet to partition by -- the board is truncated'
+        )
+      } else {
+        for (const v of values) {
+          if (!v?.id) continue
+          const got = await drain({ jobFamilyGroup: [String(v.id)] })
+          // A single partition over the cap needs a second split; say so rather
+          // than quietly returning part of it.
+          if (got >= WORKDAY_RESULT_CAP) {
+            warnings.push(
+              `workday:${target.token} partition "${v.descriptor}" is itself at the ` +
+              `${WORKDAY_RESULT_CAP} cap -- still truncated`
+            )
+          }
+        }
+        if (trueTotal > 0 && all.length < trueTotal) {
+          warnings.push(
+            `workday:${target.token} facets report ${trueTotal} postings, read ${all.length}`
+          )
+        }
+      }
     }
 
     return { jobs: all, incremental: false, warnings }
