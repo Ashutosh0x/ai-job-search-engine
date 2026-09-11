@@ -29,11 +29,31 @@ scorer ([SEARCH.md](SEARCH.md)).
 curl 'localhost:3000/api/smart-search?q=senior%20ML%20engineer%20in%20Bangalore%20with%20visa%20sponsorship&debug=1'
 ```
 
-Returns, beyond the usual result list:
+Response keys: `success`, `query`, `understood`, `intent`, `total`, `page`,
+`pageSize`, `totalPages`, `tookMs`, `generatedAt`, `jobs`.
 
-- **`intentSummary`** — how the query was understood, in plain language, so a
-  misreading is visible and correctable rather than silent.
+Two of those a conventional search API does not give you:
+
+- **`understood`** — an array of plain-language phrases saying how the query was
+  read, so a misreading is visible and correctable rather than silent. (The
+  internal value is called `intentSummary`; `understood` is the wire name.)
 - **`matchReasons`** — per-result badges naming what actually earned the rank.
+
+`intent` carries the structured parse, including `facets[]` — each with the
+exact `matched` span it was read from and a confidence.
+
+```jsonc
+// ?q=senior ML engineer in Bangalore with visa sponsorship posted this week
+"understood": [
+  "matching \"ml engineer\"", "senior level", "in Bangalore",
+  "using machine learning", "with visa sponsorship", "posted in the last 7 days"
+]
+```
+
+Each job carries: `id`, `title`, `company`, `companySlug`, `location`, `city`,
+`country`, `remote`, `workplace`, `seniority`, `skills`, `salaryMin`/`Max`/
+`Currency`, `postedAt`, `visaStatus`, `visaEvidence`, `applyUrl`,
+`isDirectApplication`, `source`, `score`, `matchReasons`.
 
 ### `GET /api/search`
 
