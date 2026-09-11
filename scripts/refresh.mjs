@@ -77,7 +77,7 @@ const dryRun = has('dry-run')
  */
 const TIERS = {
   hot: ['greenhouse', 'ashby', 'lever', 'workable'],
-  warm: ['smartrecruiters', 'recruitee', 'teamtailor', 'personio'],
+  warm: ['smartrecruiters', 'recruitee', 'teamtailor', 'personio', 'mokahr'],
   cold: ['workday', 'eightfold', 'custom'],
 }
 TIERS.all = [...TIERS.hot, ...TIERS.warm, ...TIERS.cold]

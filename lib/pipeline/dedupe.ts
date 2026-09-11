@@ -259,6 +259,52 @@ export function degenerateRequisitionKeys(jobs: CanonicalJob[]): Set<string> {
   return bad
 }
 
+/**
+ * Do these two postings carry DIFFERENT real requisition ids from the SAME
+ * source?
+ *
+ * If so they are different openings and the probabilistic tiers must not merge
+ * them, however alike they look. A requisition id is the employer's own
+ * statement of identity: tier 1 already trusts a shared one as proof of
+ * sameness, and the converse is the same evidence read the other way.
+ *
+ * WHY THE SOURCE HAS TO MATCH BEFORE THIS CAN VETO ANYTHING
+ * ---------------------------------------------------------
+ * `requisitionKey` is `companySlug|source|requisitionId`, so the SAME job seen
+ * through two different sources always has two different keys. A veto on raw
+ * key inequality would therefore refuse every cross-source merge -- which is
+ * the original reason dedupe exists, and the most visible quality failure a job
+ * search can have. Only ids issued by the same system are comparable.
+ *
+ * Returns false when either id is missing (most sources publish none) or when
+ * either is degenerate -- an unreliable id must not be allowed to SPLIT records
+ * any more than it is allowed to merge them.
+ */
+function differentRequisitions(
+  a: CanonicalJob,
+  b: CanonicalJob,
+  degenerate: Set<string>
+): boolean {
+  const ka = a.requisitionKey
+  const kb = b.requisitionKey
+  if (!ka || !kb) return false
+  if (degenerate.has(ka) || degenerate.has(kb)) return false
+  if (ka === kb) return false
+
+  // `companySlug|source|id` -- the id itself may contain "|", so split off only
+  // the first two segments and keep the remainder whole.
+  const parts = (k: string) => {
+    const i = k.indexOf('|')
+    const j = k.indexOf('|', i + 1)
+    return i < 0 || j < 0 ? null : { source: k.slice(i + 1, j), id: k.slice(j + 1) }
+  }
+  const pa = parts(ka)
+  const pb = parts(kb)
+  if (!pa || !pb) return false
+  if (pa.source !== pb.source) return false
+  return pa.id !== pb.id
+}
+
 /* ---------------------------------- entry --------------------------------- */
 
 export function deduplicate(jobs: CanonicalJob[]): DedupeResult {
@@ -320,10 +366,25 @@ export function deduplicate(jobs: CanonicalJob[]): DedupeResult {
     }
 
     // TIER 3 -- company + normalised title + location.
+    //
+    // Vetoed when both postings carry different real requisition ids. Tier 1
+    // treats a SHARED requisition as proof two records are the same opening;
+    // the converse is just as strong evidence and was not being used. An
+    // employer that issues two requisition numbers has two openings, whatever
+    // the title and city say.
+    //
+    // This matters most at exactly the employers that hire in volume. Barclays
+    // posts 22 separate "Full Stack Engineer" requisitions at its Pune site --
+    // distinct JR numbers, distinct application links -- and this tier folded
+    // all 22 into one row, hiding 21 real openings and 21 real links behind a
+    // key (company|title|location) that cannot tell them apart by construction.
+    // Measured on one crawl: BNY 1,374 -> 949 and Barclays 1,034 -> 826, with
+    // every merge coming from this tier.
     if (!match) {
       const tlKey = `${company}|${job.normalizedTitle}|${locationKey(job)}`
-      if (job.normalizedTitle && byTitleLocation.has(tlKey)) {
-        match = byTitleLocation.get(tlKey)
+      const candidate = job.normalizedTitle ? byTitleLocation.get(tlKey) : undefined
+      if (candidate && !differentRequisitions(job, candidate, degenerateKeys)) {
+        match = candidate
         tier = 'titleLocation'
         confidence = 0.9
       }
@@ -337,6 +398,10 @@ export function deduplicate(jobs: CanonicalJob[]): DedupeResult {
       // Bound the comparison window: employers with thousands of openings would
       // otherwise make this quadratic.
       for (const peer of peers.slice(-400)) {
+        // Same veto as tier 3, and it matters more here: fuzzy matching on
+        // title and description is exactly what two sibling requisitions from
+        // one hiring drive look like.
+        if (differentRequisitions(job, peer, degenerateKeys)) continue
         const score = similarityScore(job, peer)
         if (score > bestScore) {
           bestScore = score

@@ -601,3 +601,161 @@ export class WorkableAdapter extends BaseAdapter {
     return { jobs, incremental: false, warnings }
   }
 }
+
+/* ---------------------------------- MokaHR -------------------------------- */
+
+/**
+ * MokaHR -- the ATS behind Trip.com Group and much of the Chinese market.
+ *
+ * The target's `token` is the MokaHR org id and `site` is the numeric site id,
+ * both visible in the careers URL the employer links to:
+ *
+ *   https://hire-r1.mokahr.com/apply/tripoverseas/100000877
+ *                                    \_ token _/ \_ site _/
+ *
+ * `host` selects the pod (hire-r1, hire-r2, ...); it defaults to hire-r1.
+ *
+ * NO HANDSHAKE IS NEEDED
+ * ----------------------
+ * The apply page sets a CSRF cookie and the front-end sends it, so the obvious
+ * assumption is that these endpoints require it. They do not -- a bare POST
+ * with no cookies returns the same data. Doing the handshake anyway would add
+ * a request and a failure mode for nothing.
+ *
+ * `needStat` IS NOT OPTIONAL
+ * --------------------------
+ * Without it the response still returns postings but reports
+ * `jobStats.total: 0`. Paging until "total" is reached would therefore stop
+ * immediately and yield nothing, while every individual request looked fine.
+ * Pagination here stops on a short page and treats the total as a cross-check.
+ *
+ * LOCATION LIVES ONLY ON THE DETAIL ENDPOINT
+ * ------------------------------------------
+ * The list response carries the full `jobDescription` -- unusually generous --
+ * but no location, department or publish date. Those three are only on
+ * `website/job`. So the list is fetched once and details are filled in with
+ * bounded concurrency, which is the same shape CustomSiteAdapter uses for
+ * sitemap crawls. Without that pass every MokaHR posting would be indexed with
+ * a null country, which is worse than useless on a job search.
+ */
+export class MokaHrAdapter extends BaseAdapter {
+  readonly id: SourceId = 'mokahr'
+  readonly displayName = 'MokaHR'
+  readonly hostPatterns = [/(^|\.)mokahr\.com$/i]
+  protected discoveryPattern = 'hire-r1.mokahr.com/apply/*'
+  protected healthUrl() {
+    return 'https://hire-r1.mokahr.com/api/outer/ats-apply/website/jobs/v2'
+  }
+
+  async healthCheck() {
+    const started = Date.now()
+    const data = await this.postJson<any>(
+      this.healthUrl(),
+      { orgId: 'tripoverseas', siteId: 100000877, limit: 1, offset: 0, needStat: true },
+      { timeoutMs: 12_000, retries: 0 }
+    ).catch(() => null)
+    return {
+      source: this.id,
+      healthy: Array.isArray(data?.data?.jobs),
+      latencyMs: Date.now() - started,
+      checkedAt: new Date().toISOString(),
+      error: data ? undefined : 'no response',
+    }
+  }
+
+  private base(target: SourceTarget) {
+    return `https://${target.host || 'hire-r1.mokahr.com'}/api/outer/ats-apply/website`
+  }
+
+  async fetchJobs(target: SourceTarget, opts: FetchOptions = {}): Promise<FetchResult> {
+    const warnings: string[] = []
+    const siteId = Number(target.site)
+    if (!Number.isFinite(siteId)) {
+      return { jobs: [], incremental: false, warnings: [`mokahr:${target.token} needs a numeric site id`] }
+    }
+
+    const PAGE = 50
+    const rows: any[] = []
+    let reported: number | null = null
+    let offset = 0
+
+    for (let guard = 0; guard < 200; guard++) {
+      const data = await this.postJson<any>(
+        `${this.base(target)}/jobs/v2`,
+        { orgId: target.token, siteId, limit: PAGE, offset, needStat: true, locale: 'en-US' },
+        { cacheTtlMs: this.ttl.jobListing, signal: opts.signal }
+      )
+      const page: any[] = data?.data?.jobs ?? []
+      if (reported === null) reported = data?.data?.jobStats?.total ?? null
+      rows.push(...page)
+      // Stop on a short page, not on the reported total -- see above.
+      if (page.length < PAGE) break
+      offset += PAGE
+    }
+
+    if (reported != null && reported > 0 && rows.length < reported) {
+      warnings.push(`mokahr:${target.token} board reports ${reported}, read ${rows.length}`)
+    }
+
+    // Fill in location/department/publishedAt, which the list omits entirely.
+    const details = new Map<string, any>()
+    const queue = rows.map((r) => String(r.id)).filter(Boolean)
+    await Promise.all(
+      Array.from({ length: 6 }, async () => {
+        while (queue.length) {
+          const id = queue.shift()!
+          const d = await this.postJson<any>(
+            `${this.base(target)}/job`,
+            { orgId: target.token, siteId, jobId: id, locale: 'en-US' },
+            { cacheTtlMs: this.ttl.jobDetail, retries: 0, signal: opts.signal }
+          ).catch(() => null)
+          const job = d?.data?.job ?? d?.data
+          if (job?.id) details.set(String(job.id), job)
+        }
+      })
+    )
+    if (details.size < rows.length) {
+      warnings.push(`mokahr:${target.token} ${rows.length - details.size} postings have no location detail`)
+    }
+
+    const applyBase = `https://${target.host || 'hire-r1.mokahr.com'}/apply/${target.token}/${siteId}/job/`
+
+    const jobs = this.mapRows(rows, target, (j) => {
+      const d = details.get(String(j.id)) ?? {}
+      const locs: any[] = Array.isArray(d.locations) ? d.locations : []
+      // `countryDescription` is the English name; `country` is often Chinese
+      // ("马来西亚"). Prefer the English one and fall back rather than emitting
+      // a name the location normaliser cannot resolve.
+      const place = (l: any) =>
+        [l?.address, l?.countryDescription || l?.country].filter(Boolean).join(', ') || null
+      return {
+        source: this.id,
+        target,
+        sourceId: String(j.id),
+        // The job id, NOT `d.number`. `number` looks like a requisition number
+        // and is the HEADCOUNT -- how many people the opening is for. Mapping
+        // it here gave 190 of 216 postings the requisition key "1", which
+        // collapsed unrelated roles across Germany, France, Italy and the US
+        // into single records. MokaHR publishes no requisition number on this
+        // API; the uuid is the identifier it does publish.
+        requisitionId: String(j.id),
+        title: String(j.title ?? '').trim(),
+        company: target.companyName ?? null,
+        companyDomain: target.companyDomain ?? null,
+        locationRaw: locs.length ? place(locs[0]) : null,
+        additionalLocations: locs.slice(1).map(place).filter(Boolean) as string[],
+        descriptionHtml: j.jobDescription ?? d.jobDescription ?? null,
+        department: d.department?.name ? String(d.department.name) : null,
+        employmentType: d.commitment ? String(d.commitment) : null,
+        remoteFlag: null,
+        postedAt: toIso(d.publishedAt ?? j.openedAt ?? j.createdAt),
+        updatedAt: toIso(j.updatedAt),
+        applicationUrl: `${applyBase}${j.id}`,
+        canonicalUrl: `${applyBase}${j.id}`,
+        extra: { status: j.status, mokaSiteId: siteId },
+      }
+    }, warnings)
+
+    return { jobs, incremental: false, warnings }
+  }
+}

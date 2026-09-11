@@ -12,7 +12,7 @@ export type SourceId =
   | 'recruitee' | 'teamtailor' | 'personio' | 'jobvite' | 'bamboohr'
   | 'breezy' | 'comeet' | 'jazzhr' | 'pinpoint' | 'rippling' | 'workable'
   | 'icims' | 'taleo' | 'successfactors' | 'eightfold' | 'avature'
-  | 'phenom' | 'ukg' | 'dover' | 'gem' | 'wellfound'
+  | 'phenom' | 'ukg' | 'dover' | 'gem' | 'wellfound' | 'mokahr'
   | 'custom' | 'search' | 'unknown'
 
 /** How much we trust a source's data by default. Learned values override these. */
@@ -23,7 +23,7 @@ export const DEFAULT_SOURCE_CONFIDENCE: Record<string, number> = {
   jobvite: 0.96, bamboohr: 0.96, breezy: 0.96, comeet: 0.96, jazzhr: 0.96,
   pinpoint: 0.96, rippling: 0.96, workable: 0.96,
   icims: 0.95, taleo: 0.95, successfactors: 0.95, eightfold: 0.95,
-  avature: 0.95, phenom: 0.95, ukg: 0.95, dover: 0.94, gem: 0.94,
+  avature: 0.95, phenom: 0.95, ukg: 0.95, mokahr: 0.95, dover: 0.94, gem: 0.94,
   wellfound: 0.90,
   custom: 0.92,
   search: 0.85,        // discovered via a search index, not yet resolved

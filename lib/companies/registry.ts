@@ -597,6 +597,27 @@ export const COMPANIES: CompanyRecord[] = [
   // site number. 7,464 live requisitions, verified 11 Sep 2026.
   { slug: 'jpmorgan-chase', name: 'JPMorgan Chase', domain: 'jpmorganchase.com', ticker: 'JPM', valuationKind: 'public', industry: 'Banking', hqLocation: 'New York, NY', foundedYear: 1799,
     boards: [{ provider: 'custom', token: 'CX_1001', host: 'jpmc.fa.oraclecloud.com' }] },
+  // Trip.com Group runs MokaHR. `token` is the MokaHR org id and `site` is the
+  // numeric site id, both taken from the link careers.trip.com publishes:
+  // hire-r1.mokahr.com/apply/tripoverseas/100000877
+  //
+  // This is the Experienced Hire Portal (site type "social"). The group also
+  // runs a separate CAMPUS site on app.mokahr.com and Chinese-market portals at
+  // careers.ctrip.com; those are different sites and are not covered by this
+  // entry. 216 live postings, verified 12 Sep 2026.
+  { slug: 'trip-com-group', name: 'Trip.com Group', domain: 'trip.com', ticker: 'TCOM', valuationKind: 'public', industry: 'Online Travel', hqLocation: 'Shanghai, China', foundedYear: 1999,
+    boards: [{ provider: 'mokahr', token: 'tripoverseas', site: '100000877', host: 'hire-r1.mokahr.com' }] },
+  // BNY also runs Oracle Recruiting Cloud, on a different pod. The token here
+  // is the site NAME rather than a `CX_<n>` number, taken from the link on
+  // bny.com's own careers page; the host is what routes it to the ORC adapter.
+  //
+  // Worth knowing: this tenant ignores `siteNumber` entirely -- BNY-Careers,
+  // CX_1, CX_2 and CX_3 all return the identical 1,374 requisitions. So a
+  // "working" site number here is NOT evidence that the number is right, and
+  // probing one proves nothing about the others. The name is used because it is
+  // the one the employer publishes. 1,374 live requisitions, verified 11 Sep 2026.
+  { slug: 'bny-mellon', name: 'BNY', domain: 'bny.com', ticker: 'BK', valuationKind: 'public', industry: 'Custody Banking / Asset Servicing', hqLocation: 'New York, NY', foundedYear: 1784,
+    boards: [{ provider: 'custom', token: 'BNY-Careers', host: 'eofe.fa.us2.oraclecloud.com' }] },
   { slug: 'wells-fargo', name: 'Wells Fargo', domain: 'wellsfargo.com', ticker: 'WFC', valuationKind: 'public', industry: 'Banking', hqLocation: 'San Francisco, CA', foundedYear: 1852,
     boards: [{ provider: 'workday', token: 'wf', site: 'WellsFargoJobs', host: 'wf.wd1.myworkdayjobs.com' }] },
   { slug: 'morgan-stanley', name: 'Morgan Stanley', domain: 'morganstanley.com', ticker: 'MS', valuationKind: 'public', industry: 'Investment Banking', hqLocation: 'New York, NY', foundedYear: 1935,

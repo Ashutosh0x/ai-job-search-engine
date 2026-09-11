@@ -126,5 +126,46 @@ console.log('\ndegenerate requisition ids')
   t('and is not flagged degenerate', r2.degenerateRequisitionKeys === 0, r2.degenerateRequisitionKeys)
 }
 
+/* ---------- distinct requisitions must stay distinct ---------- */
+//
+// Regression: tier 3 keys on company|title|location, which by construction
+// cannot tell two real openings apart. Barclays posts 22 separate "Full Stack
+// Engineer" requisitions at its Pune site -- distinct JR numbers, distinct
+// application links -- and all 22 collapsed into one row, hiding 21 openings.
+console.log('\ndistinct requisitions are not merged')
+{
+  const sameTitleSameCity = [
+    base({ id: 'p1', title: 'Full Stack Engineer', city: 'Pune', requisitionKey: 'barclays|workday|JR-0000122752', applicationUrl: 'https://x.com/JR-0000122752' }),
+    base({ id: 'p2', title: 'Full Stack Engineer', city: 'Pune', requisitionKey: 'barclays|workday|JR-0000122762', applicationUrl: 'https://x.com/JR-0000122762' }),
+    base({ id: 'p3', title: 'Full Stack Engineer', city: 'Pune', requisitionKey: 'barclays|workday|JR-0000122758', applicationUrl: 'https://x.com/JR-0000122758' }),
+  ]
+  const r = deduplicate(sameTitleSameCity)
+  t('three requisitions, same title and city, stay three', r.jobs.length === 3, r.jobs.length)
+  t('each keeps its own application link',
+    new Set(r.jobs.map(j => j.applicationUrl)).size === 3, r.jobs.map(j => j.applicationUrl))
+
+  // Without requisition ids there is nothing to veto on, so the old behaviour
+  // must survive: same title, same city, no ids -> still one job.
+  const noIds = [
+    base({ id: 'q1', title: 'Full Stack Engineer', city: 'Pune', applicationUrl: 'https://x.com/a' }),
+    base({ id: 'q2', title: 'Full Stack Engineer', city: 'Pune', applicationUrl: 'https://x.com/b' }),
+  ]
+  t('without requisition ids, title+location still merges', deduplicate(noIds).jobs.length === 1, deduplicate(noIds).jobs.length)
+
+  // The veto must NOT break cross-source dedupe, which is dedupe's whole
+  // purpose. requisitionKey embeds the source, so the same job seen twice has
+  // two different keys -- comparing them raw would refuse every such merge.
+  const crossSource = [
+    base({ id: 'r1', title: 'Full Stack Engineer', city: 'Pune', source: 'greenhouse', sourceConfidence: 0.98,
+           requisitionKey: 'acme|greenhouse|7788', applicationUrl: 'https://boards.greenhouse.io/acme/jobs/7788' }),
+    base({ id: 'r2', title: 'Full Stack Engineer', city: 'Pune', source: 'search', sourceConfidence: 0.85,
+           requisitionKey: 'acme|search|7788', applicationUrl: 'https://aggregator.example/acme/7788' }),
+  ]
+  const rx = deduplicate(crossSource)
+  t('the same job from two sources still merges', rx.jobs.length === 1, rx.jobs.length)
+  t('and the direct employer link is the one kept',
+    rx.jobs[0].applicationUrl.includes('greenhouse.io'), rx.jobs[0].applicationUrl)
+}
+
 console.log(`\n${pass} passed, ${fail} failed`)
 process.exit(fail===0?0:1)
