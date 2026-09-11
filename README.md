@@ -1,6 +1,4 @@
-<p align="center">
-  <img src="docs/assets/banner.svg" alt="AI Job Search Engine" width="100%">
-</p>
+
 
 <p align="center">
   <b>A job search engine that reads employers' own applicant tracking systems — not aggregators, not scrapers.</b><br>
