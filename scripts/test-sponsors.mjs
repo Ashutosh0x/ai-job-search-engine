@@ -152,5 +152,40 @@ t('Stripe matches "Stripe Payments UK Ltd" only via qualifiers',
   t('evidence names the skilled entity', m?.matchedName === 'Acme', m?.matchedName)
 }
 
+/* ---------------------------- US H-1B outcomes ---------------------------- */
+//
+// The US source is a different KIND of fact from UK/NL: outcomes for a closed
+// fiscal year, not a current licence. These guard that distinction surviving
+// into the match, because collapsing it would turn "filed petitions in FY2023"
+// into "sponsors", which the data does not support.
+{
+  const usReg = {
+    country: 'US', sourceUrl: 'https://uscis.gov/x.csv', publishedAt: null, fetchedAt: '',
+    rows: [
+      { name: 'NVIDIA CORPORATION', fiscalYear: 2023, state: 'CA', city: 'SANTA CLARA',
+        initialApprovals: 300, initialDenials: 1, continuingApprovals: 94, continuingDenials: 0 },
+    ],
+  }
+  const idx = buildSponsorIndex(usReg)
+  const m = matchSponsor('NVIDIA', idx)
+
+  t('US register matches on the corporate qualifier', m !== null, m)
+  t('US match is not route-gated (H-1B is itself skilled)', m?.coversSkilledWork === true, m)
+  t('US match carries petition counts', m?.h1b?.initialApprovals === 300, m?.h1b)
+  t('US match sums continuing approvals', m?.h1b?.continuingApprovals === 94, m?.h1b)
+  t('US match keeps the fiscal year', m?.h1b?.fiscalYear === 2023, m?.h1b)
+  t('US evidence names the legal entity', m?.matchedName === 'NVIDIA CORPORATION', m?.matchedName)
+}
+{
+  // A UK/NL match must never grow an h1b block -- that would imply US petition
+  // evidence exists when it does not.
+  const ukReg = {
+    country: 'UK', sourceUrl: 'u', publishedAt: null, fetchedAt: '',
+    rows: [{ name: 'Acme Ltd', town: 'London', rating: 'A', route: 'Skilled Worker' }],
+  }
+  const m = matchSponsor('Acme', buildSponsorIndex(ukReg))
+  t('non-US match carries no H-1B block', m !== null && m.h1b === undefined, m?.h1b)
+}
+
 console.log(`\n${pass} passed, ${fail} failed`)
 process.exit(fail ? 1 : 0)

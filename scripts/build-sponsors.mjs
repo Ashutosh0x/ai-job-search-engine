@@ -16,7 +16,7 @@
 import { writeFileSync, mkdirSync } from 'fs'
 import { dirname } from 'path'
 
-const { fetchUkRegister, fetchNlRegister, buildSponsorIndex, matchSponsor } =
+const { fetchUkRegister, fetchNlRegister, fetchUsRegister, buildSponsorIndex, matchSponsor } =
   await import('../lib/visa/sponsor-registers.ts')
 const { COMPANIES } = await import('../lib/companies/registry.ts')
 
@@ -27,7 +27,7 @@ const OUT = 'public/data/sponsors.json'
 const registers = []
 const failures = []
 
-for (const [country, fetcher] of [['UK', fetchUkRegister], ['NL', fetchNlRegister]]) {
+for (const [country, fetcher] of [['UK', fetchUkRegister], ['NL', fetchNlRegister], ['US', fetchUsRegister]]) {
   if (only && only.toUpperCase() !== country) continue
   process.stdout.write(`fetching ${country} register ... `)
   try {
@@ -71,6 +71,7 @@ writeFileSync(OUT, JSON.stringify({
   registers: registers.map((r) => ({
     country: r.country, sourceUrl: r.sourceUrl,
     publishedAt: r.publishedAt, organisations: r.rows.length,
+    coverageNote: r.coverageNote ?? null,
   })),
   failures,
   companies,

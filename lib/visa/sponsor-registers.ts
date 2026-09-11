@@ -30,6 +30,8 @@
  * records the matched legal name as evidence so a wrong match is visible.
  */
 
+export type SponsorCountry = 'UK' | 'NL' | 'US'
+
 export interface SponsorRow {
   name: string
   /** UK only. */
@@ -39,19 +41,34 @@ export interface SponsorRow {
   route?: string | null
   /** NL only: Chamber of Commerce number. */
   kvk?: string | null
+  /** US only: H-1B petition outcomes for the fiscal year (see fetchUsRegister). */
+  initialApprovals?: number
+  initialDenials?: number
+  continuingApprovals?: number
+  continuingDenials?: number
+  state?: string | null
+  city?: string | null
+  naics?: string | null
+  fiscalYear?: number
 }
 
 export interface SponsorRegister {
-  country: 'UK' | 'NL'
+  country: SponsorCountry
   sourceUrl: string
   /** When the publisher last updated it, not when we fetched it. */
   publishedAt: string | null
   fetchedAt: string
   rows: SponsorRow[]
+  /**
+   * How stale the source itself is, in the publisher's own terms. The US hub
+   * lags by years; the UK register is monthly. A consumer must be able to tell
+   * the difference without knowing each source's release cadence.
+   */
+  coverageNote?: string
 }
 
 export interface SponsorMatch {
-  country: 'UK' | 'NL'
+  country: SponsorCountry
   /** The legal name as it appears in the register -- the evidence. */
   matchedName: string
   /** 'exact' or 'qualified' (company name plus corporate qualifiers only). */
@@ -76,6 +93,19 @@ export interface SponsorMatch {
   coversSkilledWork: boolean
   /** Set when the match should not be trusted, with the reason why. */
   lowConfidence?: string
+  /**
+   * US only. Petition OUTCOMES, which is a different kind of fact from a UK/NL
+   * licence: the UK register says an employer *may* sponsor, while this says an
+   * employer *did* -- for a fiscal year that has already closed. Both are facts;
+   * neither is a statement about today.
+   */
+  h1b?: {
+    fiscalYear: number
+    initialApprovals: number
+    initialDenials: number
+    continuingApprovals: number
+    continuingDenials: number
+  }
 }
 
 /**
@@ -215,6 +245,134 @@ export async function fetchNlRegister(): Promise<SponsorRegister> {
   }
 }
 
+/**
+ * USCIS H-1B Employer Data Hub.
+ *
+ * A DIFFERENT KIND OF FACT FROM UK/NL
+ * -----------------------------------
+ * The UK and Dutch registers are licences: the government has authorised this
+ * employer to sponsor, so the fact is about PERMISSION and is current.
+ *
+ * The US publishes no equivalent licence list, because H-1B sponsorship needs
+ * no standing licence -- any employer can file a petition. What USCIS publishes
+ * instead is OUTCOMES: which employers actually had petitions approved or
+ * denied, per fiscal year. So the fact here is about HISTORY.
+ *
+ * That distinction has to survive into the UI. "Amazon had 4,062 H-1B approvals
+ * in FY2023" is true and useful. "Amazon sponsors H-1B" is an extrapolation
+ * from it, and "this role is sponsored" is a further extrapolation again. The
+ * data supports only the first.
+ *
+ * STALENESS IS STRUCTURAL, NOT A BUG
+ * ----------------------------------
+ * USCIS publishes a fiscal year well after it closes. Measured 11 Sep 2026:
+ * FY2024, FY2025 and FY2026 all 404; FY2023 is the newest file that exists.
+ * So this source is inherently ~2-3 years behind, and the fiscal year travels
+ * with every row so a consumer can weigh it. The fetcher discovers the newest
+ * available year rather than hardcoding one, because that changes annually.
+ *
+ * One row per employer per work location, so an employer appears many times;
+ * rows are aggregated by employer name.
+ */
+export async function fetchUsRegister(opts: { maxYearsBack?: number } = {}): Promise<SponsorRegister> {
+  const base = 'https://www.uscis.gov/sites/default/files/document/data/h1b_datahubexport-'
+  const thisYear = new Date().getFullYear()
+  const maxBack = opts.maxYearsBack ?? 4
+
+  let text: string | null = null
+  let sourceUrl = ''
+  let fiscalYear = 0
+
+  // Walk back from the current year to the newest file that actually exists.
+  for (let y = thisYear; y > thisYear - maxBack; y--) {
+    const url = `${base}${y}.csv`
+    const res = await fetch(url, { headers: { 'User-Agent': UA } }).catch(() => null)
+    // USCIS serves its 404 page with a 404 status but a non-trivial body, so
+    // check the status rather than the payload size.
+    if (!res?.ok) continue
+    const body = await res.text()
+    // Guard against a soft-404 that returns HTML with a 200.
+    if (!/^\s*"?Fiscal Year"?\s*,/i.test(body)) continue
+    text = body
+    sourceUrl = url
+    fiscalYear = y
+    break
+  }
+
+  if (!text) {
+    throw new Error(
+      `No H-1B data hub file found for ${thisYear - maxBack + 1}-${thisYear}. ` +
+        'USCIS may have changed the URL pattern.'
+    )
+  }
+
+  const table = parseCsv(text)
+  const [header, ...body] = table
+  const col = (want: string) =>
+    header.findIndex((h) => h.trim().toLowerCase().replace(/^"|"$/g, '').startsWith(want))
+
+  const iEmployer = col('employer')
+  const iIA = col('initial approval')
+  const iID = col('initial denial')
+  const iCA = col('continuing approval')
+  const iCD = col('continuing denial')
+  const iState = col('state')
+  const iCity = col('city')
+  const iNaics = col('naics')
+
+  const num = (v: string | undefined) => {
+    const n = Number(String(v ?? '').replace(/[",]/g, '').trim())
+    return Number.isFinite(n) ? n : 0
+  }
+
+  // Aggregate: one row per employer, summing across its work locations.
+  const byEmployer = new Map<string, SponsorRow>()
+  for (const r of body) {
+    const name = (r[iEmployer] ?? '').trim()
+    // The file genuinely contains rows with a blank employer (suppressed for
+    // privacy when counts are tiny). They cannot be matched to anything.
+    if (name.length < 2) continue
+
+    const key = name.toUpperCase()
+    const prev = byEmployer.get(key)
+    const row: SponsorRow = prev ?? {
+      name,
+      state: (r[iState] ?? '').trim() || null,
+      city: (r[iCity] ?? '').trim() || null,
+      naics: (r[iNaics] ?? '').trim() || null,
+      fiscalYear,
+      initialApprovals: 0,
+      initialDenials: 0,
+      continuingApprovals: 0,
+      continuingDenials: 0,
+    }
+    row.initialApprovals! += num(r[iIA])
+    row.initialDenials! += num(r[iID])
+    row.continuingApprovals! += num(r[iCA])
+    row.continuingDenials! += num(r[iCD])
+    byEmployer.set(key, row)
+  }
+
+  // An employer with zero approvals and zero denials carries no signal.
+  const rows = [...byEmployer.values()].filter(
+    (r) => (r.initialApprovals! + r.continuingApprovals! + r.initialDenials! + r.continuingDenials!) > 0
+  )
+
+  return {
+    country: 'US',
+    sourceUrl,
+    // The fiscal year is the publisher's own period. USCIS states no file date,
+    // so do not invent one -- the year IS the provenance.
+    publishedAt: null,
+    fetchedAt: new Date().toISOString(),
+    rows,
+    coverageNote:
+      `USCIS publishes H-1B outcomes only after a fiscal year closes; FY${fiscalYear} is the ` +
+      'newest file available. These are petitions an employer actually filed in that year, ' +
+      'not a current licence and not a statement about any specific role.',
+  }
+}
+
 function decodeEntities(s: string): string {
   return s
     .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
@@ -324,8 +482,14 @@ export function matchSponsor(
   const routes = [...new Set(hits.map((h) => h.route).filter(Boolean) as string[])]
   // The NL register publishes no route column; recognised sponsorship there is
   // the labour scheme by definition, so treat it as covering skilled work.
+  //
+  // The US hub has no routes either, but for a different reason: H-1B is itself
+  // a skilled-worker classification, so an approval IS evidence of skilled
+  // sponsorship. Applying the UK's route test here would reject every US row.
   const coversSkilledWork =
-    index.register.country === 'NL' ? true : routes.some(isSkilledRoute)
+    index.register.country === 'NL' || index.register.country === 'US'
+      ? true
+      : routes.some(isSkilledRoute)
 
   // Prefer the entity that actually holds a skilled-work route when several
   // share a name, so the evidence shown is the relevant one.
@@ -347,5 +511,19 @@ export function matchSponsor(
         'Matched organisation holds no skilled-work route, so this is probably ' +
         'a different entity with the same name',
     }),
+    // Petition counts, summed across every work location for this employer.
+    // Carried through so the UI can state the measured fact rather than a
+    // derived adjective: "4,062 approvals in FY2023", not "sponsors often".
+    ...(index.register.country === 'US'
+      ? {
+          h1b: {
+            fiscalYear: preferred.fiscalYear ?? 0,
+            initialApprovals: hits.reduce((s, h) => s + (h.initialApprovals ?? 0), 0),
+            initialDenials: hits.reduce((s, h) => s + (h.initialDenials ?? 0), 0),
+            continuingApprovals: hits.reduce((s, h) => s + (h.continuingApprovals ?? 0), 0),
+            continuingDenials: hits.reduce((s, h) => s + (h.continuingDenials ?? 0), 0),
+          },
+        }
+      : {}),
   }
 }
