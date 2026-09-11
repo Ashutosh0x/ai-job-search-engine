@@ -45,7 +45,7 @@
  *      resetting it on every refresh would make every job look new forever.
  */
 
-import { readFileSync, writeFileSync, existsSync, mkdirSync, openSync, writeSync, closeSync } from 'fs'
+import { readFileSync, writeFileSync, existsSync, mkdirSync, openSync, writeSync, closeSync, renameSync } from 'fs'
 import { dirname } from 'path'
 
 const { runIngest } = await import('../lib/pipeline/orchestrator.ts')
@@ -90,7 +90,17 @@ if (!wanted) {
 // exceeds Node's 512MB max string length and throws at the very end, after all
 // the work is done.
 function writeJsonStream(path, head, arrayKey, rows) {
-  const fd = openSync(path, 'w')
+  // Write to a temp file and rename, rather than truncating the destination.
+  //
+  // openSync(path, 'w') truncates immediately and then streams for tens of
+  // seconds on a 300MB+ index. For that whole window the file on disk is a
+  // partial JSON document, so any reader -- the dev server, a serverless
+  // function, a concurrent script -- gets a parse error and reports
+  // "Job index is not available". rename() within the same directory is
+  // atomic on both POSIX and Windows, so a reader sees either the old complete
+  // file or the new one, never a half-written one.
+  const tmp = `${path}.tmp-${process.pid}`
+  const fd = openSync(tmp, 'w')
   try {
     const parts = Object.entries(head).map(([k, v]) => `${JSON.stringify(k)}:${JSON.stringify(v)}`)
     writeSync(fd, `{${parts.join(',')},${JSON.stringify(arrayKey)}:[`)
@@ -104,6 +114,7 @@ function writeJsonStream(path, head, arrayKey, rows) {
   } finally {
     closeSync(fd)
   }
+  renameSync(tmp, path)
 }
 
 /* --------------------------------- one pass -------------------------------- */

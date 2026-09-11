@@ -27,6 +27,18 @@ yarn-error.log*
 next-env.d.ts
 # Ingestion artifacts (regenerate with scripts/ingest-v2.mjs)
 /public/data/*.json
+# ...except the bounded deployment index, which MUST be committed.
+#
+# This Vercel project auto-deploys from GitHub. A git-triggered build sees only
+# what is in the repository, so with this file ignored every `git push`
+# produced a deployment whose search API answered
+# "Job index is not available" -- while `vercel deploy` from a laptop worked,
+# because the CLI uploads local files. The deploy that worked and the deploy
+# that shipped were built from different file sets.
+#
+# 28MB is well under GitHub's 50MB warning and 100MB hard limit, and committing
+# it makes a deployment reproducible from the repository alone.
+!/public/data/jobs-deploy.json
 /.ingest-state.json
 /public/data/ibm-jobs.json
 
