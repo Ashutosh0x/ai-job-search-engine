@@ -461,6 +461,37 @@ export const COMPANIES: CompanyRecord[] = [
     industry: 'AI Drug Discovery', hqLocation: 'London, UK', foundedYear: 2021,
     boards: [{ provider: 'greenhouse', token: 'isomorphiclabs' }] },
 
+  // ---- India tech, verified live 11 Sep 2026 ------------------------------
+  //
+  // FLIPKART AND JUSPAY ARE DELIBERATELY ABSENT -- see the note below this block.
+  { slug: 'postman', name: 'Postman', domain: 'postman.com', valuationKind: 'private',
+    reportedValuationUsd: 5_600_000_000, valuationAsOf: '2021-08-01',
+    valuationSource: 'Series D, Aug 2021 -- note the age of this figure',
+    industry: 'API Developer Tools', hqLocation: 'San Francisco, CA', foundedYear: 2014,
+    boards: [{ provider: 'greenhouse', token: 'postman' }] },
+  // The board token is the full legal name, `razorpaysoftwareprivatelimited`.
+  // `razorpay` 404s. Read off razorpay.com/jobs, not guessed.
+  { slug: 'razorpay', name: 'Razorpay', domain: 'razorpay.com', valuationKind: 'private',
+    reportedValuationUsd: 7_500_000_000, valuationAsOf: '2021-12-01',
+    valuationSource: 'Series F, Dec 2021 -- note the age of this figure',
+    industry: 'Payments', hqLocation: 'Bangalore, India', foundedYear: 2014,
+    boards: [{ provider: 'greenhouse', token: 'razorpaysoftwareprivatelimited' }] },
+  { slug: 'meesho', name: 'Meesho', domain: 'meesho.com', valuationKind: 'unknown',
+    industry: 'E-commerce', hqLocation: 'Bangalore, India', foundedYear: 2015,
+    boards: [{ provider: 'lever', token: 'meesho' }] },
+  { slug: 'cred', name: 'CRED', domain: 'cred.club', valuationKind: 'unknown',
+    industry: 'Fintech', hqLocation: 'Bangalore, India', foundedYear: 2018,
+    boards: [{ provider: 'lever', token: 'cred' }] },
+  { slug: 'zeta', name: 'Zeta', domain: 'zeta.tech', valuationKind: 'unknown',
+    industry: 'Banking Technology', hqLocation: 'Bangalore, India', foundedYear: 2015,
+    boards: [{ provider: 'lever', token: 'zeta' }] },
+  { slug: 'navi', name: 'Navi', domain: 'navi.com', valuationKind: 'unknown',
+    industry: 'Fintech', hqLocation: 'Bangalore, India', foundedYear: 2018,
+    boards: [{ provider: 'ashby', token: 'navi' }] },
+  { slug: 'groww', name: 'Groww', domain: 'groww.in', valuationKind: 'unknown',
+    industry: 'Investing Platform', hqLocation: 'Bangalore, India', foundedYear: 2016,
+    boards: [{ provider: 'greenhouse', token: 'groww' }] },
+
   { slug: 'stripe', name: 'Stripe', domain: 'stripe.com', valuationKind: 'private',
     reportedValuationUsd: 106_500_000_000, valuationAsOf: '2025-02-27',
     valuationSource: 'Tender offer, Feb 2025',
