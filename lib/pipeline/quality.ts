@@ -56,9 +56,103 @@ const GENERIC_TITLES = new Set([
 const PIPELINE_RE =
   /\b(talent\s*(pool|community|network)|general\s+application|speculative|expression\s+of\s+interest|future\s+(openings?|opportunit)|keep\s+your\s+(cv|resume)\s+on\s+file|we.?re\s+always\s+looking)\b/i
 
-/** Signals of an outright fraudulent posting rather than a stale one. */
-const SCAM_RE =
-  /\b(application\s+fee|registration\s+fee|processing\s+fee|equipment\s+deposit|pay\s+(a\s+)?fee|western\s+union|send\s+money|wire\s+transfer\s+required)\b/i
+/**
+ * Phrases that describe a candidate being asked for money.
+ *
+ * A match is NOT by itself evidence of fraud -- see `requestsPayment`. The most
+ * common place these words appear is in a legitimate employer's own anti-fraud
+ * warning, which says the opposite of what the words say in isolation.
+ */
+const SCAM_PHRASE_RE =
+  /\b(application\s+fee|registration\s+fee|processing\s+fee|equipment\s+deposit|pay\s+(?:a\s+)?fee|send\s+money|wire\s+transfer\s+required)\b/gi
+
+/**
+ * Money-transfer brands. Far weaker evidence than the phrases above, because
+ * these are company names that appear in ordinary prose -- a fintech listing
+ * its customers, a payments role naming the rails it works on. Only counted
+ * when the sentence also demands payment.
+ */
+const MONEY_RAIL_RE = /\b(western\s+union|moneygram)\b/gi
+
+/**
+ * Negation and disclaimer triggers, scoped to the sentence containing a match.
+ *
+ * WHY SENTENCE SCOPE AND NOT CLAUSE SCOPE
+ * ---------------------------------------
+ * `lib/resume/assertion.ts` deliberately bounds negation at the nearest CLAUSE,
+ * because for resume skills a fixed window over-negates. Anti-fraud disclaimers
+ * have the opposite shape -- one negation governing a long coordinated list:
+ *
+ *   "We will never ask you to pay a fee, send money, deposit or cash a check,
+ *    or purchase work-related equipment."
+ *     |_ the only negation is at the front; "send money" sits two commas away
+ *
+ * Clause scope would negate "pay a fee" and miss "send money" in the same
+ * sentence, which is the worst of both. So the scope here is the sentence.
+ *
+ * The cost is a false negative on a scam written as "Do not worry, just pay a
+ * $200 registration fee". That trade is deliberate and heavily asymmetric: this
+ * corpus is crawled exclusively from employers' own ATS boards -- Greenhouse,
+ * Ashby, Workday -- where the prior on an actual advance-fee scam is close to
+ * zero, while the cost of a false positive is measured in `requestsPayment`.
+ */
+const PAYMENT_DISCLAIMER_RE =
+  /\b(never|not|no|without|beware|scam|fraud|phishing|impersonat|won't|don't|doesn't|nor)\b/i
+
+/** The sentence around [start, end), used to scope the disclaimer check. */
+function sentenceAround(text: string, start: number, end: number): string {
+  let from = start
+  while (from > 0 && !/[.!?\n]/.test(text[from - 1])) from--
+  let to = end
+  while (to < text.length && !/[.!?\n]/.test(text[to])) to++
+  return text.slice(from, to)
+}
+
+/**
+ * Does this posting actually demand money from the candidate?
+ *
+ * THE FALSE POSITIVE THIS EXISTS TO PREVENT
+ * -----------------------------------------
+ * The previous version was a bare regex over the description, and it was wrong
+ * in the most damaging possible way -- it fired on the employers most careful
+ * about fraud, because warning candidates about advance-fee scams requires
+ * naming the thing being warned about. Measured against live boards:
+ *
+ *   Airbnb      167 of 167 postings rejected. Trigger: their own warning,
+ *               "We'll also never ask you to pay a fee, send money, ..."
+ *   Fireblocks   75 of 75 postings rejected. Trigger: "Western Union" --
+ *               named as a CUSTOMER, alongside BNY Mellon and Stripe.
+ *
+ * `requests_payment` is a CRITICAL rule, so every one of those postings was
+ * dropped from the index. Both employers were in the registry, both boards
+ * returned 200 OK, and the crawl report showed zero failures. The jobs simply
+ * were not there.
+ */
+export function requestsPayment(description: string): { hit: boolean; evidence: string | null } {
+  const text = description ?? ''
+  if (!text) return { hit: false, evidence: null }
+
+  for (const re of [SCAM_PHRASE_RE, MONEY_RAIL_RE]) {
+    re.lastIndex = 0
+    let m: RegExpExecArray | null
+    while ((m = re.exec(text))) {
+      const sentence = sentenceAround(text, m.index, m.index + m[0].length)
+      // A disclaimer in the same sentence flips the meaning entirely.
+      if (PAYMENT_DISCLAIMER_RE.test(sentence)) continue
+      // A brand name alone is not a demand; the sentence must also contain an
+      // act of paying. Deliberately VERBS ONLY -- "payment" and "fee" as nouns
+      // are far too common in ordinary prose. Fireblocks describes itself as
+      // trusted by "banks, payment providers, fintechs ... Western Union,
+      // Stripe, and Revolut", and a guard that accepted the noun "payment"
+      // still flagged all 75 of its postings.
+      if (re === MONEY_RAIL_RE && !/\b(pay|paid|pays|send|sends|sent|transferring|transfer|wire|wired|deposit|remit)\b/i.test(sentence)) {
+        continue
+      }
+      return { hit: true, evidence: sentence.trim().slice(0, 300) }
+    }
+  }
+  return { hit: false, evidence: null }
+}
 
 const OFF_PLATFORM_CONTACT_RE =
   /\b(telegram|whatsapp|@gmail\.com|@yahoo\.com|@outlook\.com|@hotmail\.com)\b/i
@@ -78,8 +172,9 @@ export function validateJob(job: CanonicalJob): ValidationIssue[] {
   if (!job.applicationUrl || !/^https?:\/\//i.test(job.applicationUrl)) {
     add('invalid_application_url', 'CRITICAL', 'Application URL is missing or not HTTP(S)')
   }
-  if (SCAM_RE.test(job.description ?? '')) {
-    add('requests_payment', 'CRITICAL', 'Posting asks the candidate for money')
+  const payment = requestsPayment(job.description ?? '')
+  if (payment.hit) {
+    add('requests_payment', 'CRITICAL', `Posting asks the candidate for money: "${payment.evidence}"`)
   }
 
   // --- WARNING: indexable, but worth flagging.

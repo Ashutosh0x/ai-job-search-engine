@@ -26,6 +26,8 @@ export interface DedupeResult {
   /** Duplicate id -> canonical id, kept for auditing. */
   mapping: Record<string, string>
   tierCounts: Record<string, number>
+  /** Requisition ids that turned out not to identify anything. See below. */
+  degenerateRequisitionKeys: number
 }
 
 /* ------------------------------ normalisation ----------------------------- */
@@ -207,11 +209,62 @@ function merge(canonical: CanonicalJob, dup: CanonicalJob, confidence: number): 
   }
 }
 
+/* ------------------------ requisition key sanity -------------------------- */
+
+/**
+ * Find requisition keys that are not actually identifiers, so tier 1 can ignore
+ * them.
+ *
+ * WHY THIS IS NECESSARY
+ * ---------------------
+ * `requisition_id` reads like a primary key and is not one. On Greenhouse it is
+ * a FREE-TEXT FIELD THE EMPLOYER FILLS IN, and employers put whatever they like
+ * in it. Airbnb puts the literal string "ONE" in it on most of its postings.
+ *
+ * Tier 1 treats a shared requisition as definitive proof of duplication, so
+ * that one field collapsed 167 distinct Airbnb roles -- different titles,
+ * different countries, different req numbers in the URL -- into 12 records.
+ * Every survivor then failed validation, and Airbnb vanished from the index
+ * entirely while its board answered 200 OK with 167 jobs. Nothing in the crawl
+ * report showed a failure, because from the pipeline's point of view none had
+ * occurred.
+ *
+ * HOW A BAD KEY IS TOLD FROM A GOOD ONE
+ * -------------------------------------
+ * Not by a list of banned words -- that would need maintaining forever and
+ * would still miss the next employer's quirk. By what the data does:
+ *
+ *   same requisition + same normalised title, many locations
+ *       -> a genuine multi-location requisition. MERGE. This is tier 1's
+ *          entire reason for existing.
+ *
+ *   same requisition + MANY DIFFERENT titles
+ *       -> the field is not identifying anything. Distinct roles cannot share
+ *          one requisition. IGNORE IT for those postings.
+ *
+ * Ignoring a requisition key is safe: tiers 2-4 (identical URL, title+location,
+ * fuzzy) still catch real duplicates. Under-merging costs a duplicate row.
+ * Over-merging deleted 93% of an employer, silently.
+ */
+export function degenerateRequisitionKeys(jobs: CanonicalJob[]): Set<string> {
+  const titlesByKey = new Map<string, Set<string>>()
+  for (const job of jobs) {
+    if (!job.requisitionKey) continue
+    let titles = titlesByKey.get(job.requisitionKey)
+    if (!titles) titlesByKey.set(job.requisitionKey, (titles = new Set()))
+    titles.add(job.normalizedTitle || '')
+  }
+  const bad = new Set<string>()
+  for (const [key, titles] of titlesByKey) if (titles.size > 1) bad.add(key)
+  return bad
+}
+
 /* ---------------------------------- entry --------------------------------- */
 
 export function deduplicate(jobs: CanonicalJob[]): DedupeResult {
   const mapping: Record<string, string> = {}
   const tierCounts: Record<string, number> = { requisition: 0, url: 0, titleLocation: 0, fuzzy: 0 }
+  const degenerateKeys = degenerateRequisitionKeys(jobs)
 
   // Deterministic index tiers.
   const byRequisition = new Map<string, CanonicalJob>()
@@ -245,8 +298,11 @@ export function deduplicate(jobs: CanonicalJob[]): DedupeResult {
     let tier = ''
     let confidence = 0
 
-    // TIER 1 -- requisition id within the same company+source is definitive.
-    const reqKey = job.requisitionKey ?? null
+    // TIER 1 -- requisition id within the same company+source is definitive,
+    // but only when the id is actually identifying. See
+    // `degenerateRequisitionKeys` for why that has to be checked.
+    const rawReqKey = job.requisitionKey ?? null
+    const reqKey = rawReqKey && !degenerateKeys.has(rawReqKey) ? rawReqKey : null
     if (reqKey && byRequisition.has(reqKey)) {
       match = byRequisition.get(reqKey)
       tier = 'requisition'
@@ -328,6 +384,9 @@ export function deduplicate(jobs: CanonicalJob[]): DedupeResult {
   return {
     jobs: result,
     duplicatesRemoved: jobs.length - result.length,
+    // Reported, not just handled: a spike here means an employer's ATS field is
+    // being misused, which is worth seeing in the crawl report.
+    degenerateRequisitionKeys: degenerateKeys.size,
     mapping,
     tierCounts,
   }

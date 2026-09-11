@@ -96,5 +96,35 @@ console.log('\nMerging fills gaps')
   t('salary filled from the lesser source', r.jobs[0].salaryMin===150000, r.jobs[0].salaryMin)
 }
 
+
+/* -------------------- degenerate requisition ids ---------------------- */
+//
+// Regression: Greenhouse's `requisition_id` is free text the employer fills in.
+// Airbnb puts the literal string "ONE" in it, so tier 1 -- which treats a
+// shared requisition as definitive -- collapsed 167 distinct roles into 12 and
+// the employer disappeared from the index with no error anywhere.
+console.log('\ndegenerate requisition ids')
+{
+  const shared = 'airbnb|greenhouse|ONE'
+  const many = [
+    base({ id: 'a', title: 'Account Manager',    requisitionKey: shared, city: 'London',  applicationUrl: 'https://x.com/1' }),
+    base({ id: 'b', title: 'Data Scientist',     requisitionKey: shared, city: 'Berlin',  applicationUrl: 'https://x.com/2' }),
+    base({ id: 'c', title: 'Complex Claims Lead', requisitionKey: shared, city: 'Toronto', applicationUrl: 'https://x.com/3' }),
+  ]
+  const r = deduplicate(many)
+  t('different roles sharing one req id are NOT merged', r.jobs.length === 3, r.jobs.length)
+  t('the bad key is reported, not silently handled', r.degenerateRequisitionKeys === 1, r.degenerateRequisitionKeys)
+
+  // The legitimate case tier 1 exists for must still work: one requisition,
+  // one role, several locations.
+  const multiLocation = [
+    base({ id: 'd', title: 'Staff Engineer', requisitionKey: 'acme|greenhouse|R-4821', city: 'Austin',  applicationUrl: 'https://x.com/4' }),
+    base({ id: 'e', title: 'Staff Engineer', requisitionKey: 'acme|greenhouse|R-4821', city: 'Chicago', applicationUrl: 'https://x.com/5' }),
+  ]
+  const r2 = deduplicate(multiLocation)
+  t('one real requisition across locations still merges', r2.jobs.length === 1, r2.jobs.length)
+  t('and is not flagged degenerate', r2.degenerateRequisitionKeys === 0, r2.degenerateRequisitionKeys)
+}
+
 console.log(`\n${pass} passed, ${fail} failed`)
 process.exit(fail===0?0:1)
