@@ -47,11 +47,26 @@
 const K1 = 1.2
 const B = 0.75
 
-/** Field boosts. A title hit means more than a body hit -- but not 10x more. */
-const FIELD_WEIGHT = { title: 3.0, department: 1.5, body: 1.0 } as const
+/**
+ * Field boosts. A title hit means more than a body hit -- but not 10x more.
+ *
+ * `company` was missing entirely until it was measured: searching "barclays"
+ * against a corpus holding 1,024 Barclays postings returned THREE -- only the
+ * ones that happened to mention the word in a title or description. The
+ * employer's name is the single most likely thing a person types into a job
+ * search, and it was the one field the index did not contain.
+ *
+ * It is weighted at title level rather than above it, so a search for "stripe"
+ * still surfaces Stripe's own roles ahead of the many postings that mention
+ * Stripe as a technology, without making every company-name token drown out
+ * genuine title matches.
+ */
+const FIELD_WEIGHT = { title: 3.0, company: 3.0, department: 1.5, body: 1.0 } as const
 
 export interface IndexedDoc {
   title: string
+  /** Employer name. Indexed so searching a company finds that company's roles. */
+  company?: string | null
   department?: string | null
   descriptionText?: string
   skills?: string[]
@@ -105,6 +120,7 @@ export function buildIndex(docs: IndexedDoc[]): BuiltIndex {
     }
 
     add(d.title, FIELD_WEIGHT.title)
+    add(d.company, FIELD_WEIGHT.company)
     add(d.department, FIELD_WEIGHT.department)
     add(d.descriptionText, FIELD_WEIGHT.body)
     if (d.skills?.length) add(d.skills.join(' '), FIELD_WEIGHT.title)

@@ -64,7 +64,10 @@ const OUT = val('out', 'public/data/jobs-v2.json')
 const STATE = '.ingest-state.json'
 const DISCOVERED = 'scripts/discovered-boards.json'
 const DEPLOY_OUT = val('deploy-out', 'public/data/jobs-deploy.json')
-const DEPLOY_BUDGET_MB = Number(val('deploy-budget-mb', 30))
+// 30MB fitted ~25k of a 307k corpus, which served Barclays 3 postings out of
+// 1,024. The budget now has to carry every curated employer in full (~78.6k
+// jobs, ~98MB measured) plus a sample of the discovered long tail.
+const DEPLOY_BUDGET_MB = Number(val('deploy-budget-mb', 120))
 const concurrency = Number(val('concurrency', 8))
 const loopSeconds = Number(val('loop', 0))
 const dryRun = has('dry-run')
@@ -253,7 +256,9 @@ async function refreshOnce() {
   // This makes the serving path independent of the archive's size: jobs-v2.json
   // can grow without limit, and jobs-deploy.json stays the thing that is loaded.
   try {
-    const dep = writeDeployIndex(merged, DEPLOY_OUT, existing, DEPLOY_BUDGET_MB)
+    // Curated employers are served complete; see deploy-index.mjs for why.
+    const curatedSlugs = new Set(COMPANIES.map((c) => c.slug))
+    const dep = writeDeployIndex(merged, DEPLOY_OUT, existing, DEPLOY_BUDGET_MB, curatedSlugs)
     console.log(`  deploy index: ${dep.count.toLocaleString()} jobs -> ${DEPLOY_OUT}`)
     if (sameTarget) {
       console.log('  --out is the deploy index; skipping the full write so it is not clobbered')

@@ -124,5 +124,42 @@ const t = (name, ok, detail) => {
     reciprocalRankFusion([a], 60, 10).map((f) => f.doc).join(',') === '1,5,9')
 }
 
+/* ------------------------- company name is indexed ------------------------ */
+//
+// Regression. The employer's name is the most likely thing a person types into
+// a job search, and it was the one field the index did not contain. Measured
+// against a corpus holding 1,024 Barclays postings, searching "barclays"
+// returned THREE -- only those that happened to mention the word in a title or
+// body. Company filters worked; free-text search did not.
+{
+  const docs = [
+    { title: 'Full Stack Engineer', company: 'Barclays', department: 'Technology', descriptionText: 'Build trading systems.' },
+    { title: 'Data Scientist', company: 'Barclays', department: 'Risk', descriptionText: 'Model credit exposure.' },
+    { title: 'Backend Engineer', company: 'Monzo', department: 'Platform', descriptionText: 'Go services on Kubernetes.' },
+    // Mentions Barclays as a counterparty, but is not a Barclays job.
+    { title: 'Sales Lead', company: 'Acme', department: 'Sales', descriptionText: 'Sell to Barclays and HSBC.' },
+  ]
+  const idx = buildIndex(docs)
+  const hits = retrieve(idx, 'barclays', 10).candidates
+
+  t('searching a company name finds that company\'s postings',
+    hits.length === 3, hits.map((h) => docs[h.doc].company))
+
+  const top2 = hits.slice(0, 2).map((h) => docs[h.doc].company)
+  t('the employer\'s own roles outrank a passing mention of it',
+    top2.every((c) => c === 'Barclays'), hits.map((h) => `${docs[h.doc].company}:${h.score.toFixed(2)}`))
+
+  t('an unrelated employer is not retrieved',
+    !hits.some((h) => docs[h.doc].company === 'Monzo'), hits.map((h) => docs[h.doc].company))
+
+  // A company field must not swamp genuine title matches for the same token.
+  const mixed = buildIndex([
+    { title: 'Payments Engineer', company: 'Stripe', descriptionText: 'Card processing.' },
+    { title: 'Stripe Integration Engineer', company: 'Acme', descriptionText: 'Wire up billing.' },
+  ])
+  const both = retrieve(mixed, 'stripe', 10).candidates
+  t('a company hit and a title hit both retrieve', both.length === 2, both.length)
+}
+
 console.log(`\n${pass} passed, ${fail} failed`)
 process.exit(fail === 0 ? 0 : 1)

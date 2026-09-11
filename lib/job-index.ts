@@ -360,12 +360,16 @@ function tokens(text: string): string[] {
 function relevance(job: IndexedJob, qTokens: string[]): number {
   if (qTokens.length === 0) return 0
   const title = job.title.toLowerCase()
+  const company = (job.companyName ?? '').toLowerCase()
   const dept = (job.department ?? '').toLowerCase()
   const body = job.descriptionText.toLowerCase()
 
   let score = 0
   for (const t of qTokens) {
     if (title.includes(t)) score += 10
+    // Same omission as the BM25 index had: an employer's name is the most
+    // likely thing typed into a job search and was not scored at all.
+    if (company.includes(t)) score += 10
     if (dept.includes(t)) score += 4
     if (body.includes(t)) score += 1
   }
@@ -416,6 +420,8 @@ function indexFor(snapshot: Snapshot): BuiltIndex {
   const built = buildIndex(
     snapshot.jobs.map((j) => ({
       title: j.title,
+      // Without this, searching an employer's name misses its own postings.
+      company: j.companyName,
       department: j.department,
       descriptionText: j.descriptionText,
       skills: j.skills,
