@@ -2,16 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
 import { timingSafeEqual } from 'crypto';
-import { findUserByEmail } from '@/lib/supabase-admin';
+import { findUserByEmail, getServiceClient, supabaseUnavailable } from '@/lib/supabase-admin';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { validatePassword } from '@/lib/validation';
 
 export const runtime = 'nodejs';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY! // Needs service role for admin password update
-);
+// Built per request, never at module scope: `createClient(undefined!, ...)`
+// throws while Next collects page data during `next build`, so one missing env
+// var made the whole app unbuildable. See lib/supabase-admin.ts.
+const supabase = getServiceClient();
 
 /** Max wrong OTP guesses before the code is burned. */
 const MAX_OTP_ATTEMPTS = 5;
@@ -34,6 +34,10 @@ function otpMatches(expected: string, supplied: string): boolean {
 }
 
 export async function POST(req: NextRequest) {
+  // Configuration absent -> this endpoint is unavailable, and says so. Every
+  // other route, including all of job search, is unaffected.
+  if (!supabase) return supabaseUnavailable()
+
   const { email, otp, newPassword } = await req.json();
   if (!email || !otp || !newPassword) {
     return NextResponse.json({ error: 'Missing fields' }, { status: 400 });

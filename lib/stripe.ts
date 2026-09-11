@@ -1,21 +1,48 @@
 import Stripe from 'stripe'
 
-if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error('STRIPE_SECRET_KEY is not set in environment variables')
+/**
+ * Stripe client, built lazily.
+ *
+ * This module used to throw at IMPORT time when STRIPE_SECRET_KEY was absent.
+ * Next evaluates route modules while collecting page data during `next build`,
+ * so a missing billing key made the ENTIRE application unbuildable -- the build
+ * error named /api/stripe/debug/create-session rather than the missing config,
+ * and every unrelated route, all of job search included, went down with it.
+ *
+ * Billing that is not configured should mean billing is unavailable, not that
+ * nothing ships. Callers get null and answer 503 for themselves.
+ */
+let _stripe: Stripe | null | undefined
+
+export function getStripe(): Stripe | null {
+  if (_stripe !== undefined) return _stripe
+  const key = process.env.STRIPE_SECRET_KEY
+  _stripe = key ? new Stripe(key) : null
+  return _stripe
 }
 
-// Initialize Stripe with your secret key
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
+/** Standard 503 for a route whose Stripe configuration is missing. */
+export function stripeUnavailable(): Response {
+  return new Response(
+    JSON.stringify({
+      error: 'Billing is not configured',
+      detail: 'STRIPE_SECRET_KEY is required for this endpoint. Job search is unaffected.',
+    }),
+    { status: 503, headers: { 'content-type': 'application/json' } }
+  )
+}
 
-// Stripe configuration
+// Stripe configuration. Empty strings rather than non-null assertions: a
+// missing value should surface as an unconfigured feature at request time, not
+// as a lie to the type checker that becomes `undefined` at runtime.
 export const stripeConfig = {
-  publishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
-  secretKey: process.env.STRIPE_SECRET_KEY!,
-  webhookSecret: process.env.STRIPE_WEBHOOK_SECRET!,
+  publishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? '',
+  secretKey: process.env.STRIPE_SECRET_KEY ?? '',
+  webhookSecret: process.env.STRIPE_WEBHOOK_SECRET ?? '',
   priceIds: {
-    basic: process.env.STRIPE_BASIC_PRICE_ID!,
-    pro: process.env.STRIPE_PRO_PRICE_ID!,
-    premium: process.env.STRIPE_PREMIUM_PRICE_ID!,
+    basic: process.env.STRIPE_BASIC_PRICE_ID ?? '',
+    pro: process.env.STRIPE_PRO_PRICE_ID ?? '',
+    premium: process.env.STRIPE_PREMIUM_PRICE_ID ?? '',
   },
 }
 

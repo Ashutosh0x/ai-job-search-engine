@@ -1,3 +1,4 @@
+import { getServiceClient, supabaseUnavailable } from '@/lib/supabase-admin'
 import { type NextRequest, NextResponse } from "next/server"
 // Import the library directly rather than the package root. pdf-parse@1.1.1's
 // index.js runs a debug branch guarded by `!module.parent`, which is always
@@ -14,14 +15,10 @@ import { safeFetch, UnsafeUrlError } from '@/lib/safe-fetch'
 export const runtime = 'nodejs'
 
 // Initialize Supabase client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase URL or Anon Key environment variables.')
-}
-
-const supabase = createClient(supabaseUrl, supabaseAnonKey)
+// Built per request, never at module scope: `createClient(undefined!, ...)`
+// throws while Next collects page data during `next build`, so one missing env
+// var made the whole app unbuildable. See lib/supabase-admin.ts.
+const supabase = getServiceClient()
 
 /** Resumes are documents, not archives. */
 const MAX_FILE_BYTES = 10 * 1024 * 1024 // 10 MB
@@ -54,6 +51,10 @@ const extractInfoFromText = (text: string) => {
 };
 
 export async function POST(request: NextRequest) {
+  // Configuration absent -> this endpoint is unavailable, and says so. Every
+  // other route, including all of job search, is unaffected.
+  if (!supabase) return supabaseUnavailable()
+
   try {
     // This endpoint performs server-side fetches and CPU-heavy parsing, so it
     // must not be reachable anonymously.

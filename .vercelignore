@@ -1,0 +1,29 @@
+# What NOT to upload to Vercel.
+#
+# Without this file Vercel falls back to .gitignore, which excludes ALL of
+# public/data/*.json -- including the bounded index the deployment needs. The
+# result builds cleanly and then 503s on every search, which is the worst
+# possible failure: it looks like a working deploy.
+
+node_modules
+.next
+.git
+.vercel
+
+# The full corpus. 382MB and 775MB respectively -- far past any serverless
+# bundle limit, and the reason jobs-deploy.json exists.
+public/data/jobs-v2.json
+public/data/jobs-v2-full.json
+public/data/jobs-snapshot.json
+public/data/ibm-jobs.json
+
+# Crawler state: large, machine-local, and meaningless in a read-only runtime.
+.ingest-state.json
+
+# The vendored location dataset is ~2.5GB of SQL/CSV used only by seed scripts.
+countries-states-cities-database
+
+# Offline research exports.
+docs/reports
+
+*.log

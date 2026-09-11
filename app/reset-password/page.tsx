@@ -7,12 +7,20 @@ import Link from "next/link";
 import Navigation from "@/components/navigation";
 import { ArrowLeft, Check } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { createClient } from "@supabase/supabase-js";
+import { getSupabaseClient } from "@/lib/supabase";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+/**
+ * Resolved inside the component, not at module scope.
+ *
+ * Next prerenders this page at build time, and a module-scope
+ * `createClient(undefined!, undefined!)` throws "supabaseUrl is required"
+ * during that prerender -- failing the whole build on a host that has not been
+ * given Supabase env vars, even though every other page is fine.
+ *
+ * `getSupabaseClient()` is already a lazy singleton; calling it from an event
+ * handler defers construction to the browser, where the public env var is
+ * inlined and actually present.
+ */
 
 export default function ResetPasswordPage() {
   const [step, setStep] = useState<'request' | 'verify'>('request');
@@ -81,7 +89,7 @@ export default function ResetPasswordPage() {
       return;
     }
     // Use Supabase to update password with access token
-    const { error: updateError } = await supabase.auth.updateUser({
+    const { error: updateError } = await getSupabaseClient().auth.updateUser({
       password: newPassword,
     }, { accessToken });
     setMagicLinkLoading(false);

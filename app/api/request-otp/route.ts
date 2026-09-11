@@ -1,3 +1,4 @@
+import { getServiceClient, supabaseUnavailable } from '@/lib/supabase-admin'
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
@@ -6,11 +7,10 @@ import { checkRateLimit } from '@/lib/rate-limit';
 
 export const runtime = 'nodejs';
 
-// Use service role on the server for privileged operations
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+// Built per request, never at module scope: `createClient(undefined!, ...)`
+// throws while Next collects page data during `next build`, so one missing env
+// var made the whole app unbuildable. See lib/supabase-admin.ts.
+const supabase = getServiceClient();
 
 function getClientIp(req: NextRequest) {
   const xff = req.headers.get('x-forwarded-for') || ''
@@ -44,6 +44,10 @@ async function verifyTurnstileToken(req: NextRequest, tokenFromBody?: string) {
 }
 
 export async function POST(req: NextRequest) {
+  // Configuration absent -> this endpoint is unavailable, and says so. Every
+  // other route, including all of job search, is unaffected.
+  if (!supabase) return supabaseUnavailable()
+
   const { email, turnstileToken } = await req.json();
   if (!email) {
     return NextResponse.json({ error: 'Email is required' }, { status: 400 });

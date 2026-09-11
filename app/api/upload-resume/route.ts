@@ -1,3 +1,4 @@
+import { getServiceClient, supabaseUnavailable } from '@/lib/supabase-admin'
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 // Import the library directly rather than the package root. pdf-parse@1.1.1's
@@ -11,10 +12,10 @@ import { checkRateLimit } from '@/lib/rate-limit';
 
 export const runtime = 'nodejs';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+// Built per request, never at module scope: `createClient(undefined!, ...)`
+// throws while Next collects page data during `next build`, so one missing env
+// var made the whole app unbuildable. See lib/supabase-admin.ts.
+const supabase = getServiceClient();
 
 /** Resumes are documents, not archives. Anything larger is abuse or a mistake. */
 const MAX_FILE_BYTES = 10 * 1024 * 1024; // 10 MB
@@ -53,6 +54,10 @@ function sniffType(buffer: Buffer): 'pdf' | 'docx' | 'doc' | null {
 }
 
 export async function POST(req: NextRequest) {
+  // Configuration absent -> this endpoint is unavailable, and says so. Every
+  // other route, including all of job search, is unaffected.
+  if (!supabase) return supabaseUnavailable()
+
   try {
     // Identity comes from the caller's token. It used to be read from the form
     // body, which meant anyone could upload a resume into anyone's account.

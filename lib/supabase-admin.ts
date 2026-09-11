@@ -33,3 +33,49 @@ export async function findUserByEmail(
 
   return null
 }
+
+/* -------------------------------------------------------------------------- */
+
+import { createClient } from '@supabase/supabase-js'
+
+/**
+ * Service-role client, built lazily and never at module scope.
+ *
+ * WHY THIS EXISTS
+ * ---------------
+ * Six API routes each did some variant of:
+ *
+ *     const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, ...)
+ *
+ * at module scope. `createClient(undefined!, undefined!)` throws immediately,
+ * and Next evaluates route modules while collecting page data during
+ * `next build` -- so ONE missing environment variable made the ENTIRE
+ * application unbuildable, reporting a route name rather than the missing
+ * config. It built locally only because .env.local happened to be present.
+ *
+ * Returning null instead lets a route answer 503 for itself and leaves every
+ * other route working. Configuration that is absent should disable a feature,
+ * not the build.
+ *
+ * The key bypasses row-level security, so any caller holding this client must
+ * do its own ownership checks -- see app/api/analyze-resume for the pattern.
+ */
+export function getServiceClient(): SupabaseClient | null {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  if (!url || !key) return null
+  return createClient(url, key)
+}
+
+/** Standard 503 for a route whose Supabase configuration is missing. */
+export function supabaseUnavailable(): Response {
+  return new Response(
+    JSON.stringify({
+      error: 'This feature is not configured',
+      detail:
+        'NEXT_PUBLIC_SUPABASE_URL and a Supabase key are required for this endpoint. ' +
+        'Job search does not depend on them and is unaffected.',
+    }),
+    { status: 503, headers: { 'content-type': 'application/json' } }
+  )
+}

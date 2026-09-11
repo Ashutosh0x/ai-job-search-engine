@@ -70,6 +70,8 @@ export interface IndexedCompany extends CompanyRecord {
 
 interface Snapshot {
   generatedAt: string
+  /** Present when this index is a bounded deployment slice, not the full corpus. */
+  deployment?: { bounded: boolean; corpusTotal: number; note: string } | null
   sources: string[]
   companies: IndexedCompany[]
   jobs: IndexedJob[]
@@ -79,7 +81,30 @@ interface Snapshot {
 let cache: { data: Snapshot; loadedAt: number; mtimeMs: number } | null = null
 const CACHE_TTL_MS = 5 * 60 * 1000
 
-const V2_PATH = () => path.join(process.cwd(), 'public', 'data', 'jobs-v2.json')
+/**
+ * Index file, in preference order.
+ *
+ * `jobs-deploy.json` is a bounded slice built by scripts/build-deploy-index.mjs
+ * and is what ships to a serverless host: the full index is 382MB and cannot be
+ * loaded by a Vercel function at any field projection (measured -- 199MB even
+ * with descriptions stripped entirely). Locally the full file is present and
+ * wins, so development sees the whole corpus and production sees the slice,
+ * with no code difference between them.
+ */
+const INDEX_CANDIDATES = ['jobs-v2.json', 'jobs-deploy.json']
+const dataPath = (f: string) => path.join(process.cwd(), 'public', 'data', f)
+
+async function resolveIndexFile(): Promise<string | null> {
+  for (const f of INDEX_CANDIDATES) {
+    try {
+      await stat(dataPath(f))
+      return dataPath(f)
+    } catch { /* try the next */ }
+  }
+  return null
+}
+
+const V2_PATH = () => dataPath('jobs-v2.json')
 
 /**
  * Has the index file changed since we cached it?
@@ -94,8 +119,10 @@ const V2_PATH = () => path.join(process.cwd(), 'public', 'data', 'jobs-v2.json')
  * fallback snapshot, or a filesystem that does not report mtime usefully).
  */
 async function indexMtime(): Promise<number> {
+  const f = await resolveIndexFile()
+  if (!f) return 0
   try {
-    return (await stat(V2_PATH())).mtimeMs
+    return (await stat(f)).mtimeMs
   } catch {
     return 0
   }
@@ -122,9 +149,13 @@ const RETRIEVAL_DEPTH = 1500
  */
 async function loadV2(): Promise<Snapshot | null> {
   try {
-    const file = path.join(process.cwd(), 'public', 'data', 'jobs-v2.json')
+    const file = await resolveIndexFile()
+    if (!file) return null
     const raw = await readFile(file, 'utf8')
-    const v2 = JSON.parse(raw) as { generatedAt: string; jobs: any[]; report?: any }
+    const v2 = JSON.parse(raw) as {
+      generatedAt: string; jobs: any[]; report?: any
+      deployment?: { bounded: boolean; corpusTotal: number; note: string }
+    }
     if (!Array.isArray(v2.jobs) || v2.jobs.length === 0) return null
 
     // Companies are derived from the jobs themselves: the v2 pipeline discovers
@@ -161,6 +192,10 @@ async function loadV2(): Promise<Snapshot | null> {
 
     return {
       generatedAt: v2.generatedAt,
+      // Surfaced so an API response can say it is serving a slice. A bounded
+      // index that does not announce itself is indistinguishable from a corpus
+      // that simply has fewer jobs in it.
+      deployment: v2.deployment ?? null,
       sources: [...new Set(v2.jobs.map((j) => j.source))],
       companies: [...companyMap.values()],
       jobs: v2.jobs.map((j) => ({
@@ -318,6 +353,8 @@ export interface SearchResult {
    * contain a query term; `examined` is how many the ranker actually saw.
    */
   retrieval?: { matchedInCorpus: number | null; examined: number; truncated: boolean }
+  /** Set when this deployment serves a bounded slice rather than the full corpus. */
+  deployment?: { bounded: boolean; corpusTotal: number; note: string }
   facets: {
     departments: { value: string; count: number }[]
     companies: { value: string; label: string; count: number }[]
@@ -520,6 +557,9 @@ export async function searchJobs(query: JobQuery): Promise<SearchResult | null> 
     facets,
     generatedAt: index.generatedAt,
     source: 'snapshot',
+    // Announce a bounded index. Without this a deployment serving 25k of
+    // 242k jobs looks identical to one where the market only has 25k.
+    ...(index.deployment?.bounded ? { deployment: index.deployment } : {}),
     // Retrieval is depth-capped, so `total` counts what survived filtering
     // WITHIN that cap -- it is not the corpus-wide match count. Saying so is
     // the difference between an honest "showing the top 1,500 of 8,214" and a

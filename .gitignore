@@ -29,3 +29,5 @@ next-env.d.ts
 /public/data/*.json
 /.ingest-state.json
 /public/data/ibm-jobs.json
+
+.vercel

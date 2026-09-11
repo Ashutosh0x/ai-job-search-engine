@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { stripe } from '@/lib/stripe'
+import { getStripe, stripeUnavailable } from '@/lib/stripe'
 import { getSupabaseServerClient } from '@/lib/supabase'
 import Stripe from 'stripe'
 
@@ -73,6 +73,11 @@ async function alreadyProcessed(
 }
 
 export async function POST(request: NextRequest) {
+  // Billing not configured -> this endpoint is unavailable and says so. All
+  // other routes, including job search, are unaffected.
+  const stripe = getStripe()
+  if (!stripe) return stripeUnavailable()
+
   const body = await request.text()
   const signature = request.headers.get('stripe-signature')
 

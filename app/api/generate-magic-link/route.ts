@@ -38,12 +38,38 @@ async function verifyTurnstileToken(req: NextRequest, tokenFromBody?: string) {
   }
 }
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+/**
+ * Build the client per request, not at module scope.
+ *
+ * `createClient(undefined!, undefined!)` throws immediately, and at module
+ * scope that throw happens while Next collects page data during `next build` --
+ * so ONE missing environment variable made the entire application unbuildable,
+ * with an error naming this route rather than the missing config. It built
+ * locally only because .env.local happened to be present.
+ *
+ * A route that needs configuration it does not have should fail at request
+ * time, as a 503 that names the problem, and leave every other route working.
+ */
+function getSupabase() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) return null;
+  return createClient(url, key);
+}
 
 export async function POST(req: NextRequest) {
+  const supabase = getSupabase();
+  if (!supabase) {
+    return NextResponse.json(
+      {
+        error: 'Magic-link sign-in is not configured',
+        detail:
+          'NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required for this endpoint.',
+      },
+      { status: 503 }
+    );
+  }
+
   const { email, turnstileToken } = await req.json();
   if (!email) {
     return NextResponse.json({ error: 'Email is required' }, { status: 400 });

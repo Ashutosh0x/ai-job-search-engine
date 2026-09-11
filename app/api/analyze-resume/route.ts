@@ -1,3 +1,4 @@
+import { getServiceClient, supabaseUnavailable } from '@/lib/supabase-admin'
 import { type NextRequest, NextResponse } from "next/server"
 import { createClient } from '@supabase/supabase-js'
 import { GoogleGenerativeAI } from '@google/generative-ai'
@@ -19,14 +20,10 @@ const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash'
 const MAX_RESUME_CHARS = 24_000
 
 // Initialize Supabase client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseAnonKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase URL or Anon Key environment variables.')
-}
-
-const supabase = createClient(supabaseUrl, supabaseAnonKey)
+// Built per request, never at module scope: `createClient(undefined!, ...)`
+// throws while Next collects page data during `next build`, so one missing env
+// var made the whole app unbuildable. See lib/supabase-admin.ts.
+const supabase = getServiceClient()
 
 // Initialize Gemini AI
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '')
@@ -57,6 +54,10 @@ interface ATSAnalysis {
 }
 
 export async function POST(request: NextRequest) {
+  // Configuration absent -> this endpoint is unavailable, and says so. Every
+  // other route, including all of job search, is unaffected.
+  if (!supabase) return supabaseUnavailable()
+
   // Read the body exactly once. The previous version called request.json()
   // again inside the catch block to mark the row failed; a request body is a
   // single-use stream, so that second read always threw and the status was

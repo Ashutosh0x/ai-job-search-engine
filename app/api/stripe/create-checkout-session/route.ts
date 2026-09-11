@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { stripe, getPlanById } from '@/lib/stripe'
+import { getStripe, stripeUnavailable, getPlanById } from '@/lib/stripe'
 import { getSupabaseServerClient } from '@/lib/supabase'
 import { requireUser } from '@/lib/api-auth'
 
@@ -25,6 +25,11 @@ function resolveOrigin(requestOrigin: string | null): string {
 }
 
 export async function POST(request: NextRequest) {
+  // Billing not configured -> this endpoint is unavailable and says so. All
+  // other routes, including job search, are unaffected.
+  const stripe = getStripe()
+  if (!stripe) return stripeUnavailable()
+
   try {
     // userId used to be read from the request body, so anyone could open a
     // checkout session against another account (and learn its email address

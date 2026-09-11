@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { stripe, stripeConfig } from '@/lib/stripe'
+import { getStripe, stripeUnavailable, stripeConfig } from '@/lib/stripe'
 
 /**
  * Debug helper. Never expose this in production: it reveals Stripe
@@ -13,6 +13,11 @@ function blockedInProduction() {
 }
 
 export async function GET() {
+  // Billing not configured -> this endpoint is unavailable and says so. All
+  // other routes, including job search, are unaffected.
+  const stripe = getStripe()
+  if (!stripe) return stripeUnavailable()
+
   try {
     const blocked = blockedInProduction()
     if (blocked) return blocked
