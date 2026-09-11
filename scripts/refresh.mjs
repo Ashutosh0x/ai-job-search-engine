@@ -46,7 +46,7 @@
  */
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync, openSync, writeSync, closeSync, renameSync } from 'fs'
-import { dirname } from 'path'
+import { dirname, resolve } from 'path'
 
 const { runIngest } = await import('../lib/pipeline/orchestrator.ts')
 const { COMPANIES } = await import('../lib/companies/registry.ts')
@@ -231,6 +231,16 @@ async function refreshOnce() {
 
   mkdirSync(dirname(OUT), { recursive: true })
 
+  // When --out IS the deploy path, the two writes below would target the same
+  // file and the second would silently clobber the first. Observed in CI: the
+  // bounded 25,316-job index was written, then overwritten by the 47,104-job
+  // merge, losing both the size budget and the `deployment.bounded` marker --
+  // so the served index quietly stopped announcing that it was a slice.
+  //
+  // In that case the bounded write is the one that matters, because it is what
+  // gets served. Write it alone and say so.
+  const sameTarget = resolve(OUT) === resolve(DEPLOY_OUT)
+
   // Write the BOUNDED index too, from the array already in memory.
   //
   // The full index passed Node's ~512MB string ceiling at 530MB, which made it
@@ -245,6 +255,10 @@ async function refreshOnce() {
   try {
     const dep = writeDeployIndex(merged, DEPLOY_OUT, existing, DEPLOY_BUDGET_MB)
     console.log(`  deploy index: ${dep.count.toLocaleString()} jobs -> ${DEPLOY_OUT}`)
+    if (sameTarget) {
+      console.log('  --out is the deploy index; skipping the full write so it is not clobbered')
+      return
+    }
   } catch (e) {
     // A failure here must not lose the crawl that just completed.
     console.error(`  deploy index NOT written: ${e.message}`)

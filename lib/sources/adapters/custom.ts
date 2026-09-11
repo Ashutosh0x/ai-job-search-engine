@@ -87,8 +87,96 @@ export class CustomSiteAdapter extends BaseAdapter {
     jobs = this.fromEmbeddedJson(res.body, pageUrl, target, warnings)
     if (jobs.length) return { jobs, incremental: false, warnings }
 
+    // 3 -- sitemap, then JSON-LD on each job page
+    //
+    // Large employers on Phenom, SuccessFactors and similar render a landing
+    // page with NO JobPosting markup at all -- the structured data lives on the
+    // individual job pages, and the sitemap is what enumerates them. eBay is
+    // exactly this shape: jobs.ebayinc.com/us/en has no JSON-LD, its sitemap
+    // lists 302 job URLs, and every one of those carries a complete JobPosting.
+    //
+    // Checking only the landing page therefore reported "no structured job data
+    // found" for employers who publish it perfectly well, one level down.
+    jobs = await this.fromSitemap(pageUrl, target, warnings, opts)
+    if (jobs.length) return { jobs, incremental: false, warnings }
+
     warnings.push(`custom:${pageUrl} no structured job data found`)
     return { jobs: [], incremental: false, warnings }
+  }
+
+  /**
+   * Enumerate job pages from the site's sitemap and read JSON-LD from each.
+   *
+   * Deliberately bounded and polite: this makes one request per posting, which
+   * is the most expensive shape in the whole pipeline, so it is capped and runs
+   * through the shared HTTP layer's per-host throttle. It is a fallback, used
+   * only when the cheaper paths found nothing.
+   */
+  private async fromSitemap(
+    pageUrl: string,
+    target: SourceTarget,
+    warnings: string[],
+    opts: FetchOptions
+  ): Promise<RawJob[]> {
+    const origin = new URL(pageUrl).origin
+
+    // Prefer the sitemap robots.txt advertises; fall back to conventional paths.
+    const candidates: string[] = []
+    const robots = await this.get(`${origin}/robots.txt`, {
+      cacheTtlMs: this.ttl.atsDetection, retries: 0, signal: opts.signal,
+    }).catch(() => null)
+    if (robots?.ok && robots.body) {
+      for (const m of robots.body.matchAll(/^\s*sitemap:\s*(\S+)/gim)) candidates.push(m[1])
+    }
+    candidates.push(`${pageUrl.replace(/\/$/, '')}/sitemap.xml`, `${origin}/sitemap.xml`)
+
+    let urls: string[] = []
+    for (const sm of candidates) {
+      const r = await this.get(sm, { cacheTtlMs: this.ttl.discovery, retries: 0, signal: opts.signal })
+        .catch(() => null)
+      if (!r?.ok || !r.body) continue
+
+      // A sitemap index points at further sitemaps rather than pages.
+      const nested = [...r.body.matchAll(/<sitemap>[\s\S]*?<loc>([^<]+)<\/loc>/gi)].map((m) => m[1])
+      const locs = [...r.body.matchAll(/<url>[\s\S]*?<loc>([^<]+)<\/loc>/gi)].map((m) => m[1])
+
+      urls = locs.filter((u) => /\/job[\/-]/i.test(u))
+      if (urls.length) break
+
+      for (const child of nested.slice(0, 5)) {
+        const cr = await this.get(child, { cacheTtlMs: this.ttl.discovery, retries: 0, signal: opts.signal })
+          .catch(() => null)
+        if (!cr?.ok || !cr.body) continue
+        const childLocs = [...cr.body.matchAll(/<url>[\s\S]*?<loc>([^<]+)<\/loc>/gi)].map((m) => m[1])
+        urls.push(...childLocs.filter((u) => /\/job[\/-]/i.test(u)))
+      }
+      if (urls.length) break
+    }
+
+    if (!urls.length) return []
+
+    const cap = opts.maxPages ? opts.maxPages * 100 : 1000
+    const wanted = [...new Set(urls)].slice(0, cap)
+    if (urls.length > cap) {
+      warnings.push(`custom:${pageUrl} sitemap had ${urls.length} job URLs, read ${cap}`)
+    }
+
+    const jobs: RawJob[] = []
+    const queue = [...wanted]
+    // Modest concurrency: the HTTP layer already throttles per host, and this
+    // is one request per posting.
+    await Promise.all(
+      Array.from({ length: 6 }, async () => {
+        while (queue.length) {
+          const u = queue.shift()!
+          const page = await this.get(u, { cacheTtlMs: this.ttl.jobDetail, retries: 0, signal: opts.signal })
+            .catch(() => null)
+          if (!page?.ok || !page.body) continue
+          jobs.push(...this.fromJsonLd(page.body, u, target, warnings))
+        }
+      })
+    )
+    return jobs
   }
 
   /** schema.org JobPosting, the most reliable non-ATS source. */

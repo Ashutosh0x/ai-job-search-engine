@@ -492,6 +492,21 @@ export const COMPANIES: CompanyRecord[] = [
     industry: 'Investing Platform', hqLocation: 'Bangalore, India', foundedYear: 2016,
     boards: [{ provider: 'greenhouse', token: 'groww' }] },
 
+  // eBay runs Phenom People, which exposes no public JSON feed -- but its
+  // careers site publishes a sitemap listing every posting, and each job page
+  // carries complete schema.org JobPosting markup. Its robots.txt explicitly
+  // allows those pages (only */apply and chatbot paths are disallowed), so this
+  // is read the way the employer intends search engines to read it.
+  //
+  // Notably this yields BETTER data than most ATS list endpoints: full
+  // descriptions (7-10k chars) and real posted dates, both of which Workday and
+  // SmartRecruiters omit at list time.
+  //
+  // `site` is the careers landing page; CustomSiteAdapter finds the sitemap.
+  { slug: 'ebay', name: 'eBay', domain: 'ebay.com', ticker: 'EBAY', valuationKind: 'public',
+    industry: 'E-commerce Marketplace', hqLocation: 'San Jose, CA', foundedYear: 1995,
+    boards: [{ provider: 'custom', token: 'ebay', host: 'jobs.ebayinc.com', site: 'https://jobs.ebayinc.com/us/en' }] },
+
   { slug: 'stripe', name: 'Stripe', domain: 'stripe.com', valuationKind: 'private',
     reportedValuationUsd: 106_500_000_000, valuationAsOf: '2025-02-27',
     valuationSource: 'Tender offer, Feb 2025',
