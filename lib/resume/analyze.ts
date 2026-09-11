@@ -80,8 +80,14 @@ export function analyze(input: AnalyzeInput): AnalysisResult {
   const scores: Score[] = []
   const overall = scoreCoverage(matches, 'requirement-coverage')
   if (overall) scores.push(overall)
+  // Dual axis, never blended. Optional strengths must not be able to disguise
+  // a missing core requirement: a candidate matching eight nice-to-haves and
+  // missing two must-haves reads as strong on any combined number and is in
+  // fact a weak applicant.
   const mandatory = scoreCoverage(matches, 'mandatory-coverage')
   if (mandatory) scores.push(mandatory)
+  const preferred = scoreCoverage(matches, 'preferred-coverage')
+  if (preferred) scores.push(preferred)
   else if (requirements.some((r) => r.mandatory === true) === false) {
     unknowns.push(
       'The posting does not explicitly mark any requirement as required, so mandatory coverage ' +

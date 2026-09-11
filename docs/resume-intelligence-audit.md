@@ -401,3 +401,43 @@ The brief's P0 assumes a working feature. It is not working, so:
 - [AI resume screening: myths vs facts, 2026](https://applygoat.com/blogs/ai-resume-screening-myths-vs-facts)
 - [ATS optimization: what actually gets you filtered, 2026](https://www.gopronto.co/blog/ats-optimization-guide)
 - [The truth about ATS in 2026 — TieTalent](https://tietalent.com/en/blog/249/the-truth-about-ats-in-2026-5-resume-myths-that-hurt-your-job-search)
+
+---
+
+## 8. US visa data: why OFLC is not wired up (11 Sep 2026)
+
+A proposal to add **DOL OFLC quarterly LCA disclosure data** alongside the USCIS
+H-1B hub is correct in principle and currently **blocked in practice**.
+
+**The motivation is sound.** USCIS publishes petition outcomes only after a
+fiscal year closes, and FY2023 is the newest file that exists (FY2024/25/26 all
+404, measured). OFLC publishes *quarterly*, and FY2026 Q1–Q2 are released — so
+it would replace three-year-old approval counts with current-year filings. It is
+also a different and arguably better fact: a certified LCA is evidence that an
+employer filed a prevailing-wage clearance *this year*.
+
+**What blocks it.** `dol.gov` refuses this environment entirely:
+
+| URL | Result |
+|---|---|
+| `dol.gov/media/LCA_Disclosure_Data_FY2026_Q2.xlsx` | **403** |
+| `dol.gov/sites/dolgov/files/ETA/oflc/pdfs/LCA_Disclosure_Data_FY2026_Q2.xlsx` | **403** |
+| `dol.gov/` (site root) | **403** |
+| `catalog.data.gov` package_search API | **404** |
+
+The 403 at the site root means this is host-level bot protection, not a wrong
+path. A second blocker: the files are **XLSX**, and this repo has no spreadsheet
+parser (`xlsx`, `exceljs`, `node-xlsx` all absent).
+
+**Why it was not written anyway.** An adapter that cannot be executed end-to-end
+here would be unverified code against an unconfirmed schema — exactly the class
+of thing that fails silently in production. The URL pattern is documented and
+the `SponsorRegister` seam already accommodates it, so this is a small piece of
+work for an environment that can reach `dol.gov`.
+
+**To finish it:** add a spreadsheet parser, implement `fetchUsLcaRegister()`
+against `LCA_Disclosure_Data_FY{year}_Q{q}.xlsx` returning `country: 'US'` rows
+with `{ employerName, status, worksite, socTitle, wage }`, register it in
+`build-sponsors.mjs`, and keep it **separate** from the USCIS rows — a certified
+LCA is an application, an H-1B approval is an outcome, and collapsing them would
+overstate both.

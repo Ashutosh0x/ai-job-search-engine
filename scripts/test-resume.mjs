@@ -202,6 +202,36 @@ Nice to have
   t('no in-scope requirements returns null, not zero', none === null, none)
 }
 
+/* ------------------- dual axis: preferred must not blend ------------------ */
+//
+// The deception this prevents: a candidate matching every nice-to-have and
+// missing the must-haves looks strong on any single blended number.
+{
+  const reqs = extractRequirements(JOB, { title: 'Senior Platform Engineer' })
+  const mand = reqs.filter(r => r.mandatory === true).map(r => r.normalized)
+  const pref = reqs.filter(r => r.mandatory === false).map(r => r.normalized)
+
+  // Covers only the optional terms, none of the required ones.
+  const optionalOnly = 'SKILLS\nRust, Istio\n\nEXPERIENCE\n- Built services in Rust with Istio service mesh'
+  const m = mapEvidence(optionalOnly, reqs)
+
+  const mScore = scoreCoverage(m, 'mandatory-coverage')
+  const pScore = scoreCoverage(m, 'preferred-coverage')
+
+  t('preferred coverage is scored on its own axis', pScore !== null, pScore)
+  t('mandatory coverage is scored on its own axis', mScore !== null, mScore)
+  t('the two axes are scoped to different requirements',
+    mand.length > 0 && pref.length > 0 && !mand.some(x => pref.includes(x)), { mand, pref })
+  t('strong optional coverage does not lift mandatory coverage',
+    pScore.value > mScore.value, { preferred: pScore.value, mandatory: mScore.value })
+  t('preferred model names itself', pScore.model.id === 'preferred-coverage', pScore.model)
+
+  const all = analyze({ resumeText: optionalOnly, job: { text: JOB, title: 'Senior Platform Engineer' } })
+  t('analyze reports all three axes separately',
+    new Set(all.scores.map(s => s.model.id)).size === all.scores.length && all.scores.length >= 2,
+    all.scores.map(s => `${s.model.id}=${s.value}`))
+}
+
 /* -------------------------- dynamic recommendations ----------------------- */
 {
   const r = analyze({ resumeText: RESUME, job: { text: JOB, title: 'Senior Platform Engineer' } })

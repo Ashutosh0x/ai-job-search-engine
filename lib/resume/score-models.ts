@@ -84,11 +84,44 @@ export const SCORE_MODELS: Record<string, ScoreModel> = {
       'separately so a missing hard requirement is never averaged away.',
     createdAt: '2026-09-11',
   },
+
+  /**
+   * Preferred ("nice to have") coverage, reported as its own axis.
+   *
+   * This is the other half of the dual-axis rule, and it exists to stop a
+   * specific deception: a candidate who matches eight nice-to-haves and misses
+   * two must-haves looks strong on any blended score, and is in fact a weak
+   * applicant. Optional strengths must never be able to disguise a missing core
+   * requirement, so they are never summed into the same number.
+   *
+   * Reading the two axes together is the point:
+   *   mandatory 100 / preferred  20  -> qualified, could be positioned better
+   *   mandatory  40 / preferred 100  -> enthusiastic, probably not qualified
+   * A single blended score renders both as "60" and tells the user nothing.
+   */
+  'preferred-coverage': {
+    id: 'preferred-coverage',
+    version: '1.0.0',
+    status: 'active',
+    dimensions: [
+      { key: 'direct', weight: 1.0, source: 'heuristic' },
+      { key: 'strong', weight: 0.7, source: 'heuristic' },
+      { key: 'weak', weight: 0.3, source: 'heuristic' },
+      { key: 'insufficient', weight: 0.0, source: 'heuristic' },
+      { key: 'contradicted', weight: 0.0, source: 'heuristic' },
+      { key: 'absent', weight: 0.0, source: 'heuristic' },
+    ],
+    calibration: null,
+    methodology:
+      'Coverage restricted to requirements the posting marks as preferred, desirable or a bonus. ' +
+      'Reported on its own axis so optional strengths cannot mask missing mandatory requirements.',
+    createdAt: '2026-09-11',
+  },
 }
 
 const SUPPORT_KEY: Record<string, string> = {
   DIRECT: 'direct', STRONG: 'strong', WEAK: 'weak',
-  INSUFFICIENT: 'insufficient', ABSENT: 'absent',
+  INSUFFICIENT: 'insufficient', CONTRADICTED: 'contradicted', ABSENT: 'absent',
 }
 
 /** Look up a model, or throw -- a score must never be produced anonymously. */
@@ -107,12 +140,13 @@ export function getModel(id: string): ScoreModel {
  */
 export function scoreCoverage(
   matches: RequirementMatch[],
-  modelId: 'requirement-coverage' | 'mandatory-coverage' = 'requirement-coverage'
+  modelId: 'requirement-coverage' | 'mandatory-coverage' | 'preferred-coverage' = 'requirement-coverage'
 ): Score | null {
   const model = getModel(modelId)
 
-  const scope = modelId === 'mandatory-coverage'
-    ? matches.filter((m) => m.requirement.mandatory === true)
+  const scope =
+    modelId === 'mandatory-coverage' ? matches.filter((m) => m.requirement.mandatory === true)
+    : modelId === 'preferred-coverage' ? matches.filter((m) => m.requirement.mandatory === false)
     : matches
 
   // No requirements in scope means the question does not apply. Returning null
