@@ -51,6 +51,7 @@ import { dirname } from 'path'
 const { runIngest } = await import('../lib/pipeline/orchestrator.ts')
 const { COMPANIES } = await import('../lib/companies/registry.ts')
 const { mergeRefresh, boardKeyOfTarget, unsafeMergeReason } = await import('../lib/pipeline/merge.ts')
+const { humanizeToken } = await import('../lib/companies/discovered.ts')
 
 const args = process.argv.slice(2)
 const val = (n, d) => { const i = args.indexOf(`--${n}`); return i !== -1 && args[i + 1] ? args[i + 1] : d }
@@ -59,6 +60,7 @@ const has = (n) => args.includes(`--${n}`)
 const TIER = val('tier', 'hot')
 const OUT = val('out', 'public/data/jobs-v2.json')
 const STATE = '.ingest-state.json'
+const DISCOVERED = 'scripts/discovered-boards.json'
 const concurrency = Number(val('concurrency', 8))
 const loopSeconds = Number(val('loop', 0))
 const dryRun = has('dry-run')
@@ -118,14 +120,44 @@ async function refreshOnce() {
   const existingJobs = existing.jobs ?? []
 
   const targets = []
+  const seen = new Set()
+  const key = (p, t, st) => `${p}|${String(t).toLowerCase()}|${st ?? ''}`
+
   for (const c of COMPANIES) {
     for (const b of c.boards) {
       if (!wanted.includes(b.provider)) continue
+      seen.add(key(b.provider, b.token, b.site))
       targets.push({
         source: b.provider, token: b.token, site: b.site, host: b.host,
         companySlug: c.slug, companyName: c.name, companyDomain: c.domain,
         discoveredVia: 'curated', confidence: 1,
       })
+    }
+  }
+
+  // Auto-discovered boards too. The full ingest has always read these; refresh
+  // did not, so every board found by scripts/discover-boards.mjs was invisible
+  // to the incremental path -- discovery would add 66 verified tenants and the
+  // next refresh would crawl none of them.
+  //
+  // They carry no curated metadata, so companySlug is left unset and
+  // normalizeJob derives one from the domain, exactly as the full ingest does.
+  if (existsSync(DISCOVERED)) {
+    try {
+      const disc = JSON.parse(readFileSync(DISCOVERED, 'utf8'))
+      for (const b of disc.boards ?? []) {
+        if (!wanted.includes(b.provider)) continue
+        const k = key(b.provider, b.token, b.site)
+        if (seen.has(k)) continue
+        seen.add(k)
+        targets.push({
+          source: b.provider, token: b.token, site: b.site, host: b.host,
+          companyName: humanizeToken(b.token),
+          discoveredVia: 'common-crawl', confidence: 0.9,
+        })
+      }
+    } catch {
+      // A malformed discovery file must not stop a refresh of curated boards.
     }
   }
 
