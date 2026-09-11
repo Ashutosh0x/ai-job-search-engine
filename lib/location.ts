@@ -326,8 +326,25 @@ export function stripFacilityDecoration(city: string): string {
 }
 
 /**
+ * Read a "<country> - <city>" string, or null when the head is not a country.
+ *
+ * Split on the FIRST dash only, so "Vietnam - Ho Chi Minh City" keeps the city
+ * whole and a hyphenated city ("Netherlands - 's-Hertogenbosch") survives.
+ */
+function dashCountry(s: string): { country: string; rest: string } | null {
+  const m = s.match(/^([^-–—]+?)\s*[-–—]\s*(.+)$/)
+  if (!m) return null
+  const country = canonicalCountryName(m[1])
+  if (!country) return null
+  // A bare country code ("US - Chicago") is handled well enough here too, but
+  // a one-letter head is noise rather than a country.
+  if (m[1].trim().length < 2) return null
+  return { country, rest: m[2].trim() }
+}
+
+/**
  * Parse one location string. Handles the Workday "US-CA-San Francisco" form,
- * comma-separated forms, and bare remote markers.
+ * the "<country> - <city>" form, comma-separated forms, and bare remote markers.
  */
 export function parseLocation(raw: string | null | undefined): ParsedLocation {
   const original = (raw ?? '').trim()
@@ -382,6 +399,21 @@ export function parseLocation(raw: string | null | undefined): ParsedLocation {
     country = canonCountry(wd[1]) ?? wd[1]
     region = US_STATES[wd[2]] ?? wd[2]
     city = canonCity(wd[3])
+  } else if (dashCountry(work)) {
+    // Workday: "India - Bengaluru", "Vietnam - Ho Chi Minh City".
+    //
+    // The country is sitting in plain sight at the head of the string, but the
+    // comma split below never sees it -- the separator is a dash -- so the whole
+    // thing became a phantom city ("India - Bengaluru") and the posting was
+    // invisible to a country filter. NAB's board is 100% this shape.
+    //
+    // Only the LEADING segment is read as a country, deliberately. The reverse
+    // ("Atlanta - Georgia") is a US state far more often than it is the country
+    // Georgia, and there is nothing in the string to settle it -- so that form
+    // is left to the existing paths rather than guessed at.
+    const { country: c, rest } = dashCountry(work)!
+    country = c
+    city = rest ? canonCity(rest) : null
   } else {
     const parts = work.split(/\s*,\s*/).filter(Boolean)
     if (parts.length === 1) {

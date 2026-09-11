@@ -11,7 +11,7 @@
  * hashes for the next incremental run).
  */
 
-import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'fs'
+import { writeFileSync, readFileSync, existsSync, mkdirSync, openSync, writeSync, closeSync } from 'fs'
 import { dirname } from 'path'
 
 const { runIngest } = await import('../lib/pipeline/orchestrator.ts')
@@ -230,19 +230,45 @@ const slim = jobs.map((j) => ({
   sourceCount: (j.sourceUrls || []).length,
 }))
 
-writeFileSync(OUT, JSON.stringify({
+/**
+ * Write one JSON document without ever holding it as a single string.
+ *
+ * `JSON.stringify` of the full archive crashed with "Invalid string length"
+ * once the corpus passed Node's 512MB maximum string length -- at the very end
+ * of a 20-minute crawl, after all the work was already done. Serialising the
+ * jobs array one element at a time keeps peak memory to a single record and
+ * removes the ceiling entirely.
+ */
+function writeJsonStream(path, head, arrayKey, rows) {
+  const fd = openSync(path, 'w')
+  try {
+    const parts = Object.entries(head).map(([k, v]) => `${JSON.stringify(k)}:${JSON.stringify(v)}`)
+    writeSync(fd, `{${parts.join(',')},${JSON.stringify(arrayKey)}:[`)
+    // Batch the writes: one syscall per record is needlessly slow at 100k rows.
+    let buf = ''
+    for (let i = 0; i < rows.length; i++) {
+      buf += (i ? ',' : '') + JSON.stringify(rows[i])
+      if (buf.length > 4_000_000) { writeSync(fd, buf); buf = '' }
+    }
+    if (buf) writeSync(fd, buf)
+    writeSync(fd, ']}')
+  } finally {
+    closeSync(fd)
+  }
+}
+
+writeJsonStream(OUT, {
   generatedAt: report.finishedAt,
   jobCount: slim.length,
   report: { ...report, runs: undefined }, // runs are large; keep them out of the index
   // Full licence detail (matched legal name, routes, source, publish date) for
   // the company page; the per-job field carries only the country codes.
   sponsors: sponsorsBySlug,
-  jobs: slim,
-}))
+}, 'jobs', slim)
 
 // Full records, for job detail and the debug view.
-const ARCHIVE = OUT.replace(/.json$/, '-full.json')
-writeFileSync(ARCHIVE, JSON.stringify({ generatedAt: report.finishedAt, jobs }))
+const ARCHIVE = OUT.replace(/\.json$/, '-full.json')
+writeJsonStream(ARCHIVE, { generatedAt: report.finishedAt }, 'jobs', jobs)
 writeFileSync(STATE, JSON.stringify(state))
 
 const pct = (n, d) => (d ? `${((n / d) * 100).toFixed(1)}%` : 'n/a')

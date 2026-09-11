@@ -94,6 +94,10 @@ export const COMPANIES: CompanyRecord[] = [
     boards: [{ provider: 'greenhouse', token: 'gitlab' }] },
   { slug: 'instacart', name: 'Instacart', domain: 'instacart.com', ticker: 'CART', valuationKind: 'public', industry: 'Grocery Delivery', hqLocation: 'San Francisco, CA', foundedYear: 2012,
     boards: [{ provider: 'greenhouse', token: 'instacart' }] },
+  // Token is `doordashusa`, not `doordash` -- the obvious guess 404s. Found by
+  // probing rather than assumed. Verified 11 Sep 2026.
+  { slug: 'doordash', name: 'DoorDash', domain: 'doordash.com', ticker: 'DASH', valuationKind: 'public', industry: 'Food Delivery', hqLocation: 'San Francisco, CA', foundedYear: 2013,
+    boards: [{ provider: 'greenhouse', token: 'doordashusa' }] },
   { slug: 'palantir', name: 'Palantir', domain: 'palantir.com', ticker: 'PLTR', valuationKind: 'public', industry: 'Data Analytics', hqLocation: 'Denver, CO', foundedYear: 2003,
     boards: [{ provider: 'lever', token: 'palantir' }] },
   { slug: 'spotify', name: 'Spotify', domain: 'spotify.com', ticker: 'SPOT', valuationKind: 'public', industry: 'Audio Streaming', hqLocation: 'Stockholm, Sweden', foundedYear: 2006,
@@ -201,6 +205,12 @@ export const COMPANIES: CompanyRecord[] = [
   // Bank of America on `ghr` -- so each was found and verified, not guessed.
   { slug: 'bank-of-america', name: 'Bank of America', domain: 'bankofamerica.com', ticker: 'BAC', valuationKind: 'public', industry: 'Banking', hqLocation: 'Charlotte, NC', foundedYear: 1904,
     boards: [{ provider: 'workday', token: 'ghr', site: 'Lateral-US', host: 'ghr.wd1.myworkdayjobs.com' }] },
+  // JPMorgan runs Oracle Recruiting Cloud, not Workday -- so the board rides
+  // the `custom` SourceId and is routed to OracleRecruitingAdapter by its
+  // *.oraclecloud.com host (see lib/sources/registry.ts). The token is the ORC
+  // site number. 7,464 live requisitions, verified 11 Sep 2026.
+  { slug: 'jpmorgan-chase', name: 'JPMorgan Chase', domain: 'jpmorganchase.com', ticker: 'JPM', valuationKind: 'public', industry: 'Banking', hqLocation: 'New York, NY', foundedYear: 1799,
+    boards: [{ provider: 'custom', token: 'CX_1001', host: 'jpmc.fa.oraclecloud.com' }] },
   { slug: 'wells-fargo', name: 'Wells Fargo', domain: 'wellsfargo.com', ticker: 'WFC', valuationKind: 'public', industry: 'Banking', hqLocation: 'San Francisco, CA', foundedYear: 1852,
     boards: [{ provider: 'workday', token: 'wf', site: 'WellsFargoJobs', host: 'wf.wd1.myworkdayjobs.com' }] },
   { slug: 'morgan-stanley', name: 'Morgan Stanley', domain: 'morganstanley.com', ticker: 'MS', valuationKind: 'public', industry: 'Investment Banking', hqLocation: 'New York, NY', foundedYear: 1935,
@@ -224,6 +234,21 @@ export const COMPANIES: CompanyRecord[] = [
   // rather than filled in from a secondary source.
   { slug: 'commonwealth-bank', name: 'Commonwealth Bank of Australia', domain: 'commbank.com.au', valuationKind: 'unknown', industry: 'Banking', hqLocation: 'Sydney, Australia', foundedYear: 1911,
     boards: [{ provider: 'workday', token: 'cba', site: 'CommBank_Careers', host: 'cba.wd3.myworkdayjobs.com' }] },
+  // NAB runs three careers surfaces and only one is machine-readable:
+  //   nab.wd3.myworkdayjobs.com/NAB_Careers  Workday CxS, 273 live roles, used here.
+  //   careers.nab.com.au                     the Australian retail/banking site.
+  //                                          Returns HTTP 202 (bot challenge) to
+  //                                          any non-browser client and its
+  //                                          sitemap is stale, so it is not a
+  //                                          source we can read honestly.
+  //   nab.eightfold.ai                       "Global Careers Portal". The portal
+  //                                          renders, but its own jobs API
+  //                                          (?domain=nab.com.au) answers 403 to
+  //                                          every request we can make.
+  // Verified 11 Sep 2026. Also ASX-listed rather than an SEC filer, so -- like
+  // CommBank above -- no market cap can be derived and none is asserted.
+  { slug: 'national-australia-bank', name: 'National Australia Bank', domain: 'nab.com.au', valuationKind: 'unknown', industry: 'Banking', hqLocation: 'Melbourne, Australia', foundedYear: 1858,
+    boards: [{ provider: 'workday', token: 'nab', site: 'NAB_Careers', host: 'nab.wd3.myworkdayjobs.com' }] },
   { slug: 'standard-chartered', name: 'Standard Chartered', domain: 'sc.com', valuationKind: 'unknown', industry: 'Banking', hqLocation: 'London, UK', foundedYear: 1969,
     boards: [{ provider: 'workday', token: 'peopleplus', site: 'SCB_Careers', host: 'peopleplus.wd3.myworkdayjobs.com' }] },
   { slug: 'lloyds-of-london', name: "Lloyd's of London", domain: 'lloyds.com', valuationKind: 'unknown', industry: 'Insurance Market', hqLocation: 'London, UK', foundedYear: 1686,
@@ -284,6 +309,10 @@ export const COMPANIES: CompanyRecord[] = [
     boards: [{ provider: 'eightfold', token: 'bayer', host: 'bayer.eightfold.ai' }] },
   { slug: 'paypal', name: 'PayPal', domain: 'paypal.com', ticker: 'PYPL', valuationKind: 'public', industry: 'Fintech / Payments', hqLocation: 'San Jose, CA', foundedYear: 1998,
     boards: [{ provider: 'workday', token: 'paypal', site: 'jobs', host: 'paypal.wd1.myworkdayjobs.com' }] },
+  { slug: 'mastercard', name: 'Mastercard', domain: 'mastercard.com', ticker: 'MA', valuationKind: 'public', industry: 'Fintech / Payments', hqLocation: 'Purchase, NY', foundedYear: 1966,
+    boards: [{ provider: 'workday', token: 'mastercard', site: 'CorporateCareers', host: 'mastercard.wd1.myworkdayjobs.com' }] },
+  { slug: 'intel', name: 'Intel', domain: 'intel.com', ticker: 'INTC', valuationKind: 'public', industry: 'Semiconductors', hqLocation: 'Santa Clara, CA', foundedYear: 1968,
+    boards: [{ provider: 'workday', token: 'intel', site: 'External', host: 'intel.wd1.myworkdayjobs.com' }] },
   { slug: 'workday-inc', name: 'Workday', domain: 'workday.com', ticker: 'WDAY', valuationKind: 'public', industry: 'Enterprise Software / HR', hqLocation: 'Pleasanton, CA', foundedYear: 2005,
     boards: [{ provider: 'workday', token: 'workday', site: 'Workday', host: 'workday.wd5.myworkdayjobs.com' }] },
 
@@ -301,6 +330,10 @@ export const COMPANIES: CompanyRecord[] = [
     boards: [{ provider: 'greenhouse', token: 'elastic' }] },
   { slug: 'zscaler', name: 'Zscaler', domain: 'zscaler.com', ticker: 'ZS', valuationKind: 'public', industry: 'Cloud Security', hqLocation: 'San Jose, CA', foundedYear: 2007,
     boards: [{ provider: 'greenhouse', token: 'zscaler' }] },
+  // Workday site is lowercase `crowdstrikecareers`; the conventional `External`
+  // / `Careers` names both 404 on this tenant. Verified 11 Sep 2026.
+  { slug: 'crowdstrike', name: 'CrowdStrike', domain: 'crowdstrike.com', ticker: 'CRWD', valuationKind: 'public', industry: 'Endpoint Security', hqLocation: 'Austin, TX', foundedYear: 2011,
+    boards: [{ provider: 'workday', token: 'crowdstrike', site: 'crowdstrikecareers', host: 'crowdstrike.wd5.myworkdayjobs.com' }] },
   { slug: 'okta', name: 'Okta', domain: 'okta.com', ticker: 'OKTA', valuationKind: 'public', industry: 'Identity Security', hqLocation: 'San Francisco, CA', foundedYear: 2009,
     boards: [{ provider: 'greenhouse', token: 'okta' }] },
   { slug: 'fastly', name: 'Fastly', domain: 'fastly.com', ticker: 'FSLY', valuationKind: 'public', industry: 'Edge Cloud / CDN', hqLocation: 'San Francisco, CA', foundedYear: 2011,

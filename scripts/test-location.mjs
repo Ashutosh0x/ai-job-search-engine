@@ -94,5 +94,31 @@ for (const real of ['Japan','New Zealand','Portugal','Israel']) {
   const r = parseLocation('San Francisco, CA, USA')
   t('ordinary US address unaffected', r.city==='San Francisco' && r.region==='California' && r.country==='United States', r)
 }
+
+// Regression: Workday's "<country> - <city>" form. NAB's whole board is this
+// shape, and before the dash was read the country was lost entirely -- the
+// string became a phantom city and the posting missed every country filter.
+{
+  const r = parseLocation('Vietnam - Ho Chi Minh City')
+  t('leading country before a dash is read', r.country==='Vietnam', r)
+}
+{
+  const r = parseLocation('India - Bengaluru')
+  t('dash form resolves country and canonical city', r.country==='India' && r.city==='Bangalore', r)
+}
+{
+  const r = parseLocation('Netherlands - Amsterdam')
+  t('dash form works for a second country', r.country==='Netherlands' && r.city==='Amsterdam', r)
+}
+{
+  // "Georgia" is a US state far more often than the country in this position,
+  // and nothing in the string settles it -- so the trailing form must NOT match.
+  const r = parseLocation('Atlanta - Georgia')
+  t('trailing country name is not claimed as a country', r.country===null, r)
+}
+{
+  const r = parseLocation('Embassy Park - Bengaluru')
+  t('facility prefix is not mistaken for a country', r.country===null, r)
+}
 console.log(`\n${pass} passed, ${fail} failed`)
 process.exit(fail === 0 ? 0 : 1)

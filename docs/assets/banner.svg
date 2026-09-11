@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" width="1200" height="300" role="img" aria-label="AI Job Search Engine">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1020"/>
+      <stop offset="55%" stop-color="#141a35"/>
+      <stop offset="100%" stop-color="#1b1040"/>
+    </linearGradient>
+    <linearGradient id="ink" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#e8ecff"/>
+      <stop offset="50%" stop-color="#a9b6ff"/>
+      <stop offset="100%" stop-color="#7cf2d0"/>
+    </linearGradient>
+    <linearGradient id="rule" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#7cf2d0" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#7cf2d0" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#5b7cff" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#5b7cff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="300" fill="url(#bg)"/>
+  <ellipse cx="960" cy="80" rx="320" ry="200" fill="url(#glow)"/>
+
+  <!-- graph motif: sources converging on one index -->
+  <g stroke="#7cf2d0" stroke-opacity="0.35" fill="none" stroke-width="1.5">
+    <path d="M120 232 C 240 232, 300 150, 420 150"/>
+    <path d="M120 196 C 250 196, 300 150, 420 150"/>
+    <path d="M120 150 L 420 150"/>
+    <path d="M120 104 C 250 104, 300 150, 420 150"/>
+    <path d="M120 68  C 240 68,  300 150, 420 150"/>
+  </g>
+  <g fill="#7cf2d0" fill-opacity="0.85">
+    <circle cx="120" cy="232" r="4"/><circle cx="120" cy="196" r="4"/>
+    <circle cx="120" cy="150" r="4"/><circle cx="120" cy="104" r="4"/>
+    <circle cx="120" cy="68"  r="4"/>
+  </g>
+  <circle cx="420" cy="150" r="9" fill="#7cf2d0"/>
+  <circle cx="420" cy="150" r="17" fill="none" stroke="#7cf2d0" stroke-opacity="0.4" stroke-width="1.5"/>
+
+  <text x="500" y="132"
+        font-family="'Segoe UI Semibold','Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif"
+        font-size="62" font-weight="700" letter-spacing="1.5" fill="url(#ink)">AI Job Search Engine</text>
+
+  <rect x="502" y="152" width="300" height="2.5" fill="url(#rule)"/>
+
+  <text x="502" y="192"
+        font-family="'Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif"
+        font-size="21" fill="#aab3d6">Reads employers&#8217; own ATS boards. Ranks with reasons you can read.</text>
+
+  <text x="502" y="234"
+        font-family="ui-monospace,'Cascadia Mono','Consolas','SF Mono',Menlo,monospace"
+        font-size="16" fill="#7cf2d0" fill-opacity="0.95">216,485 roles &#183; 1,239 boards &#183; 13 source adapters &#183; 0 scrapers</text>
+</svg>

@@ -1,255 +1,189 @@
-# JobSpark AI Documentation
+<p align="center">
+  <img src="docs/assets/banner.svg" alt="AI Job Search Engine" width="100%">
+</p>
 
-This repository contains the comprehensive documentation for JobSpark AI, an AI-powered job search platform built with Next.js, React, and Supabase.
+<p align="center">
+  <b>A job search engine that reads employers' own applicant tracking systems — not aggregators, not scrapers.</b><br>
+  Natural-language queries become hard filters. Every result explains why it ranked where it did.
+</p>
 
-## 🚀 Quick Start
+<p align="center">
+  <img alt="Next.js" src="https://img.shields.io/badge/Next.js-14-000000?style=flat-square&logo=nextdotjs&logoColor=white">
+  <img alt="React" src="https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=black">
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white">
+  <img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind-3.4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white">
+  <img alt="Radix UI" src="https://img.shields.io/badge/Radix_UI-shadcn-161618?style=flat-square&logo=radixui&logoColor=white">
+</p>
+<p align="center">
+  <img alt="Supabase" src="https://img.shields.io/badge/Supabase-Postgres_+_RLS-3FCF8E?style=flat-square&logo=supabase&logoColor=white">
+  <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-23_migrations-4169E1?style=flat-square&logo=postgresql&logoColor=white">
+  <img alt="Stripe" src="https://img.shields.io/badge/Stripe-Billing-635BFF?style=flat-square&logo=stripe&logoColor=white">
+  <img alt="Gemini" src="https://img.shields.io/badge/Gemini-2.5_Flash-8E75B2?style=flat-square&logo=googlegemini&logoColor=white">
+  <img alt="Resend" src="https://img.shields.io/badge/Resend-Email-000000?style=flat-square&logo=resend&logoColor=white">
+  <img alt="Node.js" src="https://img.shields.io/badge/Node.js-20+-5FA04E?style=flat-square&logo=nodedotjs&logoColor=white">
+</p>
 
-### Prerequisites
-
-- Node.js 18+ 
-- npm or yarn
-- Mintlify CLI (for local development)
-
-### Installation
-
-1. **Install Mintlify CLI**
-   ```bash
-   npm install -g mintlify
-   ```
-
-2. **Start Local Development**
-   ```bash
-   mintlify dev
-   ```
-
-3. **View Documentation**
-   Open [http://localhost:3000/docs](http://localhost:3000/docs) in your browser
-
-## 📁 Documentation Structure
-
-```
-docs/
-├── mint.json                 # Mintlify configuration
-├── introduction.mdx          # Main introduction page
-├── quickstart.mdx           # Quick start guide
-├── features/                # Feature documentation
-│   ├── ai-resume-analysis.mdx
-│   ├── job-matching.mdx
-│   ├── resume-builder.mdx
-│   ├── profile-management.mdx
-│   ├── job-tracking.mdx
-│   └── analytics-dashboard.mdx
-├── user-management/         # User management docs
-│   ├── profile-settings.mdx
-│   ├── preferences.mdx
-│   ├── security.mdx
-│   └── localization.mdx
-├── api/                     # API documentation
-│   ├── authentication.mdx
-│   ├── resume-analysis.mdx
-│   ├── job-matching.mdx
-│   ├── profile-management.mdx
-│   └── upload-endpoints.mdx
-├── guides/                  # User guides
-│   ├── resume-optimization.mdx
-│   ├── job-search-strategy.mdx
-│   ├── profile-completion.mdx
-│   └── security-best-practices.mdx
-├── pricing/                 # Pricing documentation
-│   ├── plans.mdx
-│   ├── features-comparison.mdx
-│   └── billing.mdx
-└── troubleshooting/         # Troubleshooting guides
-    ├── common-issues.mdx
-    ├── error-codes.mdx
-    └── performance.mdx
-```
-
-## 🛠️ Development
-
-### Adding New Pages
-
-1. Create a new `.mdx` file in the appropriate directory
-2. Add frontmatter with title and description:
-   ```mdx
-   ---
-   title: 'Page Title'
-   description: 'Page description for SEO'
-   ---
-   ```
-3. Update `mint.json` navigation to include the new page
-
-### Mintlify Components
-
-The documentation uses various Mintlify components:
-
-- `<Card>` - For feature highlights
-- `<CardGroup>` - For grouped content
-- `<Steps>` - For step-by-step guides
-- `<Tabs>` - For tabbed content
-- `<Callout>` - For important notices
-- `<CodeGroup>` - For code examples
-
-### Styling
-
-- Use Tailwind CSS classes for styling
-- Follow the established color scheme (purple theme)
-- Maintain consistent spacing and typography
-
-## 📚 Content Guidelines
-
-### Writing Style
-
-- Use clear, concise language
-- Include practical examples
-- Add code snippets where relevant
-- Use screenshots for complex UI explanations
-- Keep content up-to-date with the application
-
-### SEO Optimization
-
-- Use descriptive titles and descriptions
-- Include relevant keywords naturally
-- Structure content with proper headings
-- Add meta descriptions for each page
-
-### Accessibility
-
-- Use descriptive alt text for images
-- Ensure proper heading hierarchy
-- Maintain good color contrast
-- Test with screen readers
-
-## 🔧 Configuration
-
-### mint.json
-
-The main configuration file includes:
-
-- **Navigation Structure** - Organized into logical groups
-- **Branding** - Colors, logos, and social links
-- **SEO Settings** - Meta tags and descriptions
-- **Custom Components** - Reusable UI components
-
-### Customization
-
-- Update colors in `mint.json` to match your brand
-- Modify navigation structure as needed
-- Add custom components for specific use cases
-- Configure analytics and tracking
-
-## 📖 Content Sections
-
-### Getting Started
-- Introduction to JobSpark AI
-- Quick start guide
-- Authentication setup
-- Installation instructions
-
-### Core Features
-- AI Resume Analysis
-- Job Matching
-- Resume Builder
-- Profile Management
-- Job Tracking
-- Analytics Dashboard
-
-### User Management
-- Profile Settings
-- Preferences Configuration
-- Security Features
-- Localization Options
-
-### API Reference
-- Authentication
-- Resume Analysis API
-- Job Matching API
-- Profile Management API
-- Upload Endpoints
-
-### Guides
-- Resume Optimization
-- Job Search Strategy
-- Profile Completion
-- Security Best Practices
-
-### Pricing & Plans
-- Plan Comparison
-- Feature Details
-- Billing Information
-
-### Troubleshooting
-- Common Issues
-- Error Codes
-- Performance Optimization
-
-## 🚀 Deployment
-
-### Production Deployment
-
-1. **Build Documentation**
-   ```bash
-   mintlify build
-   ```
-
-2. **Deploy to Mintlify**
-   ```bash
-   mintlify deploy
-   ```
-
-3. **Custom Domain** (Optional)
-   - Configure custom domain in Mintlify dashboard
-   - Update DNS settings
-   - Enable SSL certificate
-
-### Continuous Deployment
-
-- Connect GitHub repository to Mintlify
-- Automatic deployments on push to main branch
-- Preview deployments for pull requests
-
-## 🤝 Contributing
-
-### Content Updates
-
-1. Create a feature branch
-2. Make your changes
-3. Test locally with `mintlify dev`
-4. Submit a pull request
-5. Review and merge
-
-### Style Guide
-
-- Follow existing formatting patterns
-- Use consistent terminology
-- Include examples and code snippets
-- Test all links and references
-
-## 📞 Support
-
-### Documentation Issues
-
-- Create an issue in this repository
-- Tag with appropriate labels
-- Provide detailed description of the problem
-
-### Content Requests
-
-- Submit feature requests for new documentation
-- Suggest improvements to existing content
-- Report outdated information
-
-## 🔗 Links
-
-- **Live Documentation**: [https://jobspark.ai/docs](https://jobspark.ai/docs)
-- **Main Application**: [https://jobspark.ai](https://jobspark.ai)
-- **GitHub Repository**: [https://github.com/jobspark-ai](https://github.com/jobspark-ai)
-- **Support Email**: support@jobspark.ai
-
-## 📄 License
-
-This documentation is part of the JobSpark AI project and follows the same license terms.
+<p align="center">
+  <img alt="tests" src="https://img.shields.io/badge/tests-262_passing-2ea043?style=flat-square">
+  <img alt="sources" src="https://img.shields.io/badge/source_adapters-13-7cf2d0?style=flat-square">
+  <img alt="companies" src="https://img.shields.io/badge/curated_employers-104-a9b6ff?style=flat-square">
+  <img alt="jobs" src="https://img.shields.io/badge/roles_indexed-216%2C485-5b7cff?style=flat-square">
+</p>
 
 ---
 
-**Note**: This documentation is automatically generated and deployed. For the most up-to-date information, always refer to the live documentation at [https://jobspark.ai/docs](https://jobspark.ai/docs).
+## What this is
+
+Most "job search" products are a search box over an aggregator's copy of a job
+posting. This one goes to the source: it reads the public, documented, no-auth
+JSON feeds that power employers' own careers pages — Workday, Greenhouse, Ashby,
+SmartRecruiters, Oracle Recruiting Cloud and eight more — normalises them into
+one schema, deduplicates across boards, and ranks with a transparent scorer.
+
+Three things follow from reading the source rather than an aggregator:
+
+- **The jobs are real.** A company with a live ATS board answering on its own
+  domain is a real employer really hiring. That is a stronger genuineness signal
+  than anything scraped off a listings page.
+- **It is permitted.** LinkedIn's and Indeed's terms prohibit scraping. Every
+  endpoint used here is the employer's own public feed. Nothing here needs to be
+  operated in the dark.
+- **The fields survive.** Aggregators strip department, compensation, workplace
+  type and requisition ids. Reading the ATS keeps them, which is what makes
+  real filtering possible.
+
+## What it does that a job board doesn't
+
+| | |
+|---|---|
+| **Natural-language search** | `"senior ML engineer in Bangalore with visa sponsorship posted this week"` is parsed into five hard filters and one topic — not bag-of-words. The API returns `intentSummary` so the user can see how their sentence was read, and correct it. |
+| **Explainable ranking** | Score is a sum of 13 named signals out of 100. Every result carries the breakdown; `?debug=1` returns it in full. Company prestige is capped at 3 points on purpose — the right small company should beat the wrong famous one. |
+| **Visa sponsorship, as fact and as inference** | Inferred sponsorship status is read from the posting's prose *and kept separate* from the UK Home Office and Dutch IND **official sponsor registers** (143,147 + 12,974 organisations). A licence means an employer *can* sponsor; it never silently becomes "this role is sponsored". |
+| **Ghost-job signals** | Stale and repost patterns are surfaced as *signals with evidence*, never as a verdict. A suspected ghost job is ranked lower and labelled with the reason — never hidden, because a misfiring heuristic hiding a real job is the worse error. |
+| **Company-level filters** | Valuation tier, hiring momentum (open-role count), and which ATS the employer runs. Aggregators expose headcount, not company value — so they cannot separate a 500-person unicorn from a 500-person agency. |
+| **Cross-board dedupe** | The same requisition legitimately appears on several boards. A four-tier cascade (requisition id → apply URL → title+location → fuzzy) collapses them, keeps the most direct apply link, and records how certain the match was. |
+
+## How much is built
+
+Roughly 35,000 lines of first-party TypeScript across a Next.js app, an
+ingestion pipeline, and a search layer.
+
+```
+Ingestion pipeline    ██████████████████░░   done, running
+Search + ranking      ██████████████████░░   done, running
+Visa / sponsor data   ██████████████████░░   done, running
+Web app + auth        ████████████████░░░░   done; server-side route guards pending
+Billing (Stripe)      ███████████████░░░░░   done; webhook idempotency in place
+Resume AI             ██████████████░░░░░░   analysis + parsing done
+CI                    ░░░░░░░░░░░░░░░░░░░░   not started
+```
+
+**Measured, from the last full corpus run (10 Sep 2026):**
+
+| | |
+|---|---|
+| Roles indexed | **216,485** canonical, from 270,091 raw |
+| Boards crawled | **1,239** companies / 1,251 sources — **0 failures** |
+| Duplicates collapsed | 53,494 (requisition 20,344 · title+location 27,345 · fuzzy 6,149) |
+| Direct apply links | 216,485 — **100%** |
+| Sponsor register orgs | 156,121 (UK 143,147 · NL 12,974) |
+| Run time | 19m 24s |
+| Tests | **262 assertions, 14 suites, all passing** |
+
+Source mix from that run: Workday 118,984 · SmartRecruiters 94,346 ·
+Greenhouse 28,785 · Ashby 17,509 · bespoke portals 6,193 · Recruitee 2,210 ·
+Eightfold 1,675 · Lever 383 · Workable 6.
+
+## Architecture
+
+```
+DISCOVERY → FETCH → PARSE → NORMALIZE → DEDUPE → ENRICH → VERIFY → INDEX
+```
+
+Stages are independent, and the rule that matters is that **a failure in an
+optional stage must not destroy the base job**. Enrichment runs after jobs are
+already final, on a copy, and writes back only on success — so a market-cap
+lookup timing out leaves `companyValuationUsd` null (a known-unknown) instead of
+losing the posting.
+
+Adding a new ATS means writing **one adapter** and registering it. Discovery,
+ingestion, dedupe, ranking and the UI all work through the `JobSource` interface
+and never name a platform.
+
+```
+lib/
+  sources/       adapters (13) + the JobSource contract + hardened HTTP
+  pipeline/      normalize · dedupe · quality · visa · workplace · skills · orchestrator
+  search/        intent parsing · explainable ranking
+  companies/     curated registry (104 employers) + market cap from SEC EDGAR
+  visa/          UK Home Office + Dutch IND sponsor registers
+  discovery/     Common Crawl board discovery
+app/api/         16 route handlers
+```
+
+Full detail: **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)**.
+
+## Quick start
+
+```bash
+git clone --recurse-submodules https://github.com/Ashutosh0x/ai-job-search-engine.git
+cd ai-job-search-engine
+npm install
+cp env.example .env.local     # fill in Supabase at minimum
+npm run dev
+```
+
+Build the job index (writes `public/data/jobs-v2.json`, gitignored):
+
+```bash
+npx tsx scripts/ingest-v2.mjs --limit 40        # a bounded first run
+npx tsx scripts/ingest-v2.mjs                   # the full corpus, ~20 min
+npx tsx scripts/ingest-v2.mjs --only stripe,figma,doordash
+```
+
+Then search it:
+
+```bash
+curl 'localhost:3000/api/smart-search?q=senior platform engineer in india&debug=1'
+```
+
+Setup in full: **[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)**.
+
+## Documentation
+
+| | |
+|---|---|
+| [Architecture](docs/ARCHITECTURE.md) | Stages, the adapter contract, why the layering is what it is |
+| [Ingestion](docs/INGESTION.md) | Running crawls, adding an employer, writing an adapter, board discovery |
+| [Search & ranking](docs/SEARCH.md) | Intent parsing, the 13 ranking signals, tuning weights |
+| [API reference](docs/API.md) | All 16 endpoints, parameters, response shapes |
+| [Data model](docs/DATA-MODEL.md) | `CanonicalJob`, the company registry, the 23 migrations |
+| [Development](docs/DEVELOPMENT.md) | Env vars, scripts, tests, known gaps |
+| [Security](docs/SECURITY.md) | Threat model and the September 2026 audit |
+| [Audit report](AUDIT-2026.md) | The full remediation write-up |
+
+## Known gaps
+
+Stated plainly, because a README that only lists wins is not much use:
+
+- **Workday postings carry no posted date at list time.** The date lives on the
+  detail endpoint and `WorkdayAdapter` has no `fetchJob`, so hydration is a
+  no-op for ~55% of the corpus. Oracle Recruiting boards return 100% posted
+  dates; Workday boards return 0%.
+- **`ignoreBuildErrors` is still on** in `next.config.mjs`. It hid two critical
+  bugs (see the audit). 51 type errors remain, 29 of them in the vendored
+  location sub-project.
+- **Next.js 14.2.16 is old** (Oct 2024). The 2026 releases fixed middleware auth
+  bypass, SSRF and cache poisoning.
+- **No CI.** The 14 test suites are real and pass; nothing runs them on push.
+- **Rate limiting is per-process**, so on serverless it is a speed bump rather
+  than a guarantee — and it is the control protecting password reset.
+- **Some employers are not reachable.** Eightfold tenants (Qualcomm, Amex,
+  NAB's global portal) answer 403 to any non-browser client; AMD is on iCIMS,
+  for which there is no adapter yet; Goldman Sachs runs a bespoke portal with no
+  public feed. These are documented rather than faked.
+
+## Licence
+
+No licence file yet, which means **all rights reserved** by default. Add one
+before inviting outside contributions.
