@@ -178,6 +178,34 @@ export const COMPANIES: CompanyRecord[] = [
     valuationSource: 'Series D, reported Apr 2025',
     industry: 'Generative Video', hqLocation: 'New York, NY', foundedYear: 2018,
     boards: [{ provider: 'ashby', token: 'runway' }] },
+  // The Ashby board name is `mistral.ai` -- WITH the dot. `mistral` 404s. The
+  // token is whatever the employer typed when they set the board up, and it is
+  // not derivable from the company name; this one was read off the careers
+  // page's own link to jobs.ashbyhq.com/mistral.ai.
+  { slug: 'mistral-ai', name: 'Mistral AI', domain: 'mistral.ai', valuationKind: 'private',
+    reportedValuationUsd: 13_700_000_000, valuationAsOf: '2025-09-09',
+    valuationSource: 'Series C led by ASML, reported Sep 2025',
+    industry: 'Artificial Intelligence', hqLocation: 'Paris, France', foundedYear: 2023,
+    boards: [{ provider: 'ashby', token: 'mistral.ai' }] },
+  { slug: 'decagon', name: 'Decagon', domain: 'decagon.ai', valuationKind: 'private',
+    reportedValuationUsd: 1_500_000_000, valuationAsOf: '2025-06-01',
+    valuationSource: 'Series C, reported Jun 2025',
+    industry: 'Conversational AI', hqLocation: 'San Francisco, CA', foundedYear: 2023,
+    boards: [{ provider: 'ashby', token: 'decagon' }] },
+  // Glean and Together AI both render an Ashby board at jobs.ashbyhq.com/<name>
+  // whose posting API 404s -- Ashby's JSON feed is opt-in per employer, so a
+  // board page existing does not mean a readable feed exists. Both are actually
+  // reachable on Greenhouse, which is where we read them.
+  { slug: 'glean', name: 'Glean', domain: 'glean.com', valuationKind: 'private',
+    reportedValuationUsd: 7_200_000_000, valuationAsOf: '2025-06-01',
+    valuationSource: 'Series F, reported Jun 2025',
+    industry: 'Enterprise AI Search', hqLocation: 'Palo Alto, CA', foundedYear: 2019,
+    boards: [{ provider: 'greenhouse', token: 'gleanwork' }] },
+  { slug: 'together-ai', name: 'Together AI', domain: 'together.ai', valuationKind: 'private',
+    reportedValuationUsd: 3_300_000_000, valuationAsOf: '2025-02-01',
+    valuationSource: 'Series B, reported Feb 2025',
+    industry: 'AI Cloud Infrastructure', hqLocation: 'San Francisco, CA', foundedYear: 2022,
+    boards: [{ provider: 'greenhouse', token: 'togetherai' }] },
 
   { slug: 'stripe', name: 'Stripe', domain: 'stripe.com', valuationKind: 'private',
     reportedValuationUsd: 106_500_000_000, valuationAsOf: '2025-02-27',
