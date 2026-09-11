@@ -48,6 +48,9 @@ jobs:
       # The index is too large to keep in git, so it is restored from cache.
       # A cache miss means there is nothing to merge into, which the refresh
       # script detects and reports rather than writing a partial index.
+      # public/data/jobs-deploy.json is committed, so a cache miss still leaves a
+      # valid base to merge into -- the run degrades to refreshing the bounded
+      # slice rather than failing outright.
       - name: Restore job index
         uses: actions/cache/restore@v4
         with:
@@ -56,6 +59,17 @@ jobs:
             .ingest-state.json
           key: job-index-${{ github.run_id }}
           restore-keys: job-index-
+
+      - name: Choose a base index
+        id: base
+        run: |
+          if [ -f public/data/jobs-v2.json ]; then
+            echo "out=public/data/jobs-v2.json" >> "$GITHUB_OUTPUT"
+            echo "Using restored full index ($(du -h public/data/jobs-v2.json | cut -f1))"
+          else
+            echo "out=public/data/jobs-deploy.json" >> "$GITHUB_OUTPUT"
+            echo "Cache miss; refreshing the committed bounded index instead."
+          fi
 
       - name: Pick tier from schedule
         id: tier
@@ -67,8 +81,12 @@ jobs:
             *)              echo "tier=${{ inputs.tier || 'hot' }}" >> "$GITHUB_OUTPUT" ;;
           esac
 
+      # `npx tsx`, not `node`. refresh.mjs imports .ts modules
+      # (lib/pipeline/orchestrator.ts and friends), and plain node rejects them
+      # with ERR_UNKNOWN_FILE_EXTENSION. Every scheduled run failed in ~30s on
+      # this before it was caught.
       - name: Refresh
-        run: node --max-old-space-size=8192 scripts/refresh.mjs --tier ${{ steps.tier.outputs.tier }}
+        run: NODE_OPTIONS=--max-old-space-size=8192 npx tsx scripts/refresh.mjs --tier ${{ steps.tier.outputs.tier }} --out ${{ steps.base.outputs.out }}
 
       - name: Save job index
         if: success()
