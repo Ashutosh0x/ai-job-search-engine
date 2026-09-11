@@ -28,3 +28,4 @@ next-env.d.ts
 # Ingestion artifacts (regenerate with scripts/ingest-v2.mjs)
 /public/data/*.json
 /.ingest-state.json
+/public/data/ibm-jobs.json
