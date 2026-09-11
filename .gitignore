@@ -43,3 +43,6 @@ next-env.d.ts
 /public/data/ibm-jobs.json
 
 .vercel
+
+# Crawl logs are working files, not deliverables.
+*.log
