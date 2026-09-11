@@ -13,7 +13,7 @@ import { authService } from "@/lib/auth-service"
 import { validateEmail, validatePassword, validateName } from "@/lib/validation"
 import PasswordStrength from './password-strength';
 import { useToast } from "@/components/toast-provider"
-import { getSupabaseClient } from "@/lib/supabase"
+import { getSupabaseClientSafe } from "@/lib/supabase"
 
 interface AuthFormProps {
   mode: "login" | "signup" | "forgot-password"
@@ -29,7 +29,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
   const router = useRouter()
   const { addToast } = useToast()
   const [passwordValidation, setPasswordValidation] = useState(validatePassword("", true));
-  const supabase = getSupabaseClient();
+  const supabase = getSupabaseClientSafe();
   const [magicLink, setMagicLink] = useState("");
   const [magicLinkError, setMagicLinkError] = useState("");
   const [turnstileToken, setTurnstileToken] = useState("");

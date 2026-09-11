@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { getSupabaseClient } from "@/lib/supabase"
+import { getSupabaseClientSafe } from "@/lib/supabase"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -75,7 +75,7 @@ export default function PublicProfilePage({ params }: { params: { username: stri
   const [experiences, setExperiences] = useState<Experience[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const supabase = getSupabaseClient()
+  const supabase = getSupabaseClientSafe()
 
   useEffect(() => {
     async function fetchPublicProfile() {

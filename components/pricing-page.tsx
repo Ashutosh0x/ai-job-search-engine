@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Check, Loader2 } from "lucide-react"
 import Navigation from "@/components/navigation"
 import { loadStripe } from '@stripe/stripe-js'
-import { getSupabaseClient } from '@/lib/supabase'
+import { getSupabaseClientSafe } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 
 // Initialize Stripe
@@ -70,7 +70,7 @@ export default function PricingPage() {
       setLoadingPlan(planId)
 
       // Check if user is authenticated
-      const supabase = getSupabaseClient()
+      const supabase = getSupabaseClientSafe()
       const { data: { user }, error: authError } = await supabase.auth.getUser()
 
       if (authError || !user) {

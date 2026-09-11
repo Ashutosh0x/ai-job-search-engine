@@ -9,7 +9,7 @@ import { ArrowLeft, ArrowRight, Search, Heart, X, CheckCircle, XCircle, Menu } f
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useRouter } from "next/navigation"
 import { useToast } from "@/components/toast-provider"
-import { getSupabaseClient } from "@/lib/supabase"
+import { getSupabaseClientSafe } from "@/lib/supabase"
 
 interface PreferencesData {
   roleTypes: string[]
@@ -56,7 +56,7 @@ export default function PreferencesOnboarding() {
     jobSearchStatus: "",
   })
 
-  const supabase = getSupabaseClient();
+  const supabase = getSupabaseClientSafe();
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
   const [fullName, setFullName] = useState<string | null>(null)
 

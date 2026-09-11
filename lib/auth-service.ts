@@ -1,4 +1,4 @@
-import { getSupabaseClient } from "./supabase"
+import { getSupabaseClientSafe } from "./supabase"
 import { createClient } from "@supabase/supabase-js"
 
 export interface User {
@@ -15,7 +15,7 @@ export interface AuthResult {
 }
 
 export class AuthService {
-  private supabase = getSupabaseClient()
+  private supabase = getSupabaseClientSafe()
 
   async signUp(email: string, password: string, fullName: string): Promise<AuthResult> {
     try {

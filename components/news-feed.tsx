@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Clock, ExternalLink, TrendingUp, Building2 } from "lucide-react"
 import Navigation from "@/components/navigation"
-import { getSupabaseClient } from "@/lib/supabase"
+import { getSupabaseClientSafe } from "@/lib/supabase"
 import { getRelativeTime } from "@/lib/utils"
 
 type Blog = {
@@ -35,7 +35,7 @@ export default function NewsFeed() {
   const [loading, setLoading] = useState<boolean>(true)
 
   useEffect(() => {
-    const supabase = getSupabaseClient()
+    const supabase = getSupabaseClientSafe()
 
     async function fetchBlogs() {
       setLoading(true)
@@ -58,7 +58,7 @@ export default function NewsFeed() {
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "blogs" },
-        (payload) => {
+        (payload: any) => {
           const newBlog = payload.new as Blog
           setBlogs((prev) => [newBlog, ...prev])
         }
@@ -66,7 +66,7 @@ export default function NewsFeed() {
       .on(
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "blogs" },
-        (payload) => {
+        (payload: any) => {
           const updated = payload.new as Blog
           setBlogs((prev) => prev.map((b) => (b.id === updated.id ? updated : b)))
         }
@@ -74,7 +74,7 @@ export default function NewsFeed() {
       .on(
         "postgres_changes",
         { event: "DELETE", schema: "public", table: "blogs" },
-        (payload) => {
+        (payload: any) => {
           const removed = payload.old as { id: number }
           setBlogs((prev) => prev.filter((b) => b.id !== removed.id))
         }

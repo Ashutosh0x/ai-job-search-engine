@@ -37,7 +37,7 @@ import {
   File,
 } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { getSupabaseClient } from "@/lib/supabase"
+import { getSupabaseClientSafe } from "@/lib/supabase"
 import { FaMoneyBillWave, FaRegClock, FaMapMarkerAlt, FaBuilding } from "react-icons/fa";
 import { SearchableSelect } from "@/components/ui/searchable-select";
 
@@ -97,7 +97,7 @@ export default function Dashboard() {
   const [loadingCities, setLoadingCities] = useState(false);
 
   const router = useRouter()
-  const supabase = getSupabaseClient();
+  const supabase = getSupabaseClientSafe();
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
   const [fullName, setFullName] = useState<string | null>(null)
 

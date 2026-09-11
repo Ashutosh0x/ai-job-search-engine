@@ -55,7 +55,7 @@ import {
   Share2,
   Download
 } from "lucide-react"
-import { getSupabaseClient } from "@/lib/supabase"
+import { getSupabaseClientSafe } from "@/lib/supabase"
 import { getCompanyLogo, isValidWebsiteUrl, extractDomain } from "@/lib/company-logo"
 import ExperienceForm from "@/components/experience-form"
 import EducationForm, { Education } from "@/components/education-form"
@@ -171,7 +171,7 @@ export default function Profile() {
   }
   const fileInputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
-  const supabase = getSupabaseClient()
+  const supabase = getSupabaseClientSafe()
 
   // Calculate profile completion percentage
   const calculateProfileCompletion = (profile: Partial<UserProfile>): number => {
@@ -302,7 +302,7 @@ export default function Profile() {
       if (experiencesError) {
         console.error('Experiences fetch error:', experiencesError)
       } else {
-        const typedExperiences = (experiencesData || []).map(exp => ({
+        const typedExperiences = (experiencesData || []).map((exp: any) => ({
           id: exp.id as string,
           user_id: exp.user_id as string,
           job_title: exp.job_title as string,

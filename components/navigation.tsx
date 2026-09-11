@@ -7,7 +7,7 @@ import { useTheme } from "next-themes"
 import { ChevronDown, Moon, Sun, Sparkles, Zap, Target, TrendingUp, BarChart3, Menu, X } from "lucide-react"
 import Link from "next/link"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { getSupabaseClient } from "@/lib/supabase"
+import { getSupabaseClientSafe } from "@/lib/supabase"
 
 export default function Navigation() {
   const { theme, setTheme } = useTheme()
@@ -18,7 +18,7 @@ export default function Navigation() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const supabase = getSupabaseClient()
+    const supabase = getSupabaseClientSafe()
 
     const fetchUser = async () => {
       try {
@@ -65,7 +65,7 @@ export default function Navigation() {
 
   const handleLogout = async () => {
     try {
-      const supabase = getSupabaseClient()
+      const supabase = getSupabaseClientSafe()
       await supabase.auth.signOut()
     } catch {}
     localStorage.removeItem('isAuthenticated')

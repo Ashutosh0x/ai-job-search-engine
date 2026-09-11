@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { getSupabaseClient } from "@/lib/supabase"
+import { getSupabaseClientSafe } from "@/lib/supabase"
 import { useTheme } from "next-themes"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -94,7 +94,7 @@ interface UserProfile {
 }
 
 export default function SettingsPage() {
-  const supabase = getSupabaseClient()
+  const supabase = getSupabaseClientSafe()
   const router = useRouter()
   const { theme, setTheme } = useTheme()
 

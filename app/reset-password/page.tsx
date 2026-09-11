@@ -7,7 +7,7 @@ import Link from "next/link";
 import Navigation from "@/components/navigation";
 import { ArrowLeft, Check } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { getSupabaseClient } from "@/lib/supabase";
+import { getSupabaseClientSafe } from "@/lib/supabase";
 
 /**
  * Resolved inside the component, not at module scope.
@@ -17,7 +17,7 @@ import { getSupabaseClient } from "@/lib/supabase";
  * during that prerender -- failing the whole build on a host that has not been
  * given Supabase env vars, even though every other page is fine.
  *
- * `getSupabaseClient()` is already a lazy singleton; calling it from an event
+ * `getSupabaseClientSafe()` is already a lazy singleton; calling it from an event
  * handler defers construction to the browser, where the public env var is
  * inlined and actually present.
  */
@@ -89,7 +89,7 @@ export default function ResetPasswordPage() {
       return;
     }
     // Use Supabase to update password with access token
-    const { error: updateError } = await getSupabaseClient().auth.updateUser({
+    const { error: updateError } = await getSupabaseClientSafe().auth.updateUser({
       password: newPassword,
     }, { accessToken });
     setMagicLinkLoading(false);

@@ -3,7 +3,6 @@
   "framework": "nextjs",
   "functions": {
     "app/api/**/*.ts": {
-      "memory": 2048,
       "maxDuration": 60
     }
   }

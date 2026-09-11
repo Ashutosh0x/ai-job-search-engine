@@ -23,7 +23,7 @@ import Navigation from "@/components/navigation"
 import DocumentPreview from "@/components/document-preview"
 import ResumeAnalysisResults from "@/components/resume-analysis-results"
 import { generateResumeAnalysisPDF } from "@/utils/pdf-export"
-import { getSupabaseClient } from "@/lib/supabase"
+import { getSupabaseClientSafe } from "@/lib/supabase"
 import { AnimatedPieChart } from "@/components/animated-pie-chart"
 import Lottie from "lottie-react"
 
@@ -38,7 +38,7 @@ interface ParsedResumeInfo {
 }
 
 export default function ResumeUpload() {
-  const supabase = getSupabaseClient();
+  const supabase = getSupabaseClientSafe();
   const [isDragOver, setIsDragOver] = useState(false)
   const [uploadedFile, setUploadedFile] = useState<File | null>(null)
   const [isAnalyzing, setIsAnalyzing] = useState(false)

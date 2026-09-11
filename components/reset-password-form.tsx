@@ -9,7 +9,7 @@ import { Lock, Eye, EyeOff, ArrowLeft, Check, X } from "lucide-react"
 import Link from "next/link"
 import Navigation from "@/components/navigation"
 import { useRouter, useSearchParams } from "next/navigation"
-import { getSupabaseClient } from "@/lib/supabase"
+import { getSupabaseClientSafe } from "@/lib/supabase"
 import { validatePassword } from "@/lib/validation"
 import { useToast } from "@/components/toast-provider"
 
@@ -26,7 +26,7 @@ export default function ResetPasswordForm() {
   const [passwordValidation, setPasswordValidation] = useState(validatePassword("", true))
   const router = useRouter()
   const { addToast } = useToast()
-  const supabase = getSupabaseClient()
+  const supabase = getSupabaseClientSafe()
   const searchParams = useSearchParams()
 
   // Get access_token and refresh_token from URL params (sent by Supabase)
