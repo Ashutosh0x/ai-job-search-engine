@@ -184,6 +184,54 @@ const RETRYABLE = new Set([408, 425, 429, 500, 502, 503, 504])
  * - Circuit breaker per host so a dead platform fails fast.
  * - Conditional requests via ETag/Last-Modified for cheap change detection.
  */
+/**
+ * HTTP outcome telemetry.
+ *
+ * WHY THIS EXISTS
+ * ---------------
+ * `httpJson` returns null on any non-OK response, and adapters turn null into
+ * an empty job list. The orchestrator then records the board as
+ * `ok: true, jobCount: 0` -- so a board answering 403 was indistinguishable
+ * from a board that genuinely has no openings, and the ingest report could
+ * truthfully print "0 failures" while a WAF had blocked two dozen employers.
+ *
+ * That is a reporting defect rather than a crawling one: the crawl behaved
+ * correctly, but the summary could not tell the difference between "nothing
+ * there" and "we were refused". Recording outcomes here, at the one place every
+ * request passes through, makes a blocked board visible without changing how
+ * failure is handled downstream.
+ */
+const outcomes = {
+  ok: 0,
+  notFound: 0,       // 404/410 -- board genuinely gone
+  blocked: 0,        // 401/403/429 and challenge codes -- refused, not empty
+  serverError: 0,    // 5xx
+  otherHttp: 0,
+  networkError: 0,   // DNS, TLS, timeout, abort
+  fromCache: 0,
+}
+/** host -> { status -> count }, so a blocked employer can be named. */
+const byHost = new Map<string, Map<number, number>>()
+
+function record(host: string, status: number, kind: keyof typeof outcomes) {
+  outcomes[kind]++
+  let m = byHost.get(host)
+  if (!m) { m = new Map(); byHost.set(host, m) }
+  m.set(status, (m.get(status) ?? 0) + 1)
+}
+
+/** Classify a status into the bucket a human would act on. */
+function classify(status: number): keyof typeof outcomes {
+  if (status === 0) return 'networkError'
+  if (status >= 200 && status < 300) return 'ok'
+  if (status === 404 || status === 410) return 'notFound'
+  // 202 belongs here, not in `ok`: Akamai and friends answer a bot challenge
+  // with 202 and a stub body, which is a refusal wearing a success code.
+  if (status === 401 || status === 403 || status === 429 || status === 202) return 'blocked'
+  if (status >= 500) return 'serverError'
+  return 'otherHttp'
+}
+
 export async function httpGet(url: string, options: HttpOptions = {}): Promise<HttpResponse> {
   const {
     timeoutMs = DEFAULTS.timeoutMs,
@@ -286,6 +334,7 @@ export async function httpGet(url: string, options: HttpOptions = {}): Promise<H
           if (res.status >= 500) recordFailure(host)
         }
 
+        record(host, res.status, classify(res.status))
         return { ok: res.ok, status: res.status, body, fromCache: false, etag: res.headers.get('etag'), url }
       } catch (err) {
         lastError = err instanceof Error ? err.message : String(err)
@@ -301,6 +350,7 @@ export async function httpGet(url: string, options: HttpOptions = {}): Promise<H
     }
 
     recordFailure(host)
+    record(host, 0, 'networkError')
     return { ok: false, status: 0, body: lastError ?? '', fromCache: false, etag: null, url }
   } finally {
     releaseHost()
@@ -351,11 +401,34 @@ export function sleep(ms: number): Promise<void> {
 export function httpStats() {
   const open: string[] = []
   for (const [host, b] of breakers) if (b.openedAt !== null) open.push(host)
-  return { cacheEntries: cache.size, openCircuits: open, trackedHosts: breakers.size }
+
+  // Name the hosts that refused us. "23 boards blocked" is actionable only if
+  // you can say which, so the worst offenders travel with the counts.
+  const blockedHosts: { host: string; status: number; count: number }[] = []
+  for (const [host, statuses] of byHost) {
+    for (const [status, count] of statuses) {
+      if (classify(status) === 'blocked') blockedHosts.push({ host, status, count })
+    }
+  }
+  blockedHosts.sort((a, b) => b.count - a.count)
+
+  const attempted = outcomes.ok + outcomes.notFound + outcomes.blocked +
+    outcomes.serverError + outcomes.otherHttp + outcomes.networkError
+
+  return {
+    cacheEntries: cache.size,
+    openCircuits: open,
+    trackedHosts: breakers.size,
+    requests: { ...outcomes, attempted },
+    successRate: attempted > 0 ? Number((outcomes.ok / attempted).toFixed(4)) : null,
+    blockedHosts: blockedHosts.slice(0, 25),
+  }
 }
 
 export function resetHttpState() {
   cache.clear()
   breakers.clear()
   lastHostRequest.clear()
+  byHost.clear()
+  for (const k of Object.keys(outcomes)) (outcomes as any)[k] = 0
 }

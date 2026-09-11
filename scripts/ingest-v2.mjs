@@ -314,6 +314,31 @@ console.log(`Avg quality score:          ${R.avgQualityScore ?? 0}`)
 console.log()
 console.log(`Sources crawled OK:         ${R.sourcesSucceeded}`)
 console.log(`Sources failed:             ${R.sourcesFailed}`)
+
+// HTTP outcomes, reported separately from board outcomes ON PURPOSE.
+//
+// "Sources failed" counts boards whose adapter THREW. A board that answers 403
+// does not throw -- httpJson returns null, the adapter yields an empty list,
+// and the board is recorded as succeeding with 0 jobs. Without the lines below
+// a run could honestly print "0 failures" while a WAF had blocked two dozen
+// employers, which is how the headline metric became unfalsifiable.
+const H = R.http ?? {}
+if (H.requests?.attempted) {
+  const q = H.requests
+  console.log(`\nHTTP requests:              ${q.attempted.toLocaleString()}`)
+  console.log(`  2xx                       ${q.ok.toLocaleString()}  (${((H.successRate ?? 0) * 100).toFixed(1)}%)`)
+  if (q.blocked) console.log(`  blocked (401/403/429/202) ${q.blocked.toLocaleString()}`)
+  if (q.notFound) console.log(`  not found (404/410)       ${q.notFound.toLocaleString()}`)
+  if (q.serverError) console.log(`  server error (5xx)        ${q.serverError.toLocaleString()}`)
+  if (q.networkError) console.log(`  network/DNS/timeout       ${q.networkError.toLocaleString()}`)
+  if (q.otherHttp) console.log(`  other HTTP                ${q.otherHttp.toLocaleString()}`)
+  if (H.blockedHosts?.length) {
+    console.log(`\nHosts that refused us:`)
+    for (const b of H.blockedHosts.slice(0, 8)) {
+      console.log(`  ${String(b.status).padEnd(4)} ${String(b.count).padStart(4)}x  ${b.host}`)
+    }
+  }
+}
 console.log(`Avg source response:        ${R.avgSourceResponseMs} ms`)
 console.log(`Total ingestion time:       ${(R.durationMs / 1000).toFixed(1)} s`)
 

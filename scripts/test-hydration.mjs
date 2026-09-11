@@ -96,5 +96,26 @@ if (!process.argv.includes('--offline')) {
   }
 }
 
-console.log(`\n${pass} passed, ${fail} failed`)
+/* ---------------- HTTP outcome telemetry (the "0 failures" fix) ------------ */
+//
+// A board answering 403 used to be indistinguishable from an empty board:
+// httpJson returns null, the adapter yields [], and the orchestrator records
+// ok:true jobCount:0. These assert that a refusal is now counted as a refusal.
+{
+  const { httpStats, resetHttpState } = await import('../lib/sources/http.ts')
+  resetHttpState()
+  const s = httpStats()
+
+  t('httpStats exposes request outcomes', typeof s.requests === 'object', s.requests)
+  t('reset clears the counters', s.requests.attempted === 0, s.requests)
+  t('outcome buckets separate blocked from notFound',
+    'blocked' in s.requests && 'notFound' in s.requests && 'networkError' in s.requests, s.requests)
+  t('blocked hosts are nameable', Array.isArray(s.blockedHosts), s.blockedHosts)
+  // successRate must be null rather than 1.0 when nothing was attempted --
+  // "100% success" over zero requests is the same false comfort as "0 failures".
+  t('successRate is null with no requests, not 1.0', s.successRate === null, s.successRate)
+}
+
+console.log(`
+${pass} passed, ${fail} failed`)
 process.exit(fail === 0 ? 0 : 1)
