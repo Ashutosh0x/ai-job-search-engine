@@ -1,5 +1,5 @@
 import type { CanonicalJob, SourceTarget, SourceId, RawJob } from '../sources/types'
-import { getAdapter } from '../sources/registry'
+import { getAdapter, adapterForUrl } from '../sources/registry'
 import { normalizeJob, computeFreshness, detectReposts } from './normalize'
 import { deduplicate, type DedupeResult } from './dedupe'
 import { resolveAmbiguousLocations } from './resolve-locations'
@@ -270,11 +270,20 @@ export async function runIngest(options: IngestOptions): Promise<{
       .slice(0, maxJobs)
 
     await pooled(needsText, hc, async ({ job, index }) => {
-      const adapter = getAdapter(job.source, job.id.split(':')[1])
+      const url = job.canonicalUrl || job.applicationUrl
+      // Resolve the target from the posting's OWN URL rather than rebuilding it
+      // from the id. The id carries only `token`, so the old reconstruction
+      // silently dropped `host` and `site` -- and for every sharded platform
+      // (Workday above all) the detail endpoint cannot be addressed without
+      // them. That is why hydration produced nothing for ~48% of the corpus
+      // even once an adapter implemented `fetchJob`.
+      const routed = url ? adapterForUrl(url) : null
+      const token = job.id.split(':')[1]
+      const adapter = routed?.adapter ?? getAdapter(job.source, token)
       if (!adapter?.fetchJob) return
       try {
-        const target: SourceTarget = { source: job.source, token: job.id.split(':')[1] }
-        const detail = await adapter.fetchJob(target, job.sourceId)
+        const target: SourceTarget = routed?.target ?? { source: job.source, token }
+        const detail = await adapter.fetchJob(target, job.sourceId, { url })
         if (!detail) return
         // Re-normalise so visa/workplace/skills all see the new text.
         const renormalized = normalizeJob({ ...detail, target })
@@ -296,6 +305,26 @@ export async function runIngest(options: IngestOptions): Promise<{
           remote: renormalized.remote,
           skills: renormalized.skills,
           technologies: renormalized.technologies,
+          seniority: renormalized.seniority ?? jobs[index].seniority,
+
+          // FILL, never overwrite. The detail payload is richer for the fields
+          // the list endpoint omits, but it is not automatically better for the
+          // ones the list endpoint already had -- and clobbering a real value
+          // with a null from a partial detail response would be a regression
+          // dressed up as an enrichment.
+          postedAt: jobs[index].postedAt ?? renormalized.postedAt,
+          department: jobs[index].department ?? renormalized.department,
+          employmentType: jobs[index].employmentType ?? renormalized.employmentType,
+          city: jobs[index].city ?? renormalized.city,
+          state: jobs[index].state ?? renormalized.state,
+          country: jobs[index].country ?? renormalized.country,
+          locationDisplay: jobs[index].locationDisplay ?? renormalized.locationDisplay,
+        }
+        // Freshness is derived from postedAt, so it has to be recomputed for
+        // the jobs that just acquired one -- otherwise a posting hydrated to
+        // "posted 2 days ago" keeps the freshness of a job with no date.
+        if (!job.postedAt && renormalized.postedAt) {
+          jobs[index].freshnessScore = computeFreshness(jobs[index]).score
         }
         hydrated++
       } catch {

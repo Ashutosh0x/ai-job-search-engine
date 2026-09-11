@@ -31,6 +31,13 @@ export const DEFAULT_SOURCE_CONFIDENCE: Record<string, number> = {
   unknown: 0.40,
 }
 
+/** Per-posting context for a detail fetch. Not per-board -- see `SourceTarget`. */
+export interface JobDetailContext {
+  /** The posting's own public URL, when known. */
+  url?: string
+  signal?: AbortSignal
+}
+
 /** A board/tenant an adapter can crawl. */
 export interface SourceTarget {
   source: SourceId
@@ -224,8 +231,16 @@ export interface JobSource {
   /** Pull postings for one target. Must never throw: return warnings instead. */
   fetchJobs(target: SourceTarget, opts?: FetchOptions): Promise<FetchResult>
 
-  /** Fetch one posting, used for closed-job verification. */
-  fetchJob?(target: SourceTarget, id: string): Promise<RawJob | null>
+  /**
+   * Fetch one posting, for description hydration and closed-job verification.
+   *
+   * `ctx.url` carries the posting's own public URL. Some platforms address a
+   * posting by an opaque id (SmartRecruiters) and need only `id`; others key
+   * the detail endpoint off the posting's path (Workday), which cannot be
+   * derived from the id at all. Passing the URL lets both work through one
+   * signature instead of forcing the caller to special-case a platform.
+   */
+  fetchJob?(target: SourceTarget, id: string, ctx?: JobDetailContext): Promise<RawJob | null>
 
   /** Is the platform reachable right now? */
   healthCheck(): Promise<HealthStatus>

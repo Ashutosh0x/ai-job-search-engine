@@ -25,6 +25,7 @@ const HERE = dirname(fileURLToPath(import.meta.url))
 
 const SUITES = [
   'test-location.mjs',
+  'test-hydration.mjs',
   'test-backfill.mjs',
   'test-sponsors.mjs',
   'test-ssrf-guard.mjs',

@@ -35,6 +35,13 @@ export interface IndexedJob {
   isRemote: boolean
   descriptionText: string
   postedAt: string | null
+  /**
+   * When this pipeline first observed the posting -- not when the employer
+   * published it. Optional because indexes built before incremental delivery
+   * do not carry it; `/api/jobs/delta` detects that and says so rather than
+   * returning an empty delta.
+   */
+  firstSeenAt?: string
   applyUrl: string
   salaryMin: number | null
   salaryMax: number | null

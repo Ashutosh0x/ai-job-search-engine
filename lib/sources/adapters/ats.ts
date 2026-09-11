@@ -1,5 +1,5 @@
 import { BaseAdapter } from './base'
-import type { FetchOptions, FetchResult, RawJob, SourceId, SourceTarget } from '../types'
+import type { FetchOptions, FetchResult, JobDetailContext, RawJob, SourceId, SourceTarget } from '../types'
 import { toIso } from '../types'
 
 /**
@@ -396,6 +396,77 @@ export class WorkdayAdapter extends BaseAdapter {
     }
 
     return { jobs: all, incremental: false, warnings }
+  }
+
+  /**
+   * Fetch one posting's detail.
+   *
+   * THIS IS THE SINGLE HIGHEST-VALUE FETCH IN THE PIPELINE. Workday is ~48% of
+   * the corpus and its LIST endpoint returns no description, no posted date and
+   * no structured country -- so without this, half of everything we index is a
+   * title and a location, and every downstream classifier (visa, workplace,
+   * skills, seniority) is guessing from a title. Measured before this existed:
+   * Workday postings had 0% descriptions and 0% posted dates.
+   *
+   * The detail endpoint mirrors the list endpoint:
+   *   list   https://{host}/wday/cxs/{tenant}/{site}/jobs
+   *   detail https://{host}/wday/cxs/{tenant}/{site}{externalPath}
+   *
+   * `externalPath` is NOT derivable from the requisition id we use as
+   * `sourceId` -- it encodes the location and an older title slug. It is
+   * recoverable from the posting's own URL, which is why `ctx.url` exists.
+   */
+  async fetchJob(
+    target: SourceTarget,
+    id: string,
+    ctx: JobDetailContext = {}
+  ): Promise<RawJob | null> {
+    const source = ctx.url || id
+    let host: string, site: string, path: string
+    try {
+      const u = new URL(source)
+      host = u.host
+      const seg = u.pathname.split('/').filter(Boolean)
+      // /{site}/job/{location}/{slug} -- and sometimes a leading locale.
+      const start = /^[a-z]{2}-[A-Z]{2}$/.test(seg[0] ?? '') ? 1 : 0
+      site = seg[start]
+      path = '/' + seg.slice(start + 1).join('/')
+      if (!site || path === '/') return null
+    } catch {
+      return null
+    }
+
+    const tenant = target.token || host.split('.')[0]
+    const url = `https://${host}/wday/cxs/${encodeURIComponent(tenant)}/${encodeURIComponent(site)}${path}`
+
+    const d = await this.json<any>(url, { cacheTtlMs: this.ttl.jobDetail, retries: 1 })
+    const info = d?.jobPostingInfo
+    if (!info) return null
+
+    return {
+      source: this.id,
+      target,
+      sourceId: id,
+      requisitionId: info.jobRequisitionId ? String(info.jobRequisitionId) : id,
+      title: String(info.title ?? '').trim(),
+      company: target.companyName ?? null,
+      companyDomain: target.companyDomain ?? null,
+      // The detail payload carries a STRUCTURED country, which is how a bare
+      // street address ("15 Tran Bach Dang An Khanh Ward") becomes searchable.
+      locationRaw: [info.location, info.country?.descriptor].filter(Boolean).join(', ') || null,
+      additionalLocations: Array.isArray(info.additionalLocations) ? info.additionalLocations : [],
+      descriptionHtml: info.jobDescription ?? null,
+      department: info.jobFamily ?? null,
+      employmentType: info.timeType ?? null,
+      remoteFlag: info.remoteType ? /remote/i.test(String(info.remoteType)) : null,
+      // `startDate` is an absolute date. `postedOn` next to it is relative prose
+      // ("Posted 2 Days Ago") and is deliberately ignored.
+      postedAt: toIso(info.startDate),
+      updatedAt: toIso(info.startDate),
+      applicationUrl: source,
+      canonicalUrl: source,
+      extra: { country: info.country?.descriptor ?? null },
+    }
   }
 }
 

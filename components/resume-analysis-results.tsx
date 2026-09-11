@@ -264,20 +264,25 @@ export default function ResumeAnalysisResults({ isAnalyzing, onExportPDF, onRean
                 </div>
                 <Progress value={keywordMatch} className="h-2" />
               </div>
-              <div>
-                <div className="flex justify-between text-sm mb-2">
-                  <span className="text-gray-600 dark:text-gray-400">Format Score</span>
-                  <span className="font-medium text-gray-900 dark:text-white">85%</span>
+              {/*
+                "Format Score: 85%" and "Content Quality: 72%" used to live here
+                as literal constants -- <Progress value={85} /> -- so every
+                resume scored identically forever. They are removed rather than
+                re-pointed at a variable, because nothing in the pipeline
+                computes either quantity yet. A metric is added back when
+                something measures it; see docs/resume-intelligence-audit.md §3.2
+                for what replaces "Format Score" (the extraction itself, which
+                the user can actually check).
+              */}
+              {sections.map((s) => (
+                <div key={s.name}>
+                  <div className="flex justify-between text-sm mb-2">
+                    <span className="text-gray-600 dark:text-gray-400">{s.name}</span>
+                    <span className="font-medium text-gray-900 dark:text-white">{s.score}%</span>
+                  </div>
+                  <Progress value={s.score} className="h-2" />
                 </div>
-                <Progress value={85} className="h-2" />
-              </div>
-              <div>
-                <div className="flex justify-between text-sm mb-2">
-                  <span className="text-gray-600 dark:text-gray-400">Content Quality</span>
-                  <span className="font-medium text-gray-900 dark:text-white">72%</span>
-                </div>
-                <Progress value={72} className="h-2" />
-              </div>
+              ))}
             </div>
 
             {/* Quick Stats */}

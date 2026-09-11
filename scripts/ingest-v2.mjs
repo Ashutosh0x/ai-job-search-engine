@@ -217,6 +217,12 @@ const slim = jobs.map((j) => ({
   salaryMin: j.salaryMin, salaryMax: j.salaryMax, salaryCurrency: j.salaryCurrency,
   skills: j.skills,
   postedAt: j.postedAt, freshnessScore: j.freshnessScore,
+  // When WE first saw it, which is not when the employer posted it. This is the
+  // cursor a polling client needs: `postedAt` is often null (Workday) or
+  // backdated, so paging on it would silently skip postings. It is also the
+  // honest basis for an "early applicant" signal -- we can say when a posting
+  // entered our index, never how many people have applied.
+  firstSeenAt: j.firstSeenAt,
   applicationUrl: j.applicationUrl, isDirectApplication: j.isDirectApplication,
   visaStatus: j.visaStatus, visaTypes: j.visaTypes,
   // One quoted line is what the UI shows; the rest is archive.
