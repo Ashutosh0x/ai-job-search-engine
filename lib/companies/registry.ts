@@ -219,9 +219,18 @@ export const COMPANIES: CompanyRecord[] = [
     boards: [{ provider: 'workday', token: 'philips', site: 'jobs-and-careers', host: 'philips.wd3.myworkdayjobs.com' }] },
   // Dell runs Oracle Recruiting Cloud, not Workday -- found by following
   // jobs.dell.com, which 302s to enterpriseplatform.dell.com/hcmUI/...
+  //
+  // The token was `CX_1`, which Oracle's own entry also uses on a different
+  // host. Board keys (`source|token`) and job ids (`source:token:sourceId`)
+  // carry no host, so the two employers shared a merge key and would have filed
+  // roles under each other outright had a requisition number ever repeated --
+  // 467 and 2,170 postings that happened not to overlap. Now `careers`, which
+  // is the site name jobs.dell.com itself redirects to. Safe to change because
+  // this tenant ignores `siteNumber` entirely: CX_1, CX_2, CX_1001 and DELL all
+  // return the identical 468 requisitions.
   { slug: 'dell', name: 'Dell Technologies', domain: 'dell.com', ticker: 'DELL', valuationKind: 'public',
     industry: 'Computing Hardware', hqLocation: 'Round Rock, TX', foundedYear: 1984,
-    boards: [{ provider: 'custom', token: 'CX_1', host: 'enterpriseplatform.dell.com' }] },
+    boards: [{ provider: 'custom', token: 'careers', host: 'enterpriseplatform.dell.com' }] },
   { slug: 'servicenow', name: 'ServiceNow', domain: 'servicenow.com', ticker: 'NOW', valuationKind: 'public',
     industry: 'Enterprise Software', hqLocation: 'Santa Clara, CA', foundedYear: 2004,
     boards: [{ provider: 'smartrecruiters', token: 'servicenow' }] },
@@ -829,8 +838,6 @@ export const COMPANIES: CompanyRecord[] = [
     boards: [{ provider: 'greenhouse', token: 'divergent' }] },
   { slug: 'beam-ai', name: "Beam", domain: 'beam.ai', valuationKind: 'unknown', industry: "AI Agents / Automation",
     boards: [{ provider: 'greenhouse', token: 'beam' }] },
-  { slug: 'sierra-ai', name: "Sierra AI", domain: 'sierra.ai', valuationKind: 'unknown', industry: "AI Agents / Customer Service",
-    boards: [{ provider: 'ashby', token: 'sierra' }] },
   { slug: 'tenstorrent', name: "Tenstorrent", domain: 'tenstorrent.com', valuationKind: 'unknown', industry: "AI Chips",
     boards: [{ provider: 'greenhouse', token: 'tenstorrent' }] },
   { slug: 'cerebras', name: "Cerebras", domain: 'cerebras.ai', valuationKind: 'unknown', industry: "AI Chips",

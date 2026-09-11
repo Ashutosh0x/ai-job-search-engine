@@ -100,5 +100,55 @@ const rawFor = (c) => ({
   t('registry slugs are unique', dupes.length === 0, dupes)
 }
 
+/* ------------------------- one employer, one entry ------------------------ */
+//
+// Unique slugs are not enough. A bulk import renamed "Sierra AI" to `sierra-ai`
+// to dodge a collision with the existing `sierra` slug -- and so created a
+// SECOND entry for the same company: same domain, same Ashby board. The slug
+// check passed, the duplicate crawled nothing (the first entry already owned
+// the board), and it showed up only as an employer with zero jobs.
+{
+  const byDomain = new Map()
+  for (const c of COMPANIES) {
+    const d = c.domain.toLowerCase()
+    if (!byDomain.has(d)) byDomain.set(d, [])
+    byDomain.get(d).push(c.slug)
+  }
+  const shared = [...byDomain].filter(([, slugs]) => slugs.length > 1)
+  t('no two entries claim the same domain', shared.length === 0,
+    shared.map(([d, s]) => `${d}: ${s.join(', ')}`))
+}
+
+/* ---------------------- board keys must identify a board ------------------ */
+//
+// `boardKeyOf` in lib/pipeline/merge.ts is `source|token`, and a job id is
+// `source:token:sourceId`. Neither carries the host. So two employers sharing a
+// provider+token on DIFFERENT hosts share a merge key, and their job ids
+// collide outright if a requisition number ever repeats across them.
+//
+// Dell and Oracle are both `custom` + `CX_1` on different Oracle Recruiting
+// hosts. Measured today: 467 and 2,170 postings, zero id collisions -- their
+// requisition numbers happen not to overlap. That is luck, not a guarantee, and
+// the failure would be silent: one employer's roles filed under the other.
+//
+// Same-host repeats are fine and expected (Lloyds runs two Workday sites on one
+// tenant), which is why this only flags differing hosts.
+{
+  const byKey = new Map()
+  for (const c of COMPANIES) {
+    for (const b of c.boards) {
+      const key = `${b.provider}|${b.token}`
+      if (!byKey.has(key)) byKey.set(key, [])
+      byKey.get(key).push({ slug: c.slug, host: b.host ?? '' })
+    }
+  }
+  const collisions = [...byKey].filter(([, rows]) =>
+    rows.length > 1 && new Set(rows.map((r) => r.host)).size > 1
+  )
+  t('no provider+token is shared across different hosts',
+    collisions.length === 0,
+    collisions.map(([k, rows]) => `${k}: ${rows.map((r) => `${r.slug}@${r.host}`).join(' vs ')}`))
+}
+
 console.log(`\n${pass} passed, ${fail} failed`)
 process.exit(fail === 0 ? 0 : 1)

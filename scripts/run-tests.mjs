@@ -39,6 +39,7 @@ const SUITES = [
   'test-visa.mjs',
   'test-quality.mjs',
   'test-dedupe.mjs',
+  'test-deploy-index.mjs',
   'test-rank.mjs',
   'test-workplace.mjs',
   'test-skills.mjs',

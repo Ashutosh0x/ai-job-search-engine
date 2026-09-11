@@ -45,7 +45,7 @@
  *      resetting it on every refresh would make every job look new forever.
  */
 
-import { readFileSync, writeFileSync, existsSync, mkdirSync, openSync, writeSync, closeSync, renameSync } from 'fs'
+import { readFileSync, writeFileSync, existsSync, mkdirSync, openSync, writeSync, closeSync, renameSync, unlinkSync } from 'fs'
 import { dirname, resolve } from 'path'
 
 const { runIngest } = await import('../lib/pipeline/orchestrator.ts')
@@ -122,6 +122,57 @@ function writeJsonStream(path, head, arrayKey, rows) {
     closeSync(fd)
   }
   renameSync(tmp, path)
+}
+
+/* ----------------------------- concurrency lock ---------------------------- */
+//
+// Two refreshes running at once silently destroy each other's work, and this
+// actually happened. A `--tier all` pass was launched, interrupted in the
+// terminal, and kept running as a detached process. It had loaded the index at
+// 18:54Z. Meanwhile a warm pass ran to completion and added Trip.com's 216
+// postings. At 19:13:52Z the older process finished and wrote ITS snapshot --
+// which predated Trip.com -- over the top.
+//
+// Nothing reported an error. The corpus simply came back without an employer
+// that had been crawled, verified and written half an hour earlier.
+//
+// This is a lost update, and the read-modify-write shape makes it inevitable
+// without a lock: every refresh reads the whole index, works for up to twenty
+// minutes, then replaces the file wholesale. The atomic temp+rename that makes
+// each write safe on its own is exactly what makes the loser's write vanish
+// cleanly.
+//
+// The lock records the pid so a crashed run cannot wedge the pipeline forever.
+const LOCK = '.refresh.lock'
+
+function acquireLock() {
+  if (existsSync(LOCK)) {
+    let held = null
+    try { held = JSON.parse(readFileSync(LOCK, 'utf8')) } catch { /* unreadable -> stale */ }
+    if (held?.pid && isRunning(held.pid)) {
+      console.error(
+        `Another refresh is already running (pid ${held.pid}, tier ${held.tier}, ` +
+        `started ${held.at}).\n` +
+        `Refreshes rewrite the whole index, so running two loses one of them. ` +
+        `Wait for it, or kill that pid and delete ${LOCK}.`
+      )
+      process.exit(1)
+    }
+    console.warn(`Removing a stale ${LOCK} (pid ${held?.pid ?? '?'} is not running).`)
+  }
+  writeFileSync(LOCK, JSON.stringify({ pid: process.pid, tier: TIER, at: new Date().toISOString() }))
+  const release = () => { try { unlinkSync(LOCK) } catch { /* already gone */ } }
+  process.on('exit', release)
+  // Ctrl-C and terminal interrupts must release too, or the next run has to
+  // clear a lock by hand -- the failure mode that makes people delete locks
+  // reflexively, which defeats the point.
+  for (const sig of ['SIGINT', 'SIGTERM', 'SIGHUP']) {
+    process.on(sig, () => { release(); process.exit(130) })
+  }
+}
+
+function isRunning(pid) {
+  try { process.kill(pid, 0); return true } catch (e) { return e.code === 'EPERM' }
 }
 
 /* --------------------------------- one pass -------------------------------- */
@@ -291,6 +342,10 @@ async function refreshOnce() {
 }
 
 /* ----------------------------------- run ----------------------------------- */
+
+// Held for the whole process, loop mode included: the point is that only one
+// refresh writes the index at a time.
+if (!dryRun) acquireLock()
 
 if (loopSeconds > 0) {
   console.log(`refreshing tier=${TIER} every ${loopSeconds}s. Ctrl-C to stop.\n`)

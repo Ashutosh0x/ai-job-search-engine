@@ -36,9 +36,15 @@ next-env.d.ts
 # because the CLI uploads local files. The deploy that worked and the deploy
 # that shipped were built from different file sets.
 #
-# 28MB is well under GitHub's 50MB warning and 100MB hard limit, and committing
-# it makes a deployment reproducible from the repository alone.
+# Committing it makes a deployment reproducible from the repository alone.
+#
+# It outgrew GitHub's 100 MiB hard limit once curated employers began being
+# served complete (84MB and rising), so it is now written as shards. The second
+# negation is not optional: without it the shards are ignored, the primary file
+# deploys alone, and the site serves the first 60MB of the index while looking
+# perfectly healthy.
 !/public/data/jobs-deploy.json
+!/public/data/jobs-deploy.*.json
 /.ingest-state.json
 /public/data/ibm-jobs.json
 
@@ -46,3 +52,6 @@ next-env.d.ts
 
 # Crawl logs are working files, not deliverables.
 *.log
+
+# Refresh concurrency lock (pid file, never committed).
+.refresh.lock

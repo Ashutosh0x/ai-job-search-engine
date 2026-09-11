@@ -168,7 +168,37 @@ async function readIndexFile(file: string): Promise<any | null> {
     )
     return null
   }
-  return JSON.parse(await readFile(file, 'utf8'))
+  const parsed = JSON.parse(await readFile(file, 'utf8'))
+
+  // The deploy index is delivered through git, and GitHub hard-rejects blobs
+  // over 100 MiB, so it is written as shards -- the primary file naming the
+  // rest. Reading only the primary would serve a fraction of the index and look
+  // entirely healthy doing it, which is the failure mode this codebase keeps
+  // running into. So a named shard that cannot be read is LOUD.
+  if (Array.isArray(parsed?.shards) && parsed.shards.length) {
+    for (const name of parsed.shards) {
+      const shardFile = dataPath(String(name))
+      try {
+        const shard = JSON.parse(await readFile(shardFile, 'utf8'))
+        if (!Array.isArray(shard?.jobs)) throw new Error('shard has no jobs array')
+        parsed.jobs.push(...shard.jobs)
+      } catch (err) {
+        console.error(
+          `[job-index] ${file} names shard "${name}" but it could not be read ` +
+            `(${(err as Error).message}). Serving a PARTIAL index: ` +
+            `${parsed.jobs.length} jobs loaded of an expected ${parsed.jobCount ?? '?'}.`
+        )
+      }
+    }
+    if (typeof parsed.jobCount === 'number' && parsed.jobs.length !== parsed.jobCount) {
+      console.error(
+        `[job-index] shard total mismatch: loaded ${parsed.jobs.length}, ` +
+          `header says ${parsed.jobCount}.`
+      )
+    }
+  }
+
+  return parsed
 }
 
 async function loadV2(): Promise<Snapshot | null> {
