@@ -207,6 +207,59 @@ export const COMPANIES: CompanyRecord[] = [
     industry: 'AI Cloud Infrastructure', hqLocation: 'San Francisco, CA', foundedYear: 2022,
     boards: [{ provider: 'greenhouse', token: 'togetherai' }] },
 
+  // ---- Global enterprise, verified live 11 Sep 2026 via scripts/bulk-probe --
+  // Each token below answered with live postings before being written down.
+  // The ones that took two attempts are noted, because the obvious guess being
+  // wrong is the normal case, not the exception.
+  { slug: 'hp', name: 'HP', domain: 'hp.com', ticker: 'HPQ', valuationKind: 'public',
+    industry: 'Computing Hardware', hqLocation: 'Palo Alto, CA', foundedYear: 1939,
+    boards: [{ provider: 'workday', token: 'hp', site: 'ExternalCareerSite', host: 'hp.wd5.myworkdayjobs.com' }] },
+  { slug: 'philips', name: 'Philips', domain: 'philips.com', ticker: 'PHG', valuationKind: 'public',
+    industry: 'Health Technology', hqLocation: 'Amsterdam, Netherlands', foundedYear: 1891,
+    boards: [{ provider: 'workday', token: 'philips', site: 'jobs-and-careers', host: 'philips.wd3.myworkdayjobs.com' }] },
+  // Dell runs Oracle Recruiting Cloud, not Workday -- found by following
+  // jobs.dell.com, which 302s to enterpriseplatform.dell.com/hcmUI/...
+  { slug: 'dell', name: 'Dell Technologies', domain: 'dell.com', ticker: 'DELL', valuationKind: 'public',
+    industry: 'Computing Hardware', hqLocation: 'Round Rock, TX', foundedYear: 1984,
+    boards: [{ provider: 'custom', token: 'CX_1', host: 'enterpriseplatform.dell.com' }] },
+  { slug: 'servicenow', name: 'ServiceNow', domain: 'servicenow.com', ticker: 'NOW', valuationKind: 'public',
+    industry: 'Enterprise Software', hqLocation: 'Santa Clara, CA', foundedYear: 2004,
+    boards: [{ provider: 'smartrecruiters', token: 'servicenow' }] },
+  // SmartRecruiters tokens are case-sensitive: `BoschGroup` answers, the
+  // lowercase `bosch-group` in an older discovered-boards entry does not.
+  { slug: 'bosch', name: 'Bosch', domain: 'bosch.com', valuationKind: 'unknown',
+    industry: 'Industrial Engineering', hqLocation: 'Gerlingen, Germany', foundedYear: 1886,
+    boards: [{ provider: 'smartrecruiters', token: 'BoschGroup' }] },
+  { slug: 'datadog', name: 'Datadog', domain: 'datadoghq.com', ticker: 'DDOG', valuationKind: 'public',
+    industry: 'Observability', hqLocation: 'New York, NY', foundedYear: 2010,
+    boards: [{ provider: 'greenhouse', token: 'datadog' }] },
+  { slug: 'spacex', name: 'SpaceX', domain: 'spacex.com', valuationKind: 'private',
+    reportedValuationUsd: 400_000_000_000, valuationAsOf: '2025-12-01',
+    valuationSource: 'Reported tender offer, Dec 2025',
+    industry: 'Aerospace', hqLocation: 'Hawthorne, CA', foundedYear: 2002,
+    boards: [{ provider: 'greenhouse', token: 'spacex' }] },
+  // Workday site names are not always words: Citi's is the literal "2".
+  { slug: 'citi', name: 'Citi', domain: 'citi.com', ticker: 'C', valuationKind: 'public',
+    industry: 'Banking', hqLocation: 'New York, NY', foundedYear: 1812,
+    boards: [{ provider: 'workday', token: 'citi', site: '2', host: 'citi.wd5.myworkdayjobs.com' }] },
+  // wd103 -- shard numbers go well beyond the wd1/wd3/wd5 most tenants use, so
+  // a sweep that only tries the common ones misses employers this large.
+  { slug: 'accenture', name: 'Accenture', domain: 'accenture.com', ticker: 'ACN', valuationKind: 'public',
+    industry: 'Consulting', hqLocation: 'Dublin, Ireland', foundedYear: 1989,
+    boards: [{ provider: 'workday', token: 'accenture', site: 'AccentureCareers', host: 'accenture.wd103.myworkdayjobs.com' }] },
+  { slug: 'micron', name: 'Micron Technology', domain: 'micron.com', ticker: 'MU', valuationKind: 'public',
+    industry: 'Semiconductors', hqLocation: 'Boise, ID', foundedYear: 1978,
+    boards: [{ provider: 'workday', token: 'micron', site: 'External', host: 'micron.wd1.myworkdayjobs.com' }] },
+  { slug: 'applied-materials', name: 'Applied Materials', domain: 'appliedmaterials.com', ticker: 'AMAT', valuationKind: 'public',
+    industry: 'Semiconductor Equipment', hqLocation: 'Santa Clara, CA', foundedYear: 1967,
+    boards: [{ provider: 'workday', token: 'amat', site: 'External', host: 'amat.wd1.myworkdayjobs.com' }] },
+  { slug: 'target', name: 'Target', domain: 'target.com', ticker: 'TGT', valuationKind: 'public',
+    industry: 'Retail', hqLocation: 'Minneapolis, MN', foundedYear: 1902,
+    boards: [{ provider: 'workday', token: 'target', site: 'targetcareers', host: 'target.wd5.myworkdayjobs.com' }] },
+  { slug: 'boeing', name: 'Boeing', domain: 'boeing.com', ticker: 'BA', valuationKind: 'public',
+    industry: 'Aerospace & Defense', hqLocation: 'Arlington, VA', foundedYear: 1916,
+    boards: [{ provider: 'workday', token: 'boeing', site: 'EXTERNAL_CAREERS', host: 'boeing.wd1.myworkdayjobs.com' }] },
+
   { slug: 'stripe', name: 'Stripe', domain: 'stripe.com', valuationKind: 'private',
     reportedValuationUsd: 106_500_000_000, valuationAsOf: '2025-02-27',
     valuationSource: 'Tender offer, Feb 2025',

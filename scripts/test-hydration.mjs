@@ -49,6 +49,25 @@ const WD_URL =
   t('Workday adapter exposes fetchJob', typeof a?.fetchJob === 'function')
 }
 
+/* --- 3b. Oracle Recruiting routing by site-number token -------------------- */
+//
+// Large ORC tenants front the product on their OWN domain -- Dell on
+// enterpriseplatform.dell.com, Honeywell on careers.honeywell.com -- so routing
+// on *.oraclecloud.com alone sends them to the generic custom adapter, which
+// cannot read an ORC API. Dell silently ingested 0 jobs because of this.
+{
+  const vendorHost = getAdapter('custom', 'CX_1', 'eeho.fa.us2.oraclecloud.com')
+  t('ORC routes on the vendor host', vendorHost?.displayName === 'Oracle Recruiting Cloud', vendorHost?.displayName)
+
+  const ownDomain = getAdapter('custom', 'CX_1', 'enterpriseplatform.dell.com')
+  t('ORC routes on a CX_<n> token even on the employer\'s own domain',
+    ownDomain?.displayName === 'Oracle Recruiting Cloud', ownDomain?.displayName)
+
+  // The token shape must stay distinctive -- Amazon also rides `custom`.
+  const amazon = getAdapter('custom', 'amazon')
+  t('the ORC token rule does not capture Amazon', amazon?.displayName === 'Amazon Jobs', amazon?.displayName)
+}
+
 /* --- 4. a non-Workday URL must not be claimed by Workday ------------------- */
 {
   const r = adapterForUrl('https://boards.greenhouse.io/doordashusa/jobs/1234567')

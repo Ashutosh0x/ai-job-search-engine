@@ -41,9 +41,19 @@ const ORACLE_RECRUITING = new OracleRecruitingAdapter()
  */
 export function getAdapter(id: SourceId, token?: string, host?: string): JobSource | null {
   if (id === 'custom' && token === 'amazon') return AMAZON
-  // Oracle Recruiting Cloud also rides the `custom` id, routed by its host --
-  // the token is a site number (CX_1), which is not distinctive on its own.
+  // Oracle Recruiting Cloud rides the `custom` id. Route on EITHER the vendor
+  // host or the site-number token shape.
+  //
+  // Host alone is not enough: large tenants front ORC on their own domain --
+  // Dell serves it from enterpriseplatform.dell.com and Honeywell from
+  // careers.honeywell.com, neither of which matches *.oraclecloud.com. Dell
+  // silently returned 0 jobs because of exactly that, falling through to the
+  // generic custom adapter which cannot read an ORC API.
+  //
+  // `CX_<n>` is the ORC site-number convention and is distinctive enough to
+  // route on: nothing else in this registry uses a token of that shape.
   if (id === 'custom' && host && /oraclecloud\.com$/i.test(host)) return ORACLE_RECRUITING
+  if (id === 'custom' && token && /^CX_\d+$/i.test(token)) return ORACLE_RECRUITING
   return BY_ID.get(id) ?? null
 }
 
