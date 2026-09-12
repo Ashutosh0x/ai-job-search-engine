@@ -26,10 +26,18 @@
  * existence. The report prints how many boards answered so the denominator is
  * visible rather than implied.
  *
- * Google dorking is deliberately not used: Google's ToS forbids automated
+ * ON SEARCH ENGINES
+ * -----------------
+ * Board ENUMERATION does not go through Google: its ToS forbids automated
  * querying, SERP scraping gets blocked, and Search returns a ranked sample
- * rather than an enumeration. Common Crawl is the open, complete-by-design
- * index built for this, and it is what the board list comes from.
+ * rather than a set. Common Crawl is the open, complete-by-design index built
+ * for this, and it is where the board list comes from.
+ *
+ * A search engine is still the right tool for the other half of the problem --
+ * learning which ATS PLATFORMS exist in a market. That is a handful of
+ * questions, not an enumeration. Pinpoint, Jobtrain and Eploy were found that
+ * way when hunting UK roles: no amount of crawling tells you to look for a
+ * platform you have never heard of.
  */
 import { readFileSync, writeFileSync, existsSync } from 'fs'
 
@@ -47,10 +55,27 @@ const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
 
 /* ------------------------------- matching --------------------------------- */
 
-/** Titles that make something a recruiting role. */
-const TITLE_RE = /recruit|talent acquisition|talent partner|talent scout|sourcer|sourcing specialist|headhunt|selecci[oó]n de personal|reclutad|reclutamiento/i
+/**
+ * Named title sets, so the hunt is not hardcoded to one kind of role.
+ *   --role recruiting   (default)   --role tech   --role all
+ *   --title "<regex>"   for anything else
+ */
+const ROLES = {
+  recruiting: /recruit|talent acquisition|talent partner|talent scout|sourcer|sourcing specialist|headhunt|selecci[oó]n de personal|reclutad|reclutamiento/i,
+  tech: /\b(software|developer|engineer|engineering|programmer|devops|sre|data (scientist|engineer|analyst)|machine learning|\bml\b|\bai\b|backend|back-end|frontend|front-end|full.?stack|platform|infrastructure|cloud|security|qa|test automation|mobile|ios|android|architect|technical lead|cto)\b/i,
+  all: /./,
+}
+const ROLE = val('role', 'recruiting')
+const TITLE_RE = args.includes('--title')
+  ? new RegExp(val('title', '.'), 'i')
+  : (ROLES[ROLE] ?? ROLES.recruiting)
 
-/** The narrower ask: TECHNICAL recruiting. */
+if (!args.includes('--title') && !ROLES[ROLE]) {
+  console.error(`unknown --role "${ROLE}". Use: ${Object.keys(ROLES).join(', ')}, or --title "<regex>"`)
+  process.exit(1)
+}
+
+/** Flags the narrower subset within the matched set (e.g. TECHNICAL recruiting). */
 const TECHNICAL_RE = /\b(technical|technology|tech|engineering|engineer|it|software|developer|dev|r&d|digital|product)\b/i
 
 /**
@@ -68,7 +93,33 @@ const PLACES = {
     country: 'AR',
     terms: ['Argentina', 'Buenos Aires'],
   },
+  /**
+   * The UK is the hard case, because its biggest city names are not its own.
+   * London is also in Ontario. Cambridge is also in Massachusetts. Birmingham
+   * is in Alabama, Manchester in New Hampshire, Newcastle in Australia.
+   * Matching bare city names would file American roles under the UK; matching
+   * only "United Kingdom" would miss the many boards that write "London" and
+   * stop.
+   *
+   * So: an explicit UK marker always counts, and a UK city counts UNLESS the
+   * same string also carries a non-UK region marker (a US state code or name,
+   * a Canadian province, or another country). "London, UK" and "London" pass;
+   * "London, ON" and "Cambridge, MA" do not.
+   */
+  uk: {
+    // `wales` needs the lookbehind: "Sydney, New South Wales, Australia"
+    // contains it, and without this guard 43 Australian roles were filed under
+    // the UK. Same trap as the city names below, one level down in the string.
+    strict: /united kingdom|\bu\.?k\.?\b|\bgreat britain\b|england|scotland|(?<!new south )\bwales\b|northern ireland/i,
+    cities: /\b(london|manchester|birmingham|edinburgh|glasgow|leeds|bristol|cambridge|oxford|sheffield|liverpool|newcastle|nottingham|cardiff|belfast|brighton|reading|leicester|coventry|southampton|aberdeen|milton keynes|basingstoke|slough|watford|croydon|guildford)\b/i,
+    notUk: /\b(ontario|\bon\b|canada|\bca\b|usa|united states|australia|new zealand|south africa|jamaica|alabama|\bal\b|massachusetts|\bma\b|new hampshire|\bnh\b|kentucky|\bky\b|ohio|\boh\b|michigan|\bmi\b|texas|\btx\b|connecticut|\bct\b|new jersey|\bnj\b|pennsylvania|\bpa\b|virginia|\bva\b|maryland|\bmd\b|tennessee|\btn\b|nsw|victoria|queensland)\b/i,
+    country: 'GB',
+    terms: ['United Kingdom', 'London'],
+  },
+  'united kingdom': null, // filled in below as an alias for `uk`
 }
+PLACES['united kingdom'] = PLACES.uk
+PLACES.britain = PLACES.uk
 const P = PLACES[PLACE.toLowerCase()] ?? {
   re: new RegExp(PLACE.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'),
   strict: new RegExp(PLACE.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'),
@@ -86,8 +137,14 @@ const inPlace = (loc) => {
   const s = String(loc || '')
   if (!s.trim()) return false
   if (P.strict.test(s)) return true
-  // Country-code forms, only as a standalone token in a location string.
-  return /(^|[\s,|/(])(ar|arg)([\s,|/)]|$)/i.test(s)
+  // A city that names the place, but only when nothing else in the string
+  // says it is somewhere else (see the UK entry for why).
+  if (P.cities && P.cities.test(s)) return !(P.notUk && P.notUk.test(s))
+  if (P.country === 'AR') {
+    // Country-code forms, only as a standalone token in a location string.
+    return /(^|[\s,|/(])(ar|arg)([\s,|/)]|$)/i.test(s)
+  }
+  return false
 }
 
 /* -------------------------------- plumbing -------------------------------- */
@@ -458,6 +515,30 @@ const SOURCES = {
     }, 'breezy')
   },
 
+  /* ---- per-board: Pinpoint ----
+   * A UK-founded ATS, so it carries British employers that never appear on the
+   * US-centric platforms. /postings.json is public; /api/v1/jobs needs a key.
+   */
+  async pinpoint() {
+    const list = byProvider('pinpoint')
+    return pool(list, async (b) => {
+      const host = b.host || `${b.token}.pinpointhq.com`
+      const d = await req(`https://${host}/postings.json`)
+      if (!d || typeof d !== 'object') return d
+      for (const j of d.data || []) {
+        if (!TITLE_RE.test(j.title || '')) continue
+        const loc = [j.location?.name, j.location?.city, j.location?.region, j.location?.country]
+          .filter(Boolean).join(', ') || j.workplace_type || ''
+        if (!inPlace(loc)) continue
+        record({
+          title: j.title, company: d.organisation?.name || b.token, location: loc,
+          source: 'pinpoint', url: j.url || `https://${host}/jobs/${j.id}`, posted: j.created_at || j.published_at,
+        })
+      }
+      return d
+    }, 'pinpoint')
+  },
+
   /* ---- per-tenant: Workday ---- */
   async workday() {
     const list = byProvider('workday').filter((b) => b.host && b.token && b.site)
@@ -500,10 +581,11 @@ const SOURCES = {
 
 /* --------------------------------- run ------------------------------------ */
 
-const order = ['workableGlobal', 'getonbrd', 'remoteBoards', 'greenhouse', 'lever', 'ashby', 'smartrecruiters', 'recruitee', 'teamtailor', 'breezy', 'workableBoards', 'workday']
+const order = ['workableGlobal', 'getonbrd', 'remoteBoards', 'greenhouse', 'lever', 'ashby', 'smartrecruiters', 'recruitee', 'teamtailor', 'breezy', 'pinpoint', 'workableBoards', 'workday']
 const chosen = ONLY ? ONLY.split(',').map((s) => s.trim()) : order
 
-console.log(`hunting recruiting roles in ${PLACE}`)
+const LABEL = args.includes('--title') ? `roles matching /${val('title', '.')}/` : `${ROLE} roles`
+console.log(`hunting ${LABEL} in ${PLACE}`)
 console.log(`board list: ${boards.length} boards across ${new Set(boards.map((b) => b.provider)).size} providers\n`)
 
 for (const name of chosen) {
@@ -523,7 +605,7 @@ const uniq = results.sort((a, b) => Number(b.technical) - Number(a.technical) ||
 const technical = uniq.filter((r) => r.technical)
 
 const lines = []
-lines.push(`# recruiting roles -- ${PLACE}`)
+lines.push(`# ${LABEL} -- ${PLACE}`)
 lines.push(`# generated ${new Date().toISOString()}`)
 lines.push('#')
 lines.push('# COVERAGE')
@@ -551,7 +633,7 @@ lines.push('# come from the Common Crawl URL index -- not every board that exist
 lines.push('# Lever is the known hole: jobs.lever.co/robots.txt blocks Common Crawl, so')
 lines.push('# only the boards already in this repo registry are searched there.')
 lines.push(`#`)
-lines.push(`# ${uniq.length} recruiting roles matched, ${technical.length} of them technical`)
+lines.push(`# ${uniq.length} ${LABEL} matched, ${technical.length} of them flagged technical`)
 lines.push('')
 
 const fmt = (r) => [
@@ -563,15 +645,15 @@ const fmt = (r) => [
   '',
 ].join('\n')
 
-lines.push('## TECHNICAL RECRUITING ROLES')
+lines.push(`## TECHNICAL ${LABEL.toUpperCase()}`)
 lines.push('')
 for (const r of technical) lines.push(fmt(r))
-lines.push('## OTHER RECRUITING ROLES')
+lines.push(`## OTHER ${LABEL.toUpperCase()}`)
 lines.push('')
 for (const r of uniq.filter((r) => !r.technical)) lines.push(fmt(r))
 
 writeFileSync(OUT, lines.join('\n'))
 writeFileSync(JSON_OUT, JSON.stringify({ place: PLACE, generatedAt: new Date().toISOString(), sourceStats, results: uniq }, null, 2))
 
-console.log(`${uniq.length} recruiting roles in ${PLACE}, ${technical.length} technical`)
+console.log(`${uniq.length} ${LABEL} in ${PLACE}, ${technical.length} technical`)
 console.log(`-> ${OUT}  /  ${JSON_OUT}`)
