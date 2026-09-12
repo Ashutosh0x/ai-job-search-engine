@@ -4,6 +4,7 @@
  *   node scripts/refresh.mjs --tier hot          # fast boards, minutes
  *   node scripts/refresh.mjs --tier warm
  *   node scripts/refresh.mjs --tier all --concurrency 12
+ *   node scripts/refresh.mjs --tier cold --only ebay      # one employer
  *   node scripts/refresh.mjs --tier hot --loop 900   # run forever, every 15 min
  *
  * WHY THIS EXISTS RATHER THAN JUST RUNNING THE FULL INGEST MORE OFTEN
@@ -60,6 +61,8 @@ const val = (n, d) => { const i = args.indexOf(`--${n}`); return i !== -1 && arg
 const has = (n) => args.includes(`--${n}`)
 
 const TIER = val('tier', 'hot')
+/** Comma-separated company slugs, names or board tokens to restrict the pass to. */
+const ONLY = val('only', '')
 const OUT = val('out', 'public/data/jobs-v2.json')
 const STATE = '.ingest-state.json'
 const DISCOVERED = 'scripts/discovered-boards.json'
@@ -230,6 +233,32 @@ async function refreshOnce() {
     } catch {
       // A malformed discovery file must not stop a refresh of curated boards.
     }
+  }
+
+  // --only narrows to named employers within the tier.
+  //
+  // Without it, refreshing one cold-tier board means refreshing all of them:
+  // eBay sits behind `custom`, so picking up three new postings cost a 4.5-hour
+  // pass over every Workday tenant. Narrowing is safe because merge safety is
+  // driven by which boards were ACTUALLY CRAWLED, not by the tier name -- a
+  // smaller target set simply means fewer boards are eligible for replacement
+  // and everything else is copied through untouched.
+  if (ONLY) {
+    const names = ONLY.split(',').map((s) => s.trim().toLowerCase()).filter(Boolean)
+    const matches = (t) => names.some((n) =>
+      String(t.companySlug ?? '').toLowerCase() === n ||
+      String(t.companyName ?? '').toLowerCase() === n ||
+      String(t.token ?? '').toLowerCase() === n)
+    const before = targets.length
+    const kept = targets.filter(matches)
+    if (!kept.length) {
+      console.error(`--only "${ONLY}" matched none of the ${before} boards in tier "${TIER}".`)
+      console.error(`Check the slug against lib/companies/registry.ts, and that its provider is in this tier (${wanted.join(', ')}).`)
+      process.exit(1)
+    }
+    targets.length = 0
+    targets.push(...kept)
+    console.log(`--only ${ONLY}: ${targets.length} of ${before} boards`)
   }
 
   console.log(`tier=${TIER}  ${targets.length} boards  (index has ${existingJobs.length.toLocaleString()} jobs)`)
