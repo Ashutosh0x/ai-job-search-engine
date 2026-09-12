@@ -68,3 +68,7 @@ next-env.d.ts
 
 # Refresh concurrency lock (pid file, never committed).
 .refresh.lock
+/synechron-roles.json
+/synechron-roles.txt
+/microsoft-roles.json
+/microsoft-roles.txt

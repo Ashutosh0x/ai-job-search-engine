@@ -1068,6 +1068,14 @@ export const COMPANIES: CompanyRecord[] = [
   { slug: 'clear-street', name: 'Clear Street', domain: 'clearstreet.io', valuationKind: 'unknown',
     industry: 'Fintech / Prime Brokerage', hqLocation: 'New York, NY', foundedYear: 2018,
     boards: [{ provider: 'greenhouse', token: 'clearstreet' }] },
+  // Industry is their own description ("innovative global consulting firm
+  // delivering industry-leading digital solutions"). foundedYear and
+  // hqLocation are omitted rather than guessed: neither appears anywhere on
+  // synechron.com, and an unsourced number here would be indistinguishable
+  // from a checked one.
+  { slug: 'synechron', name: 'Synechron', domain: 'synechron.com', valuationKind: 'unknown',
+    industry: 'IT Consulting / Financial Services',
+    boards: [{ provider: 'workday', token: 'synechron', site: 'synechroncareers', host: 'synechron.wd1.myworkdayjobs.com' }] },
 ]
 
 export const COMPANY_BY_SLUG = new Map(COMPANIES.map((c) => [c.slug, c]))

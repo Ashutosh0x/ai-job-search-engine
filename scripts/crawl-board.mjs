@@ -70,6 +70,43 @@ const FETCH = {
       id: j.id,
     }))
   },
+  workday: async () => {
+    // token = tenant, site = career-site path, host = the wdN shard.
+    const host = val('host', `${TOKEN}.wd1.myworkdayjobs.com`)
+    const site = val('site', '')
+    if (!site) throw new Error('workday needs --site (e.g. --site synechroncareers)')
+    const out = []
+    // Paged rather than fetched whole: Workday serves 20 at a time and clamps
+    // the offset at 2,000 without erroring, so a board past that cap returns
+    // the same page forever. Stopping on a short page is the reliable end.
+    for (let offset = 0; offset < 2000; offset += 20) {
+      const r = await fetch(`https://${host}/wday/cxs/${TOKEN}/${site}/jobs`, {
+        method: 'POST',
+        headers: { 'User-Agent': UA, 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ appliedFacets: {}, limit: 20, offset, searchText: '' }),
+      })
+      if (!r.ok) throw new Error(`http ${r.status}`)
+      const d = await r.json()
+      const posts = d.jobPostings || []
+      for (const j of posts) {
+        out.push({
+          title: String(j.title || '').trim(),
+          // locationsText is optional and its absence is silent; some tenants
+          // put the place only in externalPath.
+          location: String(j.locationsText || '').trim() ||
+            String(j.externalPath || '').split('/').filter(Boolean)[1]?.replace(/-+/g, ' ') || '',
+          department: '',
+          posted: String(j.postedOn || '').trim(),
+          updated: '',
+          salary: '',
+          url: `https://${host}/${site}${j.externalPath}`,
+          id: (j.bulletFields || [])[0] || '',
+        })
+      }
+      if (posts.length < 20) break
+    }
+    return out
+  },
   ashby: async () => {
     const d = await get(`https://api.ashbyhq.com/posting-api/job-board/${TOKEN}?includeCompensation=true`)
     return (d.jobs || []).map((j) => ({

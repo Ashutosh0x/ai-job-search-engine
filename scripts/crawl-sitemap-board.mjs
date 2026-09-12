@@ -39,19 +39,45 @@ const OUT = val('out', `${COMPANY.toLowerCase().replace(/\W+/g, '-')}-roles.txt`
 const CONCURRENCY = Number(val('concurrency', 6))
 const LIMIT = Number(val('limit', 0))
 const FAST = has('fast')
+/** Milliseconds to wait after each page fetch. Microsoft starts returning 403
+ *  under sustained load, and the only fix that works is asking more slowly. */
+const DELAY = Number(val('delay', 0))
 
 if (!SITEMAP) { console.error('need --sitemap'); process.exit(1) }
 
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36'
 
-async function get(url, tries = 3, timeoutMs = 40000) {
+/**
+ * Returns page text, or one of two sentinels:
+ *   null      the posting is genuinely gone (404/410)
+ *   BLOCKED   the site refused us (403/429) -- our problem, not a closed role
+ *
+ * TELLING THESE APART IS THE WHOLE POINT.
+ * Microsoft answers 403 once it decides you are crawling too fast, and the
+ * first version of this script counted 403 as "gone". Two runs five minutes
+ * apart reported 887 then 1,125 roles closed -- and a URL that had returned a
+ * JobPosting minutes earlier was in the second batch. Nothing had closed; we
+ * were being throttled, and the report was calling live roles expired.
+ *
+ * A 403 is therefore retried with long backoff and, if it persists, counted
+ * and reported as blocked so the coverage line stays honest.
+ */
+const BLOCKED = Symbol('blocked')
+
+async function get(url, tries = 4, timeoutMs = 40000) {
   for (let i = 0; i < tries; i++) {
     const ctl = new AbortController()
     const t = setTimeout(() => ctl.abort(), timeoutMs)
     try {
       const r = await fetch(url, { signal: ctl.signal, headers: { 'User-Agent': UA } })
       if (r.status === 404 || r.status === 410) return null
-      if (r.status === 429 || r.status >= 500) throw new Error(`http ${r.status}`)
+      if (r.status === 403 || r.status === 429) {
+        if (i === tries - 1) return BLOCKED
+        // Long, growing backoff: a rate limiter wants quiet, not a fast retry.
+        await new Promise((res) => setTimeout(res, 15000 * (i + 1) + Math.random() * 5000))
+        continue
+      }
+      if (r.status >= 500) throw new Error(`http ${r.status}`)
       if (!r.ok) return null
       return await r.text()
     } catch {
@@ -109,18 +135,32 @@ function schemaOf(html) {
 }
 
 /**
- * Microsoft writes the country into addressRegion as well as addressCountry,
- * so the naive join produces "Redmond, WA,US, US". Split every field on commas
- * and drop repeats, which fixes that without assuming the shape -- a site that
- * fills the fields cleanly is unaffected.
+ * schema.org address fields are "Text or Thing", so any of them can arrive as
+ * a string, as {name}, or as {@type, value}. Coercing with String() turned 19
+ * Microsoft roles into "[object Object]" -- a location that looks like data
+ * and is not. Read the known text-bearing keys, and return '' rather than
+ * emit a placeholder.
  */
+const asText = (v) => {
+  if (v == null) return ''
+  if (typeof v === 'string') return v.trim()
+  if (typeof v === 'number') return String(v)
+  if (Array.isArray(v)) return v.map(asText).filter(Boolean).join(', ')
+  if (typeof v === 'object') return asText(v.name ?? v.value ?? v['@value'] ?? v.alternateName ?? '')
+  return ''
+}
+
 const placeOf = (jp) => {
   const locs = Array.isArray(jp.jobLocation) ? jp.jobLocation : [jp.jobLocation].filter(Boolean)
   const parts = locs.map((l) => {
     const a = l?.address || {}
-    const bits = [a.addressLocality, a.addressRegion, a.addressCountry?.name || a.addressCountry]
+    // Microsoft writes the country into addressRegion as well as
+    // addressCountry, so the naive join gives "Redmond, WA,US, US". Splitting
+    // every field on commas and deduping fixes that without assuming a shape.
+    const bits = [a.addressLocality, a.addressRegion, a.addressCountry]
+      .map(asText)
       .filter(Boolean)
-      .flatMap((s) => String(s).split(','))
+      .flatMap((s) => s.split(','))
       .map((s) => s.trim())
       .filter(Boolean)
     return [...new Set(bits)].join(', ')
@@ -131,7 +171,7 @@ const placeOf = (jp) => {
 /* -------------------------------- crawl ----------------------------------- */
 
 const roles = []
-let done = 0, ok = 0, dead = 0, unreachable = 0
+let done = 0, ok = 0, dead = 0, unreachable = 0, blocked = 0
 
 if (FAST) {
   for (const u of targets) {
@@ -145,8 +185,10 @@ if (FAST) {
     while (queue.length) {
       const u = queue.shift()
       const html = await get(u)
+      if (DELAY) await new Promise((r) => setTimeout(r, DELAY))
       done++
-      if (html === undefined) unreachable++
+      if (html === BLOCKED) blocked++
+      else if (html === undefined) unreachable++
       else if (html === null) dead++
       else {
         const jp = schemaOf(html)
@@ -155,7 +197,7 @@ if (FAST) {
           ok++
           roles.push({
             id: jp.identifier?.value || id,
-            title: jp.title || slug,
+            title: asText(jp.title) || slug,
             location: placeOf(jp),
             posted: (jp.datePosted || '').slice(0, 10),
             employmentType: Array.isArray(jp.employmentType) ? jp.employmentType.join(', ') : (jp.employmentType || ''),
@@ -192,7 +234,13 @@ lines.push(`# ${COMPANY} -- all open roles`)
 lines.push(`# source: ${SITEMAP}`)
 lines.push(`# generated ${new Date().toISOString()}`)
 lines.push(`# ${roles.length} roles (${viaSchema} with schema.org fields, ${roles.length - viaSchema} from the url slug only)`)
-if (dead || unreachable) lines.push(`# ${dead} pages gone, ${unreachable} never answered`)
+if (dead) lines.push(`# ${dead} postings gone (404) -- closed since the sitemap was built`)
+if (blocked) {
+  lines.push(`# ${blocked} pages BLOCKED (403) -- the site rate-limited this crawl, so those`)
+  lines.push(`#   roles are missing from this file and are NOT known to be closed.`)
+  lines.push(`#   Re-run with a lower --concurrency and a --delay to reach them.`)
+}
+if (unreachable) lines.push(`# ${unreachable} never answered`)
 lines.push('')
 lines.push('## BY LOCATION')
 for (const [loc, n] of [...byLoc].sort((a, b) => b[1] - a[1]).slice(0, 40)) {
