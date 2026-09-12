@@ -1081,6 +1081,14 @@ export const COMPANIES: CompanyRecord[] = [
   { slug: 'quantiphi', name: 'Quantiphi', domain: 'quantiphi.com', valuationKind: 'unknown',
     industry: 'AI / Data Science Consulting',
     boards: [{ provider: 'workday', token: 'quantiphi', site: 'Careers_at_Quantiphi', host: 'quantiphi.wd1.myworkdayjobs.com' }] },
+  // `custom`, not an ATS: Google's careers site has no public JSON API left
+  // (careers.google.com/api/v3 404s), no JSON-LD on the listing and no job
+  // sitemap. The paginated server-rendered listing is the supported route --
+  // see CustomSiteAdapter strategy 4. One board covers Google, YouTube,
+  // DeepMind, Verily, Waymo, Wing and GFiber, which all post here.
+  { slug: 'google', name: 'Google', domain: 'google.com', ticker: 'GOOGL', valuationKind: 'public',
+    industry: 'Search / Cloud / Advertising', hqLocation: 'Mountain View, CA', foundedYear: 1998,
+    boards: [{ provider: 'custom', token: 'google', site: 'https://www.google.com/about/careers/applications/jobs/results' }] },
 ]
 
 export const COMPANY_BY_SLUG = new Map(COMPANIES.map((c) => [c.slug, c]))

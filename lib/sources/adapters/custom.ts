@@ -3,6 +3,24 @@ import type { FetchOptions, FetchResult, RawJob, SourceId, SourceTarget } from '
 import { toIso, htmlToText } from '../types'
 
 /**
+ * Entity decode for text pulled straight out of attributes and text nodes.
+ * htmlToText() is for document bodies; this is for a title or a city, where
+ * stripping tags is not wanted but `&amp;` must not survive into the index.
+ */
+function decodeEntities(s: string): string {
+  return String(s)
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#0?39;/g, "'")
+    .replace(/&apos;/g, "'")
+    .replace(/&nbsp;/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+/**
  * Company-owned career sites with no recognisable ATS (§10).
  *
  * Extraction order is deliberate, strongest structure first:
@@ -100,8 +118,132 @@ export class CustomSiteAdapter extends BaseAdapter {
     jobs = await this.fromSitemap(pageUrl, target, warnings, opts)
     if (jobs.length) return { jobs, incremental: false, warnings }
 
+    // 4 -- paginated server-rendered listing
+    //
+    // Google's careers site publishes no JSON API (careers.google.com/api/v3
+    // 404s), no JSON-LD on the listing, and no job sitemap -- but its result
+    // pages are fully server-rendered and paginate with ?page=N, carrying the
+    // title, organisation, every location and the canonical link in the HTML.
+    // That is 1 request per 20 roles instead of 1 per role, so it is both
+    // cheaper and politer than the sitemap fallback above.
+    jobs = await this.fromPaginatedListing(pageUrl, target, warnings, opts)
+    if (jobs.length) return { jobs, incremental: false, warnings }
+
     warnings.push(`custom:${pageUrl} no structured job data found`)
     return { jobs: [], incremental: false, warnings }
+  }
+
+  /**
+   * Walk ?page=N listing pages whose postings are plain anchors.
+   *
+   * The anchor is the stable part; the surrounding class names are
+   * compiler-generated and can change without notice. So a link plus its
+   * accessible label is the contract, and locations are best-effort from the
+   * card. If the cosmetic classes change, roles keep their titles and URLs and
+   * lose their locations, which a warning records rather than hides.
+   */
+  private async fromPaginatedListing(
+    pageUrl: string,
+    target: SourceTarget,
+    warnings: string[],
+    opts: FetchOptions
+  ): Promise<RawJob[]> {
+    const LINK_RE =
+      /href="((?:[^"]*\/)?jobs\/results\/(\d+)-([a-z0-9-]+))[^"]*"[^>]*aria-label="(?:Learn more about )?([^"]+)"/g
+
+    const rows = new Map<string, any>()
+    const maxPages = opts.maxPages ?? 400
+    let expected: number | null = null
+    let noNewPages = 0
+
+    for (let page = 1; page <= maxPages; page++) {
+      const url = `${pageUrl}${pageUrl.includes('?') ? '&' : '?'}page=${page}`
+      const res = await this.get(url, { cacheTtlMs: this.ttl.jobListing, signal: opts.signal }).catch(() => null)
+      if (!res?.ok || !res.body) break
+      const html = res.body
+
+      if (expected === null) {
+        const m = html.match(/of ([\d,]+) rows/)
+        expected = m ? Number(m[1].replace(/,/g, '')) : null
+      }
+
+      // Resolve links against <base href> when the document declares one.
+      //
+      // Google's listing lives at /about/careers/applications/jobs/results and
+      // sets <base href="https://www.google.com/about/careers/applications/">.
+      // Resolving the relative "jobs/results/{id}-{slug}" against the page URL
+      // instead produced .../applications/jobs/jobs/results/... -- a duplicated
+      // segment and a 404 on every single link. The links are the entire point
+      // of the record, so the base has to be the one the page declares.
+      const baseM = html.match(/<base[^>]+href=["']([^"']+)["']/i)
+      const linkBase = baseM ? absoluteUrl(pageUrl, baseM[1]) : pageUrl
+
+      const marks: { index: number; path: string; id: string; title: string }[] = []
+      let m: RegExpExecArray | null
+      LINK_RE.lastIndex = 0
+      while ((m = LINK_RE.exec(html)) !== null) {
+        marks.push({ index: m.index, path: m[1], id: m[2], title: decodeEntities(m[4]) })
+      }
+      if (!marks.length) break
+
+      let fresh = 0
+      for (let i = 0; i < marks.length; i++) {
+        if (rows.has(marks[i].id)) continue
+        fresh++
+        const card = html.slice(i === 0 ? 0 : marks[i - 1].index, marks[i].index)
+        // "Atlanta, GA, USA; Austin, TX, USA" puts the separator inside the
+        // next span, so each value needs its leading punctuation stripped or
+        // one city becomes two locations.
+        const locs = [...card.matchAll(/class="r0wTof[^"]*"[^>]*>([^<]+)</g)]
+          .map((x) => decodeEntities(x[1]).replace(/^[;,\s]+/, '').trim())
+          .filter(Boolean)
+        const orgM = card.match(/class="l103df"[^>]*>([^<|]+)\|/)
+        rows.set(marks[i].id, {
+          id: marks[i].id,
+          title: marks[i].title,
+          org: orgM ? decodeEntities(orgM[1]) : target.companyName ?? null,
+          locations: [...new Set(locs)],
+          url: absoluteUrl(linkBase, marks[i].path),
+        })
+      }
+
+      // Stop when the site stops yielding new ids, rather than at a guessed
+      // page count -- a fixed count silently truncates when the board grows.
+      if (fresh === 0 && ++noNewPages >= 2) break
+      if (fresh > 0) noNewPages = 0
+      if (expected !== null && rows.size >= expected) break
+    }
+
+    if (!rows.size) return []
+    const missingLoc = [...rows.values()].filter((r) => !r.locations.length).length
+    if (missingLoc) {
+      warnings.push(`custom:${pageUrl} ${missingLoc}/${rows.size} rows had no location (listing markup may have changed)`)
+    }
+    if (expected !== null && rows.size < expected) {
+      warnings.push(`custom:${pageUrl} collected ${rows.size} of ${expected} rows the site reports`)
+    }
+
+    return this.mapRows([...rows.values()], target, (p) => ({
+      source: this.id,
+      target,
+      sourceId: String(p.id),
+      requisitionId: String(p.id),
+      title: String(p.title ?? '').trim(),
+      company: p.org ?? target.companyName ?? null,
+      companyDomain: target.companyDomain ?? null,
+      locationRaw: p.locations.join(' ; ') || null,
+      description: null,
+      descriptionHtml: null,
+      employmentType: null,
+      remoteFlag: p.locations.some((l: string) => /remote/i.test(l)) || null,
+      postedAt: null,
+      updatedAt: null,
+      salaryMin: null,
+      salaryMax: null,
+      salaryCurrency: null,
+      applicationUrl: p.url,
+      canonicalUrl: p.url,
+    }), warnings)
   }
 
   /**
