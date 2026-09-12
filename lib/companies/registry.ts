@@ -1076,6 +1076,11 @@ export const COMPANIES: CompanyRecord[] = [
   { slug: 'synechron', name: 'Synechron', domain: 'synechron.com', valuationKind: 'unknown',
     industry: 'IT Consulting / Financial Services',
     boards: [{ provider: 'workday', token: 'synechron', site: 'synechroncareers', host: 'synechron.wd1.myworkdayjobs.com' }] },
+  // Single board: quantiphi.com/careers links only to this Workday site, and
+  // Common Crawl knows no other site under the tenant.
+  { slug: 'quantiphi', name: 'Quantiphi', domain: 'quantiphi.com', valuationKind: 'unknown',
+    industry: 'AI / Data Science Consulting',
+    boards: [{ provider: 'workday', token: 'quantiphi', site: 'Careers_at_Quantiphi', host: 'quantiphi.wd1.myworkdayjobs.com' }] },
 ]
 
 export const COMPANY_BY_SLUG = new Map(COMPANIES.map((c) => [c.slug, c]))
