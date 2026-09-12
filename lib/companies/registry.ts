@@ -1060,6 +1060,14 @@ export const COMPANIES: CompanyRecord[] = [
     boards: [{ provider: 'ashby', token: 'pinecone' }] },
   { slug: 'weaviate', name: "Weaviate", domain: 'weaviate.io', valuationKind: 'unknown', industry: "Vector Database",
     boards: [{ provider: 'ashby', token: 'weaviate' }] },
+  // Founding date is the company's own careers-page timeline ("Clear Street is
+  // founded", 2018-09-03). Valuation is 'unknown' rather than a remembered
+  // funding-round figure: no free source reports it, and this registry's rule
+  // is that a private figure needs a source and an as-of date or it is not
+  // entered at all.
+  { slug: 'clear-street', name: 'Clear Street', domain: 'clearstreet.io', valuationKind: 'unknown',
+    industry: 'Fintech / Prime Brokerage', hqLocation: 'New York, NY', foundedYear: 2018,
+    boards: [{ provider: 'greenhouse', token: 'clearstreet' }] },
 ]
 
 export const COMPANY_BY_SLUG = new Map(COMPANIES.map((c) => [c.slug, c]))
