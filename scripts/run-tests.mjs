@@ -45,7 +45,12 @@ const SUITES = [
   'test-skills.mjs',
   'test-pagination.mjs',
   'test-workday-cap.mjs',
+  'test-workday-location.mjs',
+  'test-workday-identity.mjs',
+  'test-keka.mjs',
   'test-html.mjs',
+  'test-recruiter-intel.mjs',
+  'test-financial-enrichment.mjs',
 ]
 
 const isWindows = process.platform === 'win32'
