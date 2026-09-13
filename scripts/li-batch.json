@@ -1,0 +1,16 @@
+[
+  {"label":"bny-mellon","tool":"search_people","args":{"keywords":"technical recruiter at BNY Mellon"}},
+  {"label":"morgan-stanley","tool":"search_people","args":{"keywords":"technology recruiter at Morgan Stanley"}},
+  {"label":"deutsche-bank","tool":"search_people","args":{"keywords":"technology recruiter at Deutsche Bank"}},
+  {"label":"mastercard","tool":"search_people","args":{"keywords":"technical recruiter at Mastercard"}},
+  {"label":"barclays","tool":"search_people","args":{"keywords":"technology recruiter at Barclays"}},
+  {"label":"visa","tool":"search_people","args":{"keywords":"technical recruiter at Visa"}},
+  {"label":"mufg","tool":"search_people","args":{"keywords":"technology recruiter at MUFG"}},
+  {"label":"clsa","tool":"search_people","args":{"keywords":"recruiter at CLSA"}},
+  {"label":"national-australia-bank","tool":"search_people","args":{"keywords":"technology recruiter at NAB National Australia Bank"}},
+  {"label":"commonwealth-bank","tool":"search_people","args":{"keywords":"technology recruiter at Commonwealth Bank"}},
+  {"label":"lloyds-banking-group","tool":"search_people","args":{"keywords":"technology recruiter at Lloyds Banking Group"}},
+  {"label":"paypal","tool":"search_people","args":{"keywords":"technical recruiter at PayPal"}},
+  {"label":"natwest","tool":"search_people","args":{"keywords":"technology recruiter at NatWest"}},
+  {"label":"standard-chartered","tool":"search_people","args":{"keywords":"technology recruiter at Standard Chartered"}}
+]

@@ -1,0 +1,83 @@
+# WHERE THE JOB POSTINGS ARE
+# generated 2026-09-12T10:27:58.232Z
+
+SCOPE OF THE WORD "TRAFFIC"
+  We have no visitor data for any employer site and no way to obtain it,
+  so nothing here reports how busy anyone else's careers page is. What is
+  measured is SUPPLY (postings served to us) and COST (requests we spent).
+
+=============================================================
+1. SUPPLY BY PLATFORM  (verified role counts, like for like)
+=============================================================
+  Every number is what that board's own API reported when called.
+  7,357 verified boards, 515,374 roles.
+
+  platform          boards   share    roles      share   roles/board   largest board
+  workday             318   4.32%    139,254  27.02%        437.9   globalhr (4,658)
+  smartrecruiters     265   3.60%    131,704  25.56%        497.0   Dominos (24,708)
+  greenhouse         3040  41.32%    125,113  24.28%         41.2   pulse (2,651)
+  workable           1161  15.78%     63,224  12.27%         54.5   next-job-abroad (3,614)
+  ashby              2298  31.24%     49,779   9.66%         21.7   bjakcareer (3,076)
+  keka                179   2.43%      4,089   0.79%         22.8   kpgroup (921)
+  recruitee            96   1.30%      2,211   0.43%         23.0   aaff (325)
+
+  Workday holds 27.02% of roles from 4.32% of boards:
+  438 roles per board against Greenhouse's 41.
+  That ratio -- 10.6x -- is the whole story of where enterprise hiring sits.
+
+=============================================================
+2. THE WORKDAY CORPUS  (actual postings read)
+=============================================================
+  600,113 unique postings across 1,246 tenants and 1,688 endpoints.
+
+  CONCENTRATION
+    top   0.1% of tenants (   2) hold    39,989 postings = 6.66%
+    top     1% of tenants (  13) hold   135,274 postings = 22.54%
+    top     5% of tenants (  63) hold   258,838 postings = 43.13%
+    top    10% of tenants ( 125) hold   351,432 postings = 58.56%
+    top    25% of tenants ( 312) hold   481,895 postings = 80.30%
+    top    50% of tenants ( 623) hold   564,031 postings = 93.99%
+    Gini across tenants: 0.718  (0 = even, 1 = one tenant holds all)
+    mean 481.6 postings/tenant, median 145 -- a mean 3.3x the median
+
+  TOP 20 ENDPOINTS BY POSTINGS
+    postings   share   cum.    endpoint
+      21,268   3.54%   3.54%  accenture.wd103.myworkdayjobs.com/accenturecareers
+      18,138   3.02%   6.57%  cvshealth.wd1.myworkdayjobs.com/cvs_health_careers
+      16,854   2.81%   9.37%  advanceauto.wd5.myworkdayjobs.com/advanceexternalcareers
+      12,383   2.06%  11.44%  target.wd5.myworkdayjobs.com/targetcareers
+      11,007   1.83%  13.27%  lowes.wd5.myworkdayjobs.com/lws_external_cs
+      10,295   1.72%  14.99%  walmart.wd504.myworkdayjobs.com/walmartexternal
+       8,231   1.37%  16.36%  dollartree.wd5.myworkdayjobs.com/dollartreeus
+       5,395   0.90%  17.26%  aah.wd5.myworkdayjobs.com/external
+       4,688   0.78%  18.04%  globalhr.wd5.myworkdayjobs.com/rec_rtx_ext_gateway
+       4,650   0.77%  18.81%  pwc.wd3.myworkdayjobs.com/global_experienced_careers
+       4,432   0.74%  19.55%  pwc.wd3.myworkdayjobs.com/nonpublic_postings
+       4,279   0.71%  20.27%  hitachi.wd1.myworkdayjobs.com/hitachi
+       4,067   0.68%  20.94%  adventhealth.wd12.myworkdayjobs.com/ah_external_career_site
+       3,761   0.63%  21.57%  ngc.wd1.myworkdayjobs.com/northrop_grumman_external_site
+       3,351   0.56%  22.13%  dickssportinggoods.wd1.myworkdayjobs.com/dsg
+       3,244   0.54%  22.67%  citi.wd5.myworkdayjobs.com/2
+       3,129   0.52%  23.19%  freseniusmedicalcare.wd3.myworkdayjobs.com/fme
+       3,019   0.50%  23.69%  uhaul.wd1.myworkdayjobs.com/uhauljobs
+       2,970   0.49%  24.19%  mvh.wd115.myworkdayjobs.com/bfcareers
+       2,916   0.49%  24.67%  micron.wd1.myworkdayjobs.com/external
+
+  BY WORKDAY SHARD
+    postings   share   tenants   shard
+     206,998  34.49%      326   wd5
+     174,736  29.12%      330   wd1
+     113,056  18.84%      280   wd3
+      29,590   4.93%       56   wd103
+      25,279   4.21%       75   wd12
+      17,220   2.87%       47   wd108
+      11,314   1.89%        3   wd504
+       5,558   0.93%       44   wd503
+       4,530   0.75%       27   wd501
+       4,073   0.68%        8   wd115
+       2,760   0.46%       20   wd10
+       2,075   0.35%       13   wd502
+       1,692   0.28%        3   wd102
+         593   0.10%       12   wd105
+         547   0.09%        1   wd116
+          92   0.02%        1   wd107

@@ -319,6 +319,124 @@ export class RecruiteeAdapter extends BaseAdapter {
  */
 const WORKDAY_RESULT_CAP = 2000
 
+/**
+ * Searches one tenant may cost before the read gives up and says it is short.
+ *
+ * Recursive splitting fans out: 40 job families x 55 countries is thousands of
+ * searches, and one board like that must not be able to consume a whole crawl.
+ * 4,000 covers every tenant measured -- the largest, Accenture, finished well
+ * inside it -- while still bounding the worst case.
+ */
+const WORKDAY_TENANT_REQUEST_BUDGET = 4000
+
+/**
+ * Recover a posting's location from its `externalPath`.
+ *
+ * `locationsText` IS OPTIONAL AND ITS ABSENCE IS SILENT. Most tenants populate
+ * it; some never send the field at all and encode the place in the path
+ * instead, as `/job/Pernambuco---Recife/Pessoa-Analista_R00253057`. Reading
+ * only `locationsText` therefore produced a location-less posting with no
+ * error to notice -- measured across a full crawl of every known tenant,
+ * 47,435 of 152,651 postings (31%) had no location, and 42,528 of those were
+ * Accenture alone, the single largest Workday board in the corpus.
+ *
+ * That is not a cosmetic gap: location is the primary filter in this product,
+ * and a posting without one is unfindable by the query most users actually
+ * make.
+ *
+ * The slug encodes a separator as a triple dash and spaces as single dashes,
+ * so "Pernambuco---Recife" is "Pernambuco - Recife" -- the same shape tenants
+ * that DO send `locationsText` write ("Australia - Sydney"). What the slug
+ * names is up to the tenant: some write a city, others a facility ("Three
+ * Meadows Post Acute"). That matches the range already present in
+ * `locationsText` and is left for the location parser to resolve.
+ */
+/**
+ * The requisition id for a Workday posting.
+ *
+ * `bulletFields[0]` IS NOT THE REQUISITION ID. It is whatever the tenant put
+ * first in its bullet list, and tenants configure that freely:
+ *
+ *   NVIDIA    ["JR2017846"]                                  -> index 0
+ *   Thales    ["Regular Employee", "R0334962", "20 - SOFTWARE", ...] -> index 1
+ *
+ * Reading index 0 gave every Thales posting the requisition id "Regular
+ * Employee". That is not merely a wrong field: `sourceId` was read from the
+ * same place and the canonical job id is `source:token:sourceId`, so all 740
+ * postings on that board collapsed onto 8 ids -- one per employment type.
+ * Thales entered the index as an employer with 8 openings. Across the corpus
+ * the same shape accounted for 253,114 postings whose "requisition" was an
+ * employment type, a city or a country ("Texas", "Permanent", "Contrat à durée
+ * indéterminée"), and nothing failed while it happened.
+ *
+ * `externalPath` is the reliable source: Workday ends it with `_{REQ}`, and a
+ * repost of the same requisition gets a `-N` suffix
+ * (`..._JR2018178-3`). So the path yields both identities -- the posting
+ * (with the suffix) and the opening (without it).
+ */
+function workdayRequisition(path: string, bulletFields: unknown): { sourceId: string; requisitionId: string | null } {
+  /**
+   * A trailing `-N` marks a re-post of the same requisition -- but only when
+   * it is SHORT. Requisition ids very often end in a dash and a long number,
+   * and stripping that destroys the id:
+   *
+   *   JR2018178-3        NVIDIA        -3     re-post of JR2018178
+   *   2026-00812-1       F.N.B.        -1     re-post of 2026-00812
+   *   202608-121816-1    Roche         -1     re-post of 202608-121816
+   *   JR2023-22829       Topgolf       -22829 IS the id (year + sequence)
+   *   R-26-20076         Moog          -20076 IS the id
+   *
+   * Getting this wrong is not a cosmetic error. Treating `-22829` as a repost
+   * marker collapsed 1,354 distinct Topgolf postings onto the "requisition"
+   * JR2023, 758 Moog postings onto R-26, and 266 Roche postings onto 202608 --
+   * which then reads as an employer advertising one job a thousand times.
+   *
+   * A repost counter is a small integer; a sequence number is not. Two digits
+   * is the cut, and the base must still contain a digit so that an id like
+   * `REQ-42` is not reduced to `REQ`.
+   */
+  const stripRepost = (id: string): string => {
+    const base = id.replace(/-\d{1,2}$/, '')
+    return base !== id && /\d/.test(base) ? base : id
+  }
+
+  // Everything after the final underscore, which is where Workday puts it.
+  const tail = /_([A-Za-z0-9][\w.-]*)$/.exec(path)?.[1]
+  if (tail) return { sourceId: tail, requisitionId: stripRepost(tail) }
+
+  // No id in the path: take the first bullet field that is SHAPED like an id
+  // rather than the first one that exists. Ids have a digit and no spaces;
+  // "Regular Employee" and "20 - SOFTWARE" have spaces and are rejected.
+  const fields = Array.isArray(bulletFields) ? bulletFields : []
+  for (const f of fields) {
+    const s = String(f ?? '').trim()
+    if (s && !/\s/.test(s) && /\d/.test(s) && s.length <= 40) {
+      return { sourceId: s, requisitionId: stripRepost(s) }
+    }
+  }
+
+  // Nothing id-shaped anywhere. The path is unique per posting, so it keeps
+  // ids distinct even when the requisition is unknowable -- losing the
+  // requisition is recoverable, collapsing postings onto one id is not.
+  return { sourceId: path, requisitionId: null }
+}
+
+function workdayLocationFromPath(path: string): string {
+  // /job/{location}/{title-slug}_{req}, sometimes behind an /en-US/ locale.
+  const seg = path.split('/').filter(Boolean)
+  const i = seg.indexOf('job')
+  const slug = i !== -1 ? seg[i + 1] : undefined
+  if (!slug) return ''
+  // Split on the separator BEFORE collapsing single dashes to spaces. Doing
+  // it the other way round loses which dashes were separators, and
+  // "Nova-Lima-Shopping-Alta-Vila" comes back as "Nova - Lima - Shopping - Alta - Vila".
+  return slug
+    .split('---')
+    .map((part) => part.replace(/-+/g, ' ').trim())
+    .filter(Boolean)
+    .join(' - ')
+}
+
 export class WorkdayAdapter extends BaseAdapter {
   readonly id: SourceId = 'workday'
   readonly displayName = 'Workday'
@@ -372,6 +490,10 @@ export class WorkdayAdapter extends BaseAdapter {
       let reportedTotal = 0
 
       for (let page = 0; page < maxPages; page++) {
+        // Pages count against the tenant's budget too. Charging only the
+        // probes would leave the budget bounding the number of slices while
+        // the actual request count ran away with them.
+        if (!spend()) break
         const data = await this.postJson<{ jobPostings?: any[]; total?: number }>(
           endpoint,
           { appliedFacets: facets, limit: PAGE, offset, searchText: '' },
@@ -397,13 +519,16 @@ export class WorkdayAdapter extends BaseAdapter {
         return {
           source: this.id,
           target,
-          sourceId: String(j.bulletFields?.[0] ?? path),
-          // bulletFields[0] is conventionally the requisition id.
-          requisitionId: j.bulletFields?.[0] ? String(j.bulletFields[0]) : null,
+          // See workdayRequisition: bulletFields[0] is not the requisition id,
+          // and using it as sourceId collapsed whole boards onto a handful of
+          // canonical job ids.
+          ...workdayRequisition(path, j.bulletFields),
           title: String(j.title ?? '').trim(),
           company: target.companyName ?? null,
           companyDomain: target.companyDomain ?? null,
-          locationRaw: j.locationsText ?? null,
+          // `||` not `??`: tenants that omit the place send an empty string as
+          // often as they send nothing, and `??` keeps the empty string.
+          locationRaw: j.locationsText || workdayLocationFromPath(path) || null,
           employmentType: j.timeType ?? null,
           remoteFlag: /remote/i.test(String(j.locationsText ?? '')),
           // `postedOn` is relative prose ("Posted 5 Days Ago"), not a date.
@@ -420,8 +545,6 @@ export class WorkdayAdapter extends BaseAdapter {
       return reportedTotal
     }
 
-    const reported = await drain({})
-
     /**
      * WORKDAY WILL NOT PAGE PAST 2,000 RESULTS
      * ----------------------------------------
@@ -434,48 +557,193 @@ export class WorkdayAdapter extends BaseAdapter {
      * had been for every crawl. Four other employers sat at exactly 2,000:
      * Citi, Applied Materials, ABB and Circle K. A round number is the tell.
      *
-     * The way out is to ask smaller questions. `jobFamilyGroup` partitions the
-     * board into buckets that are each under the cap (NVIDIA's largest is
-     * Engineering at 1,740), and the facet counts come back on every response
-     * whether or not they were requested. Postings can belong to several
-     * partitions, so results are deduped by externalPath.
+     * The way out is to ask smaller questions, and to KEEP asking smaller ones
+     * until the answer fits. Splitting once on `jobFamilyGroup` is not enough:
+     * measured on the live boards, Accenture's largest job family holds 20,730
+     * postings and Walmart, Abercrombie and 10 other tenants each had at least
+     * one family still pinned at exactly 2,000 after the single split. A crawl
+     * of every known tenant left 13 boards truncated that way.
+     *
+     * So the split recurses. Each level picks the facet that best breaks up
+     * what is left and applies it on top of the filters already in force;
+     * Citi, for instance, exposes Country_and_Jurisdiction and
+     * State_or_Province alongside jobFamilyGroup, which the old single-facet
+     * split could never reach for.
+     *
+     * Postings can belong to several partitions, so results stay deduped by
+     * externalPath.
      */
-    if (reported >= WORKDAY_RESULT_CAP) {
-      const facets = await this.postJson<{ facets?: any[] }>(
+
+    /**
+     * Facets that are not partitions.
+     *
+     * `distance` is a radius selector whose values overlap completely, and
+     * `locationMainGroup` comes back with counts of 0 on every tenant measured
+     * -- splitting on either yields the same rows again and burns the budget.
+     */
+    const UNUSABLE_FACETS = new Set(['distance', 'locationMainGroup'])
+
+    /**
+     * A hard ceiling on requests per tenant.
+     *
+     * Recursion over a board with 40 job families x 55 countries is thousands
+     * of searches, and one pathological tenant must not be able to consume a
+     * whole crawl. When the budget runs out the read stops and says so, which
+     * is the honest outcome -- silently returning a partial board is the exact
+     * failure this whole routine exists to prevent.
+     */
+    let requestBudget = opts.maxRequests ?? WORKDAY_TENANT_REQUEST_BUDGET
+    const spend = () => (requestBudget > 0 ? (requestBudget--, true) : false)
+
+    /**
+     * How evenly a facet splits what is left; smaller is better.
+     *
+     * FACET COUNTS ARE THEMSELVES CLAMPED AT THE CAP. Bank of America reports
+     * `timeType` largest 2,004, `workerSubType` 2,003 and `jobFamilyGroup`
+     * 2,005 — three numbers that all mean "at least 2,000" and nothing more.
+     * Ranking on them picked the 2-value facet over the 11-value one, burned
+     * two levels of recursion on splits that barely divided anything, and left
+     * the board truncated at 2,004 of the 13,794 its own facets imply.
+     *
+     * So a clamped count is not comparable with an unclamped one. Any facet
+     * that still reports a real maximum is preferred; among clamped facets the
+     * tie is broken on cardinality, because more values necessarily means
+     * smaller slices.
+     */
+    const scoreFacet = (f: any): number => {
+      const values: any[] = f?.values ?? []
+      if (values.length < 2) return Infinity
+      const counts = values.map((v) => Number(v?.count) || 0)
+      if (counts.reduce((a, b) => a + b, 0) === 0) return Infinity
+      const max = Math.max(...counts)
+      if (max >= WORKDAY_RESULT_CAP) return WORKDAY_RESULT_CAP + 1 / values.length
+      return max
+    }
+
+    // 4, not 3: Bank of America needs workerSubType x timeType x jobFamilyGroup
+    // and still has slices over the cap at depth 3.
+    const MAX_SPLIT_DEPTH = 4
+    let truncatedLeaves = 0
+    /** Root facets, kept so the read can be checked against what the board claims. */
+    let rootFacets: any[] = []
+    /** What the unfiltered search reported. CAP means it was clamped. */
+    let rootTotal = 0
+
+    /**
+     * Read one slice of the board, splitting it further if it is capped.
+     *
+     * The total is taken from a 1-row probe rather than by draining first, so
+     * an oversized slice costs one request to diagnose instead of 100 wasted
+     * pages before we discover it needs splitting anyway.
+     */
+    const partition = async (applied: Record<string, string[]>, depth: number): Promise<void> => {
+      if (!spend()) return
+      const probe = await this.postJson<{ total?: number; facets?: any[] }>(
         endpoint,
-        { appliedFacets: {}, limit: 1, offset: 0, searchText: '' },
+        { appliedFacets: applied, limit: 1, offset: 0, searchText: '' },
         { cacheTtlMs: this.ttl.jobListing, signal: opts.signal }
       )
-      const group = (facets?.facets ?? []).find(
-        (f: any) => f?.facetParameter === 'jobFamilyGroup'
-      )
-      const values: any[] = group?.values ?? []
-      const trueTotal = values.reduce((n, v) => n + (Number(v?.count) || 0), 0)
+      const total = Number(probe?.total ?? 0)
+      if (depth === 0) { rootFacets = probe?.facets ?? []; rootTotal = total }
+      if (total === 0) return
 
-      if (!values.length) {
-        warnings.push(
-          `workday:${target.token} hit the ${WORKDAY_RESULT_CAP} result cap and exposes no ` +
-          'jobFamilyGroup facet to partition by -- the board is truncated'
-        )
-      } else {
-        for (const v of values) {
-          if (!v?.id) continue
-          const got = await drain({ jobFamilyGroup: [String(v.id)] })
-          // A single partition over the cap needs a second split; say so rather
-          // than quietly returning part of it.
-          if (got >= WORKDAY_RESULT_CAP) {
-            warnings.push(
-              `workday:${target.token} partition "${v.descriptor}" is itself at the ` +
-              `${WORKDAY_RESULT_CAP} cap -- still truncated`
-            )
-          }
-        }
-        if (trueTotal > 0 && all.length < trueTotal) {
-          warnings.push(
-            `workday:${target.token} facets report ${trueTotal} postings, read ${all.length}`
-          )
-        }
+      /**
+       * THE CLAMP REPORTS EXACTLY 2,000, SO ONLY EXACTLY 2,000 MEANS CLAMPED.
+       *
+       * `>=` looks like the safe comparison and is the wrong one. Bank of
+       * America's board reports total 2,004 -- a real count, above the cap,
+       * which is itself proof the response was NOT clamped, because a clamped
+       * response says 2000 and nothing else. Treating it as capped sent the
+       * read into facet partitioning it did not need, and then every leaf came
+       * back "at the cap" and the board was reported as truncated. It was
+       * complete: 2,004 postings read of 2,004.
+       *
+       * The partitioning also cannot help such a board. BofA's jobFamilyGroup
+       * values are overlapping groupings, not a partition -- "Band (Management
+       * Level)" alone returns all 2,004 -- which is why its facet counts sum to
+       * 13,794 against a 2,004 board. Splitting on overlapping facets can only
+       * re-read the same rows.
+       */
+      if (total !== WORKDAY_RESULT_CAP) {
+        await drain(applied)
+        return
       }
+
+      // Capped. Find a facet not already in force that still divides this slice.
+      const candidates = (probe?.facets ?? [])
+        .filter((f: any) => f?.facetParameter && !(f.facetParameter in applied))
+        .filter((f: any) => !UNUSABLE_FACETS.has(String(f.facetParameter)))
+        .map((f: any) => ({ f, score: scoreFacet(f) }))
+        .filter((c) => Number.isFinite(c.score))
+        .sort((a, b) => a.score - b.score)
+
+      if (depth >= MAX_SPLIT_DEPTH || !candidates.length) {
+        // Nothing left to split by: take the 2,000 we can reach and say the
+        // rest is unreachable rather than presenting it as the whole board.
+        await drain(applied)
+        truncatedLeaves++
+        const where = Object.entries(applied).map(([k, v]) => `${k}=${v[0]}`).join(', ')
+        warnings.push(
+          `workday:${target.token} ${where ? `slice [${where}]` : 'board'} is at the ` +
+          `${WORKDAY_RESULT_CAP} cap with no further facet to split by -- still truncated`
+        )
+        return
+      }
+
+      const best = candidates[0].f
+      for (const v of best.values ?? []) {
+        if (!v?.id) continue
+        if (requestBudget <= 0) break
+        await partition({ ...applied, [String(best.facetParameter)]: [String(v.id)] }, depth + 1)
+      }
+    }
+
+    await partition({}, 0)
+
+    /**
+     * What the board says it holds, as a check on what we actually read.
+     *
+     * Each facet's values partition the whole board, so any facet's counts sum
+     * to the real total -- and they are reported even when `total` is clamped
+     * at 2,000, which is what makes them usable as ground truth. The largest
+     * sum is taken because a facet whose values do not cover every posting
+     * under-counts, and under-counting here would hide a shortfall.
+     */
+    const trueTotal = rootFacets
+      .filter((f: any) => !UNUSABLE_FACETS.has(String(f?.facetParameter)))
+      .reduce((best: number, f: any) => {
+        const sum = (f?.values ?? []).reduce((n: number, v: any) => n + (Number(v?.count) || 0), 0)
+        return Math.max(best, sum)
+      }, 0)
+
+    /**
+     * Only meaningful when the board was actually clamped.
+     *
+     * The check assumes a facet's values partition the board, so their counts
+     * sum to its size. Some tenants expose overlapping groupings instead:
+     * Bank of America's jobFamilyGroup includes "Band (Management Level)",
+     * which alone returns the entire board, so its facet counts sum to 13,787
+     * against a 2,004-posting board. Reporting that as a 11,783-posting
+     * shortfall labels a complete read as incomplete.
+     *
+     * When the root total was under the cap it is the real size and we read
+     * it, so there is nothing to compare against.
+     */
+    if (rootTotal === WORKDAY_RESULT_CAP && trueTotal > 0 && all.length < trueTotal) {
+      warnings.push(
+        `workday:${target.token} facets report ${trueTotal} postings, read ${all.length}`
+      )
+    }
+
+    if (truncatedLeaves > 0) {
+      warnings.push(
+        `workday:${target.token} ${truncatedLeaves} slice(s) could not be read in full`
+      )
+    }
+    if (requestBudget <= 0) {
+      warnings.push(
+        `workday:${target.token} hit its request budget -- the board may be incomplete`
+      )
     }
 
     return { jobs: all, incremental: false, warnings }
@@ -550,6 +818,105 @@ export class WorkdayAdapter extends BaseAdapter {
       canonicalUrl: source,
       extra: { country: info.country?.descriptor ?? null },
     }
+  }
+}
+
+/* ----------------------------------- Keka --------------------------------- */
+
+/**
+ * Keka Hire — public, unauthenticated career-portal feed.
+ *
+ * FOUND BY ASKING, NOT BY READING
+ * -------------------------------
+ * Keka is routinely described as having no public job API, needing a headless
+ * browser. The career page does look that way: a 4KB shell with an empty
+ * `<div id="kh-jobs-section">`. But the shell's own bundle calls
+ * `api/jobs/{portal}/active` against a `<base href="/careers/">`, and that
+ * endpoint answers anyone, with no key and no cookie.
+ *
+ * The portal segment is the trap. It reads like a tenant name, and the obvious
+ * guess -- `/careers/api/jobs/scimplify/active` for scimplify.keka.com --
+ * returns HTTP 200 with an empty array. That is a silent wrong answer: the
+ * board looks like an employer with nothing open. The literal string `default`
+ * is what returns the postings (76 for the same tenant), because the segment
+ * names the PORTAL, and tenants that never renamed theirs keep the default.
+ *
+ * The payload is unusually complete for a list endpoint -- full HTML
+ * description, structured city/state/country, department, experience and
+ * publish date -- so unlike Workday there is no per-posting detail fetch to
+ * pay for.
+ */
+export class KekaAdapter extends BaseAdapter {
+  readonly id: SourceId = 'keka'
+  readonly displayName = 'Keka'
+  readonly hostPatterns = [/(^|\.)keka\.com$/i]
+  protected discoveryPattern = '*.keka.com'
+  protected healthUrl() {
+    return 'https://scimplify.keka.com/careers/api/jobs/default/active'
+  }
+
+  /**
+   * Derived by observation, not documentation: the value was read off the
+   * rendered job page for a posting of each type. Unseen values stay null --
+   * a guessed employment type is worse than an absent one, because everything
+   * downstream treats it as fact.
+   */
+  private static readonly JOB_TYPE: Record<number, string> = {
+    1: 'Part-Time',
+    2: 'Full-Time',
+  }
+
+  async fetchJobs(target: SourceTarget, opts: FetchOptions = {}): Promise<FetchResult> {
+    const warnings: string[] = []
+    const host = target.host || `${target.token}.keka.com`
+    // `site` carries the portal name for the rare tenant that renamed it.
+    const portal = target.site || 'default'
+    const base = `https://${host}/careers`
+
+    const data = await this.json<any[]>(`${base}/api/jobs/${encodeURIComponent(portal)}/active`, {
+      cacheTtlMs: this.ttl.jobListing,
+      signal: opts.signal,
+    })
+    if (!Array.isArray(data)) {
+      return { jobs: [], incremental: false, warnings: [`keka:${target.token} no data`] }
+    }
+
+    const jobs = this.mapRows(data, target, (j: any) => {
+      const locs: any[] = Array.isArray(j.jobLocations) ? j.jobLocations : []
+      const names = locs
+        .map((l) => String(l?.name ?? [l?.city, l?.state, l?.countryName].filter(Boolean).join(', ')))
+        .filter(Boolean)
+      return {
+        source: this.id,
+        target,
+        sourceId: String(j.id),
+        requisitionId: String(j.id),
+        title: String(j.title ?? '').trim(),
+        company: target.companyName ?? null,
+        companyDomain: target.companyDomain ?? null,
+        locationRaw: names[0] ?? null,
+        additionalLocations: names.slice(1),
+        descriptionHtml: j.description ?? null,
+        description: j.excerpt ?? null,
+        department: j.departmentName ?? null,
+        employmentType: KekaAdapter.JOB_TYPE[Number(j.jobType)] ?? null,
+        remoteFlag: /\bremote\b/i.test(names.join(' ')),
+        postedAt: toIso(j.publishedOn),
+        // `salaryRange` carries a currency and period but no amounts on every
+        // tenant measured, so there is nothing to report as pay.
+        salaryCurrency: j.salaryRange?.currency ?? null,
+        applicationUrl: `${base}/jobdetails/${j.id}`,
+        canonicalUrl: `${base}/jobdetails/${j.id}`,
+        extra: {
+          experience: j.experience ?? null,
+          skills: Array.isArray(j.skillNames) ? j.skillNames : [],
+          jobTypeRaw: j.jobType ?? null,
+          countryCode: locs[0]?.countryCode ?? null,
+        },
+      }
+    }, warnings)
+
+    return { jobs, incremental: false, warnings }
   }
 }
 

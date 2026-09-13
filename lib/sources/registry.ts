@@ -2,7 +2,7 @@ import type { JobSource, SourceId, SourceTarget } from './types'
 import {
   GreenhouseAdapter, LeverAdapter, AshbyAdapter, SmartRecruitersAdapter,
   RecruiteeAdapter, WorkdayAdapter, TeamtailorAdapter, PersonioAdapter,
-  WorkableAdapter, MokaHrAdapter,
+  WorkableAdapter, MokaHrAdapter, KekaAdapter,
 } from './adapters/ats'
 import { CustomSiteAdapter } from './adapters/custom'
 import { EightfoldAdapter, AmazonAdapter, OracleRecruitingAdapter } from './adapters/enterprise'
@@ -27,6 +27,8 @@ const ADAPTERS: JobSource[] = [
   new PersonioAdapter(),
   new WorkableAdapter(),
   new MokaHrAdapter(),
+  new KekaAdapter(),
+  new KekaAdapter(),
   new EightfoldAdapter(),
   new CustomSiteAdapter(),
 ]

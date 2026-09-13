@@ -1,0 +1,415 @@
+{
+  "probedAt": "2026-09-12T09:30:01.596Z",
+  "note": "Verdicts are what these endpoints returned when called. A NO PUBLIC JSON FOUND verdict means none was found from the career page, not that none exists.",
+  "results": [
+    {
+      "platform": "zohorecruit",
+      "tenantsFound": 203,
+      "topTenants": [
+        {
+          "tenant": "localeyes",
+          "hits": 160
+        },
+        {
+          "tenant": "jamppharma",
+          "hits": 45
+        },
+        {
+          "tenant": "technicalplacements",
+          "hits": 33
+        },
+        {
+          "tenant": "gatesourcehrus",
+          "hits": 25
+        },
+        {
+          "tenant": "seaplaneasia",
+          "hits": 19
+        },
+        {
+          "tenant": "questalliance",
+          "hits": 16
+        },
+        {
+          "tenant": "qsourcing",
+          "hits": 11
+        },
+        {
+          "tenant": "prbythebook",
+          "hits": 9
+        },
+        {
+          "tenant": "indiumsoft",
+          "hits": 8
+        },
+        {
+          "tenant": "baronstaffing",
+          "hits": 7
+        },
+        {
+          "tenant": "jetsonmarketing",
+          "hits": 7
+        },
+        {
+          "tenant": "outsourceaccess",
+          "hits": 7
+        }
+      ],
+      "verdict": "NO PUBLIC JSON FOUND",
+      "workingEndpoint": null,
+      "sampleTenant": null,
+      "attempts": [
+        {
+          "tenant": "localeyes",
+          "url": "https://localeyes.zohorecruit.com/jobs/Careers",
+          "status": 200,
+          "len": 1815887
+        },
+        {
+          "tenant": "localeyes",
+          "url": "https://localeyes.zohorecruit.com/jobs/Careers",
+          "status": 200,
+          "ct": "text/html;charset=UTF-8",
+          "jobs": false
+        },
+        {
+          "tenant": "jamppharma",
+          "url": "https://jamppharma.zohorecruit.com/jobs/Careers",
+          "status": 200,
+          "len": 1797484
+        },
+        {
+          "tenant": "jamppharma",
+          "url": "https://jamppharma.zohorecruit.com/jobs/Careers",
+          "status": 200,
+          "ct": "text/html;charset=UTF-8",
+          "jobs": false
+        },
+        {
+          "tenant": "technicalplacements",
+          "url": "https://technicalplacements.zohorecruit.com/jobs/Careers",
+          "status": 200,
+          "len": 1741209
+        },
+        {
+          "tenant": "technicalplacements",
+          "url": "https://technicalplacements.zohorecruit.com/jobs/Careers",
+          "status": 200,
+          "ct": "text/html;charset=UTF-8",
+          "jobs": false
+        },
+        {
+          "tenant": "gatesourcehrus",
+          "url": "https://gatesourcehrus.zohorecruit.com/jobs/Careers",
+          "status": 200,
+          "len": 2342448
+        },
+        {
+          "tenant": "gatesourcehrus",
+          "url": "https://gatesourcehrus.zohorecruit.com/jobs/Careers",
+          "status": 200,
+          "ct": "text/html;charset=UTF-8",
+          "jobs": false
+        },
+        {
+          "tenant": "gatesourcehrus",
+          "url": "https://gatesourcehrus.zohorecruit.com/jobs/Careers/rss",
+          "status": 200,
+          "ct": "application/rss+xml;charset=utf-8",
+          "jobs": false
+        },
+        {
+          "tenant": "gatesourcehrus",
+          "url": "https://gatesourcehrus.zohorecruit.com/jobs/USA-Mining-Jobs",
+          "status": 200,
+          "ct": "text/html;charset=UTF-8",
+          "jobs": false
+        }
+      ]
+    },
+    {
+      "platform": "darwinbox",
+      "tenantsFound": 22,
+      "topTenants": [
+        {
+          "tenant": "oneeverest",
+          "hits": 24
+        },
+        {
+          "tenant": "emeritus",
+          "hits": 20
+        },
+        {
+          "tenant": "1mg",
+          "hits": 13
+        },
+        {
+          "tenant": "airtel",
+          "hits": 8
+        },
+        {
+          "tenant": "leadsquaredhrms",
+          "hits": 8
+        },
+        {
+          "tenant": "unacademy",
+          "hits": 7
+        },
+        {
+          "tenant": "upstox",
+          "hits": 7
+        },
+        {
+          "tenant": "ashokleyland",
+          "hits": 6
+        },
+        {
+          "tenant": "dbox",
+          "hits": 6
+        },
+        {
+          "tenant": "greenkogroup",
+          "hits": 6
+        },
+        {
+          "tenant": "porter",
+          "hits": 6
+        },
+        {
+          "tenant": "scripbox",
+          "hits": 6
+        }
+      ],
+      "verdict": "NO PUBLIC JSON FOUND",
+      "workingEndpoint": null,
+      "sampleTenant": null,
+      "attempts": [
+        {
+          "tenant": "oneeverest",
+          "url": "https://oneeverest.darwinbox.in/ms/candidate/careers",
+          "status": 200,
+          "len": 1901
+        },
+        {
+          "tenant": "oneeverest",
+          "url": "https://challenges.cloudflare.com/turnstile/v0/api.js",
+          "status": 200,
+          "ct": "application/javascript; charset=UTF-8",
+          "jobs": false
+        },
+        {
+          "tenant": "emeritus",
+          "url": "https://emeritus.darwinbox.in/ms/candidate/careers",
+          "status": 200,
+          "len": 1901
+        },
+        {
+          "tenant": "emeritus",
+          "url": "https://challenges.cloudflare.com/turnstile/v0/api.js",
+          "status": 200,
+          "ct": "application/javascript; charset=UTF-8",
+          "jobs": false
+        },
+        {
+          "tenant": "1mg",
+          "url": "https://1mg.darwinbox.in/ms/candidate/careers",
+          "status": 200,
+          "len": 1901
+        },
+        {
+          "tenant": "1mg",
+          "url": "https://challenges.cloudflare.com/turnstile/v0/api.js",
+          "status": 200,
+          "ct": "application/javascript; charset=UTF-8",
+          "jobs": false
+        },
+        {
+          "tenant": "airtel",
+          "url": "https://airtel.darwinbox.in/ms/candidate/careers",
+          "status": 200,
+          "len": 1901
+        },
+        {
+          "tenant": "airtel",
+          "url": "https://challenges.cloudflare.com/turnstile/v0/api.js",
+          "status": 200,
+          "ct": "application/javascript; charset=UTF-8",
+          "jobs": false
+        }
+      ]
+    },
+    {
+      "platform": "keka",
+      "tenantsFound": 210,
+      "topTenants": [
+        {
+          "tenant": "academy",
+          "hits": 494
+        },
+        {
+          "tenant": "developers",
+          "hits": 57
+        },
+        {
+          "tenant": "scimplify",
+          "hits": 23
+        },
+        {
+          "tenant": "coditation",
+          "hits": 14
+        },
+        {
+          "tenant": "royalhealth",
+          "hits": 13
+        },
+        {
+          "tenant": "conneqtiongroup",
+          "hits": 12
+        },
+        {
+          "tenant": "avidorganics",
+          "hits": 11
+        },
+        {
+          "tenant": "denken",
+          "hits": 11
+        },
+        {
+          "tenant": "loop",
+          "hits": 11
+        },
+        {
+          "tenant": "sohodragon",
+          "hits": 10
+        },
+        {
+          "tenant": "turno",
+          "hits": 10
+        },
+        {
+          "tenant": "zeliot",
+          "hits": 10
+        }
+      ],
+      "verdict": "NO PUBLIC JSON FOUND",
+      "workingEndpoint": null,
+      "sampleTenant": null,
+      "attempts": [
+        {
+          "tenant": "academy",
+          "url": "https://academy.keka.com/careers/",
+          "status": 404,
+          "len": 161572
+        },
+        {
+          "tenant": "developers",
+          "url": "https://developers.keka.com/careers/",
+          "status": 404,
+          "len": 95861
+        },
+        {
+          "tenant": "scimplify",
+          "url": "https://scimplify.keka.com/careers/",
+          "status": 200,
+          "len": 1675
+        },
+        {
+          "tenant": "coditation",
+          "url": "https://coditation.keka.com/careers/",
+          "status": 200,
+          "len": 4219
+        },
+        {
+          "tenant": "coditation",
+          "url": "https://coditation.keka.com/careers/",
+          "status": 200,
+          "ct": "text/html; charset=utf-8",
+          "jobs": false
+        }
+      ]
+    },
+    {
+      "platform": "peoplestrong",
+      "tenantsFound": 17,
+      "topTenants": [
+        {
+          "tenant": "bflcareers",
+          "hits": 13
+        },
+        {
+          "tenant": "careers-myhr-apollo",
+          "hits": 8
+        },
+        {
+          "tenant": "careers-akasa",
+          "hits": 4
+        },
+        {
+          "tenant": "mpgcareers",
+          "hits": 4
+        },
+        {
+          "tenant": "torrentgroup",
+          "hits": 4
+        },
+        {
+          "tenant": "hrnextcareers",
+          "hits": 3
+        },
+        {
+          "tenant": "amararajacareers",
+          "hits": 2
+        },
+        {
+          "tenant": "ashianahrms",
+          "hits": 2
+        },
+        {
+          "tenant": "axagbscareers",
+          "hits": 2
+        },
+        {
+          "tenant": "careers-qualitykiosk",
+          "hits": 2
+        },
+        {
+          "tenant": "exlcareers",
+          "hits": 2
+        },
+        {
+          "tenant": "godrejcareers",
+          "hits": 2
+        }
+      ],
+      "verdict": "NO PUBLIC JSON FOUND",
+      "workingEndpoint": null,
+      "sampleTenant": null,
+      "attempts": [
+        {
+          "tenant": "bflcareers",
+          "url": "https://bflcareers.peoplestrong.com/",
+          "status": 200,
+          "len": 56166
+        },
+        {
+          "tenant": "careers-myhr-apollo",
+          "url": "https://careers-myhr-apollo.peoplestrong.com/",
+          "status": 200,
+          "len": 56166
+        },
+        {
+          "tenant": "careers-akasa",
+          "url": "https://careers-akasa.peoplestrong.com/",
+          "status": 200,
+          "len": 56165
+        },
+        {
+          "tenant": "mpgcareers",
+          "url": "https://mpgcareers.peoplestrong.com/",
+          "status": 200,
+          "len": 56166
+        }
+      ]
+    }
+  ]
+}

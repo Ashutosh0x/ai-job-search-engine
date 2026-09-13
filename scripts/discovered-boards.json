@@ -1,47 +1,20 @@
 {
-  "generatedAt": "2026-09-12T04:23:05.021Z",
+  "generatedAt": "2026-09-12T09:36:32.242Z",
   "verifiedProviders": [
-    "greenhouse",
-    "ashby",
-    "lever",
-    "workable"
+    "keka"
   ],
   "stats": {
-    "greenhouse": {
-      "candidates": 3960,
-      "live": 3040,
-      "empty": 219,
-      "dead": 701,
-      "unreachable": 0,
-      "roles": 125113
-    },
-    "ashby": {
-      "candidates": 2770,
-      "live": 2297,
-      "empty": 149,
-      "dead": 324,
-      "unreachable": 0,
-      "roles": 49778
-    },
-    "lever": {
-      "candidates": 0,
-      "live": 0,
-      "empty": 0,
-      "dead": 0,
-      "unreachable": 0,
-      "roles": 0
-    },
-    "workable": {
-      "candidates": 3159,
-      "live": 1161,
-      "empty": 681,
-      "dead": 60,
-      "unreachable": 1257,
-      "roles": 63224
+    "keka": {
+      "candidates": 208,
+      "live": 179,
+      "empty": 3,
+      "dead": 3,
+      "unreachable": 23,
+      "roles": 4089
     }
   },
-  "totalBoards": 7178,
-  "totalOpenRoles": 511285,
+  "totalBoards": 7357,
+  "totalOpenRoles": 515374,
   "boards": [
     {
       "provider": "smartrecruiters",
@@ -43746,6 +43719,1080 @@
       "token": "zaintech",
       "hits": 1,
       "openRoles": 54
+    },
+    {
+      "provider": "keka",
+      "token": "coditation",
+      "hits": 14,
+      "openRoles": 11
+    },
+    {
+      "provider": "keka",
+      "token": "sohodragon",
+      "hits": 10,
+      "openRoles": 6
+    },
+    {
+      "provider": "keka",
+      "token": "avidorganics",
+      "hits": 11,
+      "openRoles": 13
+    },
+    {
+      "provider": "keka",
+      "token": "denken",
+      "hits": 11,
+      "openRoles": 12
+    },
+    {
+      "provider": "keka",
+      "token": "conneqtiongroup",
+      "hits": 12,
+      "openRoles": 18
+    },
+    {
+      "provider": "keka",
+      "token": "loop",
+      "hits": 11,
+      "openRoles": 28
+    },
+    {
+      "provider": "keka",
+      "token": "turno",
+      "hits": 10,
+      "openRoles": 17
+    },
+    {
+      "provider": "keka",
+      "token": "scimplify",
+      "hits": 23,
+      "openRoles": 76
+    },
+    {
+      "provider": "keka",
+      "token": "zeliot",
+      "hits": 10,
+      "openRoles": 1
+    },
+    {
+      "provider": "keka",
+      "token": "acaindia",
+      "hits": 7,
+      "openRoles": 23
+    },
+    {
+      "provider": "keka",
+      "token": "cleanmax",
+      "hits": 7,
+      "openRoles": 40
+    },
+    {
+      "provider": "keka",
+      "token": "lumel",
+      "hits": 7,
+      "openRoles": 2
+    },
+    {
+      "provider": "keka",
+      "token": "royalhealth",
+      "hits": 13,
+      "openRoles": 98
+    },
+    {
+      "provider": "keka",
+      "token": "dashtech",
+      "hits": 7,
+      "openRoles": 15
+    },
+    {
+      "provider": "keka",
+      "token": "hr",
+      "hits": 7,
+      "openRoles": 55
+    },
+    {
+      "provider": "keka",
+      "token": "blogvault",
+      "hits": 6,
+      "openRoles": 2
+    },
+    {
+      "provider": "keka",
+      "token": "acuitilabs",
+      "hits": 6,
+      "openRoles": 17
+    },
+    {
+      "provider": "keka",
+      "token": "onsitego",
+      "hits": 6,
+      "openRoles": 25
+    },
+    {
+      "provider": "keka",
+      "token": "amberstudent",
+      "hits": 5,
+      "openRoles": 20
+    },
+    {
+      "provider": "keka",
+      "token": "netcomlearning",
+      "hits": 6,
+      "openRoles": 31
+    },
+    {
+      "provider": "keka",
+      "token": "inc42",
+      "hits": 5,
+      "openRoles": 25
+    },
+    {
+      "provider": "keka",
+      "token": "sidvin",
+      "hits": 5,
+      "openRoles": 5
+    },
+    {
+      "provider": "keka",
+      "token": "oneture",
+      "hits": 5,
+      "openRoles": 13
+    },
+    {
+      "provider": "keka",
+      "token": "sidsfarm",
+      "hits": 6,
+      "openRoles": 27
+    },
+    {
+      "provider": "keka",
+      "token": "spyneai",
+      "hits": 5,
+      "openRoles": 19
+    },
+    {
+      "provider": "keka",
+      "token": "sjinnovation",
+      "hits": 5,
+      "openRoles": 21
+    },
+    {
+      "provider": "keka",
+      "token": "wingify",
+      "hits": 5,
+      "openRoles": 19
+    },
+    {
+      "provider": "keka",
+      "token": "academian",
+      "hits": 4,
+      "openRoles": 33
+    },
+    {
+      "provider": "keka",
+      "token": "arisinfra",
+      "hits": 4,
+      "openRoles": 5
+    },
+    {
+      "provider": "keka",
+      "token": "arthanergy",
+      "hits": 4,
+      "openRoles": 11
+    },
+    {
+      "provider": "keka",
+      "token": "attentiveos",
+      "hits": 4,
+      "openRoles": 26
+    },
+    {
+      "provider": "keka",
+      "token": "aussizzgroup",
+      "hits": 4,
+      "openRoles": 3
+    },
+    {
+      "provider": "keka",
+      "token": "autonomize",
+      "hits": 4,
+      "openRoles": 14
+    },
+    {
+      "provider": "keka",
+      "token": "changeinkk",
+      "hits": 4,
+      "openRoles": 6
+    },
+    {
+      "provider": "keka",
+      "token": "conservetrichy",
+      "hits": 4,
+      "openRoles": 6
+    },
+    {
+      "provider": "keka",
+      "token": "deepdive",
+      "hits": 4,
+      "openRoles": 11
+    },
+    {
+      "provider": "keka",
+      "token": "greyb",
+      "hits": 4,
+      "openRoles": 5
+    },
+    {
+      "provider": "keka",
+      "token": "almirqab",
+      "hits": 4,
+      "openRoles": 1
+    },
+    {
+      "provider": "keka",
+      "token": "growndiamondcorp",
+      "hits": 4,
+      "openRoles": 12
+    },
+    {
+      "provider": "keka",
+      "token": "infiniteuptime",
+      "hits": 4,
+      "openRoles": 1
+    },
+    {
+      "provider": "keka",
+      "token": "icreativeaktiv",
+      "hits": 4,
+      "openRoles": 9
+    },
+    {
+      "provider": "keka",
+      "token": "inventyv",
+      "hits": 4,
+      "openRoles": 4
+    },
+    {
+      "provider": "keka",
+      "token": "teaxpress",
+      "hits": 4,
+      "openRoles": 7
+    },
+    {
+      "provider": "keka",
+      "token": "surveysparrow",
+      "hits": 4,
+      "openRoles": 7
+    },
+    {
+      "provider": "keka",
+      "token": "perceptyne",
+      "hits": 4,
+      "openRoles": 10
+    },
+    {
+      "provider": "keka",
+      "token": "absolutelabs",
+      "hits": 3,
+      "openRoles": 9
+    },
+    {
+      "provider": "keka",
+      "token": "thenudge",
+      "hits": 4,
+      "openRoles": 40
+    },
+    {
+      "provider": "keka",
+      "token": "axio",
+      "hits": 3,
+      "openRoles": 6
+    },
+    {
+      "provider": "keka",
+      "token": "bolt",
+      "hits": 3,
+      "openRoles": 11
+    },
+    {
+      "provider": "keka",
+      "token": "burlington",
+      "hits": 3,
+      "openRoles": 20
+    },
+    {
+      "provider": "keka",
+      "token": "comida",
+      "hits": 3,
+      "openRoles": 7
+    },
+    {
+      "provider": "keka",
+      "token": "coozmoo",
+      "hits": 3,
+      "openRoles": 11
+    },
+    {
+      "provider": "keka",
+      "token": "fynd",
+      "hits": 3,
+      "openRoles": 46
+    },
+    {
+      "provider": "keka",
+      "token": "montycloud",
+      "hits": 3,
+      "openRoles": 9
+    },
+    {
+      "provider": "keka",
+      "token": "nonstopio",
+      "hits": 3,
+      "openRoles": 10
+    },
+    {
+      "provider": "keka",
+      "token": "nutrabay",
+      "hits": 3,
+      "openRoles": 21
+    },
+    {
+      "provider": "keka",
+      "token": "procedure",
+      "hits": 3,
+      "openRoles": 6
+    },
+    {
+      "provider": "keka",
+      "token": "qed42",
+      "hits": 3,
+      "openRoles": 1
+    },
+    {
+      "provider": "keka",
+      "token": "remidio",
+      "hits": 3,
+      "openRoles": 12
+    },
+    {
+      "provider": "keka",
+      "token": "sarlaaviation",
+      "hits": 3,
+      "openRoles": 12
+    },
+    {
+      "provider": "keka",
+      "token": "satsure",
+      "hits": 3,
+      "openRoles": 24
+    },
+    {
+      "provider": "keka",
+      "token": "talakunchi",
+      "hits": 3,
+      "openRoles": 24
+    },
+    {
+      "provider": "keka",
+      "token": "vegapay",
+      "hits": 3,
+      "openRoles": 9
+    },
+    {
+      "provider": "keka",
+      "token": "zebu",
+      "hits": 3,
+      "openRoles": 44
+    },
+    {
+      "provider": "keka",
+      "token": "zenwork",
+      "hits": 3,
+      "openRoles": 13
+    },
+    {
+      "provider": "keka",
+      "token": "zuddl",
+      "hits": 3,
+      "openRoles": 8
+    },
+    {
+      "provider": "keka",
+      "token": "zypp",
+      "hits": 3,
+      "openRoles": 19
+    },
+    {
+      "provider": "keka",
+      "token": "10decoders",
+      "hits": 2,
+      "openRoles": 13
+    },
+    {
+      "provider": "keka",
+      "token": "abans",
+      "hits": 2,
+      "openRoles": 8
+    },
+    {
+      "provider": "keka",
+      "token": "adda247",
+      "hits": 2,
+      "openRoles": 11
+    },
+    {
+      "provider": "keka",
+      "token": "aga",
+      "hits": 2,
+      "openRoles": 36
+    },
+    {
+      "provider": "keka",
+      "token": "airpay",
+      "hits": 2,
+      "openRoles": 23
+    },
+    {
+      "provider": "keka",
+      "token": "almondz",
+      "hits": 2,
+      "openRoles": 6
+    },
+    {
+      "provider": "keka",
+      "token": "americanchase",
+      "hits": 2,
+      "openRoles": 5
+    },
+    {
+      "provider": "keka",
+      "token": "analyticsvidhya",
+      "hits": 2,
+      "openRoles": 12
+    },
+    {
+      "provider": "keka",
+      "token": "antiersolutions",
+      "hits": 2,
+      "openRoles": 20
+    },
+    {
+      "provider": "keka",
+      "token": "anblicks",
+      "hits": 2,
+      "openRoles": 158
+    },
+    {
+      "provider": "keka",
+      "token": "armakuni",
+      "hits": 2,
+      "openRoles": 11
+    },
+    {
+      "provider": "keka",
+      "token": "asteria",
+      "hits": 2,
+      "openRoles": 3
+    },
+    {
+      "provider": "keka",
+      "token": "astpl",
+      "hits": 2,
+      "openRoles": 34
+    },
+    {
+      "provider": "keka",
+      "token": "auracloud",
+      "hits": 2,
+      "openRoles": 4
+    },
+    {
+      "provider": "keka",
+      "token": "attero",
+      "hits": 2,
+      "openRoles": 84
+    },
+    {
+      "provider": "keka",
+      "token": "aurumanalytica",
+      "hits": 2,
+      "openRoles": 12
+    },
+    {
+      "provider": "keka",
+      "token": "avizva",
+      "hits": 2,
+      "openRoles": 6
+    },
+    {
+      "provider": "keka",
+      "token": "beebommedia",
+      "hits": 2,
+      "openRoles": 6
+    },
+    {
+      "provider": "keka",
+      "token": "bukhashbrothers",
+      "hits": 2,
+      "openRoles": 5
+    },
+    {
+      "provider": "keka",
+      "token": "candorhealth",
+      "hits": 2,
+      "openRoles": 9
+    },
+    {
+      "provider": "keka",
+      "token": "cloudkaptan",
+      "hits": 2,
+      "openRoles": 3
+    },
+    {
+      "provider": "keka",
+      "token": "cloudthat",
+      "hits": 2,
+      "openRoles": 85
+    },
+    {
+      "provider": "keka",
+      "token": "coditude",
+      "hits": 2,
+      "openRoles": 33
+    },
+    {
+      "provider": "keka",
+      "token": "convin",
+      "hits": 2,
+      "openRoles": 4
+    },
+    {
+      "provider": "keka",
+      "token": "cityflo",
+      "hits": 2,
+      "openRoles": 10
+    },
+    {
+      "provider": "keka",
+      "token": "cybernetyxtechnik",
+      "hits": 2,
+      "openRoles": 13
+    },
+    {
+      "provider": "keka",
+      "token": "dataction",
+      "hits": 2,
+      "openRoles": 3
+    },
+    {
+      "provider": "keka",
+      "token": "cybergate",
+      "hits": 2,
+      "openRoles": 10
+    },
+    {
+      "provider": "keka",
+      "token": "discoverdollar",
+      "hits": 2,
+      "openRoles": 18
+    },
+    {
+      "provider": "keka",
+      "token": "disprz",
+      "hits": 2,
+      "openRoles": 10
+    },
+    {
+      "provider": "keka",
+      "token": "enveu",
+      "hits": 2,
+      "openRoles": 7
+    },
+    {
+      "provider": "keka",
+      "token": "dyadtech",
+      "hits": 2,
+      "openRoles": 3
+    },
+    {
+      "provider": "keka",
+      "token": "escalon",
+      "hits": 2,
+      "openRoles": 6
+    },
+    {
+      "provider": "keka",
+      "token": "erhospitality",
+      "hits": 2,
+      "openRoles": 15
+    },
+    {
+      "provider": "keka",
+      "token": "fcb",
+      "hits": 2,
+      "openRoles": 4
+    },
+    {
+      "provider": "keka",
+      "token": "flentas",
+      "hits": 2,
+      "openRoles": 5
+    },
+    {
+      "provider": "keka",
+      "token": "flowdynamics",
+      "hits": 2,
+      "openRoles": 10
+    },
+    {
+      "provider": "keka",
+      "token": "fpga",
+      "hits": 2,
+      "openRoles": 4
+    },
+    {
+      "provider": "keka",
+      "token": "flpl",
+      "hits": 2,
+      "openRoles": 13
+    },
+    {
+      "provider": "keka",
+      "token": "gallagherandmohan",
+      "hits": 2,
+      "openRoles": 9
+    },
+    {
+      "provider": "keka",
+      "token": "geminiconsulting",
+      "hits": 2,
+      "openRoles": 18
+    },
+    {
+      "provider": "keka",
+      "token": "gameberry",
+      "hits": 2,
+      "openRoles": 13
+    },
+    {
+      "provider": "keka",
+      "token": "getambee",
+      "hits": 2,
+      "openRoles": 2
+    },
+    {
+      "provider": "keka",
+      "token": "gokwik",
+      "hits": 2,
+      "openRoles": 23
+    },
+    {
+      "provider": "keka",
+      "token": "gostops",
+      "hits": 2,
+      "openRoles": 29
+    },
+    {
+      "provider": "keka",
+      "token": "grexa",
+      "hits": 2,
+      "openRoles": 9
+    },
+    {
+      "provider": "keka",
+      "token": "hashout",
+      "hits": 2,
+      "openRoles": 12
+    },
+    {
+      "provider": "keka",
+      "token": "hitechroboticsystemz",
+      "hits": 2,
+      "openRoles": 5
+    },
+    {
+      "provider": "keka",
+      "token": "inxiteout",
+      "hits": 2,
+      "openRoles": 8
+    },
+    {
+      "provider": "keka",
+      "token": "idream",
+      "hits": 2,
+      "openRoles": 13
+    },
+    {
+      "provider": "keka",
+      "token": "irsl",
+      "hits": 2,
+      "openRoles": 28
+    },
+    {
+      "provider": "keka",
+      "token": "ketto",
+      "hits": 2,
+      "openRoles": 32
+    },
+    {
+      "provider": "keka",
+      "token": "knolskape",
+      "hits": 2,
+      "openRoles": 16
+    },
+    {
+      "provider": "keka",
+      "token": "mihup",
+      "hits": 2,
+      "openRoles": 5
+    },
+    {
+      "provider": "keka",
+      "token": "lambdatest",
+      "hits": 2,
+      "openRoles": 7
+    },
+    {
+      "provider": "keka",
+      "token": "motiveminds",
+      "hits": 2,
+      "openRoles": 14
+    },
+    {
+      "provider": "keka",
+      "token": "mozilortech",
+      "hits": 2,
+      "openRoles": 9
+    },
+    {
+      "provider": "keka",
+      "token": "mpl1",
+      "hits": 2,
+      "openRoles": 6
+    },
+    {
+      "provider": "keka",
+      "token": "mydbops",
+      "hits": 2,
+      "openRoles": 7
+    },
+    {
+      "provider": "keka",
+      "token": "myhq",
+      "hits": 2,
+      "openRoles": 26
+    },
+    {
+      "provider": "keka",
+      "token": "netwayindia",
+      "hits": 2,
+      "openRoles": 15
+    },
+    {
+      "provider": "keka",
+      "token": "neutrinos",
+      "hits": 2,
+      "openRoles": 4
+    },
+    {
+      "provider": "keka",
+      "token": "nurix",
+      "hits": 2,
+      "openRoles": 11
+    },
+    {
+      "provider": "keka",
+      "token": "pcbpower",
+      "hits": 2,
+      "openRoles": 9
+    },
+    {
+      "provider": "keka",
+      "token": "kpgroup",
+      "hits": 2,
+      "openRoles": 921
+    },
+    {
+      "provider": "keka",
+      "token": "primetrace",
+      "hits": 2,
+      "openRoles": 21
+    },
+    {
+      "provider": "keka",
+      "token": "qservices",
+      "hits": 2,
+      "openRoles": 5
+    },
+    {
+      "provider": "keka",
+      "token": "procol",
+      "hits": 2,
+      "openRoles": 9
+    },
+    {
+      "provider": "keka",
+      "token": "queuebuster",
+      "hits": 2,
+      "openRoles": 7
+    },
+    {
+      "provider": "keka",
+      "token": "rigi",
+      "hits": 2,
+      "openRoles": 2
+    },
+    {
+      "provider": "keka",
+      "token": "sapcon",
+      "hits": 2,
+      "openRoles": 2
+    },
+    {
+      "provider": "keka",
+      "token": "rnc",
+      "hits": 2,
+      "openRoles": 23
+    },
+    {
+      "provider": "keka",
+      "token": "sarvesh",
+      "hits": 2,
+      "openRoles": 23
+    },
+    {
+      "provider": "keka",
+      "token": "seas",
+      "hits": 2,
+      "openRoles": 31
+    },
+    {
+      "provider": "keka",
+      "token": "sellability",
+      "hits": 2,
+      "openRoles": 12
+    },
+    {
+      "provider": "keka",
+      "token": "selldo",
+      "hits": 2,
+      "openRoles": 4
+    },
+    {
+      "provider": "keka",
+      "token": "shipthis",
+      "hits": 2,
+      "openRoles": 3
+    },
+    {
+      "provider": "keka",
+      "token": "sjcontractspvtltd",
+      "hits": 2,
+      "openRoles": 21
+    },
+    {
+      "provider": "keka",
+      "token": "shopos",
+      "hits": 2,
+      "openRoles": 26
+    },
+    {
+      "provider": "keka",
+      "token": "shreenm",
+      "hits": 2,
+      "openRoles": 58
+    },
+    {
+      "provider": "keka",
+      "token": "skylarkdrones",
+      "hits": 2,
+      "openRoles": 23
+    },
+    {
+      "provider": "keka",
+      "token": "smartdocs",
+      "hits": 2,
+      "openRoles": 21
+    },
+    {
+      "provider": "keka",
+      "token": "softprodigy",
+      "hits": 2,
+      "openRoles": 1
+    },
+    {
+      "provider": "keka",
+      "token": "smilefoundation",
+      "hits": 2,
+      "openRoles": 23
+    },
+    {
+      "provider": "keka",
+      "token": "techdome",
+      "hits": 2,
+      "openRoles": 9
+    },
+    {
+      "provider": "keka",
+      "token": "tarento",
+      "hits": 2,
+      "openRoles": 28
+    },
+    {
+      "provider": "keka",
+      "token": "testsigma",
+      "hits": 2,
+      "openRoles": 2
+    },
+    {
+      "provider": "keka",
+      "token": "tekmindz",
+      "hits": 2,
+      "openRoles": 24
+    },
+    {
+      "provider": "keka",
+      "token": "supertechgroup",
+      "hits": 2,
+      "openRoles": 12
+    },
+    {
+      "provider": "keka",
+      "token": "toddle",
+      "hits": 2,
+      "openRoles": 25
+    },
+    {
+      "provider": "keka",
+      "token": "tradelab",
+      "hits": 2,
+      "openRoles": 11
+    },
+    {
+      "provider": "keka",
+      "token": "tripledart",
+      "hits": 2,
+      "openRoles": 5
+    },
+    {
+      "provider": "keka",
+      "token": "thf",
+      "hits": 2,
+      "openRoles": 110
+    },
+    {
+      "provider": "keka",
+      "token": "snoonu",
+      "hits": 2,
+      "openRoles": 82
+    },
+    {
+      "provider": "keka",
+      "token": "ucdc",
+      "hits": 2,
+      "openRoles": 9
+    },
+    {
+      "provider": "keka",
+      "token": "unidel",
+      "hits": 2,
+      "openRoles": 1
+    },
+    {
+      "provider": "keka",
+      "token": "udchalo",
+      "hits": 2,
+      "openRoles": 2
+    },
+    {
+      "provider": "keka",
+      "token": "vajrorap",
+      "hits": 2,
+      "openRoles": 2
+    },
+    {
+      "provider": "keka",
+      "token": "venwiztechnologies",
+      "hits": 2,
+      "openRoles": 14
+    },
+    {
+      "provider": "keka",
+      "token": "vitely",
+      "hits": 2,
+      "openRoles": 5
+    },
+    {
+      "provider": "keka",
+      "token": "vecmocon",
+      "hits": 2,
+      "openRoles": 25
+    },
+    {
+      "provider": "keka",
+      "token": "vncglobal",
+      "hits": 2,
+      "openRoles": 3
+    },
+    {
+      "provider": "keka",
+      "token": "webvillee",
+      "hits": 2,
+      "openRoles": 3
+    },
+    {
+      "provider": "keka",
+      "token": "webito",
+      "hits": 2,
+      "openRoles": 13
+    },
+    {
+      "provider": "keka",
+      "token": "vyaparapp",
+      "hits": 2,
+      "openRoles": 75
+    },
+    {
+      "provider": "keka",
+      "token": "wohlig",
+      "hits": 2,
+      "openRoles": 18
+    },
+    {
+      "provider": "keka",
+      "token": "zanskar",
+      "hits": 2,
+      "openRoles": 16
+    },
+    {
+      "provider": "keka",
+      "token": "winfosolutions",
+      "hits": 2,
+      "openRoles": 34
+    },
+    {
+      "provider": "keka",
+      "token": "zehntech",
+      "hits": 2,
+      "openRoles": 5
+    },
+    {
+      "provider": "keka",
+      "token": "zupersoft",
+      "hits": 2,
+      "openRoles": 6
+    },
+    {
+      "provider": "keka",
+      "token": "unitedwaymumbai",
+      "hits": 2,
+      "openRoles": 20
+    },
+    {
+      "provider": "keka",
+      "token": "universaled",
+      "hits": 2,
+      "openRoles": 70
     }
   ]
 }

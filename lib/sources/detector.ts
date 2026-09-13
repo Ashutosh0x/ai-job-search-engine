@@ -78,6 +78,19 @@ export const SIGNATURES: Signature[] = [
     },
   },
   {
+    source: 'keka',
+    hosts: [/(^|\.)keka\.com$/i],
+    paths: [/^\/careers/i],
+    markers: [/kh-jobs-section/i, /careers\/api\/jobs\//i, /cdn\.keka\.com/i],
+    parseUrl: (u) => {
+      // The tenant is the subdomain; the path carries the posting, not the
+      // board. keka.com itself is the vendor's own site, not a career portal.
+      const m = u.host.match(/^([a-z0-9][a-z0-9-]*)\.keka\.com$/i)
+      if (!m || /^(www|help|blog|docs|support|status|cdn)$/i.test(m[1])) return null
+      return { token: m[1].toLowerCase(), host: u.host.toLowerCase() }
+    },
+  },
+  {
     source: 'lever',
     hosts: [/(^|\.)lever\.co$/i],
     markers: [/jobs\.lever\.co/i, /api\.lever\.co/i, /lever-client/i],

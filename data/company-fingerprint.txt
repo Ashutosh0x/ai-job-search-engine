@@ -1,0 +1,426 @@
+# EMPLOYER INFRASTRUCTURE FINGERPRINT
+# generated 2026-09-12T10:08:45.660Z
+# 26 institutions, resolved against 1.1.1.1 / 8.8.8.8
+
+WHAT IS AND IS NOT HERE
+  Here: MX, SPF, DMARC, NS and vendor tokens -- all public DNS, read live.
+  Plus the ATS, where this repo has actually called the careers API.
+
+  NOT here: email address patterns. DNS shows who runs the mailbox, never
+  how the local part is composed, so claims like "firstname.lastname --
+  76%" cannot be checked from any public record and are not repeated.
+  No addresses for individuals are generated.
+
+=============================================================
+MAIL AND DMARC POSTURE
+=============================================================
+  DMARC p=reject or p=quarantine means the domain asks receivers to act
+  on spoofed mail. p=none means it only collects reports -- a domain
+  anyone can be impersonated from, which matters when recruitment fraud
+  is the thing being impersonated.
+
+  institution            mail provider          DMARC       DNS
+  JPMorgan Chase         Symantec/MessageLabs   reject      NS1
+  Morgan Stanley         self-hosted / other    reject      NS1
+  Citigroup              self-hosted / other    reject      NS1
+  Bank of America        Proofpoint             reject      ?
+  Wells Fargo            Proofpoint             reject      Akamai
+  Goldman Sachs          Proofpoint             reject      NS1
+  Citadel                Proofpoint             quarantine  AWS Route 53
+  Citadel Securities     Proofpoint             quarantine  AWS Route 53
+  Visa                   self-hosted / other    quarantine  Cloudflare
+  Mastercard             Proofpoint             reject      Akamai
+  PayPal                 self-hosted / other    reject      UltraDNS/Neustar
+  Barclays               Proofpoint             reject      Akamai
+  HSBC                   Proofpoint             reject      ?
+  Lloyds Banking Group   Microsoft 365          reject      ?
+  NatWest Group          self-hosted / other    reject      NS1
+  Standard Chartered     Proofpoint             reject      NS1
+  Commonwealth Bank      Microsoft 365          reject      AWS Route 53
+  NAB                    Microsoft 365          reject      NS1
+  Deutsche Bank          self-hosted / other    reject      NS1
+  Commerzbank            Microsoft 365          reject      ?
+  MUFG                   self-hosted / other    reject      Akamai
+  BNY Mellon             Proofpoint             reject      Cloudflare
+  HDFC Bank              Microsoft 365          reject      Cloudflare
+  State Bank of India    Microsoft 365          reject      ?
+  NPCI                   self-hosted / other    reject      Akamai
+  Jane Street            self-hosted / other    quarantine  AWS Route 53
+
+  enforcing (reject/quarantine) : 26/26
+  monitor only (p=none)         : 0  
+  no DMARC record               : 0  
+
+=============================================================
+ATS / HIRING PLATFORM (called, not asserted)
+=============================================================
+  JPMorgan Chase         Oracle Cloud HCM (unverified: no public JSON API)
+  Morgan Stanley         Workday ms/External (VERIFIED 1,286 roles)
+  Citigroup              Workday citi/2 (VERIFIED; citi_careers 404s)
+  Bank of America        Workday ghr/Lateral-US (VERIFIED 2,005)
+  Wells Fargo            Workday wf/WellsFargoJobs (VERIFIED 1,796)
+  Goldman Sachs          not established here
+  Citadel                UNKNOWN (Greenhouse claim disproven: 404)
+  Citadel Securities     UNKNOWN (Greenhouse claim disproven: 404)
+  Visa                   Workday visa/Visa (VERIFIED 760)
+  Mastercard             Workday mastercard/CorporateCareers (VERIFIED 1,055)
+  PayPal                 Workday paypal/jobs (VERIFIED 128)
+  Barclays               Workday barclays/External_Career_Site_Barclays (VERIFIED 1,014)
+  HSBC                   Eightfold (adapter exists; not called here)
+  Lloyds Banking Group   Workday lbg/lbg_Careers (VERIFIED 113)
+  NatWest Group          Workday rbs/RBS (VERIFIED 107)
+  Standard Chartered     Workday peopleplus/SCB_Careers (VERIFIED 55)
+  Commonwealth Bank      Workday cba/CommBank_Careers (VERIFIED 223)
+  NAB                    Workday nab/NAB_Careers (VERIFIED 277)
+  Deutsche Bank          Workday db/DBWebsite (VERIFIED 1,136)
+  Commerzbank            SAP SuccessFactors (no public JSON API)
+  MUFG                   Workday mufgub/MUFG-Careers (VERIFIED 660)
+  BNY Mellon             Oracle Cloud HCM (no public JSON API)
+  HDFC Bank              SAP SuccessFactors (no public JSON API)
+  State Bank of India    in-house CRPD / TCS iON
+  NPCI                   Darwinbox (no public JSON API)
+  Jane Street            Greenhouse janestreet (VERIFIED 230 roles)
+
+=============================================================
+VENDORS NAMED IN DNS
+=============================================================
+  An SPF include authorises that vendor to send mail as the company, and
+  a verification TXT token is placed to prove domain ownership to it.
+  Both are the company's own statement that the product is in use.
+
+  JPMorgan Chase
+      Facebook page (marketing)
+  Morgan Stanley
+      Atlassian, DocuSign, Salesforce
+  Citigroup
+      Adobe, Atlassian, DocuSign
+  Bank of America
+      DocuSign, Facebook page (marketing)
+  Wells Fargo
+      Atlassian, DocuSign, Facebook page (marketing)
+  Goldman Sachs
+      Atlassian, DocuSign, Salesforce
+  Citadel
+      Amazon SES, Atlassian, DocuSign
+  Citadel Securities
+      Atlassian, DocuSign
+  Visa
+      Adobe, Atlassian, DocuSign, Facebook page (marketing)
+  Mastercard
+      Adobe, Atlassian, Facebook page (marketing), Salesforce
+  PayPal
+      Adobe, Atlassian, Meta Workplace, Salesforce, SendGrid
+  Barclays
+      Adobe, Atlassian, DocuSign, Facebook page (marketing)
+  HSBC
+      Adobe, Atlassian, DocuSign
+  Lloyds Banking Group
+      Adobe, Atlassian
+  NatWest Group
+      Adobe, Amazon SES, Atlassian, Facebook page (marketing)
+  Standard Chartered
+      Adobe, Amazon SES, Atlassian, DocuSign, SAP SuccessFactors
+  Commonwealth Bank
+      Atlassian, DocuSign
+  NAB
+      Atlassian, DocuSign, Facebook page (marketing), Meta Workplace
+  Deutsche Bank
+      Adobe, Atlassian, DocuSign, Facebook page (marketing)
+  Commerzbank
+      Atlassian, DocuSign, Facebook page (marketing)
+  MUFG
+      Adobe, Atlassian, DocuSign, Salesforce
+  BNY Mellon
+      Adobe, Atlassian, DocuSign
+  NPCI
+      Atlassian
+  Jane Street
+      Adobe, Atlassian, Salesforce
+
+  Workday named in DNS: 0/26 -- none
+
+=============================================================
+PER-INSTITUTION DETAIL
+=============================================================
+
+## JPMorgan Chase  (jpmorganchase.com)
+   ATS        : Oracle Cloud HCM (unverified: no public JSON API)
+   MX         : cluster14.us.messagelabs.com, cluster14.us.messagelabs.com, cluster14.us.messagelabs.com, cluster14a.us.messagelabs.com   [on jpmorgan.com]
+   mail via   : Symantec/MessageLabs
+   SPF        : yes, 0 includes
+   DMARC      : v=DMARC1; p=reject; pct=100; rua=mailto:d@rua.agari.com; ruf=mailto:d@ruf.agari.com; fo=1
+   NS         : ns06.jpmorganchase.com, ns1.jpmorganchase.com, ns2.jpmorganchase.com, ns0134.secondary.cloudflare.com -> NS1, Cloudflare
+   vendors    : Facebook page (marketing)
+   TXT records: 20
+
+## Morgan Stanley  (morganstanley.com)
+   ATS        : Workday ms/External (VERIFIED 1,286 roles)
+   MX         : mx1.morganstanley.com, mx2.morganstanley.com, mx3.morganstanley.com, mx4.morganstanley.com
+   mail via   : self-hosted / other
+   SPF        : yes, 3 includes
+   authorises : _spf.morganstanley.neolane.net, aspmx.pardot.com, cust-spf.exacttarget.com
+   DMARC      : v=DMARC1; p=reject; fo=1; rua=mailto:dmarc_rua@emaildefense.proofpoint.com,mailto:morganstanley@rua.netcraft.com; ruf=mailto:dmarc_ruf@emaildefense.proofpoint.com,mailto:morganstanley@ruf.netcraft.com; adkim=s;
+   NS         : ext-ns10.morganstanley.net, ext-ns12.morganstanley.net, ext-ns1.morganstanley.net, ext-ns3.morganstanley.net -> NS1
+   vendors    : Atlassian, DocuSign, Salesforce
+   TXT records: 77
+
+## Citigroup  (citi.com)
+   ATS        : Workday citi/2 (VERIFIED; citi_careers 404s)
+   MX         : mx-a.mail.citi.com, mx-b.mail.citi.com
+   mail via   : self-hosted / other
+   SPF        : yes, 2 includes
+   authorises : spf-00123c01.pphosted.com, _spf.lwo.locaweb.com.br
+   DMARC      : v=DMARC1; p=reject; rua=mailto:dmarc_rua@emaildefense.proofpoint.com,mailto:dmarc.reports.rua@citi.com
+   NS         : ns1.nsroot1.com, ns2.nsroot2.com -> NS1
+   vendors    : Adobe, Atlassian, DocuSign
+   TXT records: 72
+
+## Bank of America  (bankofamerica.com)
+   ATS        : Workday ghr/Lateral-US (VERIFIED 2,005)
+   MX         : mxa-0000ec05.gslb.pphosted.com, mxb-0000ec05.gslb.pphosted.com
+   mail via   : Proofpoint
+   SPF        : yes, 1 includes
+   authorises : spf-0000ec15.pphosted.com
+   DMARC      : v=DMARC1; p=reject; fo=1; rua=mailto:auth.report_ns@bankofamerica.com; ruf=mailto:bankofamerica@ruf.agari.com
+   NS         : a.ns-bac.com, b.ns-bac.org, c.ns-bac.net, d.ns-bac.info 
+   vendors    : DocuSign, Facebook page (marketing)
+   TXT records: 69
+
+## Wells Fargo  (wellsfargo.com)
+   ATS        : Workday wf/WellsFargoJobs (VERIFIED 1,796)
+   MX         : mxa-00004003.gslb.pphosted.com, mxb-00004003.gslb.pphosted.com
+   mail via   : Proofpoint
+   SPF        : yes, 1 includes
+   authorises : %{ir}.%{v}.%{d}.spf.has.pphosted.com
+   DMARC      : v=DMARC1; p=reject; fo=1; rua=mailto:dmarc_rua@emaildefense.proofpoint.com,mailto:tn1d3s4FQU@dmarc.inboxmonster.com; ruf=mailto:dmarc-ruf@wellsfargo.com;
+   NS         : a2-64.akam.net, edns1.ultradns.biz, edns1.ultradns.com, edns1.ultradns.net -> Akamai, UltraDNS/Neustar
+   vendors    : Atlassian, DocuSign, Facebook page (marketing)
+   TXT records: 21
+
+## Goldman Sachs  (gs.com)
+   ATS        : not established here
+   MX         : mxb-0014b501.gslb.pphosted.com, mxa-0014b501.gslb.pphosted.com
+   mail via   : Proofpoint
+   SPF        : yes, 1 includes
+   authorises : _spf.gs.com
+   DMARC      : v=DMARC1; p=reject; sp=reject; rua=mailto:dmarc_rua@emaildefense.proofpoint.com; ruf=mailto:dmarc_ruf@emaildefense.proofpoint.com; fo=1
+   NS         : ns1.gs.com, ns1.goldmansachs.info, ns3.gs.com, ns1.gs360.net -> NS1
+   vendors    : Atlassian, DocuSign, Salesforce
+   TXT records: 24
+
+## Citadel  (citadel.com)
+   ATS        : UNKNOWN (Greenhouse claim disproven: 404)
+   MX         : mxa-001f6701.gslb.pphosted.com, mxb-001f6701.gslb.pphosted.com
+   mail via   : Proofpoint
+   SPF        : yes, 4 includes
+   authorises : spf-001f6703.pphosted.com, spf-001f6701.pphosted.com, amazonses.com, spf.protection.outlook.com
+   DMARC      : v=DMARC1; p=quarantine; fo=1; rua=mailto:dmarc_rua@emaildefense.proofpoint.com; ruf=mailto:dmarc_ruf@emaildefense.proofpoint.com
+   NS         : ns-1517.awsdns-61.org, ns-1556.awsdns-02.co.uk, ns-164.awsdns-20.com, ns-793.awsdns-35.net -> AWS Route 53
+   vendors    : Amazon SES, Atlassian, DocuSign
+   TXT records: 22
+
+## Citadel Securities  (citadelsecurities.com)
+   ATS        : UNKNOWN (Greenhouse claim disproven: 404)
+   MX         : mxa-001f6701.gslb.pphosted.com, mxb-001f6701.gslb.pphosted.com
+   mail via   : Proofpoint
+   SPF        : yes, 4 includes
+   authorises : spf-001f6703.pphosted.com, spf-001f6701.pphosted.com, _spf.streetcontxt.com, spf.protection.outlook.com
+   DMARC      : v=DMARC1; p=quarantine; fo=1; rua=mailto:dmarc_rua@emaildefense.proofpoint.com; ruf=mailto:dmarc_ruf@emaildefense.proofpoint.com
+   NS         : ns-1070.awsdns-05.org, ns-1872.awsdns-42.co.uk, ns-440.awsdns-55.com, ns-745.awsdns-29.net -> AWS Route 53
+   vendors    : Atlassian, DocuSign
+   TXT records: 16
+
+## Visa  (visa.com)
+   ATS        : Workday visa/Visa (VERIFIED 760)
+   MX         : portal4i.visa.com, portal2i.visa.com, portal3i.visa.com, portal1i.visa.com
+   mail via   : self-hosted / other
+   SPF        : yes, 0 includes
+   DMARC      : v=DMARC1; p=quarantine; sp=quarantine; fo=1; rua=mailto:dmarc_agg@auth.returnpath.net; ruf=mailto:dmarc_afrf@auth.returnpath.net; rf=afrf;
+   NS         : melinda.ns.cloudflare.com, lloyd.ns.cloudflare.com, a10-64.akam.net, a9-64.akam.net -> Cloudflare, Akamai
+   vendors    : Adobe, Atlassian, DocuSign, Facebook page (marketing)
+   TXT records: 51
+
+## Mastercard  (mastercard.com)
+   ATS        : Workday mastercard/CorporateCareers (VERIFIED 1,055)
+   MX         : mxa-00078002.gslb.pphosted.com, mxb-00078002.gslb.pphosted.com, mc.smtp.2.mastercard.com, mc.smtp.1.mastercard.com
+   mail via   : Proofpoint
+   SPF        : yes, 5 includes
+   authorises : spf.protection.outlook.com, deliverygateways.mastercard.com, external.mastercard.com, external2.mastercard.com, deliverygateways2.mastercard.com
+   DMARC      : v=DMARC1; p=reject; fo=1; rua=mailto:dmarc_agg@auth.returnpath.net; ruf=mailto:dmarc_afrf@auth.returnpath.net
+   NS         : a26-66.akam.net, a9-64.akam.net, a22-65.akam.net, a7-67.akam.net -> Akamai
+   vendors    : Adobe, Atlassian, Facebook page (marketing), Salesforce
+   TXT records: 44
+
+## PayPal  (paypal.com)
+   ATS        : Workday paypal/jobs (VERIFIED 128)
+   MX         : mx1.paypalcorp.com, mx2.paypalcorp.com
+   mail via   : self-hosted / other
+   SPF        : yes, 7 includes
+   authorises : pp._spf.paypal.com, 3ph1._spf.paypal.com, 3ph2._spf.paypal.com, 3ph3._spf.paypal.com, 3ph4._spf.paypal.com, sendgrid.net, aspmx.pardot.com
+   DMARC      : v=DMARC1; p=reject; rua=mailto:d@rua.agari.com,mailto:dmarc_agg@vali.email; ruf=mailto:d@ruf.agari.com,mailto:MTc4Mzcw@ruf.vali.email
+   NS         : ns2-pchnet.paypal.com, pdns100.ultradns.net, ns1-pchnet.paypal.com, pdns100.ultradns.com -> UltraDNS/Neustar, NS1
+   vendors    : Adobe, Atlassian, Meta Workplace, Salesforce, SendGrid
+   TXT records: 12
+
+## Barclays  (barclays.com)
+   ATS        : Workday barclays/External_Career_Site_Barclays (VERIFIED 1,014)
+   MX         : mxb-00146204.gslb.pphosted.com, mxa-00146204.gslb.pphosted.com
+   mail via   : Proofpoint
+   SPF        : yes, 1 includes
+   authorises : %{ir}.%{v}.%{d}.spf.has.pphosted.com
+   DMARC      : v=DMARC1; p=reject; fo=1; rua=mailto:dmarc_rua@emaildefense.proofpoint.com; ruf=mailto:dmarc_ruf@emaildefense.proofpoint.com
+   NS         : a10-66.akam.net, ns3.barcap.com, a12-64.akam.net, ns7.barcap.com -> Akamai
+   vendors    : Adobe, Atlassian, DocuSign, Facebook page (marketing)
+   TXT records: 26
+
+## HSBC  (hsbc.com)
+   ATS        : Eightfold (adapter exists; not called here)
+   MX         : mxa-00299f02.gslb.pphosted.com, mxb-00299f02.gslb.pphosted.com
+   mail via   : Proofpoint
+   SPF        : yes, 6 includes
+   authorises : %{ir}.%{v}.%{d}.spf.has.pphosted.com, spf-00299f02.pphosted.com, spf1.hsbc.com, spf2.hsbc.com, spf3.hsbc.com, spf-002f0603.pphosted.com
+   DMARC      : v=DMARC1; p=reject; fo=1; ri=3600; rua=mailto:dmarc_rua@emaildefense.proofpoint.com; ruf=mailto:dmarc_ruf@emaildefense.proofpoint.com
+   NS         : ns20.hsbc.net, ns21.hsbc.net, ns21.hsbc.uk, ns3.hsbc.com 
+   vendors    : Adobe, Atlassian, DocuSign
+   TXT records: 35
+
+## Lloyds Banking Group  (lloydsbanking.com)
+   ATS        : Workday lbg/lbg_Careers (VERIFIED 113)
+   MX         : lloydsbanking-com.mail.protection.outlook.com
+   mail via   : Microsoft 365
+   SPF        : yes, 5 includes
+   authorises : spf.messagelabs.com, msgfocus.com, spf.diligent.com, gateways.firstdata.com, spf1.fraedom.com
+   DMARC      : v=DMARC1; p=reject; ruf=mailto:d@ruf.agari.com; rua=mailto:d@rua.agari.com
+   NS         : ns8.lloydsbanking.co.uk, ns2.lloydstsb.co.uk, ns5.lloydstsb.net, ns7.lloydsbanking.com 
+   vendors    : Adobe, Atlassian
+   TXT records: 38
+
+## NatWest Group  (natwest.com)
+   ATS        : Workday rbs/RBS (VERIFIED 107)
+   MX         : mail13.rbs.com, mail15.rbs.com, mail03.rbs.com, mail01.rbs.com
+   mail via   : self-hosted / other
+   SPF        : yes, 0 includes
+   DMARC      : v=DMARC1; p=reject; fo=1; rua=mailto:rbs@rua.netcraft.com; ruf=mailto:rbs@ruf.netcraft.com
+   NS         : udns2.cscdns.uk, udns1.cscdns.net -> NS1
+   vendors    : Adobe, Amazon SES, Atlassian, Facebook page (marketing)
+   TXT records: 39
+
+## Standard Chartered  (sc.com)
+   ATS        : Workday peopleplus/SCB_Careers (VERIFIED 55)
+   MX         : mxa-001ac208.gslb.pphosted.com, mxb-001ac208.gslb.pphosted.com
+   mail via   : Proofpoint
+   SPF        : yes, 6 includes
+   authorises : int01._spf.sc.com, ext01._spf.sc.com, spf.protection.outlook.com, spf-001ac208.pphosted.com, spf-001ac209.pphosted.com, spf-001ac206.pphosted.com
+   DMARC      : v=DMARC1; p=reject; fo=1; ri=3600; rua=mailto:dmarc_rua@emaildefense.proofpoint.com,mailto:sc@rua.netcraft.com; ruf=mailto:dmarc_ruf@emaildefense.proofpoint.com,mailto:sc@ruf.netcraft.com
+   NS         : udns1.cscdns.net, udns2.cscdns.uk -> NS1
+   vendors    : Adobe, Amazon SES, Atlassian, DocuSign, SAP SuccessFactors
+   TXT records: 28
+
+## Commonwealth Bank  (cba.com.au)
+   ATS        : Workday cba/CommBank_Careers (VERIFIED 223)
+   MX         : cba-com-au.mail.protection.outlook.com
+   mail via   : Microsoft 365
+   SPF        : yes, 5 includes
+   authorises : spf1.cba.com.au, spf2.cba.com.au, spf.protection.outlook.com, _spf.streetcontxt.com, deliverygateways.mastercard.com
+   DMARC      : v=DMARC1; p=reject; sp=reject; pct=100; rua=mailto:dmarc-rua@cba.com.au; ruf=mailto:dmarc-ruf@cba.com.au; adkim=s; aspf=s; fo=1; rf=afrf; ri=86400
+   NS         : ns-1455.awsdns-53.org, ns-365.awsdns-45.com, ns-540.awsdns-03.net, ns-1807.awsdns-33.co.uk -> AWS Route 53
+   vendors    : Atlassian, DocuSign
+   TXT records: 29
+
+## NAB  (nab.com.au)
+   ATS        : Workday nab/NAB_Careers (VERIFIED 277)
+   MX         : nabcts.mail.protection.outlook.com
+   mail via   : Microsoft 365
+   SPF        : yes, 2 includes
+   authorises : mail1.nab.com.au, mail2.nab.com.au
+   DMARC      : v=DMARC1; p=reject; sp=reject; fo=1; ri=3600; rua=mailto:dmarc_agg@nab.com.au; ruf=mailto:dmarc_for@nab.com.au
+   NS         : ns2.national.com.au, ns1.national.com.au -> NS1
+   vendors    : Atlassian, DocuSign, Facebook page (marketing), Meta Workplace
+   TXT records: 22
+
+## Deutsche Bank  (db.com)
+   ATS        : Workday db/DBWebsite (VERIFIED 1,136)
+   MX         : smtp22.db.com, smtp24.db.com, smtp12.db.com, smtp13.db.com
+   mail via   : self-hosted / other
+   SPF        : yes, 0 includes
+   DMARC      : v=DMARC1; p=reject; sp=reject; adkim=s; fo=1; ri=3600; rua=mailto:dmarc_rua@emaildefense.proofpoint.com; ruf=mailto:dmarc_ruf@emaildefense.proofpoint.com,mailto:dmarc.reports@db.com
+   NS         : ns3.db-dns.de, ns14.db-dns.de, ns1.db-dns.de, ns15.db-dns.com -> NS1
+   vendors    : Adobe, Atlassian, DocuSign, Facebook page (marketing)
+   TXT records: 60
+
+## Commerzbank  (commerzbank.com)
+   ATS        : SAP SuccessFactors (no public JSON API)
+   MX         : commerzbank-com.mail.protection.outlook.com
+   mail via   : Microsoft 365
+   SPF        : yes, 1 includes
+   authorises : spf.protection.outlook.com
+   DMARC      : v=DMARC1; p=reject; rua=mailto:lubermwp@ag.eu.dmarcadvisor.com
+   NS         : ns5.commerzbank.com, ns3.commerzbank.com, ns2.commerzbank.com, ns4.commerzbank.com 
+   vendors    : Atlassian, DocuSign, Facebook page (marketing)
+   TXT records: 21
+
+## MUFG  (mufg.jp)
+   ATS        : Workday mufgub/MUFG-Careers (VERIFIED 660)
+   MX         : msgww.bk.mufg.jp, msgwe.bk.mufg.jp
+   mail via   : self-hosted / other
+   SPF        : yes, 2 includes
+   authorises : spf1.mufg.jp, _spf.salesforce.com
+   DMARC      : v=DMARC1; p=reject; sp=quarantine; rua=mailto:mufg00001-ra@dmarc25.jp,mailto:dm0migwuxfg32.rua@dp.smtps.jp
+   NS         : a1-10.akam.net, ns004-ar0tb4rec1f4c1mj.a.d-53.jp, ns004-ar0tb4rec1f4c1mj.a.d-53.net, a26-65.akam.net -> Akamai
+   vendors    : Adobe, Atlassian, DocuSign, Salesforce
+   TXT records: 20
+
+## BNY Mellon  (bny.com)
+   ATS        : Oracle Cloud HCM (no public JSON API)
+   MX         : mxb-00157d02.gslb.pphosted.com, mxa-00157d02.gslb.pphosted.com
+   mail via   : Proofpoint
+   SPF        : yes, 2 includes
+   authorises : %{ir}.%{v}.%{d}.spf.has.pphosted.com, spf-00157d02.pphosted.com
+   DMARC      : v=DMARC1; p=reject; sp=reject; fo=1; ri=3600; rua=mailto:dmarc_rua@emaildefense.proofpoint.com; ruf=mailto:dmarc_ruf@emaildefense.proofpoint.com
+   NS         : zoe.ns.cloudflare.com, seth.ns.cloudflare.com -> Cloudflare
+   vendors    : Adobe, Atlassian, DocuSign
+   TXT records: 44
+
+## HDFC Bank  (hdfcbank.com)
+   ATS        : SAP SuccessFactors (no public JSON API)
+   MX         : hdfcbank-com.mail.protection.outlook.com
+   mail via   : Microsoft 365
+   SPF        : yes, 4 includes
+   authorises : zohomail.in, spf.hdfcbank.com, spf.powerelay.com, spf.protection.outlook.com
+   DMARC      : v=DMARC1; p=reject; rua=mailto:dmarc.rua@hdfcbank.net; ruf=mailto:dmarc.ruf@hdfcbank.net; fo=1
+   NS         : elmo.ns.cloudflare.com, roxy.ns.cloudflare.com -> Cloudflare
+   vendors    : (none identified)
+   TXT records: 18
+
+## State Bank of India  (sbi.co.in)
+   ATS        : in-house CRPD / TCS iON
+   MX         : sbi-co-in.mail.protection.outlook.com
+   mail via   : Microsoft 365
+   SPF        : yes, 1 includes
+   authorises : spf.protection.outlook.com
+   DMARC      : v=DMARC1;p=reject;rua=mailto:dmarc.alerts@sbi.co.in;ruf=mailto:dmarc.ruf@sbi.co.in;fo=1
+   NS         : sdns.satyam.net.in, pdns.satyam.net.in 
+   vendors    : (none identified)
+   TXT records: 5
+
+## NPCI  (npci.org.in)
+   ATS        : Darwinbox (no public JSON API)
+   MX         : mh2.npci.org.in, mh4.npci.org.in, mh1.npci.org.in, mh3.npci.org.in
+   mail via   : self-hosted / other
+   SPF        : yes, 1 includes
+   authorises : transmail.net.in
+   DMARC      : v=DMARC1; p=reject; rua=mailto:dmarc@npci.org.in; ruf=mailto:dmarc@npci.org.in; fo=1; adkim=s; aspf=s; pct=100; rf=afrf; ri=86400; sp=reject
+   NS         : a11-67.akam.net, a2-66.akam.net, a1-177.akam.net, a10-65.akam.net -> Akamai
+   vendors    : Atlassian
+   TXT records: 13
+
+## Jane Street  (janestreet.com)
+   ATS        : Greenhouse janestreet (VERIFIED 230 roles)
+   MX         : mxin4.mail.janestreet.com, mxin2.mail.janestreet.com, mxin1.mail.janestreet.com, mxin3.mail.janestreet.com
+   mail via   : self-hosted / other
+   SPF        : yes, 3 includes
+   authorises : bloomberg.net, _spf.google.com, aspmx.pardot.com
+   DMARC      : v=DMARC1;p=quarantine;rua=mailto:dmarc-reports-aggregate@janestreet.com; ruf=mailto:dmarc-reports-failure@janestreet.com;
+   NS         : ns-1819.awsdns-35.co.uk, ns-1215.awsdns-23.org, ns-501.awsdns-62.com, ns-613.awsdns-12.net -> AWS Route 53
+   vendors    : Adobe, Atlassian, Salesforce
+   TXT records: 23

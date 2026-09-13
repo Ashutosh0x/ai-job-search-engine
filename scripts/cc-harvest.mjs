@@ -135,6 +135,18 @@ const PATTERNS = [
     },
   },
   {
+    provider: 'keka',
+    url: '*.keka.com',
+    extract: (u) => {
+      const m = u.match(/^https?:\/\/([a-z0-9-]+)\.keka\.com/i)
+      if (!m) return null
+      const token = m[1].toLowerCase()
+      // keka.com's own marketing and product subdomains are not career portals.
+      if (/^(www|app|api|assets|cdn|blog|support|help|docs|status|academy|developers|community|partners)$/.test(token)) return null
+      return { token }
+    },
+  },
+  {
     provider: 'breezy',
     url: '*.breezy.hr',
     extract: (u) => {
@@ -209,7 +221,12 @@ for (const crawl of crawls) {
       if (!e) continue
       if (!boards.has(p.provider)) boards.set(p.provider, new Map())
       const bucket = boards.get(p.provider)
-      const id = p.provider === 'workday' ? `${e.host}|${e.site}` : e.token
+      // Workday site paths are case-insensitive, so one board can be linked
+      // in several spellings across the crawl. Fold the case here or the
+      // harvest emits the same board two or three times.
+      const id = p.provider === 'workday'
+        ? `${String(e.host).toLowerCase()}|${String(e.site).toLowerCase()}`
+        : e.token
       const prev = bucket.get(id)
       if (prev) prev.hits++
       else { bucket.set(id, { provider: p.provider, ...e, hits: 1 }); found++ }

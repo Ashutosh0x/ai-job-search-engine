@@ -1,0 +1,928 @@
+{
+  "generatedAt": "2026-09-12T10:18:42.469Z",
+  "method": "public DNS (CNAME/A) on conventional careers hostnames + crt.sh certificate-transparency index. Read-only. No authentication, no tenant guessing, no interaction with finance-named hosts beyond noting their presence in a public log.",
+  "notDone": [
+    "no login, password-reset, or credential handling",
+    "no SMTP mailbox verification",
+    "no calls to finance-named hosts",
+    "no WAF/CAPTCHA/rate-limit circumvention",
+    "no tenant-id guessing"
+  ],
+  "results": [
+    {
+      "company": "JPMorgan Chase",
+      "domain": "jpmorganchase.com",
+      "crawlerSaysAts": "Oracle Cloud HCM (unverified: no public JSON API)",
+      "careersHosts": [
+        {
+          "host": "careers.jpmorganchase.com",
+          "resolves": "CNAME",
+          "chain": [
+            "cws-other.intl.gslbjpmchase.com"
+          ],
+          "vendor": null
+        },
+        {
+          "host": "jobs.jpmorganchase.com",
+          "resolves": "CNAME",
+          "chain": [
+            "cws-other.intl.gslbjpmchase.com"
+          ],
+          "vendor": null
+        }
+      ],
+      "atsFromDns": [],
+      "ctSubdomainCount": 994,
+      "careersSubdomains": [
+        "careers.jpmorganchase.com",
+        "jobs.jpmorganchase.com",
+        "techcareers.jpmorganchase.com",
+        "careers-aem-uat.jpmorganchase.com",
+        "jobs-aem-uat.jpmorganchase.com",
+        "careers-psaas.jpmorganchase.com",
+        "careers-wc-uat.jpmorganchase.com"
+      ],
+      "sensitiveSubdomains": [],
+      "devPortals": [],
+      "mailProvider": "Symantec/MessageLabs"
+    },
+    {
+      "company": "Morgan Stanley",
+      "domain": "morganstanley.com",
+      "crawlerSaysAts": "Workday ms/External (VERIFIED 1,286 roles)",
+      "careersHosts": [],
+      "atsFromDns": [],
+      "ctSubdomainCount": 1544,
+      "careersSubdomains": [
+        "salesforce-recruiting.saml.morganstanley.com"
+      ],
+      "sensitiveSubdomains": [],
+      "devPortals": [
+        "developer-uat-mgmt.morganstanley.com",
+        "api-uat.morganstanley.com",
+        "api.beqom.morganstanley.com",
+        "api.morganstanley.com"
+      ],
+      "mailProvider": "self-hosted / other"
+    },
+    {
+      "company": "Citigroup",
+      "domain": "citi.com",
+      "crawlerSaysAts": "Workday citi/2 (VERIFIED; citi_careers 404s)",
+      "careersHosts": [
+        {
+          "host": "careers.citi.com",
+          "resolves": "CNAME",
+          "chain": [
+            "www2.citi.com",
+            "citi.mdc.edgesuite.net",
+            "a1168.b.akamai.net"
+          ],
+          "vendor": null
+        },
+        {
+          "host": "jobs.citi.com",
+          "resolves": "CNAME",
+          "chain": [
+            "jobs-citi-com.talentbrew.com",
+            "jobs.citi.com.edgekey.net",
+            "e15965.f.akamaiedge.net"
+          ],
+          "vendor": null
+        }
+      ],
+      "atsFromDns": [],
+      "ctSubdomainCount": null,
+      "careersSubdomains": [],
+      "sensitiveSubdomains": [],
+      "devPortals": [],
+      "mailProvider": "self-hosted / other"
+    },
+    {
+      "company": "Bank of America",
+      "domain": "bankofamerica.com",
+      "crawlerSaysAts": "Workday ghr/Lateral-US (VERIFIED 2,005)",
+      "careersHosts": [
+        {
+          "host": "careers.bankofamerica.com",
+          "resolves": "CNAME",
+          "chain": [
+            "alumni.bankofamerica.com.edgekey.net",
+            "e325227.a.akamaiedge.net"
+          ],
+          "vendor": null
+        }
+      ],
+      "atsFromDns": [],
+      "ctSubdomainCount": 2377,
+      "careersSubdomains": [
+        "mycareer.bankofamerica.com",
+        "careers.bankofamerica.com"
+      ],
+      "sensitiveSubdomains": [
+        "payments.bankofamerica.com"
+      ],
+      "devPortals": [
+        "developer-force-com.ccgwydmz.homeloans.bankofamerica.com",
+        "developer-force-com.ccgwydmzsit.homeloans.bankofamerica.com",
+        "developer-force-com.ccgwydmzqa.homeloans.bankofamerica.com",
+        "developer-force-com.ccgwydmzcit.homeloans.bankofamerica.com"
+      ],
+      "mailProvider": "Proofpoint"
+    },
+    {
+      "company": "Wells Fargo",
+      "domain": "wellsfargo.com",
+      "crawlerSaysAts": "Workday wf/WellsFargoJobs (VERIFIED 1,796)",
+      "careersHosts": [
+        {
+          "host": "apply.wellsfargo.com",
+          "resolves": "CNAME",
+          "chain": [
+            "apply.wellsfargo.com.edgekey.net",
+            "e132394.b.akamaiedge.net"
+          ],
+          "vendor": null
+        }
+      ],
+      "atsFromDns": [],
+      "ctSubdomainCount": 2307,
+      "careersSubdomains": [
+        "hrtalentcentral.wellsfargo.com"
+      ],
+      "sensitiveSubdomains": [
+        "merchant.wellsfargo.com",
+        "payroll-bcp.wellsfargo.com",
+        "payroll.wellsfargo.com",
+        "banking.wellsfargo.com"
+      ],
+      "devPortals": [
+        "api-sit-stl.wellsfargo.com",
+        "api-sit-wec.wellsfargo.com",
+        "api-sit.wellsfargo.com",
+        "developer.wellsfargo.com",
+        "api-certification.wellsfargo.com",
+        "api-cert-ox.wellsfargo.com",
+        "api-cert-sv.wellsfargo.com",
+        "api-prd-ox.wellsfargo.com",
+        "api-prd-sv.wellsfargo.com",
+        "api.wellsfargo.com",
+        "api-sandbox.wellsfargo.com",
+        "api-sb-ox.wellsfargo.com",
+        "api-sb-sv.wellsfargo.com",
+        "api-tst.wellsfargo.com"
+      ],
+      "mailProvider": "Proofpoint"
+    },
+    {
+      "company": "Goldman Sachs",
+      "domain": "gs.com",
+      "crawlerSaysAts": "not established here",
+      "careersHosts": [
+        {
+          "host": "careers.gs.com",
+          "resolves": "A",
+          "chain": [],
+          "vendor": null
+        }
+      ],
+      "atsFromDns": [],
+      "ctSubdomainCount": 889,
+      "careersSubdomains": [
+        "careers.gs.com",
+        "careersagency.gs.com",
+        "careersagencyuat.gs.com",
+        "careersuat.gs.com",
+        "careeragencyuat.gs.com"
+      ],
+      "sensitiveSubdomains": [],
+      "devPortals": [
+        "api-global.marquee.gs.com",
+        "api.gs.com",
+        "api.marquee.gs.com",
+        "developer.gs.com",
+        "api-hk.marquee.gs.com",
+        "api-ln.marquee.gs.com",
+        "api-ny.marquee.gs.com",
+        "qa.developer.gs.com",
+        "www.developer.gs.com",
+        "www.qa.developer.gs.com",
+        "api-hk.marquee-qa.gs.com",
+        "api-ln.marquee-qa.gs.com",
+        "api.marquee-qa.gs.com",
+        "api-ny.marquee-qa.gs.com",
+        "api-1.marquee-qa.gs.com",
+        "api-ln-iac.marquee.gs.com",
+        "api.uat-mosaic.cft.gs.com",
+        "api.marquee-a.gs.com",
+        "api.marquee-a-qa.gs.com",
+        "api.marquee-b.gs.com",
+        "api.mosaicorigin.gs.com"
+      ],
+      "mailProvider": "Proofpoint"
+    },
+    {
+      "company": "Citadel",
+      "domain": "citadel.com",
+      "crawlerSaysAts": "UNKNOWN (Greenhouse claim disproven: 404)",
+      "careersHosts": [],
+      "atsFromDns": [],
+      "ctSubdomainCount": 202,
+      "careersSubdomains": [
+        "recruiting-api.citadel.com",
+        "recruiting-api-dev.citadel.com",
+        "recruiting-api-qa.citadel.com"
+      ],
+      "sensitiveSubdomains": [
+        "treasury.scotia.citadel.com",
+        "treasury.jpm.citadel.com"
+      ],
+      "devPortals": [
+        "api.login-dev.citadel.com"
+      ],
+      "mailProvider": "Proofpoint"
+    },
+    {
+      "company": "Citadel Securities",
+      "domain": "citadelsecurities.com",
+      "crawlerSaysAts": "UNKNOWN (Greenhouse claim disproven: 404)",
+      "careersHosts": [],
+      "atsFromDns": [],
+      "ctSubdomainCount": 41,
+      "careersSubdomains": [],
+      "sensitiveSubdomains": [],
+      "devPortals": [],
+      "mailProvider": "Proofpoint"
+    },
+    {
+      "company": "Visa",
+      "domain": "visa.com",
+      "crawlerSaysAts": "Workday visa/Visa (VERIFIED 760)",
+      "careersHosts": [
+        {
+          "host": "jobs.visa.com",
+          "resolves": "A",
+          "chain": [],
+          "vendor": null
+        }
+      ],
+      "atsFromDns": [],
+      "ctSubdomainCount": 1341,
+      "careersSubdomains": [
+        "jobs.visa.com"
+      ],
+      "sensitiveSubdomains": [],
+      "devPortals": [
+        "developer.digital.visa.com",
+        "sandbox-assets.secure.checkout.visa.com",
+        "sandbox-business.secure.checkout.visa.com",
+        "sandbox.digital.visa.com",
+        "sandbox.secure.checkout.visa.com",
+        "sandbox-service.secure.checkout.visa.com",
+        "sandbox.dtoapi.visa.com",
+        "prometheusexporter.api.visa.com",
+        "sandbox.alias.visa.com",
+        "aaqa.api.visa.com",
+        "aaqa.developer.visa.com",
+        "dox1.api.visa.com",
+        "dox2.api.visa.com",
+        "dox3.api.visa.com",
+        "dox4.api.visa.com",
+        "dox5.api.visa.com",
+        "dox6.api.visa.com",
+        "dox7.api.visa.com",
+        "q2sbx.api.visa.com",
+        "qa2.api.visa.com",
+        "qa2cert.api.visa.com",
+        "qacert.api.visa.com",
+        "qacert.developer.visa.com",
+        "qaint.api.visa.com",
+        "qaint.developer.visa.com"
+      ],
+      "mailProvider": "self-hosted / other"
+    },
+    {
+      "company": "Mastercard",
+      "domain": "mastercard.com",
+      "crawlerSaysAts": "Workday mastercard/CorporateCareers (VERIFIED 1,055)",
+      "careersHosts": [
+        {
+          "host": "careers.mastercard.com",
+          "resolves": "CNAME",
+          "chain": [
+            "mastercard.phenompeople.net",
+            "dqjydayy1lw0w.cloudfront.net"
+          ],
+          "vendor": null
+        }
+      ],
+      "atsFromDns": [],
+      "ctSubdomainCount": null,
+      "careersSubdomains": [],
+      "sensitiveSubdomains": [],
+      "devPortals": [],
+      "mailProvider": "Proofpoint"
+    },
+    {
+      "company": "PayPal",
+      "domain": "paypal.com",
+      "crawlerSaysAts": "Workday paypal/jobs (VERIFIED 128)",
+      "careersHosts": [],
+      "atsFromDns": [],
+      "ctSubdomainCount": 2023,
+      "careersSubdomains": [],
+      "sensitiveSubdomains": [
+        "payments-reports.paypal.com",
+        "merchant.paypal.com",
+        "payment.paypal.com"
+      ],
+      "devPortals": [
+        "api.stage2dev113.stage.paypal.com",
+        "api.stage2dev348.stage.paypal.com",
+        "api.stage2gce001.stage.paypal.com",
+        "api.stage2gce002.stage.paypal.com",
+        "api.stage2gce003.stage.paypal.com",
+        "api.stage2gce004.stage.paypal.com",
+        "api.stage2gce005.stage.paypal.com",
+        "api.stage2gce006.stage.paypal.com",
+        "api.stage2gg040.stage.paypal.com",
+        "api.stage2lp19.stage.paypal.com",
+        "api.stage2lp30.stage.paypal.com",
+        "api.stage2m011.stage.paypal.com",
+        "api.stage2m016.stage.paypal.com",
+        "api.stage2m039.stage.paypal.com",
+        "api.stage2md006.stage.paypal.com",
+        "api.stage2md009.stage.paypal.com",
+        "api.stage2md057.stage.paypal.com",
+        "api.stage2md060.stage.paypal.com",
+        "api.stage2ms023.stage.paypal.com",
+        "api.stage2ms209.stage.paypal.com",
+        "api.stage2ms210.stage.paypal.com",
+        "api.stage2p1098.stage.paypal.com",
+        "api.stage2p1109.stage.paypal.com",
+        "api.stage2p1114.stage.paypal.com",
+        "api.stage2p1277.stage.paypal.com"
+      ],
+      "mailProvider": "self-hosted / other"
+    },
+    {
+      "company": "Barclays",
+      "domain": "barclays.com",
+      "crawlerSaysAts": "Workday barclays/External_Career_Site_Barclays (VERIFIED 1,014)",
+      "careersHosts": [],
+      "atsFromDns": [],
+      "ctSubdomainCount": 763,
+      "careersSubdomains": [],
+      "sensitiveSubdomains": [],
+      "devPortals": [
+        "openbanking.iportal.barclays.com",
+        "developer.barclays.com",
+        "sandbox-api.barclays.com",
+        "eagle.api.barclays.com",
+        "api-sandbox-dr.barclays.com",
+        "developer-sandbox-dr.barclays.com",
+        "developer-sandbox.barclays.com",
+        "api-sandbox.secure.barclays.com",
+        "api.barclays.com",
+        "api-dr.barclays.com",
+        "api-sandbox2.barclays.com",
+        "developer-sandbox2.barclays.com",
+        "developer-live.barclays.com",
+        "sandbox-developer.barclays.com",
+        "sandbox-developer.secure.barclays.com",
+        "sandbox-api.secure.barclays.com",
+        "api.liveframe.barclays.com",
+        "api.livestage.barclays.com",
+        "api.liveqa.barclays.com"
+      ],
+      "mailProvider": "Proofpoint"
+    },
+    {
+      "company": "HSBC",
+      "domain": "hsbc.com",
+      "crawlerSaysAts": "Eightfold (adapter exists; not called here)",
+      "careersHosts": [],
+      "atsFromDns": [],
+      "ctSubdomainCount": 1446,
+      "careersSubdomains": [
+        "graduatedevelopment.careers.hsbc.com",
+        "recruit.hsbc.com",
+        "recruit-dev.us.hsbc.com"
+      ],
+      "sensitiveSubdomains": [
+        "payments.bh.personal-banking.hsbc.com",
+        "payments.mt.personal-banking.hsbc.com",
+        "payments.qa.personal-banking.hsbc.com",
+        "payments.eg.personal-banking.hsbc.com",
+        "payments.gr.personal-banking.hsbc.com",
+        "payments.om.personal-banking.hsbc.com",
+        "payments.us.personal-banking.hsbc.com",
+        "payments.fr.personal-banking.hsbc.com",
+        "payments.uk.personal-banking.hsbc.com",
+        "payments.sg.personal-banking.hsbc.com",
+        "payments.my.personal-banking.hsbc.com",
+        "payments-pilot.uk.personal-banking.hsbc.com",
+        "payments.jo.personal-banking.hsbc.com",
+        "payments.lb.personal-banking.hsbc.com",
+        "payments.ae.personal-banking.hsbc.com",
+        "payments.ciiom.personal-banking.hsbc.com",
+        "banking.netd.us.hsbc.com",
+        "payments.je.personal-banking.hsbc.com",
+        "payments.fd.personal-banking.hsbc.com",
+        "payments.bm.personal-banking.hsbc.com",
+        "banking.us.hsbc.com"
+      ],
+      "devPortals": [
+        "api-dev.securities-services.gbm.hsbc.com",
+        "api-sit.securities-services.gbm.hsbc.com",
+        "content.openbanking.hsbc.com",
+        "sandbox.openbanking.hsbc.com",
+        "connectedmoney.api.hsbc.com",
+        "preprod.connectedmoney.api.hsbc.com",
+        "qa.connectedmoney.api.hsbc.com",
+        "ci.connectedmoney.api.hsbc.com",
+        "gateway.ci.connectedmoney.api.hsbc.com",
+        "gateway.pentest.connectedmoney.api.hsbc.com",
+        "gateway.perftest.connectedmoney.api.hsbc.com",
+        "pentest.connectedmoney.api.hsbc.com",
+        "perftest.connectedmoney.api.hsbc.com",
+        "internal.openbanking.hsbc.com",
+        "openbanking.hsbc.com",
+        "api.hsbc.com",
+        "developer.hsbc.com",
+        "account-service.connectedmoney.api.hsbc.com",
+        "account-service.preprod.connectedmoney.api.hsbc.com",
+        "account-service.qa.connectedmoney.api.hsbc.com",
+        "gateway.connectedmoney.api.hsbc.com",
+        "gateway.preprod.connectedmoney.api.hsbc.com",
+        "gateway.qa.connectedmoney.api.hsbc.com",
+        "user-manager.connectedmoney.api.hsbc.com",
+        "user-manager.preprod.connectedmoney.api.hsbc.com"
+      ],
+      "mailProvider": "Proofpoint"
+    },
+    {
+      "company": "Lloyds Banking Group",
+      "domain": "lloydsbanking.com",
+      "crawlerSaysAts": "Workday lbg/lbg_Careers (VERIFIED 113)",
+      "careersHosts": [],
+      "atsFromDns": [],
+      "ctSubdomainCount": 1341,
+      "careersSubdomains": [
+        "pre-g322-fadv-recruitment.lloydsbanking.com",
+        "pen-prod-fadv-to-lbg-recruitment.lloydsbanking.com",
+        "pen-prod-lbg-recruitment.lloydsbanking.com",
+        "pen-prod-shl-to-lbg-recruitment.lloydsbanking.com",
+        "pen-prod-capp-to-lbg-recruitment.lloydsbanking.com",
+        "prod-g322-fadv-recruitment.lloydsbanking.com",
+        "prod-g333-shl-recruitment.lloydsbanking.com",
+        "pre-g326-aon-recruitment.lloydsbanking.com",
+        "prod-g320-capp-recruitment.lloydsbanking.com",
+        "prod-g313-reed-recruitment.lloydsbanking.com"
+      ],
+      "sensitiveSubdomains": [
+        "bank.sandbox.lloydsbanking.com",
+        "bank.pre-sandbox.lloydsbanking.com"
+      ],
+      "devPortals": [
+        "sandbox.api.commercial.lloydsbanking.com",
+        "sandbox.commercial.lloydsbanking.com",
+        "sandbox.secure.api.commercial.lloydsbanking.com",
+        "developer.lloydsbanking.com",
+        "api.commercial.lloydsbanking.com",
+        "account.sandbox.lloydsbanking.com",
+        "admin.sandbox.lloydsbanking.com",
+        "am.sandbox.lloydsbanking.com",
+        "analytics.sandbox.lloydsbanking.com",
+        "as.aspsp.sandbox.lloydsbanking.com",
+        "auth.sandbox.lloydsbanking.com",
+        "bank.sandbox.lloydsbanking.com",
+        "config.sandbox.lloydsbanking.com",
+        "directory.sandbox.lloydsbanking.com",
+        "docs.sandbox.lloydsbanking.com",
+        "jwkms.sandbox.lloydsbanking.com",
+        "matls.service.bank.sandbox.lloydsbanking.com",
+        "matls.service.directory.sandbox.lloydsbanking.com",
+        "monitoring.sandbox.lloydsbanking.com",
+        "node.analytics.sandbox.lloydsbanking.com",
+        "rcs.aspsp.sandbox.lloydsbanking.com",
+        "register.sandbox.lloydsbanking.com",
+        "rs.aspsp.sandbox.lloydsbanking.com",
+        "rs-simulator.aspsp.sandbox.lloydsbanking.com",
+        "sandbox.lloydsbanking.com"
+      ],
+      "mailProvider": "Microsoft 365"
+    },
+    {
+      "company": "NatWest Group",
+      "domain": "natwest.com",
+      "crawlerSaysAts": "Workday rbs/RBS (VERIFIED 107)",
+      "careersHosts": [
+        {
+          "host": "jobs.natwest.com",
+          "resolves": "CNAME",
+          "chain": [
+            "lb.ttcportals.com",
+            "lb.ttcportals.com.cdn.cloudflare.net"
+          ],
+          "vendor": null
+        },
+        {
+          "host": "apply.natwest.com",
+          "resolves": "CNAME",
+          "chain": [
+            "apply.natwest.com.glb2p.rbs.com"
+          ],
+          "vendor": null
+        }
+      ],
+      "atsFromDns": [],
+      "ctSubdomainCount": 1241,
+      "careersSubdomains": [
+        "jobs.natwest.com"
+      ],
+      "sensitiveSubdomains": [
+        "payment.devnos.npnor.pisp.natwest.com",
+        "merchant.devnos.npnor.pisp.natwest.com",
+        "invoice-discounting-factoring-eoif.natwest.com",
+        "treasury-reserve-eoif.natwest.com",
+        "pay-dev-static.natwest.com",
+        "www.pay-dev-static.natwest.com",
+        "pay-uat-static.natwest.com",
+        "www.pay-uat-static.natwest.com",
+        "pay.natwest.com",
+        "www.pay.natwest.com",
+        "app.treasury-reserve.natwest.com",
+        "www.invoice-discounting-factoring-eoif.natwest.com",
+        "www.treasury-reserve-eoif.natwest.com",
+        "payroll.natwest.com",
+        "www.payroll.natwest.com"
+      ],
+      "devPortals": [
+        "api.aiincd2.assistant.natwest.com",
+        "api.kappa2.assistant.natwest.com",
+        "api.sandpit.assistant.natwest.com",
+        "api.demo2.assistant.natwest.com",
+        "api.ftdevd2.assistant.natwest.com",
+        "api.preprodd2.assistant.natwest.com",
+        "api.prodd2.assistant.natwest.com",
+        "api.natwest.com",
+        "ob.sandbox.natwest.com",
+        "api.bbconnect.apps.natwest.com",
+        "api.banklinedirect.natwest.com",
+        "api.openaccount.natwest.com",
+        "api.sandbox.acc.natwest.com",
+        "developer.sandbox.acc.natwest.com",
+        "api.sandbox.natwest.com",
+        "auth.sandbox.natwest.com",
+        "developer.sandbox.natwest.com",
+        "webbanking.sandbox.natwest.com",
+        "api.apply.natwest.com",
+        "api.aiperf.assistant.natwest.com",
+        "api.banklinemobile.natwest.com",
+        "api.eds.securebusiness.natwest.com",
+        "api.securebusiness.natwest.com",
+        "api.businessprofile.natwest.com",
+        "api-test.banklinedirect.natwest.com"
+      ],
+      "mailProvider": "self-hosted / other"
+    },
+    {
+      "company": "Standard Chartered",
+      "domain": "sc.com",
+      "crawlerSaysAts": "Workday peopleplus/SCB_Careers (VERIFIED 55)",
+      "careersHosts": [
+        {
+          "host": "talent.sc.com",
+          "resolves": "CNAME",
+          "chain": [
+            "vanity.beamery.eu"
+          ],
+          "vendor": null
+        }
+      ],
+      "atsFromDns": [],
+      "ctSubdomainCount": 478,
+      "careersSubdomains": [],
+      "sensitiveSubdomains": [],
+      "devPortals": [
+        "sandbox-api.sc.com",
+        "api.sc.com",
+        "enc-fpds.sg.api.sc.com",
+        "sign-fpds.sg.api.sc.com",
+        "developer.sc.com",
+        "api.globalresearchqa.sc.com",
+        "api.researchqa.sc.com",
+        "api.globalresearch.sc.com",
+        "api.research.sc.com"
+      ],
+      "mailProvider": "Proofpoint"
+    },
+    {
+      "company": "Commonwealth Bank",
+      "domain": "cba.com.au",
+      "crawlerSaysAts": "Workday cba/CommBank_Careers (VERIFIED 223)",
+      "careersHosts": [],
+      "atsFromDns": [],
+      "ctSubdomainCount": 368,
+      "careersSubdomains": [],
+      "sensitiveSubdomains": [
+        "wire.dev.cba.com.au"
+      ],
+      "devPortals": [
+        "api.marketmonitoriq.prod.cbaiq.cba.com.au",
+        "api.marketmonitoriq.stg.np.cbaiq.cba.com.au",
+        "catalogue.api.cba.com.au",
+        "api.prod.cbaiq.cba.com.au",
+        "api-dev.test.np.cbaiq.cba.com.au",
+        "api.stg.np.cbaiq.cba.com.au",
+        "api.test.np.cbaiq.cba.com.au",
+        "venafi.api.cba.com.au"
+      ],
+      "mailProvider": "Microsoft 365"
+    },
+    {
+      "company": "NAB",
+      "domain": "nab.com.au",
+      "crawlerSaysAts": "Workday nab/NAB_Careers (VERIFIED 277)",
+      "careersHosts": [
+        {
+          "host": "careers.nab.com.au",
+          "resolves": "CNAME",
+          "chain": [
+            "group-redirects.nab.com.au.edgekey.net",
+            "e315263.a.akamaiedge.net"
+          ],
+          "vendor": null
+        }
+      ],
+      "atsFromDns": [],
+      "ctSubdomainCount": 820,
+      "careersSubdomains": [
+        "careers.nab.com.au",
+        "internalcareers.nab.com.au",
+        "careers-vietnam.nab.com.au"
+      ],
+      "sensitiveSubdomains": [
+        "payment-status-notification-nonprod.nab.com.au",
+        "m.bank.nab.com.au",
+        "res.bank.nab.com.au",
+        "t.bank.nab.com.au",
+        "payment-status-notification-prod.nab.com.au",
+        "merchant.nab.com.au",
+        "merchant.extnp.nab.com.au",
+        "bank.nab.com.au"
+      ],
+      "devPortals": [
+        "partner-secure.api.nab.com.au",
+        "partner-secure.api-pilot.nab.com.au",
+        "open-secure.api.nab.com.au",
+        "open-secure.api-simulation.nab.com.au",
+        "open-secure.api-test.nab.com.au",
+        "api.bookkeeper.nab.com.au",
+        "api.developer.nab.com.au",
+        "developer.nab.com.au",
+        "staging-api.developer.nab.com.au",
+        "customer.api.nab.com.au",
+        "customer.api-next.nab.com.au",
+        "customer.api-pilot.nab.com.au",
+        "customer.api-prev.nab.com.au",
+        "open.api.nab.com.au",
+        "openbank.api.nab.com.au",
+        "openbank.api-next.nab.com.au",
+        "openbank.api-pilot.nab.com.au",
+        "openbank.api-prev.nab.com.au",
+        "partner.api.nab.com.au",
+        "partner.api-next.nab.com.au",
+        "partner.api-pilot.nab.com.au",
+        "partner.api-prev.nab.com.au",
+        "sandbox.api.nab.com.au",
+        "staff.api.nab.com.au",
+        "staff.api-next.nab.com.au"
+      ],
+      "mailProvider": "Microsoft 365"
+    },
+    {
+      "company": "Deutsche Bank",
+      "domain": "db.com",
+      "crawlerSaysAts": "Workday db/DBWebsite (VERIFIED 1,136)",
+      "careersHosts": [
+        {
+          "host": "careers.db.com",
+          "resolves": "A",
+          "chain": [],
+          "vendor": null
+        },
+        {
+          "host": "career.db.com",
+          "resolves": "CNAME",
+          "chain": [
+            "dweb-ge.tec.db.com"
+          ],
+          "vendor": null
+        }
+      ],
+      "atsFromDns": [],
+      "ctSubdomainCount": 1614,
+      "careersSubdomains": [
+        "jobsearch.db.com",
+        "dbcareers.db.com",
+        "graduate.careers.db.com",
+        "jobs.db.com"
+      ],
+      "sensitiveSubdomains": [],
+      "devPortals": [
+        "api.xmarkets.db.com",
+        "api.db.com",
+        "developer.db.com",
+        "uat1.api.db.com",
+        "uat.developer.db.com",
+        "api-us.mis.gm.db.com",
+        "api-open.db.com",
+        "www.api-open.db.com",
+        "uat1.api-open.db.com"
+      ],
+      "mailProvider": "self-hosted / other"
+    },
+    {
+      "company": "Commerzbank",
+      "domain": "commerzbank.com",
+      "crawlerSaysAts": "SAP SuccessFactors (no public JSON API)",
+      "careersHosts": [
+        {
+          "host": "jobs.commerzbank.com",
+          "resolves": "A",
+          "chain": [],
+          "vendor": null
+        }
+      ],
+      "atsFromDns": [],
+      "ctSubdomainCount": 737,
+      "careersSubdomains": [
+        "api-ex.jobstest.extranet.commerzbank.com",
+        "api-in.jobstest.extranet.commerzbank.com",
+        "backend.jobstest.extranet.commerzbank.com",
+        "fe-extern.jobstest.extranet.commerzbank.com",
+        "fe-intern.jobstest.extranet.commerzbank.com",
+        "api-intern.jobs.extranet.commerzbank.com",
+        "backend.jobs.extranet.commerzbank.com",
+        "fe-intern.jobs.extranet.commerzbank.com",
+        "api-jobs.commerzbank.com",
+        "jobs.commerzbank.com",
+        "www.jobs.commerzbank.com",
+        "onlinetest.jobs.commerzbank.com"
+      ],
+      "sensitiveSubdomains": [],
+      "devPortals": [
+        "api-ex.jobstest.extranet.commerzbank.com",
+        "api-in.jobstest.extranet.commerzbank.com",
+        "api-intern.jobs.extranet.commerzbank.com",
+        "xs2a.api.commerzbank.com",
+        "api-jobs.commerzbank.com",
+        "api-int-dev.transit.commerzbank.com",
+        "api-int.transit.commerzbank.com",
+        "api-int-tuc.transit.commerzbank.com",
+        "api-int-tud.transit.commerzbank.com",
+        "psd2.api-sandbox.commerzbank.com",
+        "psd2.developer.commerzbank.com",
+        "api-tuc.commerzbank.com",
+        "api-tud.commerzbank.com",
+        "api-credentials.commerzbank.com",
+        "developer.commerzbank.com",
+        "login.api-credentials.commerzbank.com",
+        "api.commerzbank.com",
+        "api-sandbox.commerzbank.com",
+        "psd2.api.commerzbank.com",
+        "www.psd2.developer.commerzbank.com",
+        "api-cognigyai.tuc.commerzbank.com",
+        "api-cognigyai.prd.commerzbank.com",
+        "api-cognigyai.prod.commerzbank.com",
+        "api-cognigyai.tud.commerzbank.com",
+        "api-cognigyai.dev.commerzbank.com"
+      ],
+      "mailProvider": "Microsoft 365"
+    },
+    {
+      "company": "MUFG",
+      "domain": "mufg.jp",
+      "crawlerSaysAts": "Workday mufgub/MUFG-Careers (VERIFIED 660)",
+      "careersHosts": [],
+      "atsFromDns": [],
+      "ctSubdomainCount": 1415,
+      "careersSubdomains": [],
+      "sensitiveSubdomains": [
+        "payment-assist.bk.mufg.jp"
+      ],
+      "devPortals": [
+        "api.bk.mufg.jp",
+        "developer.am.mufg.jp",
+        "developer.api.bk.mufg.jp",
+        "developer.portal.bk.mufg.jp",
+        "developer.register.bk.mufg.jp"
+      ],
+      "mailProvider": "self-hosted / other"
+    },
+    {
+      "company": "BNY Mellon",
+      "domain": "bny.com",
+      "crawlerSaysAts": "Oracle Cloud HCM (no public JSON API)",
+      "careersHosts": [],
+      "atsFromDns": [],
+      "ctSubdomainCount": 1934,
+      "careersSubdomains": [],
+      "sensitiveSubdomains": [],
+      "devPortals": [
+        "developer.qa.bny.com",
+        "developer.bny.com"
+      ],
+      "mailProvider": "Proofpoint"
+    },
+    {
+      "company": "HDFC Bank",
+      "domain": "hdfcbank.com",
+      "crawlerSaysAts": "SAP SuccessFactors (no public JSON API)",
+      "careersHosts": [],
+      "atsFromDns": [],
+      "ctSubdomainCount": 1417,
+      "careersSubdomains": [],
+      "sensitiveSubdomains": [
+        "merchant-int.payzapp.hdfcbank.com",
+        "payment.hdfcbank.com",
+        "www.payment.hdfcbank.com"
+      ],
+      "devPortals": [
+        "api-nb-nextgen-perf.hdfcbank.com",
+        "www.api-nb-nextgen-perf.hdfcbank.com",
+        "api.vkyc.hdfcbank.com",
+        "api.tachyon.uat.hdfcbank.com",
+        "api-tryitout-uat.hdfcbank.com",
+        "www.api-tryitout-uat.hdfcbank.com",
+        "api.hdfcbank.com",
+        "www.api.hdfcbank.com",
+        "developer.hdfcbank.com",
+        "www.developer.hdfcbank.com",
+        "api-uat.hdfcbank.com",
+        "www.api-uat.hdfcbank.com",
+        "developer-uat.hdfcbank.com",
+        "www.developer-uat.hdfcbank.com",
+        "openbanking.hdfcbank.com",
+        "www.openbanking.hdfcbank.com",
+        "api.uatcollectionscc.hdfcbank.com",
+        "api.tachyon.hdfcbank.com",
+        "api-tryitout.hdfcbank.com",
+        "www.api-tryitout.hdfcbank.com"
+      ],
+      "mailProvider": "Microsoft 365"
+    },
+    {
+      "company": "State Bank of India",
+      "domain": "sbi.co.in",
+      "crawlerSaysAts": "in-house CRPD / TCS iON",
+      "careersHosts": [],
+      "atsFromDns": [],
+      "ctSubdomainCount": 150,
+      "careersSubdomains": [],
+      "sensitiveSubdomains": [],
+      "devPortals": [
+        "api-appice.yono.sbi.co.in"
+      ],
+      "mailProvider": "Microsoft 365"
+    },
+    {
+      "company": "NPCI",
+      "domain": "npci.org.in",
+      "crawlerSaysAts": "Darwinbox (no public JSON API)",
+      "careersHosts": [
+        {
+          "host": "careers.npci.org.in",
+          "resolves": "CNAME",
+          "chain": [
+            "recruit.cs.zohohost.in",
+            "zs-in1-lczhost-H2.zohohost.in"
+          ],
+          "vendor": null
+        }
+      ],
+      "atsFromDns": [],
+      "ctSubdomainCount": null,
+      "careersSubdomains": [],
+      "sensitiveSubdomains": [],
+      "devPortals": [],
+      "mailProvider": "self-hosted / other"
+    },
+    {
+      "company": "Jane Street",
+      "domain": "janestreet.com",
+      "crawlerSaysAts": "Greenhouse janestreet (VERIFIED 230 roles)",
+      "careersHosts": [],
+      "atsFromDns": [],
+      "ctSubdomainCount": 290,
+      "careersSubdomains": [
+        "email.recruitment.janestreet.com"
+      ],
+      "sensitiveSubdomains": [],
+      "devPortals": [],
+      "mailProvider": "self-hosted / other"
+    }
+  ]
+}

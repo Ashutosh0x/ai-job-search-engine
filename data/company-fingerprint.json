@@ -1,0 +1,918 @@
+{
+  "generatedAt": "2026-09-12T10:08:45.662Z",
+  "method": "public DNS (MX/TXT/SPF/DMARC/NS) via 1.1.1.1 and 8.8.8.8; ATS status from live API calls",
+  "notMeasured": [
+    "email address patterns",
+    "headcount",
+    "revenue",
+    "office locations"
+  ],
+  "results": [
+    {
+      "name": "JPMorgan Chase",
+      "domain": "jpmorganchase.com",
+      "ats": "Oracle Cloud HCM (unverified: no public JSON API)",
+      "mailDomain": "jpmorgan.com",
+      "mx": [
+        "cluster14.us.messagelabs.com",
+        "cluster14.us.messagelabs.com",
+        "cluster14.us.messagelabs.com",
+        "cluster14a.us.messagelabs.com"
+      ],
+      "mailProviders": [
+        "Symantec/MessageLabs"
+      ],
+      "hasSpf": true,
+      "spfIncludes": [],
+      "dmarc": "reject",
+      "dmarcRecord": "v=DMARC1; p=reject; pct=100; rua=mailto:d@rua.agari.com; ruf=mailto:d@ruf.agari.com; fo=1",
+      "ns": [
+        "ns06.jpmorganchase.com",
+        "ns1.jpmorganchase.com",
+        "ns2.jpmorganchase.com",
+        "ns0134.secondary.cloudflare.com"
+      ],
+      "dnsProviders": [
+        "NS1",
+        "Cloudflare"
+      ],
+      "vendorsInDns": [
+        "Facebook page (marketing)"
+      ],
+      "txtCount": 20
+    },
+    {
+      "name": "Morgan Stanley",
+      "domain": "morganstanley.com",
+      "ats": "Workday ms/External (VERIFIED 1,286 roles)",
+      "mailDomain": "morganstanley.com",
+      "mx": [
+        "mx1.morganstanley.com",
+        "mx2.morganstanley.com",
+        "mx3.morganstanley.com",
+        "mx4.morganstanley.com"
+      ],
+      "mailProviders": [
+        "self-hosted / other"
+      ],
+      "hasSpf": true,
+      "spfIncludes": [
+        "_spf.morganstanley.neolane.net",
+        "aspmx.pardot.com",
+        "cust-spf.exacttarget.com"
+      ],
+      "dmarc": "reject",
+      "dmarcRecord": "v=DMARC1; p=reject; fo=1; rua=mailto:dmarc_rua@emaildefense.proofpoint.com,mailto:morganstanley@rua.netcraft.com; ruf=mailto:dmarc_ruf@emaildefense.proofpoint.com,mailto:morganstanley@ruf.netcraft.com; adkim=s;",
+      "ns": [
+        "ext-ns10.morganstanley.net",
+        "ext-ns12.morganstanley.net",
+        "ext-ns1.morganstanley.net",
+        "ext-ns3.morganstanley.net"
+      ],
+      "dnsProviders": [
+        "NS1"
+      ],
+      "vendorsInDns": [
+        "Atlassian",
+        "DocuSign",
+        "Salesforce"
+      ],
+      "txtCount": 77
+    },
+    {
+      "name": "Citigroup",
+      "domain": "citi.com",
+      "ats": "Workday citi/2 (VERIFIED; citi_careers 404s)",
+      "mailDomain": "citi.com",
+      "mx": [
+        "mx-a.mail.citi.com",
+        "mx-b.mail.citi.com"
+      ],
+      "mailProviders": [
+        "self-hosted / other"
+      ],
+      "hasSpf": true,
+      "spfIncludes": [
+        "spf-00123c01.pphosted.com",
+        "_spf.lwo.locaweb.com.br"
+      ],
+      "dmarc": "reject",
+      "dmarcRecord": "v=DMARC1; p=reject; rua=mailto:dmarc_rua@emaildefense.proofpoint.com,mailto:dmarc.reports.rua@citi.com",
+      "ns": [
+        "ns1.nsroot1.com",
+        "ns2.nsroot2.com"
+      ],
+      "dnsProviders": [
+        "NS1"
+      ],
+      "vendorsInDns": [
+        "Adobe",
+        "Atlassian",
+        "DocuSign"
+      ],
+      "txtCount": 72
+    },
+    {
+      "name": "Bank of America",
+      "domain": "bankofamerica.com",
+      "ats": "Workday ghr/Lateral-US (VERIFIED 2,005)",
+      "mailDomain": "bankofamerica.com",
+      "mx": [
+        "mxa-0000ec05.gslb.pphosted.com",
+        "mxb-0000ec05.gslb.pphosted.com"
+      ],
+      "mailProviders": [
+        "Proofpoint"
+      ],
+      "hasSpf": true,
+      "spfIncludes": [
+        "spf-0000ec15.pphosted.com"
+      ],
+      "dmarc": "reject",
+      "dmarcRecord": "v=DMARC1; p=reject; fo=1; rua=mailto:auth.report_ns@bankofamerica.com; ruf=mailto:bankofamerica@ruf.agari.com",
+      "ns": [
+        "a.ns-bac.com",
+        "b.ns-bac.org",
+        "c.ns-bac.net",
+        "d.ns-bac.info"
+      ],
+      "dnsProviders": [],
+      "vendorsInDns": [
+        "DocuSign",
+        "Facebook page (marketing)"
+      ],
+      "txtCount": 69
+    },
+    {
+      "name": "Wells Fargo",
+      "domain": "wellsfargo.com",
+      "ats": "Workday wf/WellsFargoJobs (VERIFIED 1,796)",
+      "mailDomain": "wellsfargo.com",
+      "mx": [
+        "mxa-00004003.gslb.pphosted.com",
+        "mxb-00004003.gslb.pphosted.com"
+      ],
+      "mailProviders": [
+        "Proofpoint"
+      ],
+      "hasSpf": true,
+      "spfIncludes": [
+        "%{ir}.%{v}.%{d}.spf.has.pphosted.com"
+      ],
+      "dmarc": "reject",
+      "dmarcRecord": "v=DMARC1; p=reject; fo=1; rua=mailto:dmarc_rua@emaildefense.proofpoint.com,mailto:tn1d3s4FQU@dmarc.inboxmonster.com; ruf=mailto:dmarc-ruf@wellsfargo.com;",
+      "ns": [
+        "a2-64.akam.net",
+        "edns1.ultradns.biz",
+        "edns1.ultradns.com",
+        "edns1.ultradns.net"
+      ],
+      "dnsProviders": [
+        "Akamai",
+        "UltraDNS/Neustar"
+      ],
+      "vendorsInDns": [
+        "Atlassian",
+        "DocuSign",
+        "Facebook page (marketing)"
+      ],
+      "txtCount": 21
+    },
+    {
+      "name": "Goldman Sachs",
+      "domain": "gs.com",
+      "ats": "not established here",
+      "mailDomain": "gs.com",
+      "mx": [
+        "mxb-0014b501.gslb.pphosted.com",
+        "mxa-0014b501.gslb.pphosted.com"
+      ],
+      "mailProviders": [
+        "Proofpoint"
+      ],
+      "hasSpf": true,
+      "spfIncludes": [
+        "_spf.gs.com"
+      ],
+      "dmarc": "reject",
+      "dmarcRecord": "v=DMARC1; p=reject; sp=reject; rua=mailto:dmarc_rua@emaildefense.proofpoint.com; ruf=mailto:dmarc_ruf@emaildefense.proofpoint.com; fo=1",
+      "ns": [
+        "ns1.gs.com",
+        "ns1.goldmansachs.info",
+        "ns3.gs.com",
+        "ns1.gs360.net"
+      ],
+      "dnsProviders": [
+        "NS1"
+      ],
+      "vendorsInDns": [
+        "Atlassian",
+        "DocuSign",
+        "Salesforce"
+      ],
+      "txtCount": 24
+    },
+    {
+      "name": "Citadel",
+      "domain": "citadel.com",
+      "ats": "UNKNOWN (Greenhouse claim disproven: 404)",
+      "mailDomain": "citadel.com",
+      "mx": [
+        "mxa-001f6701.gslb.pphosted.com",
+        "mxb-001f6701.gslb.pphosted.com"
+      ],
+      "mailProviders": [
+        "Proofpoint"
+      ],
+      "hasSpf": true,
+      "spfIncludes": [
+        "spf-001f6703.pphosted.com",
+        "spf-001f6701.pphosted.com",
+        "amazonses.com",
+        "spf.protection.outlook.com"
+      ],
+      "dmarc": "quarantine",
+      "dmarcRecord": "v=DMARC1; p=quarantine; fo=1; rua=mailto:dmarc_rua@emaildefense.proofpoint.com; ruf=mailto:dmarc_ruf@emaildefense.proofpoint.com",
+      "ns": [
+        "ns-1517.awsdns-61.org",
+        "ns-1556.awsdns-02.co.uk",
+        "ns-164.awsdns-20.com",
+        "ns-793.awsdns-35.net"
+      ],
+      "dnsProviders": [
+        "AWS Route 53"
+      ],
+      "vendorsInDns": [
+        "Amazon SES",
+        "Atlassian",
+        "DocuSign"
+      ],
+      "txtCount": 22
+    },
+    {
+      "name": "Citadel Securities",
+      "domain": "citadelsecurities.com",
+      "ats": "UNKNOWN (Greenhouse claim disproven: 404)",
+      "mailDomain": "citadelsecurities.com",
+      "mx": [
+        "mxa-001f6701.gslb.pphosted.com",
+        "mxb-001f6701.gslb.pphosted.com"
+      ],
+      "mailProviders": [
+        "Proofpoint"
+      ],
+      "hasSpf": true,
+      "spfIncludes": [
+        "spf-001f6703.pphosted.com",
+        "spf-001f6701.pphosted.com",
+        "_spf.streetcontxt.com",
+        "spf.protection.outlook.com"
+      ],
+      "dmarc": "quarantine",
+      "dmarcRecord": "v=DMARC1; p=quarantine; fo=1; rua=mailto:dmarc_rua@emaildefense.proofpoint.com; ruf=mailto:dmarc_ruf@emaildefense.proofpoint.com",
+      "ns": [
+        "ns-1070.awsdns-05.org",
+        "ns-1872.awsdns-42.co.uk",
+        "ns-440.awsdns-55.com",
+        "ns-745.awsdns-29.net"
+      ],
+      "dnsProviders": [
+        "AWS Route 53"
+      ],
+      "vendorsInDns": [
+        "Atlassian",
+        "DocuSign"
+      ],
+      "txtCount": 16
+    },
+    {
+      "name": "Visa",
+      "domain": "visa.com",
+      "ats": "Workday visa/Visa (VERIFIED 760)",
+      "mailDomain": "visa.com",
+      "mx": [
+        "portal4i.visa.com",
+        "portal2i.visa.com",
+        "portal3i.visa.com",
+        "portal1i.visa.com"
+      ],
+      "mailProviders": [
+        "self-hosted / other"
+      ],
+      "hasSpf": true,
+      "spfIncludes": [],
+      "dmarc": "quarantine",
+      "dmarcRecord": "v=DMARC1; p=quarantine; sp=quarantine; fo=1; rua=mailto:dmarc_agg@auth.returnpath.net; ruf=mailto:dmarc_afrf@auth.returnpath.net; rf=afrf;",
+      "ns": [
+        "melinda.ns.cloudflare.com",
+        "lloyd.ns.cloudflare.com",
+        "a10-64.akam.net",
+        "a9-64.akam.net"
+      ],
+      "dnsProviders": [
+        "Cloudflare",
+        "Akamai"
+      ],
+      "vendorsInDns": [
+        "Adobe",
+        "Atlassian",
+        "DocuSign",
+        "Facebook page (marketing)"
+      ],
+      "txtCount": 51
+    },
+    {
+      "name": "Mastercard",
+      "domain": "mastercard.com",
+      "ats": "Workday mastercard/CorporateCareers (VERIFIED 1,055)",
+      "mailDomain": "mastercard.com",
+      "mx": [
+        "mxa-00078002.gslb.pphosted.com",
+        "mxb-00078002.gslb.pphosted.com",
+        "mc.smtp.2.mastercard.com",
+        "mc.smtp.1.mastercard.com"
+      ],
+      "mailProviders": [
+        "Proofpoint"
+      ],
+      "hasSpf": true,
+      "spfIncludes": [
+        "spf.protection.outlook.com",
+        "deliverygateways.mastercard.com",
+        "external.mastercard.com",
+        "external2.mastercard.com",
+        "deliverygateways2.mastercard.com"
+      ],
+      "dmarc": "reject",
+      "dmarcRecord": "v=DMARC1; p=reject; fo=1; rua=mailto:dmarc_agg@auth.returnpath.net; ruf=mailto:dmarc_afrf@auth.returnpath.net",
+      "ns": [
+        "a26-66.akam.net",
+        "a9-64.akam.net",
+        "a22-65.akam.net",
+        "a7-67.akam.net"
+      ],
+      "dnsProviders": [
+        "Akamai"
+      ],
+      "vendorsInDns": [
+        "Adobe",
+        "Atlassian",
+        "Facebook page (marketing)",
+        "Salesforce"
+      ],
+      "txtCount": 44
+    },
+    {
+      "name": "PayPal",
+      "domain": "paypal.com",
+      "ats": "Workday paypal/jobs (VERIFIED 128)",
+      "mailDomain": "paypal.com",
+      "mx": [
+        "mx1.paypalcorp.com",
+        "mx2.paypalcorp.com"
+      ],
+      "mailProviders": [
+        "self-hosted / other"
+      ],
+      "hasSpf": true,
+      "spfIncludes": [
+        "pp._spf.paypal.com",
+        "3ph1._spf.paypal.com",
+        "3ph2._spf.paypal.com",
+        "3ph3._spf.paypal.com",
+        "3ph4._spf.paypal.com",
+        "sendgrid.net",
+        "aspmx.pardot.com"
+      ],
+      "dmarc": "reject",
+      "dmarcRecord": "v=DMARC1; p=reject; rua=mailto:d@rua.agari.com,mailto:dmarc_agg@vali.email; ruf=mailto:d@ruf.agari.com,mailto:MTc4Mzcw@ruf.vali.email",
+      "ns": [
+        "ns2-pchnet.paypal.com",
+        "pdns100.ultradns.net",
+        "ns1-pchnet.paypal.com",
+        "pdns100.ultradns.com"
+      ],
+      "dnsProviders": [
+        "UltraDNS/Neustar",
+        "NS1"
+      ],
+      "vendorsInDns": [
+        "Adobe",
+        "Atlassian",
+        "Meta Workplace",
+        "Salesforce",
+        "SendGrid"
+      ],
+      "txtCount": 12
+    },
+    {
+      "name": "Barclays",
+      "domain": "barclays.com",
+      "ats": "Workday barclays/External_Career_Site_Barclays (VERIFIED 1,014)",
+      "mailDomain": "barclays.com",
+      "mx": [
+        "mxb-00146204.gslb.pphosted.com",
+        "mxa-00146204.gslb.pphosted.com"
+      ],
+      "mailProviders": [
+        "Proofpoint"
+      ],
+      "hasSpf": true,
+      "spfIncludes": [
+        "%{ir}.%{v}.%{d}.spf.has.pphosted.com"
+      ],
+      "dmarc": "reject",
+      "dmarcRecord": "v=DMARC1; p=reject; fo=1; rua=mailto:dmarc_rua@emaildefense.proofpoint.com; ruf=mailto:dmarc_ruf@emaildefense.proofpoint.com",
+      "ns": [
+        "a10-66.akam.net",
+        "ns3.barcap.com",
+        "a12-64.akam.net",
+        "ns7.barcap.com"
+      ],
+      "dnsProviders": [
+        "Akamai"
+      ],
+      "vendorsInDns": [
+        "Adobe",
+        "Atlassian",
+        "DocuSign",
+        "Facebook page (marketing)"
+      ],
+      "txtCount": 26
+    },
+    {
+      "name": "HSBC",
+      "domain": "hsbc.com",
+      "ats": "Eightfold (adapter exists; not called here)",
+      "mailDomain": "hsbc.com",
+      "mx": [
+        "mxa-00299f02.gslb.pphosted.com",
+        "mxb-00299f02.gslb.pphosted.com"
+      ],
+      "mailProviders": [
+        "Proofpoint"
+      ],
+      "hasSpf": true,
+      "spfIncludes": [
+        "%{ir}.%{v}.%{d}.spf.has.pphosted.com",
+        "spf-00299f02.pphosted.com",
+        "spf1.hsbc.com",
+        "spf2.hsbc.com",
+        "spf3.hsbc.com",
+        "spf-002f0603.pphosted.com"
+      ],
+      "dmarc": "reject",
+      "dmarcRecord": "v=DMARC1; p=reject; fo=1; ri=3600; rua=mailto:dmarc_rua@emaildefense.proofpoint.com; ruf=mailto:dmarc_ruf@emaildefense.proofpoint.com",
+      "ns": [
+        "ns20.hsbc.net",
+        "ns21.hsbc.net",
+        "ns21.hsbc.uk",
+        "ns3.hsbc.com"
+      ],
+      "dnsProviders": [],
+      "vendorsInDns": [
+        "Adobe",
+        "Atlassian",
+        "DocuSign"
+      ],
+      "txtCount": 35
+    },
+    {
+      "name": "Lloyds Banking Group",
+      "domain": "lloydsbanking.com",
+      "ats": "Workday lbg/lbg_Careers (VERIFIED 113)",
+      "mailDomain": "lloydsbanking.com",
+      "mx": [
+        "lloydsbanking-com.mail.protection.outlook.com"
+      ],
+      "mailProviders": [
+        "Microsoft 365"
+      ],
+      "hasSpf": true,
+      "spfIncludes": [
+        "spf.messagelabs.com",
+        "msgfocus.com",
+        "spf.diligent.com",
+        "gateways.firstdata.com",
+        "spf1.fraedom.com"
+      ],
+      "dmarc": "reject",
+      "dmarcRecord": "v=DMARC1; p=reject; ruf=mailto:d@ruf.agari.com; rua=mailto:d@rua.agari.com",
+      "ns": [
+        "ns8.lloydsbanking.co.uk",
+        "ns2.lloydstsb.co.uk",
+        "ns5.lloydstsb.net",
+        "ns7.lloydsbanking.com"
+      ],
+      "dnsProviders": [],
+      "vendorsInDns": [
+        "Adobe",
+        "Atlassian"
+      ],
+      "txtCount": 38
+    },
+    {
+      "name": "NatWest Group",
+      "domain": "natwest.com",
+      "ats": "Workday rbs/RBS (VERIFIED 107)",
+      "mailDomain": "natwest.com",
+      "mx": [
+        "mail13.rbs.com",
+        "mail15.rbs.com",
+        "mail03.rbs.com",
+        "mail01.rbs.com"
+      ],
+      "mailProviders": [
+        "self-hosted / other"
+      ],
+      "hasSpf": true,
+      "spfIncludes": [],
+      "dmarc": "reject",
+      "dmarcRecord": "v=DMARC1; p=reject; fo=1; rua=mailto:rbs@rua.netcraft.com; ruf=mailto:rbs@ruf.netcraft.com",
+      "ns": [
+        "udns2.cscdns.uk",
+        "udns1.cscdns.net"
+      ],
+      "dnsProviders": [
+        "NS1"
+      ],
+      "vendorsInDns": [
+        "Adobe",
+        "Amazon SES",
+        "Atlassian",
+        "Facebook page (marketing)"
+      ],
+      "txtCount": 39
+    },
+    {
+      "name": "Standard Chartered",
+      "domain": "sc.com",
+      "ats": "Workday peopleplus/SCB_Careers (VERIFIED 55)",
+      "mailDomain": "sc.com",
+      "mx": [
+        "mxa-001ac208.gslb.pphosted.com",
+        "mxb-001ac208.gslb.pphosted.com"
+      ],
+      "mailProviders": [
+        "Proofpoint"
+      ],
+      "hasSpf": true,
+      "spfIncludes": [
+        "int01._spf.sc.com",
+        "ext01._spf.sc.com",
+        "spf.protection.outlook.com",
+        "spf-001ac208.pphosted.com",
+        "spf-001ac209.pphosted.com",
+        "spf-001ac206.pphosted.com"
+      ],
+      "dmarc": "reject",
+      "dmarcRecord": "v=DMARC1; p=reject; fo=1; ri=3600; rua=mailto:dmarc_rua@emaildefense.proofpoint.com,mailto:sc@rua.netcraft.com; ruf=mailto:dmarc_ruf@emaildefense.proofpoint.com,mailto:sc@ruf.netcraft.com",
+      "ns": [
+        "udns1.cscdns.net",
+        "udns2.cscdns.uk"
+      ],
+      "dnsProviders": [
+        "NS1"
+      ],
+      "vendorsInDns": [
+        "Adobe",
+        "Amazon SES",
+        "Atlassian",
+        "DocuSign",
+        "SAP SuccessFactors"
+      ],
+      "txtCount": 28
+    },
+    {
+      "name": "Commonwealth Bank",
+      "domain": "cba.com.au",
+      "ats": "Workday cba/CommBank_Careers (VERIFIED 223)",
+      "mailDomain": "cba.com.au",
+      "mx": [
+        "cba-com-au.mail.protection.outlook.com"
+      ],
+      "mailProviders": [
+        "Microsoft 365"
+      ],
+      "hasSpf": true,
+      "spfIncludes": [
+        "spf1.cba.com.au",
+        "spf2.cba.com.au",
+        "spf.protection.outlook.com",
+        "_spf.streetcontxt.com",
+        "deliverygateways.mastercard.com"
+      ],
+      "dmarc": "reject",
+      "dmarcRecord": "v=DMARC1; p=reject; sp=reject; pct=100; rua=mailto:dmarc-rua@cba.com.au; ruf=mailto:dmarc-ruf@cba.com.au; adkim=s; aspf=s; fo=1; rf=afrf; ri=86400",
+      "ns": [
+        "ns-1455.awsdns-53.org",
+        "ns-365.awsdns-45.com",
+        "ns-540.awsdns-03.net",
+        "ns-1807.awsdns-33.co.uk"
+      ],
+      "dnsProviders": [
+        "AWS Route 53"
+      ],
+      "vendorsInDns": [
+        "Atlassian",
+        "DocuSign"
+      ],
+      "txtCount": 29
+    },
+    {
+      "name": "NAB",
+      "domain": "nab.com.au",
+      "ats": "Workday nab/NAB_Careers (VERIFIED 277)",
+      "mailDomain": "nab.com.au",
+      "mx": [
+        "nabcts.mail.protection.outlook.com"
+      ],
+      "mailProviders": [
+        "Microsoft 365"
+      ],
+      "hasSpf": true,
+      "spfIncludes": [
+        "mail1.nab.com.au",
+        "mail2.nab.com.au"
+      ],
+      "dmarc": "reject",
+      "dmarcRecord": "v=DMARC1; p=reject; sp=reject; fo=1; ri=3600; rua=mailto:dmarc_agg@nab.com.au; ruf=mailto:dmarc_for@nab.com.au",
+      "ns": [
+        "ns2.national.com.au",
+        "ns1.national.com.au"
+      ],
+      "dnsProviders": [
+        "NS1"
+      ],
+      "vendorsInDns": [
+        "Atlassian",
+        "DocuSign",
+        "Facebook page (marketing)",
+        "Meta Workplace"
+      ],
+      "txtCount": 22
+    },
+    {
+      "name": "Deutsche Bank",
+      "domain": "db.com",
+      "ats": "Workday db/DBWebsite (VERIFIED 1,136)",
+      "mailDomain": "db.com",
+      "mx": [
+        "smtp22.db.com",
+        "smtp24.db.com",
+        "smtp12.db.com",
+        "smtp13.db.com"
+      ],
+      "mailProviders": [
+        "self-hosted / other"
+      ],
+      "hasSpf": true,
+      "spfIncludes": [],
+      "dmarc": "reject",
+      "dmarcRecord": "v=DMARC1; p=reject; sp=reject; adkim=s; fo=1; ri=3600; rua=mailto:dmarc_rua@emaildefense.proofpoint.com; ruf=mailto:dmarc_ruf@emaildefense.proofpoint.com,mailto:dmarc.reports@db.com",
+      "ns": [
+        "ns3.db-dns.de",
+        "ns14.db-dns.de",
+        "ns1.db-dns.de",
+        "ns15.db-dns.com"
+      ],
+      "dnsProviders": [
+        "NS1"
+      ],
+      "vendorsInDns": [
+        "Adobe",
+        "Atlassian",
+        "DocuSign",
+        "Facebook page (marketing)"
+      ],
+      "txtCount": 60
+    },
+    {
+      "name": "Commerzbank",
+      "domain": "commerzbank.com",
+      "ats": "SAP SuccessFactors (no public JSON API)",
+      "mailDomain": "commerzbank.com",
+      "mx": [
+        "commerzbank-com.mail.protection.outlook.com"
+      ],
+      "mailProviders": [
+        "Microsoft 365"
+      ],
+      "hasSpf": true,
+      "spfIncludes": [
+        "spf.protection.outlook.com"
+      ],
+      "dmarc": "reject",
+      "dmarcRecord": "v=DMARC1; p=reject; rua=mailto:lubermwp@ag.eu.dmarcadvisor.com",
+      "ns": [
+        "ns5.commerzbank.com",
+        "ns3.commerzbank.com",
+        "ns2.commerzbank.com",
+        "ns4.commerzbank.com"
+      ],
+      "dnsProviders": [],
+      "vendorsInDns": [
+        "Atlassian",
+        "DocuSign",
+        "Facebook page (marketing)"
+      ],
+      "txtCount": 21
+    },
+    {
+      "name": "MUFG",
+      "domain": "mufg.jp",
+      "ats": "Workday mufgub/MUFG-Careers (VERIFIED 660)",
+      "mailDomain": "mufg.jp",
+      "mx": [
+        "msgww.bk.mufg.jp",
+        "msgwe.bk.mufg.jp"
+      ],
+      "mailProviders": [
+        "self-hosted / other"
+      ],
+      "hasSpf": true,
+      "spfIncludes": [
+        "spf1.mufg.jp",
+        "_spf.salesforce.com"
+      ],
+      "dmarc": "reject",
+      "dmarcRecord": "v=DMARC1; p=reject; sp=quarantine; rua=mailto:mufg00001-ra@dmarc25.jp,mailto:dm0migwuxfg32.rua@dp.smtps.jp",
+      "ns": [
+        "a1-10.akam.net",
+        "ns004-ar0tb4rec1f4c1mj.a.d-53.jp",
+        "ns004-ar0tb4rec1f4c1mj.a.d-53.net",
+        "a26-65.akam.net"
+      ],
+      "dnsProviders": [
+        "Akamai"
+      ],
+      "vendorsInDns": [
+        "Adobe",
+        "Atlassian",
+        "DocuSign",
+        "Salesforce"
+      ],
+      "txtCount": 20
+    },
+    {
+      "name": "BNY Mellon",
+      "domain": "bny.com",
+      "ats": "Oracle Cloud HCM (no public JSON API)",
+      "mailDomain": "bny.com",
+      "mx": [
+        "mxb-00157d02.gslb.pphosted.com",
+        "mxa-00157d02.gslb.pphosted.com"
+      ],
+      "mailProviders": [
+        "Proofpoint"
+      ],
+      "hasSpf": true,
+      "spfIncludes": [
+        "%{ir}.%{v}.%{d}.spf.has.pphosted.com",
+        "spf-00157d02.pphosted.com"
+      ],
+      "dmarc": "reject",
+      "dmarcRecord": "v=DMARC1; p=reject; sp=reject; fo=1; ri=3600; rua=mailto:dmarc_rua@emaildefense.proofpoint.com; ruf=mailto:dmarc_ruf@emaildefense.proofpoint.com",
+      "ns": [
+        "zoe.ns.cloudflare.com",
+        "seth.ns.cloudflare.com"
+      ],
+      "dnsProviders": [
+        "Cloudflare"
+      ],
+      "vendorsInDns": [
+        "Adobe",
+        "Atlassian",
+        "DocuSign"
+      ],
+      "txtCount": 44
+    },
+    {
+      "name": "HDFC Bank",
+      "domain": "hdfcbank.com",
+      "ats": "SAP SuccessFactors (no public JSON API)",
+      "mailDomain": "hdfcbank.com",
+      "mx": [
+        "hdfcbank-com.mail.protection.outlook.com"
+      ],
+      "mailProviders": [
+        "Microsoft 365"
+      ],
+      "hasSpf": true,
+      "spfIncludes": [
+        "zohomail.in",
+        "spf.hdfcbank.com",
+        "spf.powerelay.com",
+        "spf.protection.outlook.com"
+      ],
+      "dmarc": "reject",
+      "dmarcRecord": "v=DMARC1; p=reject; rua=mailto:dmarc.rua@hdfcbank.net; ruf=mailto:dmarc.ruf@hdfcbank.net; fo=1",
+      "ns": [
+        "elmo.ns.cloudflare.com",
+        "roxy.ns.cloudflare.com"
+      ],
+      "dnsProviders": [
+        "Cloudflare"
+      ],
+      "vendorsInDns": [],
+      "txtCount": 18
+    },
+    {
+      "name": "State Bank of India",
+      "domain": "sbi.co.in",
+      "ats": "in-house CRPD / TCS iON",
+      "mailDomain": "sbi.co.in",
+      "mx": [
+        "sbi-co-in.mail.protection.outlook.com"
+      ],
+      "mailProviders": [
+        "Microsoft 365"
+      ],
+      "hasSpf": true,
+      "spfIncludes": [
+        "spf.protection.outlook.com"
+      ],
+      "dmarc": "reject",
+      "dmarcRecord": "v=DMARC1;p=reject;rua=mailto:dmarc.alerts@sbi.co.in;ruf=mailto:dmarc.ruf@sbi.co.in;fo=1",
+      "ns": [
+        "sdns.satyam.net.in",
+        "pdns.satyam.net.in"
+      ],
+      "dnsProviders": [],
+      "vendorsInDns": [],
+      "txtCount": 5
+    },
+    {
+      "name": "NPCI",
+      "domain": "npci.org.in",
+      "ats": "Darwinbox (no public JSON API)",
+      "mailDomain": "npci.org.in",
+      "mx": [
+        "mh2.npci.org.in",
+        "mh4.npci.org.in",
+        "mh1.npci.org.in",
+        "mh3.npci.org.in"
+      ],
+      "mailProviders": [
+        "self-hosted / other"
+      ],
+      "hasSpf": true,
+      "spfIncludes": [
+        "transmail.net.in"
+      ],
+      "dmarc": "reject",
+      "dmarcRecord": "v=DMARC1; p=reject; rua=mailto:dmarc@npci.org.in; ruf=mailto:dmarc@npci.org.in; fo=1; adkim=s; aspf=s; pct=100; rf=afrf; ri=86400; sp=reject",
+      "ns": [
+        "a11-67.akam.net",
+        "a2-66.akam.net",
+        "a1-177.akam.net",
+        "a10-65.akam.net"
+      ],
+      "dnsProviders": [
+        "Akamai"
+      ],
+      "vendorsInDns": [
+        "Atlassian"
+      ],
+      "txtCount": 13
+    },
+    {
+      "name": "Jane Street",
+      "domain": "janestreet.com",
+      "ats": "Greenhouse janestreet (VERIFIED 230 roles)",
+      "mailDomain": "janestreet.com",
+      "mx": [
+        "mxin4.mail.janestreet.com",
+        "mxin2.mail.janestreet.com",
+        "mxin1.mail.janestreet.com",
+        "mxin3.mail.janestreet.com"
+      ],
+      "mailProviders": [
+        "self-hosted / other"
+      ],
+      "hasSpf": true,
+      "spfIncludes": [
+        "bloomberg.net",
+        "_spf.google.com",
+        "aspmx.pardot.com"
+      ],
+      "dmarc": "quarantine",
+      "dmarcRecord": "v=DMARC1;p=quarantine;rua=mailto:dmarc-reports-aggregate@janestreet.com; ruf=mailto:dmarc-reports-failure@janestreet.com;",
+      "ns": [
+        "ns-1819.awsdns-35.co.uk",
+        "ns-1215.awsdns-23.org",
+        "ns-501.awsdns-62.com",
+        "ns-613.awsdns-12.net"
+      ],
+      "dnsProviders": [
+        "AWS Route 53"
+      ],
+      "vendorsInDns": [
+        "Adobe",
+        "Atlassian",
+        "Salesforce"
+      ],
+      "txtCount": 23
+    }
+  ]
+}

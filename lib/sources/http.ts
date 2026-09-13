@@ -14,6 +14,15 @@ export interface HttpOptions extends RequestInit {
   retries?: number
   /** Cache TTL. 0 disables caching for this call. */
   cacheTtlMs?: number
+  /**
+   * The caller is reading a JSON API, so an HTML body is a refusal.
+   *
+   * Opt-in rather than inferred: the default Accept header asks for JSON OR
+   * HTML, and CustomSiteAdapter legitimately scrapes HTML through this same
+   * function. Only a caller that knows it is talking to a JSON endpoint can
+   * say that markup means "no".
+   */
+  expectJson?: boolean
   /** Override the per-host concurrency slot key. */
   hostKey?: string
 }
@@ -211,13 +220,43 @@ const outcomes = {
   fromCache: 0,
 }
 /** host -> { status -> count }, so a blocked employer can be named. */
-const byHost = new Map<string, Map<number, number>>()
+/**
+ * host -> "kind:status" -> count.
+ *
+ * Keyed on the bucket we RECORDED, not on the status alone. A Workday
+ * maintenance page is a blocked 200, and re-deriving the bucket from `200` at
+ * report time classifies it back to `ok` -- so the blocked counter rose while
+ * the list naming the blocked hosts stayed empty, which is the half of the
+ * report anyone can act on.
+ */
+const byHost = new Map<string, Map<string, number>>()
 
 function record(host: string, status: number, kind: keyof typeof outcomes) {
   outcomes[kind]++
   let m = byHost.get(host)
   if (!m) { m = new Map(); byHost.set(host, m) }
-  m.set(status, (m.get(status) ?? 0) + 1)
+  const k = `${kind}:${status}`
+  m.set(k, (m.get(k) ?? 0) + 1)
+}
+
+/**
+ * Markup where JSON was promised.
+ *
+ * Workday answers "Workday is currently unavailable" with a 31KB HTML page
+ * under HTTP 200 -- no error status, no Retry-After -- across an entire shard
+ * when it decides it has had enough requests. Every JSON parse then returns
+ * null and every tenant on that shard reads as a board with nothing open, so a
+ * crawl can report "412 employers have no openings" and a 100% success rate
+ * while a third of the platform was refusing to talk to us. Measured: wd1, wd3
+ * and wd5 served this to every request while the other 13 shards answered
+ * normally.
+ *
+ * Only called when the caller passed `expectJson`, so an adapter that wants
+ * HTML is unaffected.
+ */
+function isMarkup(body: string): boolean {
+  const head = body.slice(0, 200).trimStart().toLowerCase()
+  return head.startsWith('<!doctype html') || head.startsWith('<html')
 }
 
 /** Classify a status into the bucket a human would act on. */
@@ -238,6 +277,7 @@ export async function httpGet(url: string, options: HttpOptions = {}): Promise<H
     retries = DEFAULTS.retries,
     cacheTtlMs = DEFAULTS.cacheTtlMs,
     hostKey,
+    expectJson = false,
     ...init
   } = options
 
@@ -315,6 +355,16 @@ export async function httpGet(url: string, options: HttpOptions = {}): Promise<H
 
         const body = await res.text()
 
+        // A 200 carrying markup on a JSON endpoint is a refusal, and is graded
+        // as one: counted as blocked rather than ok, kept out of the cache so
+        // the next 15 minutes of reads are not served a maintenance page, and
+        // charged to the breaker so we stop hammering a host that is saying no.
+        if (res.ok && expectJson && isMarkup(body)) {
+          recordFailure(host)
+          record(host, res.status, 'blocked')
+          return { ok: false, status: res.status, body, fromCache: false, etag: null, url }
+        }
+
         if (res.ok) {
           recordSuccess(host)
           if (cacheTtlMs > 0) {
@@ -360,7 +410,7 @@ export async function httpGet(url: string, options: HttpOptions = {}): Promise<H
 
 /** JSON convenience wrapper. Returns null rather than throwing on bad JSON. */
 export async function httpJson<T = any>(url: string, options: HttpOptions = {}): Promise<T | null> {
-  const res = await httpGet(url, options)
+  const res = await httpGet(url, { expectJson: true, ...options })
   if (!res.ok || !res.body) return null
   try {
     return JSON.parse(res.body) as T
@@ -375,6 +425,7 @@ export async function httpPostJson<T = any>(
   options: HttpOptions = {}
 ): Promise<T | null> {
   const res = await httpGet(url, {
+    expectJson: true,
     ...options,
     method: 'POST',
     body: JSON.stringify(payload),
@@ -405,9 +456,10 @@ export function httpStats() {
   // Name the hosts that refused us. "23 boards blocked" is actionable only if
   // you can say which, so the worst offenders travel with the counts.
   const blockedHosts: { host: string; status: number; count: number }[] = []
-  for (const [host, statuses] of byHost) {
-    for (const [status, count] of statuses) {
-      if (classify(status) === 'blocked') blockedHosts.push({ host, status, count })
+  for (const [host, buckets] of byHost) {
+    for (const [k, count] of buckets) {
+      const [kind, status] = k.split(':')
+      if (kind === 'blocked') blockedHosts.push({ host, status: Number(status), count })
     }
   }
   blockedHosts.sort((a, b) => b.count - a.count)

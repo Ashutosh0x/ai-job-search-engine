@@ -13,6 +13,7 @@
  */
 
 import { COMPANIES, COMPANY_BY_SLUG } from '../lib/companies/registry.ts'
+import { getBankingSlugs } from '../lib/companies/banking-intelligence.ts'
 import { normalizeJob } from '../lib/pipeline/normalize.ts'
 
 let pass = 0, fail = 0
@@ -37,20 +38,83 @@ const rawFor = (c) => ({
   applicationUrl: 'https://example.com/job/1',
 })
 
+/**
+ * A company with no board is a legitimate registry entry.
+ *
+ * NPCI is recorded because the employer matters, but its ATS (Darwinbox) has
+ * no adapter, so it carries `boards: []`. This test used to read `boards[0]`
+ * unconditionally and died on the first such entry with a TypeError, taking
+ * the whole suite down with it -- a normalisation test failing because of a
+ * company it was never testing. There is nothing to normalise without a
+ * board, so those entries are skipped.
+ */
+const withBoards = COMPANIES.filter((c) => c.boards?.length)
+
 /* ---- every curated company keeps its registry slug through normalisation -- */
 {
   const wrong = []
-  for (const c of COMPANIES) {
+  for (const c of withBoards) {
     const job = normalizeJob(rawFor(c), { companySlug: c.slug, companyName: c.name })
     if (job.companySlug !== c.slug) wrong.push({ want: c.slug, got: job.companySlug })
   }
-  t(`all ${COMPANIES.length} curated slugs survive normalisation`, wrong.length === 0, wrong.slice(0, 5))
+  t(`all ${withBoards.length} curated slugs survive normalisation`, wrong.length === 0, wrong.slice(0, 5))
+}
+
+/* ---- no two entries claim the same slug ---------------------------------- */
+{
+  // COMPANY_BY_SLUG is a Map built from this array, so a duplicate slug does
+  // not error -- the last entry silently wins and the earlier one, with
+  // whatever curation it carried, is gone. A pasted research document once
+  // added 13 banks this registry already held, replacing curated entries with
+  // thinner copies and dropping a board in the process. Nothing detected it.
+  const seen = new Map()
+  const dupes = []
+  for (const c of COMPANIES) {
+    if (seen.has(c.slug)) dupes.push(c.slug)
+    seen.set(c.slug, c)
+  }
+  t('no duplicate company slugs', dupes.length === 0, dupes)
+}
+
+/* ---- the intelligence layer joins to real companies ---------------------- */
+{
+  /**
+   * `hasBankingIntelligence(job.companySlug)` decides a ranking boost, and a
+   * slug no company carries simply never matches. There is no error and no
+   * missing profile -- the boost quietly never fires, and the entry is dead
+   * weight that still reads as coverage.
+   *
+   * Three of the fifteen entries were orphaned this way when the layer landed:
+   * 'citigroup' and 'natwest-group' against registry slugs 'citi' and
+   * 'natwest', and 'citadel' against no company at all.
+   */
+  const orphans = getBankingSlugs().filter((s) => !COMPANY_BY_SLUG.get(s))
+  t(`all ${getBankingSlugs().length} intelligence profiles join a registry company`,
+    orphans.length === 0, orphans)
+}
+
+/* ---- no two companies claim the same board ------------------------------- */
+{
+  const seen = new Map()
+  const shared = []
+  for (const c of COMPANIES) {
+    for (const b of c.boards ?? []) {
+      // Case-folded: Workday site paths are case-insensitive, so
+      // `AccentureCareers` and `accenturecareers` are the same board. Keying on
+      // raw casing let both into the crawl list and duplicated 27% of the
+      // Workday corpus before anything noticed.
+      const key = `${b.provider}|${String(b.token).toLowerCase()}|${String(b.site ?? '').toLowerCase()}`
+      if (seen.has(key) && seen.get(key) !== c.slug) shared.push({ board: key, a: seen.get(key), b: c.slug })
+      seen.set(key, c.slug)
+    }
+  }
+  t('no board is claimed by two companies', shared.length === 0, shared.slice(0, 5))
 }
 
 /* ---- and every resulting slug joins back to the registry ------------------ */
 {
   const orphans = []
-  for (const c of COMPANIES) {
+  for (const c of withBoards) {
     const job = normalizeJob(rawFor(c), { companySlug: c.slug, companyName: c.name })
     if (!COMPANY_BY_SLUG.get(job.companySlug)) orphans.push(job.companySlug)
   }

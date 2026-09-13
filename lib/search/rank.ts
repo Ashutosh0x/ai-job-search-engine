@@ -1,4 +1,5 @@
 import type { ParsedIntent } from './intent'
+import { hasBankingIntelligence } from '../companies/banking-intelligence'
 
 /**
  * Transparent, explainable ranking.
@@ -32,6 +33,8 @@ export interface RankWeights {
   completeness: number
   directApply: number
   companyQuality: number
+  /** Small bonus for companies with a deep intelligence profile. */
+  intelligenceBoost: number
   duplicatePenalty: number
 }
 
@@ -45,10 +48,21 @@ export const DEFAULT_WEIGHTS: RankWeights = {
   workplaceMatch: 8,
   visaMatch: 8,
   seniorityMatch: 7,
-  sourceQuality: 5,
+  // 5 -> 3 to fund intelligenceBoost. The positive weights are a fixed
+  // 100-point budget and test-rank.mjs enforces it; adding a 2-point signal
+  // without taking the points from anywhere made the budget 102, so every
+  // score drifted off the stated scale with nothing to show it.
+  //
+  // The 2 come from here rather than from a match signal because
+  // intelligenceBoost is the same kind of claim -- how much we know about
+  // where a posting came from, not how well it fits the query -- and the
+  // suite's core promise is that relevance beats prestige. 3 still separates
+  // a direct ATS feed from an aggregator.
+  sourceQuality: 3,
   completeness: 5,
   directApply: 5,
   companyQuality: 3,
+  intelligenceBoost: 2,
   duplicatePenalty: -5,
 }
 
@@ -272,6 +286,12 @@ export function rankJob(
   const companyPoints = val >= 1e9 ? weights.companyQuality : val > 0 ? weights.companyQuality * 0.6 : weights.companyQuality * 0.3
   push('companyQuality', companyPoints, weights.companyQuality,
     val ? `company valued at $${(val / 1e9).toFixed(1)}B` : 'company valuation unknown')
+
+  /* --- intelligence boost: companies with deep intelligence profiles --- */
+  const hasIntel = job.companySlug ? hasBankingIntelligence(job.companySlug) : false
+  push('intelligenceBoost', hasIntel ? weights.intelligenceBoost : 0, weights.intelligenceBoost,
+    hasIntel ? 'deep company intelligence available (leadership, ATS, APIs, offices)' : 'no intelligence profile',
+    hasIntel ? 'Company Intel' : undefined)
 
   /* --- salary constraint --- */
   if (intent.salaryMin) {

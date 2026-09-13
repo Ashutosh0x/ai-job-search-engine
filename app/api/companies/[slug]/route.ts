@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { getCompany } from '@/lib/job-index'
+import { getRecruitingContacts } from '@/lib/companies/recruiting-contacts'
 
 export const runtime = 'nodejs'
 
@@ -42,6 +43,8 @@ export async function GET(
   const dated = jobs.filter((j) => j.postedAt).map((j) => new Date(j.postedAt!).getTime())
   const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000
 
+  const recruiting = await getRecruitingContacts(company.slug, company.boards)
+
   return NextResponse.json({
     success: true,
     company: {
@@ -71,6 +74,7 @@ export async function GET(
         departments: top(byDepartment, 15),
         locations: top(byLocation, 15),
       },
+      recruiting,
     },
     jobs,
   })

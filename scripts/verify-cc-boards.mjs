@@ -36,7 +36,7 @@ const CONCURRENCY = Number(val('concurrency', 10))
 const LIMIT = Number(val('limit', 0))
 
 /** Only providers the pipeline has an adapter for -- see lib/sources/adapters. */
-const SUPPORTED = ['greenhouse', 'lever', 'ashby', 'smartrecruiters', 'recruitee', 'teamtailor', 'workable', 'workday']
+const SUPPORTED = ['greenhouse', 'lever', 'ashby', 'smartrecruiters', 'recruitee', 'teamtailor', 'workable', 'workday', 'keka']
 const PROVIDERS = (val('providers', 'greenhouse,ashby,workable') === 'all'
   ? SUPPORTED
   : val('providers', 'greenhouse,ashby,workable').split(',').map((s) => s.trim())
@@ -58,7 +58,24 @@ async function req(url, opts = {}, tries = 3, timeoutMs = 25000) {
       if (r.status === 429 || r.status >= 500) throw new Error(`http ${r.status}`)
       if (!r.ok) return null
       const text = await r.text()
-      try { return JSON.parse(text) } catch { return text }
+      try { return JSON.parse(text) } catch { /* not JSON -- fall through */ }
+      /**
+       * A JSON API answering with HTML is a refusal wearing a success code.
+       *
+       * Workday serves "Workday is currently unavailable" as a 31KB HTML page
+       * with HTTP 200 and no Retry-After, on the whole shard, when it decides
+       * it has had enough requests. Returning that body to the caller made it
+       * a truthy non-object, so `if (!n)` passed and every throttled tenant was
+       * recorded as LIVE with the entire HTML page stored as its `openRoles`.
+       * One run wrote 2,605 such entries and grew this script's output file
+       * from 827KB to 274MB, while the progress line printed a role count that
+       * was really a megabyte of concatenated markup.
+       *
+       * Throwing sends it back through the retry/backoff loop and, if the page
+       * persists, out as `undefined` -- "unreachable", which is what it is. A
+       * board is never added on the strength of a page we could not parse.
+       */
+      throw new Error('non-JSON body: maintenance or challenge page')
     } catch {
       if (i === tries - 1) return undefined
       await new Promise((res) => setTimeout(res, 1500 * (i + 1) + Math.random() * 1000))
@@ -96,6 +113,15 @@ const COUNT = {
     const d = await req(`https://apply.workable.com/api/v1/widget/accounts/${encodeURIComponent(b.token)}?details=true`)
     return d && typeof d === 'object' ? (d.jobs || []).length : d
   },
+  keka: async (b) => {
+    // The portal segment is 'default', not the tenant name -- the tenant name
+    // answers 200 with an empty array, which would record every live board as
+    // an employer with nothing open. See scripts/test-keka.mjs.
+    const host = b.host || `${b.token}.keka.com`
+    const portal = b.site || 'default'
+    const d = await req(`https://${host}/careers/api/jobs/${encodeURIComponent(portal)}/active`)
+    return Array.isArray(d) ? d.length : d
+  },
   workday: async (b) => {
     if (!b.host || !b.site) return null
     const d = await req(`https://${b.host}/wday/cxs/${b.token}/${b.site}/jobs`, {
@@ -123,8 +149,21 @@ for (const provider of PROVIDERS) {
   await Promise.all(Array.from({ length: CONCURRENCY }, async () => {
     while (queue.length) {
       const b = queue.shift()
-      const n = await COUNT[provider](b)
+      const raw = await COUNT[provider](b)
       done++
+      /**
+       * A role count is a number or it is not a count.
+       *
+       * The adapters above return whatever `req` handed them, so a shape this
+       * loop did not expect used to fall into the final `else` and be written
+       * out as a live board. Anything that is not a finite number is treated as
+       * unreachable here -- the second line of defence behind the throw in
+       * `req`, and the one that makes "a board was added on evidence we could
+       * not read" unrepresentable rather than merely unlikely.
+       */
+      const n = raw === null ? null
+        : (typeof raw === 'number' && Number.isFinite(raw)) ? raw
+        : undefined
       if (n === undefined) unreachable++
       else if (n === null) dead++
       else if (!n) empty++
@@ -140,7 +179,11 @@ for (const provider of PROVIDERS) {
 
 /* ------------------------------ merge + write ----------------------------- */
 
-const key = (b) => `${b.provider}|${String(b.token).toLowerCase()}|${b.site ?? ''}`
+// Site case is folded: Workday treats the site path case-insensitively, so
+// `AccentureCareers` and `accenturecareers` are ONE board. Keying on the raw
+// casing let both into the board list and both were then crawled, duplicating
+// 27% of the Workday corpus. Verified against the live API.
+const key = (b) => `${b.provider}|${String(b.token).toLowerCase()}|${String(b.site ?? '').toLowerCase()}`
 const merged = new Map()
 let carried = 0
 if (existsSync(OUT)) {

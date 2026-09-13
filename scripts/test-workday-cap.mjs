@@ -130,5 +130,107 @@ const target = {
     r.warnings.some((w) => /truncated/i.test(w)), r.warnings)
 }
 
+/* ------------- a partition over the cap is split again, not given up ------- */
+
+/**
+ * A tenant whose postings carry TWO independent facets.
+ *
+ * This is the shape that broke the single-split version. Measured live:
+ * Accenture's largest jobFamilyGroup holds 20,730 postings, so splitting once
+ * still leaves a slice ten times over the cap, and 13 tenants finished a full
+ * crawl truncated for exactly this reason. Citi is the counter-example that
+ * shows the way out -- it exposes Country_and_Jurisdiction and
+ * State_or_Province next to jobFamilyGroup, and splitting on a second facet
+ * took the real read from 2,000 to 3,244.
+ */
+function twoFacetTenant({ cells }) {
+  // cells: { [family]: { [country]: count } }
+  const all = []
+  for (const [fam, byCountry] of Object.entries(cells)) {
+    for (const [country, n] of Object.entries(byCountry)) {
+      for (let i = 0; i < n; i++) all.push({ fam, country, path: `/job/${fam}-${country}-${i}` })
+    }
+  }
+  const facetValues = (pool, key) => {
+    const counts = new Map()
+    for (const j of pool) counts.set(j[key], (counts.get(j[key]) ?? 0) + 1)
+    return [...counts].map(([id, count]) => ({ id, descriptor: id, count }))
+  }
+
+  class Fake extends WorkdayAdapter {
+    calls = 0
+    postJson = async (_url, body) => {
+      this.calls++
+      const fam = body.appliedFacets?.jobFamilyGroup?.[0]
+      const country = body.appliedFacets?.Country_and_Jurisdiction?.[0]
+      let pool = all
+      if (fam) pool = pool.filter((j) => j.fam === fam)
+      if (country) pool = pool.filter((j) => j.country === country)
+
+      // The cap applies to every search, however deeply filtered.
+      const total = Math.min(pool.length, CAP)
+      const offset = Math.min(body.offset, Math.max(0, CAP - body.limit))
+      const page = pool.slice(offset, offset + body.limit)
+
+      return {
+        total,
+        jobPostings: page.map((j) => ({
+          title: `Role ${j.path}`, externalPath: j.path, locationsText: j.country, bulletFields: [j.path],
+        })),
+        // Facet counts are reported for the CURRENT filter, exactly as the
+        // real API does -- that is what lets the next split be chosen well.
+        facets: [
+          { facetParameter: 'jobFamilyGroup', values: facetValues(pool, 'fam') },
+          { facetParameter: 'Country_and_Jurisdiction', values: facetValues(pool, 'country') },
+          // Present on real tenants and useless: every count is zero. Choosing
+          // this would split into nothing and lose the board.
+          { facetParameter: 'locationMainGroup', values: [{ id: 'all', descriptor: 'all', count: 0 }] },
+        ],
+      }
+    }
+  }
+  return new Fake()
+}
+
+{
+  // Engineering alone is 3,000 -- over the cap even after the first split --
+  // but no single (family, country) cell is.
+  const cells = {
+    Engineering: { US: 1500, India: 1500 },
+    Sales: { US: 400 },
+  }
+  const a = twoFacetTenant({ cells })
+  const r = await a.fetchJobs(target, { maxPages: 2000 })
+
+  t('a slice still over the cap is split by a second facet',
+    r.jobs.length === 3400, r.jobs.length)
+  t('a two-level split reports no truncation',
+    !r.warnings.some((w) => /truncated/i.test(w)), r.warnings)
+  t('nothing is double-counted across the two facets',
+    new Set(r.jobs.map((j) => j.applicationUrl)).size === 3400,
+    new Set(r.jobs.map((j) => j.applicationUrl)).size)
+}
+
+{
+  // A cell that cannot be divided any further must still be reported, not
+  // presented as a complete board.
+  const a = twoFacetTenant({ cells: { Engineering: { US: 2500 } } })
+  const r = await a.fetchJobs(target, { maxPages: 2000 })
+  t('an indivisible oversized cell is still flagged',
+    r.warnings.some((w) => /truncated/i.test(w)), r.warnings)
+  t('the shortfall is stated numerically',
+    r.warnings.some((w) => /facets report 2500 postings, read 2000/.test(w)), r.warnings)
+}
+
+/* ------------------------ the request budget is honoured ------------------ */
+{
+  const a = twoFacetTenant({ cells: { Engineering: { US: 1500, India: 1500 }, Sales: { US: 400 } } })
+  const r = await a.fetchJobs(target, { maxRequests: 3 })
+  t('a tiny budget stops the read and says so',
+    r.warnings.some((w) => /request budget/i.test(w)), r.warnings)
+  t('a budgeted read still returns what it managed to fetch',
+    r.jobs.length > 0 && r.jobs.length < 3400, r.jobs.length)
+}
+
 console.log(`\n${pass} passed, ${fail} failed`)
 process.exit(fail === 0 ? 0 : 1)

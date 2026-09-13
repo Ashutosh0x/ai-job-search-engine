@@ -1,0 +1,442 @@
+{
+  "generatedAt": "2026-09-12T12:03:41.951Z",
+  "companies": [
+    {
+      "company": "JPMorgan Chase",
+      "platform": "Oracle Recruiting Cloud",
+      "jobs": 7435,
+      "boards": 1,
+      "truncated": false
+    },
+    {
+      "company": "Citi",
+      "platform": "Workday",
+      "jobs": 3274,
+      "boards": 2,
+      "truncated": false
+    },
+    {
+      "company": "Bank of America",
+      "platform": "Workday",
+      "jobs": 2004,
+      "boards": 1,
+      "truncated": false
+    },
+    {
+      "company": "Wells Fargo",
+      "platform": "Workday",
+      "jobs": 1793,
+      "boards": 1,
+      "truncated": false
+    },
+    {
+      "company": "HSBC",
+      "platform": "Eightfold",
+      "jobs": 1535,
+      "boards": 1,
+      "truncated": false
+    },
+    {
+      "company": "BNY",
+      "platform": "Oracle Recruiting Cloud",
+      "jobs": 1366,
+      "boards": 1,
+      "truncated": false
+    },
+    {
+      "company": "Morgan Stanley",
+      "platform": "Workday",
+      "jobs": 1286,
+      "boards": 1,
+      "truncated": false
+    },
+    {
+      "company": "Deutsche Bank",
+      "platform": "Workday",
+      "jobs": 1133,
+      "boards": 1,
+      "truncated": false
+    },
+    {
+      "company": "Mastercard",
+      "platform": "Workday",
+      "jobs": 1056,
+      "boards": 1,
+      "truncated": false
+    },
+    {
+      "company": "Barclays",
+      "platform": "Workday",
+      "jobs": 1014,
+      "boards": 1,
+      "truncated": false
+    },
+    {
+      "company": "Visa",
+      "platform": "Workday",
+      "jobs": 760,
+      "boards": 1,
+      "truncated": false
+    },
+    {
+      "company": "MUFG",
+      "platform": "Workday",
+      "jobs": 660,
+      "boards": 1,
+      "truncated": false
+    },
+    {
+      "company": "CLSA",
+      "platform": "Workday",
+      "jobs": 337,
+      "boards": 1,
+      "truncated": false
+    },
+    {
+      "company": "National Australia Bank",
+      "platform": "Workday",
+      "jobs": 278,
+      "boards": 1,
+      "truncated": false
+    },
+    {
+      "company": "Commonwealth Bank of Australia",
+      "platform": "Workday",
+      "jobs": 245,
+      "boards": 4,
+      "truncated": false
+    },
+    {
+      "company": "Jane Street",
+      "platform": "Greenhouse",
+      "jobs": 230,
+      "boards": 1,
+      "truncated": false
+    },
+    {
+      "company": "Lloyds Banking Group",
+      "platform": "Workday",
+      "jobs": 150,
+      "boards": 2,
+      "truncated": false
+    },
+    {
+      "company": "PayPal",
+      "platform": "Workday",
+      "jobs": 128,
+      "boards": 1,
+      "truncated": false
+    },
+    {
+      "company": "NatWest Group",
+      "platform": "Workday",
+      "jobs": 107,
+      "boards": 1,
+      "truncated": false
+    },
+    {
+      "company": "Standard Chartered",
+      "platform": "Workday",
+      "jobs": 55,
+      "boards": 1,
+      "truncated": false
+    }
+  ],
+  "boards": [
+    {
+      "slug": "jpmorgan-chase",
+      "company": "JPMorgan Chase",
+      "platform": "Oracle Recruiting Cloud",
+      "board": "CX_1001",
+      "jobs": 7435,
+      "rawJobs": 7437,
+      "truncated": false,
+      "error": null,
+      "warnings": []
+    },
+    {
+      "slug": "citi",
+      "company": "Citi",
+      "platform": "Workday",
+      "board": "citi/2",
+      "jobs": 3244,
+      "rawJobs": 3244,
+      "truncated": false,
+      "error": null,
+      "warnings": [
+        "workday:citi facets report 4481 postings, read 3244"
+      ]
+    },
+    {
+      "slug": "bank-of-america",
+      "company": "Bank of America",
+      "platform": "Workday",
+      "board": "ghr/Lateral-US",
+      "jobs": 2004,
+      "rawJobs": 2004,
+      "truncated": false,
+      "error": null,
+      "warnings": []
+    },
+    {
+      "slug": "wells-fargo",
+      "company": "Wells Fargo",
+      "platform": "Workday",
+      "board": "wf/WellsFargoJobs",
+      "jobs": 1793,
+      "rawJobs": 1793,
+      "truncated": false,
+      "error": null,
+      "warnings": []
+    },
+    {
+      "slug": "hsbc",
+      "company": "HSBC",
+      "platform": "Eightfold",
+      "board": "hsbc",
+      "jobs": 1535,
+      "rawJobs": 1535,
+      "truncated": false,
+      "error": null,
+      "warnings": []
+    },
+    {
+      "slug": "bny-mellon",
+      "company": "BNY",
+      "platform": "Oracle Recruiting Cloud",
+      "board": "BNY-Careers",
+      "jobs": 1366,
+      "rawJobs": 1369,
+      "truncated": false,
+      "error": null,
+      "warnings": []
+    },
+    {
+      "slug": "morgan-stanley",
+      "company": "Morgan Stanley",
+      "platform": "Workday",
+      "board": "ms/External",
+      "jobs": 1286,
+      "rawJobs": 1286,
+      "truncated": false,
+      "error": null,
+      "warnings": []
+    },
+    {
+      "slug": "deutsche-bank",
+      "company": "Deutsche Bank",
+      "platform": "Workday",
+      "board": "db/DBWebsite",
+      "jobs": 1133,
+      "rawJobs": 1133,
+      "truncated": false,
+      "error": null,
+      "warnings": []
+    },
+    {
+      "slug": "mastercard",
+      "company": "Mastercard",
+      "platform": "Workday",
+      "board": "mastercard/CorporateCareers",
+      "jobs": 1056,
+      "rawJobs": 1056,
+      "truncated": false,
+      "error": null,
+      "warnings": []
+    },
+    {
+      "slug": "barclays",
+      "company": "Barclays",
+      "platform": "Workday",
+      "board": "barclays/External_Career_Site_Barclays",
+      "jobs": 1014,
+      "rawJobs": 1014,
+      "truncated": false,
+      "error": null,
+      "warnings": []
+    },
+    {
+      "slug": "visa",
+      "company": "Visa",
+      "platform": "Workday",
+      "board": "visa/Visa",
+      "jobs": 760,
+      "rawJobs": 760,
+      "truncated": false,
+      "error": null,
+      "warnings": []
+    },
+    {
+      "slug": "mufg",
+      "company": "MUFG",
+      "platform": "Workday",
+      "board": "mufgub/MUFG-Careers",
+      "jobs": 660,
+      "rawJobs": 660,
+      "truncated": false,
+      "error": null,
+      "warnings": []
+    },
+    {
+      "slug": "clsa",
+      "company": "CLSA",
+      "platform": "Workday",
+      "board": "citicclsa/External",
+      "jobs": 337,
+      "rawJobs": 337,
+      "truncated": false,
+      "error": null,
+      "warnings": []
+    },
+    {
+      "slug": "national-australia-bank",
+      "company": "National Australia Bank",
+      "platform": "Workday",
+      "board": "nab/NAB_Careers",
+      "jobs": 278,
+      "rawJobs": 278,
+      "truncated": false,
+      "error": null,
+      "warnings": []
+    },
+    {
+      "slug": "jane-street",
+      "company": "Jane Street",
+      "platform": "Greenhouse",
+      "board": "janestreet",
+      "jobs": 230,
+      "rawJobs": 230,
+      "truncated": false,
+      "error": null,
+      "warnings": []
+    },
+    {
+      "slug": "commonwealth-bank",
+      "company": "Commonwealth Bank of Australia",
+      "platform": "Workday",
+      "board": "cba/CommBank_Careers",
+      "jobs": 223,
+      "rawJobs": 223,
+      "truncated": false,
+      "error": null,
+      "warnings": []
+    },
+    {
+      "slug": "paypal",
+      "company": "PayPal",
+      "platform": "Workday",
+      "board": "paypal/jobs",
+      "jobs": 128,
+      "rawJobs": 128,
+      "truncated": false,
+      "error": null,
+      "warnings": []
+    },
+    {
+      "slug": "lloyds-banking-group",
+      "company": "Lloyds Banking Group",
+      "platform": "Workday",
+      "board": "lbg/lbg_Careers",
+      "jobs": 114,
+      "rawJobs": 114,
+      "truncated": false,
+      "error": null,
+      "warnings": []
+    },
+    {
+      "slug": "natwest",
+      "company": "NatWest Group",
+      "platform": "Workday",
+      "board": "rbs/RBS",
+      "jobs": 107,
+      "rawJobs": 107,
+      "truncated": false,
+      "error": null,
+      "warnings": []
+    },
+    {
+      "slug": "standard-chartered",
+      "company": "Standard Chartered",
+      "platform": "Workday",
+      "board": "peopleplus/SCB_Careers",
+      "jobs": 55,
+      "rawJobs": 55,
+      "truncated": false,
+      "error": null,
+      "warnings": []
+    },
+    {
+      "slug": "lloyds-banking-group",
+      "company": "Lloyds Banking Group",
+      "platform": "Workday",
+      "board": "lbg/Graduate_careers",
+      "jobs": 36,
+      "rawJobs": 36,
+      "truncated": false,
+      "error": null,
+      "warnings": []
+    },
+    {
+      "slug": "citi",
+      "company": "Citi",
+      "platform": "Workday",
+      "board": "citi/Citi_Early_Careers_Events_Site",
+      "jobs": 30,
+      "rawJobs": 30,
+      "truncated": false,
+      "error": null,
+      "warnings": []
+    },
+    {
+      "slug": "commonwealth-bank",
+      "company": "Commonwealth Bank of Australia",
+      "platform": "Workday",
+      "board": "cba/Private_Ad",
+      "jobs": 16,
+      "rawJobs": 16,
+      "truncated": false,
+      "error": null,
+      "warnings": []
+    },
+    {
+      "slug": "commonwealth-bank",
+      "company": "Commonwealth Bank of Australia",
+      "platform": "Workday",
+      "board": "cba/Bankwest_Careers",
+      "jobs": 5,
+      "rawJobs": 5,
+      "truncated": false,
+      "error": null,
+      "warnings": []
+    },
+    {
+      "slug": "commonwealth-bank",
+      "company": "Commonwealth Bank of Australia",
+      "platform": "Workday",
+      "board": "cba/x15_Careers",
+      "jobs": 1,
+      "rawJobs": 1,
+      "truncated": false,
+      "error": null,
+      "warnings": []
+    }
+  ],
+  "totalPostings": 24846,
+  "http": {
+    "cacheEntries": 1051,
+    "openCircuits": [],
+    "trackedHosts": 20,
+    "requests": {
+      "ok": 1051,
+      "notFound": 0,
+      "blocked": 0,
+      "serverError": 0,
+      "otherHttp": 0,
+      "networkError": 0,
+      "fromCache": 0,
+      "attempted": 1051
+    },
+    "successRate": 1,
+    "blockedHosts": []
+  }
+}

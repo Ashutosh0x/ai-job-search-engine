@@ -2,12 +2,15 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { getCompany } from "@/lib/job-index"
 import { formatValuation } from "@/lib/companies/registry"
+import { hasBankingIntelligence } from "@/lib/companies/banking-intelligence"
+import { getRecruitingContacts } from "@/lib/companies/recruiting-contacts"
+import RecruitingIntelligence from "@/components/recruiting-intelligence"
 import Navigation from "@/components/navigation"
 import { CompanyLogo } from "@/components/company-logo"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { ExternalLink, MapPin, Clock, ArrowLeft } from "lucide-react"
+import { ExternalLink, MapPin, Clock, ArrowLeft, Shield } from "lucide-react"
 
 export const dynamic = "force-dynamic"
 
@@ -44,6 +47,7 @@ export default async function CompanyPage({ params }: { params: { slug: string }
     [...m.entries()].sort((a, b) => b[1] - a[1]).slice(0, n)
 
   const valuation = formatValuation(company.valuationUsd)
+  const recruiting = await getRecruitingContacts(company.slug, company.boards)
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
@@ -74,11 +78,20 @@ export default async function CompanyPage({ params }: { params: { slug: string }
                       {company.foundedYear ? ` · Founded ${company.foundedYear}` : ""}
                     </p>
                   </div>
-                  <Button asChild variant="outline" size="sm">
-                    <a href={`https://${company.domain}`} target="_blank" rel="noopener noreferrer">
-                      Website <ExternalLink className="ml-1.5 h-3 w-3" />
-                    </a>
-                  </Button>
+                  <div className="flex gap-2">
+                    {hasBankingIntelligence(params.slug) && (
+                      <Button asChild variant="default" size="sm" className="bg-blue-600 hover:bg-blue-700">
+                        <Link href={`/companies/${params.slug}/intelligence`}>
+                          <Shield className="mr-1.5 h-3 w-3" /> Intelligence
+                        </Link>
+                      </Button>
+                    )}
+                    <Button asChild variant="outline" size="sm">
+                      <a href={`https://${company.domain}`} target="_blank" rel="noopener noreferrer">
+                        Website <ExternalLink className="ml-1.5 h-3 w-3" />
+                      </a>
+                    </Button>
+                  </div>
                 </div>
 
                 <div className="mt-3 flex flex-wrap gap-1.5">
@@ -127,6 +140,21 @@ export default async function CompanyPage({ params }: { params: { slug: string }
             )}
           </CardContent>
         </Card>
+
+        {/* Recruiting Intelligence */}
+        <div className="mb-6">
+          <RecruitingIntelligence
+            companyName={company.name}
+            applicationChannels={recruiting.applicationChannels}
+            recruiters={recruiting.recruiters}
+            publishedContacts={recruiting.publishedContacts}
+            emailPatterns={recruiting.emailPatterns}
+            emailDomain={recruiting.emailPattern?.domain ?? null}
+            talentOrg={recruiting.talentOrg}
+            mailPosture={recruiting.mailPosture}
+            lastVerifiedAt={recruiting.metadata?.generatedAt ?? recruiting.checkedAt ?? null}
+          />
+        </div>
 
         <div className="grid gap-6 lg:grid-cols-[1fr_280px]">
           {/* Roles */}

@@ -12,7 +12,7 @@ export type SourceId =
   | 'recruitee' | 'teamtailor' | 'personio' | 'jobvite' | 'bamboohr'
   | 'breezy' | 'comeet' | 'jazzhr' | 'pinpoint' | 'rippling' | 'workable'
   | 'icims' | 'taleo' | 'successfactors' | 'eightfold' | 'avature'
-  | 'phenom' | 'ukg' | 'dover' | 'gem' | 'wellfound' | 'mokahr'
+  | 'phenom' | 'ukg' | 'dover' | 'gem' | 'wellfound' | 'mokahr' | 'keka'
   | 'custom' | 'search' | 'unknown'
 
 /** How much we trust a source's data by default. Learned values override these. */
@@ -21,7 +21,7 @@ export const DEFAULT_SOURCE_CONFIDENCE: Record<string, number> = {
   workday: 0.98, greenhouse: 0.98, lever: 0.98, ashby: 0.98,
   smartrecruiters: 0.98, recruitee: 0.97, teamtailor: 0.97, personio: 0.97,
   jobvite: 0.96, bamboohr: 0.96, breezy: 0.96, comeet: 0.96, jazzhr: 0.96,
-  pinpoint: 0.96, rippling: 0.96, workable: 0.96,
+  pinpoint: 0.96, rippling: 0.96, workable: 0.96, keka: 0.96,
   icims: 0.95, taleo: 0.95, successfactors: 0.95, eightfold: 0.95,
   avature: 0.95, phenom: 0.95, ukg: 0.95, mokahr: 0.95, dover: 0.94, gem: 0.94,
   wellfound: 0.90,
@@ -215,7 +215,15 @@ export interface FetchOptions {
   /** Opaque per-target cursor from the previous run. */
   cursor?: string | null
   signal?: AbortSignal
+  /** Page-depth limit for a single paged read. */
   maxPages?: number
+  /**
+   * Total requests one target may cost, across every paged read it fans out
+   * into. Distinct from `maxPages` on purpose: Workday splits a capped board
+   * into many searches, and using one number for both makes lowering the page
+   * depth silently truncate every slice instead of bounding the fan-out.
+   */
+  maxRequests?: number
 }
 
 export interface FetchResult {

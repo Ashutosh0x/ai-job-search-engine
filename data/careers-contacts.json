@@ -1,0 +1,219 @@
+{
+  "generatedAt": "2026-09-12T12:39:38.585Z",
+  "method": "role-based addresses published on the employer's own careers/contact pages; MX checked at domain level only",
+  "notCollected": [
+    "addresses belonging to identifiable individuals",
+    "addresses constructed from a person's name",
+    "per-mailbox existence (would require SMTP RCPT TO probing)"
+  ],
+  "results": [
+    {
+      "company": "JPMorgan Chase",
+      "domain": "jpmorganchase.com",
+      "ats": "Oracle Cloud HCM (unverified: no public JSON API)",
+      "pagesRead": 2,
+      "contacts": [],
+      "personalAddressesSeenAndDropped": false
+    },
+    {
+      "company": "Morgan Stanley",
+      "domain": "morganstanley.com",
+      "ats": "Workday ms/External (VERIFIED 1,286 roles)",
+      "pagesRead": 4,
+      "contacts": [],
+      "personalAddressesSeenAndDropped": false
+    },
+    {
+      "company": "Citigroup",
+      "domain": "citi.com",
+      "ats": "Workday citi/2 (VERIFIED; citi_careers 404s)",
+      "pagesRead": 10,
+      "contacts": [],
+      "personalAddressesSeenAndDropped": false
+    },
+    {
+      "company": "Bank of America",
+      "domain": "bankofamerica.com",
+      "ats": "Workday ghr/Lateral-US (VERIFIED 2,005)",
+      "pagesRead": 12,
+      "contacts": [],
+      "personalAddressesSeenAndDropped": false
+    },
+    {
+      "company": "Wells Fargo",
+      "domain": "wellsfargo.com",
+      "ats": "Workday wf/WellsFargoJobs (VERIFIED 1,796)",
+      "pagesRead": 0,
+      "contacts": [],
+      "personalAddressesSeenAndDropped": false
+    },
+    {
+      "company": "Goldman Sachs",
+      "domain": "gs.com",
+      "ats": "not established here",
+      "pagesRead": 2,
+      "contacts": [],
+      "personalAddressesSeenAndDropped": false
+    },
+    {
+      "company": "Citadel",
+      "domain": "citadel.com",
+      "ats": "UNKNOWN (Greenhouse claim disproven: 404)",
+      "pagesRead": 0,
+      "contacts": [],
+      "personalAddressesSeenAndDropped": false
+    },
+    {
+      "company": "Citadel Securities",
+      "domain": "citadelsecurities.com",
+      "ats": "UNKNOWN (Greenhouse claim disproven: 404)",
+      "pagesRead": 0,
+      "contacts": [],
+      "personalAddressesSeenAndDropped": false
+    },
+    {
+      "company": "Visa",
+      "domain": "visa.com",
+      "ats": "Workday visa/Visa (VERIFIED 760)",
+      "pagesRead": 6,
+      "contacts": [],
+      "personalAddressesSeenAndDropped": false
+    },
+    {
+      "company": "Mastercard",
+      "domain": "mastercard.com",
+      "ats": "Workday mastercard/CorporateCareers (VERIFIED 1,055)",
+      "pagesRead": 10,
+      "contacts": [],
+      "personalAddressesSeenAndDropped": true
+    },
+    {
+      "company": "PayPal",
+      "domain": "paypal.com",
+      "ats": "Workday paypal/jobs (VERIFIED 128)",
+      "pagesRead": 4,
+      "contacts": [],
+      "personalAddressesSeenAndDropped": false
+    },
+    {
+      "company": "Barclays",
+      "domain": "barclays.com",
+      "ats": "Workday barclays/External_Career_Site_Barclays (VERIFIED 1,014)",
+      "pagesRead": 6,
+      "contacts": [],
+      "personalAddressesSeenAndDropped": false
+    },
+    {
+      "company": "HSBC",
+      "domain": "hsbc.com",
+      "ats": "Eightfold (adapter exists; not called here)",
+      "pagesRead": 6,
+      "contacts": [],
+      "personalAddressesSeenAndDropped": true
+    },
+    {
+      "company": "Lloyds Banking Group",
+      "domain": "lloydsbanking.com",
+      "ats": "Workday lbg/lbg_Careers (VERIFIED 113)",
+      "pagesRead": 0,
+      "contacts": [],
+      "personalAddressesSeenAndDropped": false
+    },
+    {
+      "company": "NatWest Group",
+      "domain": "natwest.com",
+      "ats": "Workday rbs/RBS (VERIFIED 107)",
+      "pagesRead": 4,
+      "contacts": [],
+      "personalAddressesSeenAndDropped": false
+    },
+    {
+      "company": "Standard Chartered",
+      "domain": "sc.com",
+      "ats": "Workday peopleplus/SCB_Careers (VERIFIED 55)",
+      "pagesRead": 6,
+      "contacts": [],
+      "personalAddressesSeenAndDropped": true
+    },
+    {
+      "company": "Commonwealth Bank",
+      "domain": "cba.com.au",
+      "ats": "Workday cba/CommBank_Careers (VERIFIED 223)",
+      "pagesRead": 6,
+      "contacts": [],
+      "personalAddressesSeenAndDropped": false
+    },
+    {
+      "company": "NAB",
+      "domain": "nab.com.au",
+      "ats": "Workday nab/NAB_Careers (VERIFIED 277)",
+      "pagesRead": 4,
+      "contacts": [],
+      "personalAddressesSeenAndDropped": false
+    },
+    {
+      "company": "Deutsche Bank",
+      "domain": "db.com",
+      "ats": "Workday db/DBWebsite (VERIFIED 1,136)",
+      "pagesRead": 4,
+      "contacts": [],
+      "personalAddressesSeenAndDropped": true
+    },
+    {
+      "company": "Commerzbank",
+      "domain": "commerzbank.com",
+      "ats": "SAP SuccessFactors (no public JSON API)",
+      "pagesRead": 0,
+      "contacts": [],
+      "personalAddressesSeenAndDropped": false
+    },
+    {
+      "company": "MUFG",
+      "domain": "mufg.jp",
+      "ats": "Workday mufgub/MUFG-Careers (VERIFIED 660)",
+      "pagesRead": 1,
+      "contacts": [],
+      "personalAddressesSeenAndDropped": false
+    },
+    {
+      "company": "BNY Mellon",
+      "domain": "bny.com",
+      "ats": "Oracle Cloud HCM (no public JSON API)",
+      "pagesRead": 2,
+      "contacts": [],
+      "personalAddressesSeenAndDropped": false
+    },
+    {
+      "company": "HDFC Bank",
+      "domain": "hdfcbank.com",
+      "ats": "SAP SuccessFactors (no public JSON API)",
+      "pagesRead": 0,
+      "contacts": [],
+      "personalAddressesSeenAndDropped": false
+    },
+    {
+      "company": "State Bank of India",
+      "domain": "sbi.co.in",
+      "ats": "in-house CRPD / TCS iON",
+      "pagesRead": 0,
+      "contacts": [],
+      "personalAddressesSeenAndDropped": false
+    },
+    {
+      "company": "NPCI",
+      "domain": "npci.org.in",
+      "ats": "Darwinbox (no public JSON API)",
+      "pagesRead": 0,
+      "contacts": [],
+      "personalAddressesSeenAndDropped": false
+    },
+    {
+      "company": "Jane Street",
+      "domain": "janestreet.com",
+      "ats": "Greenhouse janestreet (VERIFIED 230 roles)",
+      "pagesRead": 0,
+      "contacts": [],
+      "personalAddressesSeenAndDropped": false
+    }
+  ]
+}

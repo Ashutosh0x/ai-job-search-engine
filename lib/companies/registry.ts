@@ -250,7 +250,17 @@ export const COMPANIES: CompanyRecord[] = [
   // Workday site names are not always words: Citi's is the literal "2".
   { slug: 'citi', name: 'Citi', domain: 'citi.com', ticker: 'C', valuationKind: 'public',
     industry: 'Banking', hqLocation: 'New York, NY', foundedYear: 1812,
-    boards: [{ provider: 'workday', token: 'citi', site: '2', host: 'citi.wd5.myworkdayjobs.com' }] },
+    // The early-careers site is a second board on the same tenant holding
+    // different postings; verified live 2026-09-12 (30 roles).
+    boards: [
+      { provider: 'workday', token: 'citi', site: '2', host: 'citi.wd5.myworkdayjobs.com' },
+      { provider: 'workday', token: 'citi', site: 'Citi_Early_Careers_Events_Site', host: 'citi.wd5.myworkdayjobs.com' },
+    ] },
+  // CLSA is Citi-adjacent in name only -- a separate tenant, found via Common
+  // Crawl and verified live 2026-09-12 (337 roles).
+  { slug: 'clsa', name: 'CLSA', domain: 'clsa.com', valuationKind: 'unknown',
+    industry: 'Investment Banking', hqLocation: 'Hong Kong', foundedYear: 1986,
+    boards: [{ provider: 'workday', token: 'citicclsa', site: 'External', host: 'citicclsa.wd3.myworkdayjobs.com' }] },
   // wd103 -- shard numbers go well beyond the wd1/wd3/wd5 most tenants use, so
   // a sweep that only tries the common ones misses employers this large.
   { slug: 'accenture', name: 'Accenture', domain: 'accenture.com', ticker: 'ACN', valuationKind: 'public',
@@ -649,7 +659,15 @@ export const COMPANIES: CompanyRecord[] = [
   // Not an SEC filer, so no market cap can be derived. Shown as "Not disclosed"
   // rather than filled in from a secondary source.
   { slug: 'commonwealth-bank', name: 'Commonwealth Bank of Australia', domain: 'commbank.com.au', valuationKind: 'unknown', industry: 'Banking', hqLocation: 'Sydney, Australia', foundedYear: 1911,
-    boards: [{ provider: 'workday', token: 'cba', site: 'CommBank_Careers', host: 'cba.wd3.myworkdayjobs.com' }] },
+    // Four boards on one tenant, holding different postings. Bankwest and x15
+    // are CBA-owned brands; all four verified live 2026-09-12. (A
+    // 'CommBank_India' site is sometimes claimed for this tenant -- it 404s.)
+    boards: [
+      { provider: 'workday', token: 'cba', site: 'CommBank_Careers', host: 'cba.wd3.myworkdayjobs.com' },
+      { provider: 'workday', token: 'cba', site: 'Bankwest_Careers', host: 'cba.wd3.myworkdayjobs.com' },
+      { provider: 'workday', token: 'cba', site: 'Private_Ad', host: 'cba.wd3.myworkdayjobs.com' },
+      { provider: 'workday', token: 'cba', site: 'x15_Careers', host: 'cba.wd3.myworkdayjobs.com' },
+    ] },
   // NAB runs three careers surfaces and only one is machine-readable:
   //   nab.wd3.myworkdayjobs.com/NAB_Careers  Workday CxS, 273 live roles, used here.
   //   careers.nab.com.au                     the Australian retail/banking site.
@@ -1089,6 +1107,34 @@ export const COMPANIES: CompanyRecord[] = [
   { slug: 'google', name: 'Google', domain: 'google.com', ticker: 'GOOGL', valuationKind: 'public',
     industry: 'Search / Cloud / Advertising', hqLocation: 'Mountain View, CA', foundedYear: 1998,
     boards: [{ provider: 'custom', token: 'google', site: 'https://www.google.com/about/careers/applications/jobs/results' }] },
+  // Carried with no board on purpose. The Greenhouse boards named for Citadel
+  // in circulation (boards/citadel, boards/citadelsecurities) both 404, and
+  // citadel.com answers automated requests with 403, so there is nothing
+  // readable to point at. The entry exists so the employer is known and the
+  // gap is visible rather than looking like an employer we never heard of.
+  { slug: 'citadel', name: 'Citadel', domain: 'citadel.com', valuationKind: 'unknown',
+    industry: 'Hedge Fund / Market Making', hqLocation: 'Miami, FL', foundedYear: 1990,
+    boards: [] },
+  // ---- Institutions with no adapter yet (added Sep 2026, verified 2026-09-12) ----
+  //
+  // The other 17 entries proposed alongside these were removed: 13 duplicated
+  // companies this registry already carried WITH the same boards, and the
+  // duplicates won in COMPANY_BY_SLUG, discarding the curated originals --
+  // including natwest's lbg/Graduate_careers board, which the replacement
+  // dropped. Two more (citadel, citadel-securities) named Greenhouse boards
+  // that return 404. See scripts/verify-banking-intel.mjs for the check.
+  //
+  // These four are genuinely new. Their providers have no adapter in
+  // lib/sources/adapters, so nothing ingests them yet; they are recorded so
+  // the employer is known and the gap is visible.
+  { slug: 'hdfc-bank', name: 'HDFC Bank', domain: 'hdfcbank.com', ticker: 'HDFCBANK.NS', valuationKind: 'public', industry: 'Retail & Commercial Banking', hqLocation: 'Mumbai, India', foundedYear: 1994,
+    boards: [{ provider: 'successfactors', token: 'hdfcbank' }] },
+  { slug: 'state-bank-of-india', name: 'State Bank of India', domain: 'sbi.co.in', ticker: 'SBIN.NS', valuationKind: 'public', industry: 'Public Sector Banking', hqLocation: 'Mumbai, India', foundedYear: 1806,
+    boards: [{ provider: 'custom', token: 'state-bank-of-india' }] },
+  { slug: 'npci', name: 'NPCI', domain: 'npci.org.in', valuationKind: 'unknown', industry: 'Payment Infrastructure', hqLocation: 'Mumbai, India', foundedYear: 2008,
+    boards: [] },
+  { slug: 'commerzbank', name: 'Commerzbank', domain: 'commerzbank.com', ticker: 'CBK.DE', valuationKind: 'public', industry: 'Commercial & Retail Banking', hqLocation: 'Frankfurt, Germany', foundedYear: 1870,
+    boards: [{ provider: 'successfactors', token: 'commerzbank' }] },
 ]
 
 export const COMPANY_BY_SLUG = new Map(COMPANIES.map((c) => [c.slug, c]))
