@@ -143,8 +143,8 @@ export default function Dashboard() {
 
     // Only filter if roleTypes is a non-empty array, and use word-based matching against job.title
     if (Array.isArray(userPreferences.roleTypes) && userPreferences.roleTypes.length > 0) {
-      if (!userPreferences.roleTypes.some(role =>
-        role.split(/\s+/).some(word =>
+      if (!userPreferences.roleTypes.some((role: string) =>
+        role.split(/\s+/).some((word: string) =>
           job.title.toLowerCase().includes(word.toLowerCase())
         )
       )) return false;
@@ -298,7 +298,7 @@ export default function Dashboard() {
     // Realtime subscription
     const jobsChannel = supabase
       .channel('public:jobs')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'jobs' }, payload => {
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'jobs' }, (payload: unknown) => {
         fetchJobs();
       })
       .subscribe();
@@ -733,7 +733,7 @@ export default function Dashboard() {
                   <h2 className="font-semibold text-lg text-gray-900 dark:text-white mb-2">Requirements</h2>
                   <ul className="list-disc pl-5 text-gray-700 dark:text-gray-300">
                     {Array.isArray(currentJob.requirements.skills)
-                      ? currentJob.requirements.skills.map((req, idx) => (
+                      ? currentJob.requirements.skills.map((req: string, idx: number) => (
                           <li key={idx}>{req}</li>
                         ))
                       : null}
@@ -748,7 +748,7 @@ export default function Dashboard() {
                   <h2 className="font-semibold text-lg text-gray-900 dark:text-white mb-2">Matching Preferences</h2>
                   <ul className="list-disc pl-5 text-gray-700 dark:text-gray-300">
                     {Object.entries(currentJob.matching_preferences).map(([key, value], idx) => (
-                      <li key={idx}>{key}: {Array.isArray(value) ? value.join(', ') : value}</li>
+                      <li key={idx}>{key}: {Array.isArray(value) ? value.join(', ') : String(value)}</li>
                     ))}
                   </ul>
                 </div>

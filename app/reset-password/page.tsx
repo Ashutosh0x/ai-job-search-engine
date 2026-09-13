@@ -140,7 +140,9 @@ export default function ResetPasswordPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, otp, newPassword }),
     });
-    let data = {};
+    // Typed, because `{}` makes every property access an error and that is what
+    // `ignoreBuildErrors` was hiding here.
+    let data: { success?: boolean; error?: string } = {};
     try {
       data = await res.json();
     } catch (e) {

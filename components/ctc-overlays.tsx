@@ -5,7 +5,7 @@ export default function CTCOverlays() {
   const float = {
     animate: {
       y: [0, -6, 0],
-      transition: { duration: 3.5, repeat: Infinity, ease: "easeInOut" },
+      transition: { duration: 3.5, repeat: Infinity, ease: "easeInOut" as const },
     },
   }
   const items = [

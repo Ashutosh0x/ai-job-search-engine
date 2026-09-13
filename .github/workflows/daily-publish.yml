@@ -1,0 +1,154 @@
+name: Daily publish
+
+# Crawls, rebuilds the bounded deploy index, and commits it back to the repo so
+# a Vercel git-triggered build ships current jobs.
+#
+# WHY A SEPARATE WORKFLOW FROM refresh-jobs.yml
+# ---------------------------------------------
+# refresh-jobs keeps the FULL index warm in the Actions cache and runs as often
+# as every 15 minutes. Committing on that cadence would be ~96 commits a day of
+# a 108 MB artifact. Publishing is a once-a-day concern with a different failure
+# profile, so it gets its own schedule, its own concurrency group, and a gate.
+#
+# WHAT THIS COSTS, STATED PLAINLY
+# -------------------------------
+# public/data/jobs-deploy.json + its shard are 108 MB combined and MUST be
+# committed -- Vercel builds from the repository, so an ignored index deploys a
+# site whose search answers "Job index is not available". Git stores a new blob
+# per change, so daily publishing grows history. The repo's .git is already
+# 811 MB. Delta compression helps because consecutive indexes are similar, but
+# this is not free forever: expect to repack, or to move the index to a release
+# asset and have the build download it, once growth becomes the binding
+# constraint. `--if-changed` below at least avoids no-op commits on quiet days.
+
+on:
+  schedule:
+    # 05:00 UTC — an hour after refresh-jobs' cold tier (04:00) so Workday,
+    # Eightfold and Oracle boards have landed in the cache before publishing.
+    - cron: '0 5 * * *'
+  workflow_dispatch:
+    inputs:
+      budget_mb:
+        description: 'Index size budget in MB'
+        required: false
+        default: '120'
+      skip_crawl:
+        description: 'Republish from the cached index without crawling first'
+        type: boolean
+        required: false
+        default: false
+
+concurrency:
+  # Must not overlap refresh-jobs: both write public/data/jobs-v2.json.
+  group: refresh-job-index
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330  # under the 6h job ceiling, with room for a slow cold tier
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - run: npm ci
+
+      - name: Restore job index
+        id: cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            public/data/jobs-v2.json
+            .ingest-state.json
+          restore-keys: job-index-
+          key: job-index-${{ github.run_id }}
+
+      - name: Require a full index to publish from
+        run: |
+          if [ ! -f public/data/jobs-v2.json ]; then
+            echo "::error::No cached full index. Publishing would rebuild from"
+            echo "::error::the committed bounded slice and shrink the index."
+            echo "::error::Let refresh-jobs.yml populate the cache, then re-run."
+            exit 1
+          fi
+          echo "Restored $(du -h public/data/jobs-v2.json | cut -f1) index"
+
+      - name: Crawl (cold tier)
+        if: inputs.skip_crawl != true
+        # 12 GB, not 8. ubuntu-latest has 16 GB and the 8 GB ceiling is what the
+        # scheduled runs were dying on: "Reached heap limit Allocation failed"
+        # at exactly 8054 MB, exit 134, roughly every other run.
+        run: NODE_OPTIONS=--max-old-space-size=12288 npx tsx scripts/refresh.mjs --tier cold --out public/data/jobs-v2.json
+
+      - name: Keep the current index for comparison
+        run: cp public/data/jobs-deploy.json /tmp/previous-deploy.json
+
+      - name: Rebuild the bounded deploy index
+        run: |
+          NODE_OPTIONS=--max-old-space-size=12288 node scripts/build-deploy-index.mjs \
+            --in public/data/jobs-v2.json \
+            --out public/data/jobs-deploy.json \
+            --budget-mb ${{ inputs.budget_mb || '120' }}
+
+      - name: Gate the index before it can be committed
+        # Rejects an index that shrank (what a cache miss looks like), an empty
+        # one, and any shard over GitHub's 100 MiB blob limit.
+        run: node scripts/verify-deploy-index.mjs --file public/data/jobs-deploy.json --floor-against /tmp/previous-deploy.json
+
+      - name: Commit and push
+        id: push
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Only the index. A crawl also rewrites caches and logs, and `git add -A`
+          # in a scheduled job is how unrelated local state gets committed by a bot.
+          git add public/data/jobs-deploy.json public/data/jobs-deploy.*.json
+
+          if git diff --cached --quiet; then
+            echo "No index change — nothing to publish."
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          SUMMARY=$(node scripts/verify-deploy-index.mjs --file public/data/jobs-deploy.json | head -1)
+
+          git commit -m "data: refresh job index ($(date -u +%Y-%m-%d))" -m "$SUMMARY"
+
+          # Rebase rather than force: refresh-jobs shares this branch and a
+          # force-push would drop whatever it landed while this run was crawling.
+          git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+          echo "pushed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Save job index
+        if: success()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            public/data/jobs-v2.json
+            .ingest-state.json
+          key: job-index-${{ github.run_id }}
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "### Daily publish"
+            echo ""
+            if [ "${{ steps.push.outputs.pushed }}" = "true" ]; then
+              echo "Pushed a refreshed index to \`${GITHUB_REF_NAME}\`."
+            else
+              echo "No change to publish."
+            fi
+            echo ""
+            node scripts/verify-deploy-index.mjs --file public/data/jobs-deploy.json 2>&1 | sed 's/^/    /'
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -78,3 +78,35 @@ next-env.d.ts
 /quantiphi-roles.txt
 /google-roles.json
 /google-roles.txt
+
+# Workday full-crawl output (scripts/crawl-all-workday.mjs).
+# Regenerable, and the NDJSON runs to hundreds of MB -- past GitHub's limit.
+/data/workday/
+/scripts/workday-crawl.log
+/scripts/discovered-boards.json.bak
+
+# Regenerable crawl corpora (scripts/crawl-financial-sector.mjs). 16 MB of
+# output that rebuilds from the ATS APIs, same reason /data/workday/ is ignored.
+/data/financial/*.ndjson
+/data/financial/*.txt
+
+# Editor/scratch leftovers
+*.bak
+/collide2.mts
+/scratch-argentina-raw.json
+/scripts/*.log
+
+# HELD BACK PENDING A DECISION -- NOT a permanent exclusion.
+#
+# This repository is PUBLIC. data/recruiter-evidence/ holds 170 records for
+# NAMED INDIVIDUALS (fullName, current title, and a LinkedIn profile URL on 119
+# of them), mostly recruiters at UK/EU banks. Publishing a scraped dataset of
+# identifiable people to a public repo is a materially different act from
+# publishing the code that builds it, it is effectively irreversible once
+# forked or indexed, and most of these people are in GDPR jurisdictions.
+#
+# The pipeline, the confidence engine and the tests are all committed -- only
+# the personal data is withheld. To publish it anyway, delete this block; to
+# keep building on it locally, nothing changes. Making the repository private
+# would also resolve it.
+/data/recruiter-evidence/

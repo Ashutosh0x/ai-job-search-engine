@@ -8,6 +8,29 @@ interface ChartData {
   color: string
 }
 
+/**
+ * A ChartData row after `calculateSegments` derives its geometry.
+ *
+ * The state below held these but was typed as ChartData, so every derived
+ * field read as a type error — the errors `ignoreBuildErrors` was suppressing.
+ */
+interface ScoreGradient {
+  id: string
+  colors: { offset: string; color: string }[]
+  fallback: string
+  intensity: string
+}
+
+interface ChartSegment extends ChartData {
+  segmentSize: number
+  displayPercentage: number
+  angle: number
+  gradient: ScoreGradient
+  grade: string
+  weight: number
+  relativePerformance: number
+}
+
 interface AnimatedPieChartProps {
   data: ChartData[]
   size?: number
@@ -25,7 +48,7 @@ export function AnimatedPieChart({
   showLabels = true,
   chartMode = "equal",
 }: AnimatedPieChartProps) {
-  const [animatedData, setAnimatedData] = useState<ChartData[]>([])
+  const [animatedData, setAnimatedData] = useState<ChartSegment[]>([])
   const [hoveredSegment, setHoveredSegment] = useState<number | null>(null)
   const [animationProgress, setAnimationProgress] = useState(0)
   const [currentMode, setCurrentMode] = useState(chartMode)

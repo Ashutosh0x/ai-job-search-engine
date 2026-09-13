@@ -86,7 +86,11 @@ jobs:
       # with ERR_UNKNOWN_FILE_EXTENSION. Every scheduled run failed in ~30s on
       # this before it was caught.
       - name: Refresh
-        run: NODE_OPTIONS=--max-old-space-size=8192 npx tsx scripts/refresh.mjs --tier ${{ steps.tier.outputs.tier }} --out ${{ steps.base.outputs.out }}
+        # 12 GB, not 8. ubuntu-latest has 16 GB, and the scheduled runs were
+        # dying at exactly the 8 GB ceiling -- "Reached heap limit Allocation
+        # failed", exit 134, roughly every other run. It read as a flaky crawl;
+        # it was the heap limit being hit while parsing the restored index.
+        run: NODE_OPTIONS=--max-old-space-size=12288 npx tsx scripts/refresh.mjs --tier ${{ steps.tier.outputs.tier }} --out ${{ steps.base.outputs.out }}
 
       - name: Save job index
         if: success()
