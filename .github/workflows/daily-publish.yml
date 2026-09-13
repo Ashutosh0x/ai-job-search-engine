@@ -71,15 +71,20 @@ jobs:
           restore-keys: job-index-
           key: job-index-${{ github.run_id }}
 
-      - name: Require a full index to publish from
+      - name: Ensure a base index exists
         run: |
-          if [ ! -f public/data/jobs-v2.json ]; then
-            echo "::error::No cached full index. Publishing would rebuild from"
-            echo "::error::the committed bounded slice and shrink the index."
-            echo "::error::Let refresh-jobs.yml populate the cache, then re-run."
+          if [ -f public/data/jobs-v2.json ]; then
+            echo "Restored $(du -h public/data/jobs-v2.json | cut -f1) full index"
+          elif [ "${{ inputs.skip_crawl }}" = "true" ]; then
+            # Nothing to crawl and nothing cached: a rebuild here would just
+            # re-emit the committed index. Stop rather than burn a commit.
+            echo "::error::No cached index and skip_crawl is set — nothing to publish."
             exit 1
+          else
+            echo "Cache miss; seeding from the committed bounded index. The crawl"
+            echo "below refreshes it, and the size gate still has to pass."
+            cp public/data/jobs-deploy.json public/data/jobs-v2.json
           fi
-          echo "Restored $(du -h public/data/jobs-v2.json | cut -f1) index"
 
       - name: Crawl (cold tier)
         if: inputs.skip_crawl != true

@@ -60,16 +60,27 @@ jobs:
           key: job-index-${{ github.run_id }}
           restore-keys: job-index-
 
-      - name: Choose a base index
+      # Always end up with public/data/jobs-v2.json, because that is the ONLY
+      # path the save step persists.
+      #
+      # This used to refresh jobs-deploy.json on a cache miss and still save
+      # jobs-v2.json -- a file that path never created. So the miss produced no
+      # cache, the next run missed too, and the workflow could never bootstrap:
+      # it ran every 15 minutes for two days, crawled each time, and discarded
+      # the result. The cache list held no job-index entry at all.
+      #
+      # Seeding from the committed bounded index instead keeps the run useful on
+      # a cold start AND leaves something to save, so the next run starts warm.
+      - name: Ensure a base index exists
         id: base
         run: |
           if [ -f public/data/jobs-v2.json ]; then
-            echo "out=public/data/jobs-v2.json" >> "$GITHUB_OUTPUT"
             echo "Using restored full index ($(du -h public/data/jobs-v2.json | cut -f1))"
           else
-            echo "out=public/data/jobs-deploy.json" >> "$GITHUB_OUTPUT"
-            echo "Cache miss; refreshing the committed bounded index instead."
+            echo "Cache miss; seeding the full index from the committed bounded one."
+            cp public/data/jobs-deploy.json public/data/jobs-v2.json
           fi
+          echo "out=public/data/jobs-v2.json" >> "$GITHUB_OUTPUT"
 
       - name: Pick tier from schedule
         id: tier
