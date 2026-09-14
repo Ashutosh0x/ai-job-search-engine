@@ -52,6 +52,7 @@ const SUITES = [
   'test-recruiter-intel.mjs',
   'test-financial-enrichment.mjs',
   'test-rate-limit.mjs',
+  'test-saved-searches.mjs',
 ]
 
 const isWindows = process.platform === 'win32'

@@ -3,6 +3,7 @@
 
 import { useState, useEffect, useMemo } from "react"
 import { Button } from "@/components/ui/button"
+import { saveSearch, listSavedSearches, type SavedSearch } from "@/lib/saved-searches"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -89,6 +90,32 @@ export default function Dashboard() {
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedState, setSelectedState] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
+
+  // "Save Search" rendered a button with no onClick -- it hovered and did
+  // nothing. Saved per browser; see lib/saved-searches.ts for why that boundary
+  // is where it is.
+  const [savedSearches, setSavedSearches] = useState<SavedSearch[]>([]);
+  const [saveNotice, setSaveNotice] = useState<string | null>(null);
+
+  useEffect(() => {
+    setSavedSearches(listSavedSearches());
+  }, []);
+
+  const handleSaveSearch = () => {
+    const result = saveSearch(searchQuery, {
+      location: selectedLocation,
+      type: selectedType,
+      workType: selectedWorkType,
+      salary: selectedSalary,
+      experience: selectedExperience,
+      country: selectedCountry,
+      state: selectedState,
+      city: selectedCity,
+    });
+    setSavedSearches(result.searches);
+    setSaveNotice(result.added ? "Search saved" : "Already saved");
+    setTimeout(() => setSaveNotice(null), 2500);
+  };
   const [countries, setCountries] = useState<Country[]>([]);
   const [states, setStates] = useState<State[]>([]);
   const [cities, setCities] = useState<City[]>([]);
@@ -603,10 +630,21 @@ export default function Dashboard() {
 
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
-                <Button variant="ghost" size="sm" className="text-purple-600 text-xs sm:text-sm">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-purple-600 text-xs sm:text-sm"
+                  onClick={handleSaveSearch}
+                  aria-label="Save this search"
+                >
                   <Heart className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                  Save Search
+                  {saveNotice ?? "Save Search"}
                 </Button>
+                {savedSearches.length > 0 && (
+                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                    {savedSearches.length} saved
+                  </span>
+                )}
               </div>
             </div>
           </div>

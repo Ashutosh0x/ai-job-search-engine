@@ -14,20 +14,27 @@ jobs:
         with: { node-version: '20', cache: npm }
       - run: npm ci
 
-      # Typecheck is a ratchet, not a gate: 51 errors are pre-existing and
-      # concentrated in a vendored sub-project. Fail only if the count GROWS,
-      # so the number can come down but never quietly up.
-      - name: Typecheck (ratchet at 51)
-        run: |
-          COUNT=$(npx tsc --noEmit 2>&1 | grep -c "error TS" || true)
-          echo "tsc errors: $COUNT (baseline 51)"
-          if [ "$COUNT" -gt 51 ]; then
-            echo "::error::Type errors increased from 51 to $COUNT"
-            npx tsc --noEmit 2>&1 | grep "error TS" | head -40
-            exit 1
-          fi
+      # Was a ratchet at 51 while errors were pre-existing. They are gone: the
+      # 13 in app code are fixed and the 29 in the vendored
+      # countries-states-cities-database are excluded in tsconfig, which is the
+      # honest way to not own someone else's seed script. So this is a GATE now
+      # -- a ratchet that never tightens just legitimises the number it holds.
+      #
+      # next.config.mjs no longer sets ignoreBuildErrors either, so `next build`
+      # enforces the same thing. This step exists to fail the PR before a
+      # reviewer spends time on it.
+      - name: Typecheck
+        run: npx tsc --noEmit
 
       # The suites make live HTTP calls to ATS boards; a blocked runner should
       # not fail the build, so those assertions are skipped in CI.
       - name: Tests
         run: npm test
+
+      # The build is the only thing that exercises the App Router, server
+      # components and the route manifest together. Typecheck and unit tests
+      # both pass on a tree that fails to build.
+      - name: Build
+        run: npx next build
+        env:
+          NEXT_TELEMETRY_DISABLED: '1'

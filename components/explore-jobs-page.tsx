@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -53,6 +53,15 @@ export default function ExploreJobsPage() {
   const [error, setError] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedDepartment, setSelectedDepartment] = useState<string>("all")
+
+  // Derived, not hardcoded. This page reads /api/jobs -- every employer, not
+  // one board -- but the copy still said "Cloudflare Careers" from back when it
+  // read a single Greenhouse board, so it named the wrong employer on every
+  // row it showed.
+  const companyCount = useMemo(
+    () => new Set(jobs.map((j) => j.company).filter(Boolean)).size,
+    [jobs]
+  )
 
   const fetchJobs = async () => {
     setLoading(true)
@@ -147,9 +156,9 @@ export default function ExploreJobsPage() {
               <div className="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
                 <div className="w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full animate-spin" />
               </div>
-              <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Explore Jobs at Cloudflare</h1>
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Explore Open Roles</h1>
               <p className="text-xl text-gray-600 dark:text-gray-400">
-                Loading the latest opportunities from Cloudflare...
+                Loading the latest openings across every employer we track...
               </p>
             </div>
 
@@ -220,16 +229,21 @@ export default function ExploreJobsPage() {
           {/* Header */}
           <div className="text-center mb-12">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 bg-orange-500 rounded-xl flex items-center justify-center mr-4">
-                <span className="text-2xl">☁️</span>
+              <div className="w-16 h-16 bg-purple-600 rounded-xl flex items-center justify-center mr-4">
+                <Briefcase className="w-8 h-8 text-white" />
               </div>
               <div className="text-left">
-                <h1 className="text-4xl font-bold text-gray-900 dark:text-white">Cloudflare Careers</h1>
-                <p className="text-gray-600 dark:text-gray-400">Powered by Greenhouse</p>
+                <h1 className="text-4xl font-bold text-gray-900 dark:text-white">Explore Open Roles</h1>
+                <p className="text-gray-600 dark:text-gray-400">
+                  {companyCount > 0
+                    ? `Across ${companyCount.toLocaleString()} employers`
+                    : "Across every employer we track"}
+                </p>
               </div>
             </div>
             <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-              Discover exciting opportunities at Cloudflare. Join a team that's building the future of the internet.
+              Every role here links straight to the employer's own application page — no reposts,
+              no intermediaries.
             </p>
           </div>
 
@@ -405,7 +419,7 @@ export default function ExploreJobsPage() {
           <div className="text-center mt-16 p-8 bg-gray-100 dark:bg-gray-800/50 rounded-xl">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Don't see the perfect role?</h3>
             <p className="text-gray-600 dark:text-gray-400 mb-4">
-              Cloudflare is always looking for talented individuals. Check back regularly for new opportunities.
+              New roles are crawled continuously. Refresh, or widen your filters to see more employers.
             </p>
             <Button onClick={handleRetry} className="bg-purple-600 hover:bg-purple-700 text-white">
               <RefreshCw className="w-4 h-4 mr-2" />
