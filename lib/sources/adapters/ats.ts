@@ -1379,3 +1379,141 @@ export class MokaHrAdapter extends BaseAdapter {
     return { jobs, incremental: false, warnings }
   }
 }
+
+/**
+ * Radancy TalentBrew.
+ *
+ * WHY THIS IS AN ADAPTER AND NOT A BOEING SCRAPER
+ * -----------------------------------------------
+ * Boeing was recorded as "no verified board" because autodiscovery looked for
+ * vendor API hosts and found none. That verdict was wrong: the page at
+ * jobs.boeing.com/search-jobs already CONTAINS the jobs, server-rendered, 1,342
+ * of them per page load. There was nothing dynamic to defeat -- the fingerprint
+ * set simply had no signature for this vendor.
+ *
+ * Radancy powers career sites for many large enterprises, so this parses the
+ * platform rather than one employer. A new Radancy employer is a registry line,
+ * not new code.
+ *
+ * WHY IT PARSES HTML
+ * ------------------
+ * Every other adapter here calls a JSON API, which is always preferable.
+ * Radancy does not publish one. The markup it emits is a stable, generated
+ * template -- fixed class names, one <li> per posting -- which is the one case
+ * where HTML parsing is a reasonable source rather than a fragile shortcut.
+ * It is still more brittle than JSON, so the adapter warns loudly when a page
+ * yields no rows instead of silently reporting success with nothing.
+ */
+export class RadancyAdapter extends BaseAdapter {
+  readonly id: SourceId = 'radancy'
+  readonly displayName = 'Radancy TalentBrew'
+  readonly hostPatterns = [/(^|\.)jobs\.[a-z0-9-]+\.com$/i]
+  protected discoveryPattern = 'jobs.*/search-jobs'
+  protected healthUrl() {
+    return 'https://jobs.boeing.com/search-jobs'
+  }
+
+  /** Radancy serves a fixed page size; stop when a page adds nothing new. */
+  private static readonly MAX_PAGES = 120
+
+  async fetchJobs(target: SourceTarget, opts: FetchOptions = {}): Promise<FetchResult> {
+    const warnings: string[] = []
+    const host = target.host || `jobs.${target.token}.com`
+    const path = target.site || 'search-jobs'
+
+    const seen = new Set<string>()
+    let barren = 0
+    const rows: {
+      id: string; title: string; href: string; location: string | null; date: string | null
+    }[] = []
+
+    for (let page = 1; page <= RadancyAdapter.MAX_PAGES; page++) {
+      const url = `https://${host}/${path}?p=${page}`
+      const res = await this.get(url, { cacheTtlMs: this.ttl.jobListing, signal: opts.signal })
+      if (!res.ok || !res.body) break
+      const html = res.body
+
+      const before = rows.length
+      let parsedThisPage = 0
+
+      // One <li> per posting. The anchor carries the id and the apply path; the
+      // two info spans carry location and date.
+      const blocks = html.split('search-results__job-link').slice(1)
+      for (const block of blocks) {
+        const href = block.match(/href="([^"]+)"/)?.[1]
+        const id = block.match(/data-job-id="([0-9]+)"/)?.[1]
+        const title = block.match(/search-results__job-title[^>]*>([^<]+)</)?.[1]
+        if (!href || !id || !title) continue
+        parsedThisPage++
+        if (seen.has(id)) continue
+        seen.add(id)
+
+        const location = block.match(/search-results__job-info location[^>]*>([^<]+)</)?.[1]?.trim() ?? null
+        const date = block.match(/search-results__job-info date[^>]*>([^<]+)</)?.[1]?.trim() ?? null
+        rows.push({ id, title: decodeEntities(title.trim()), href, location, date })
+      }
+
+      // Radancy re-ranks between requests, so an individual page can legitimately
+      // contain only ids already seen -- measured: page 5 led with an id that
+      // page 3 had returned moments earlier. Breaking on the first such page cut
+      // Boeing off at 45 postings out of far more.
+      //
+      // So exhaustion means several CONSECUTIVE pages adding nothing new, while
+      // a page that parses zero rows at all means the listing really has ended.
+      if (parsedThisPage === 0) break
+      if (rows.length === before) {
+        if (++barren >= 3) break
+      } else {
+        barren = 0
+      }
+    }
+
+    if (!rows.length) {
+      return {
+        jobs: [],
+        incremental: false,
+        warnings: [
+          `radancy:${target.token} returned no rows. The markup may have changed -- ` +
+          `this adapter parses generated HTML, so a template change breaks it silently ` +
+          `unless it says so here.`,
+        ],
+      }
+    }
+
+    const jobs = this.mapRows(rows, target, (j) => ({
+      source: this.id,
+      target,
+      sourceId: j.id,
+      requisitionId: j.id,
+      title: j.title,
+      company: target.companyName ?? null,
+      companyDomain: target.companyDomain ?? null,
+      locationRaw: j.location,
+      additionalLocations: [],
+      // Radancy's listing carries no description; the detail page does, and
+      // fetching one page per posting is not worth it at this volume.
+      descriptionHtml: null,
+      department: null,
+      employmentType: null,
+      remoteFlag: j.location ? /\bremote\b/i.test(j.location) : null,
+      postedAt: toIso(j.date),
+      updatedAt: toIso(j.date),
+      applicationUrl: j.href.startsWith('http') ? j.href : `https://${host}${j.href}`,
+      canonicalUrl: j.href.startsWith('http') ? j.href : `https://${host}${j.href}`,
+    }), warnings)
+
+    return { jobs, incremental: false, warnings }
+  }
+}
+
+/** The handful of entities Radancy's templates actually emit. */
+function decodeEntities(s: string): string {
+  return s
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#0?39;/g, "'")
+    .replace(/&apos;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&nbsp;/g, ' ')
+}

@@ -219,6 +219,21 @@ export const COMPANIES: CompanyRecord[] = [
   { slug: 'boom-supersonic', name: 'Boom Supersonic', domain: 'boomsupersonic.com', valuationKind: 'unknown',
     industry: 'Aerospace', hqLocation: 'Denver, CO', foundedYear: 2014,
     boards: [{ provider: 'ashby', token: 'boom' }] },
+  // SanDisk: 313 postings verified 2026-09-14.
+  { slug: 'sandisk', name: 'SanDisk', domain: 'sandisk.com', valuationKind: 'unknown',
+    boards: [{ provider: 'smartrecruiters', token: 'Sandisk' }] },
+  // Western Digital: 348 postings verified 2026-09-14.
+  { slug: 'western-digital', name: 'Western Digital', domain: 'westerndigital.com', valuationKind: 'unknown',
+    boards: [{ provider: 'smartrecruiters', token: 'WesternDigital' }] },
+  // Honeywell: 1340 postings verified 2026-09-14.
+  { slug: 'honeywell', name: 'Honeywell', domain: 'honeywell.com', valuationKind: 'unknown',
+    boards: [{ provider: 'oracle', token: 'ibqbjb', site: 'CX_1', host: 'ibqbjb.fa.ocs.oraclecloud.com' }] },
+  // Caterpillar: 914 postings verified 2026-09-14.
+  { slug: 'caterpillar', name: 'Caterpillar', domain: 'caterpillar.com', valuationKind: 'unknown',
+    boards: [{ provider: 'workday', token: 'cat', site: 'CaterpillarCareers', host: 'cat.wd5.myworkdayjobs.com' }] },
+  // Ford Motor Company: 813 postings verified 2026-09-14.
+  { slug: 'ford-motor-company', name: 'Ford Motor Company', domain: 'ford.com', valuationKind: 'unknown',
+    boards: [{ provider: 'oracle', token: 'efds', site: 'CX_1', host: 'efds.fa.em5.oraclecloud.com' }] },
   { slug: 'palantir', name: 'Palantir', domain: 'palantir.com', ticker: 'PLTR', valuationKind: 'public', industry: 'Data Analytics', hqLocation: 'Denver, CO', foundedYear: 2003,
     boards: [{ provider: 'lever', token: 'palantir' }] },
   { slug: 'spotify', name: 'Spotify', domain: 'spotify.com', ticker: 'SPOT', valuationKind: 'public', industry: 'Audio Streaming', hqLocation: 'Stockholm, Sweden', foundedYear: 2006,

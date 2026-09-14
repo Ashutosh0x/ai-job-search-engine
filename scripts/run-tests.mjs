@@ -25,6 +25,11 @@
  *   npx tsx scripts/test-oracle-adapter.mjs
  *
  * Run it after touching the Oracle adapter or Nokia's board config.
+ *
+ * scripts/test-radancy-adapter.mjs is excluded for the same reason: it crawls
+ * Boeing's live career site. Run it after touching the Radancy adapter --
+ * that one parses generated HTML, so a template change on the vendor's side
+ * breaks it without any code change here.
  */
 
 import { spawn } from 'child_process'

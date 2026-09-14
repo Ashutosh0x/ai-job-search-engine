@@ -13,7 +13,7 @@ export type SourceId =
   | 'breezy' | 'comeet' | 'jazzhr' | 'pinpoint' | 'rippling' | 'workable'
   | 'icims' | 'taleo' | 'successfactors' | 'eightfold' | 'avature'
   | 'phenom' | 'ukg' | 'dover' | 'gem' | 'wellfound' | 'mokahr' | 'keka'
-  | 'oracle'
+  | 'oracle' | 'radancy'
   | 'custom' | 'search' | 'unknown'
 
 /** How much we trust a source's data by default. Learned values override these. */
