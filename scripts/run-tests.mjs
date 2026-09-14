@@ -57,6 +57,7 @@ const SUITES = [
   'test-rank.mjs',
   'test-workplace.mjs',
   'test-skills.mjs',
+  'test-early-career.mjs',
   'test-pagination.mjs',
   'test-workday-cap.mjs',
   'test-workday-location.mjs',

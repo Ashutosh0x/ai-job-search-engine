@@ -6,6 +6,7 @@ import { normalizeTitle } from './dedupe'
 import { isAggregatorUrl } from '../sources/detector'
 import { classifyVisa } from './visa'
 import { classifyWorkplace, workplaceDisplay } from './workplace'
+import { classifyEarlyCareer } from './early-career'
 
 /**
  * RawJob -> CanonicalJob.
@@ -32,6 +33,9 @@ export function normalizeJob(raw: RawJob, opts: { companySlug?: string; companyN
   const now = nowIso()
 
   const description = raw.description?.trim() || htmlToText(raw.descriptionHtml)
+  // Computed once here rather than at query time: the result is faceted, and a
+  // stored classification can be audited against the posting that produced it.
+  const earlyCareer = classifyEarlyCareer(raw.title ?? '', description)
   const company = raw.company || opts.companyName || raw.target.companyName || raw.target.token
   const companyDomain = raw.companyDomain || raw.target.companyDomain || null
   const companySlug = opts.companySlug || slugify(companyDomain?.replace(/\.[a-z.]+$/, '') || company)
@@ -111,6 +115,8 @@ ${description}`, { country: primary.country })
 
     employmentType: raw.employmentType ?? null,
     seniority: inferSeniority(raw.title, description),
+    earlyCareer: earlyCareer?.category ?? null,
+    earlyCareerLevel: earlyCareer?.level ?? null,
 
     department: raw.department ?? null,
     team: raw.team ?? null,

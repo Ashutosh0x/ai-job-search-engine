@@ -140,6 +140,16 @@ export interface CanonicalJob {
 
   employmentType: string | null
   seniority: string | null
+  /**
+   * Early-career category, or null for an ordinary role.
+   *
+   * Derived deterministically from the title and description by
+   * lib/pipeline/early-career.ts. Stored rather than computed at query
+   * time so it can be faceted and so the classification is auditable.
+   */
+  earlyCareer: string | null
+  /** UK apprenticeship level (2-7) when the posting states one. */
+  earlyCareerLevel: number | null
 
   department: string | null
   team: string | null

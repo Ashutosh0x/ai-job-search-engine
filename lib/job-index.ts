@@ -56,6 +56,9 @@ export interface IndexedJob {
   /** v2-only fields the loader attaches; optional so the v1 snapshot still types. */
   skills?: string[]
   seniority?: string | null
+  /** apprenticeship | graduate | internship | placement | trainee | entry-level | junior */
+  earlyCareer?: string | null
+  earlyCareerLevel?: number | null
   freshnessScore?: number
   isDirectApplication?: boolean
   sourceCount?: number
@@ -333,6 +336,8 @@ async function loadV2(): Promise<Snapshot | null> {
         // v2-only fields surfaced to the UI.
         skills: j.skills ?? [],
         seniority: j.seniority ?? null,
+        earlyCareer: j.earlyCareer ?? null,
+        earlyCareerLevel: j.earlyCareerLevel ?? null,
         freshnessScore: j.freshnessScore ?? 0,
         isDirectApplication: j.isDirectApplication ?? true,
         // The slim index carries the count; the URLs themselves stay in the archive.
@@ -406,6 +411,8 @@ export interface JobQuery {
   companies?: string[]
   providers?: string[]
   employmentTypes?: string[]
+  /** apprenticeship | graduate | internship | placement | trainee | entry-level | junior */
+  earlyCareer?: string[]
   minSalary?: number
   sort?: 'relevance' | 'recent' | 'valuation' | 'openings' | 'salary'
   page?: number
@@ -469,6 +476,8 @@ export interface SearchResult {
     valuationTiers: { value: string; count: number }[]
     cities: { value: string; count: number }[]
     countries: { value: string; count: number }[]
+    /** Early-career category, so the UI can offer it as a first-class filter. */
+    earlyCareer: { value: string; count: number }[]
     remote: number
   }
   generatedAt: string
@@ -591,6 +600,15 @@ export async function searchJobs(query: JobQuery): Promise<SearchResult | null> 
     const set = new Set(query.employmentTypes.map((t) => t.toLowerCase()))
     rows = rows.filter((r) => r.employmentType && set.has(r.employmentType.toLowerCase()))
   }
+  if (query.earlyCareer?.length) {
+    // "any" means "any early-career category", which is the filter most people
+    // actually want -- a student does not care whether it is called an
+    // internship or a placement, only that it is not a senior role.
+    const set = new Set(query.earlyCareer.map((t) => t.toLowerCase()))
+    rows = set.has('any')
+      ? rows.filter((r) => Boolean(r.earlyCareer))
+      : rows.filter((r) => r.earlyCareer && set.has(r.earlyCareer.toLowerCase()))
+  }
   if (query.minSalary) {
     rows = rows.filter((r) => (r.salaryMax ?? r.salaryMin ?? 0) >= query.minSalary!)
   }
@@ -628,6 +646,7 @@ export async function searchJobs(query: JobQuery): Promise<SearchResult | null> 
     valuationTiers: countBy(rows, (r) => r.company?.valuationTier),
     cities: countBy(rows, (r) => r.city).slice(0, 40),
     countries: countBy(rows, (r) => r.country).slice(0, 40),
+    earlyCareer: countBy(rows, (r) => r.earlyCareer),
     remote: rows.filter((r) => r.isRemote).length,
   }
 

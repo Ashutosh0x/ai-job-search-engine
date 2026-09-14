@@ -63,6 +63,7 @@ export async function GET(request: NextRequest) {
     companies: list('company'),
     providers: list('provider'),
     employmentTypes: list('employmentType'),
+    earlyCareer: list('earlyCareer'),
     minSalary: num('minSalary'),
     sort: (sp.get('sort') as JobQuery['sort']) ?? undefined,
     page: num('page'),
