@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Search, ArrowRight } from "lucide-react"
+import { ArrowRight, Search, Sparkles } from "lucide-react"
 
 export default function AutoTypingSearch() {
   const [currentText, setCurrentText] = useState("")
@@ -101,8 +101,9 @@ export default function AutoTypingSearch() {
       </div>
 
       <div className="text-center mt-4">
-        <p className="text-sm text-gray-600 dark:text-gray-400">
-          ✨ AI understands your career goals and finds perfect matches
+        <p className="flex items-center justify-center gap-1.5 text-sm text-gray-600 dark:text-gray-400">
+          <Sparkles className="h-4 w-4" aria-hidden="true" />
+          AI understands your career goals and finds perfect matches
         </p>
       </div>
     </div>

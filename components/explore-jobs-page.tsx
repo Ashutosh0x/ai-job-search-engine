@@ -18,6 +18,7 @@ import {
   RefreshCw,
 } from "lucide-react"
 import Navigation from "@/components/navigation"
+import { CompanyLogo } from "@/components/company-logo"
 
 // Mirrors JobSearchResult in app/api/jobs/route.ts. The previous shape here
 // (numeric `id`, `absolute_url`) was the Greenhouse board API's, left over from
@@ -29,6 +30,8 @@ interface Job {
   title: string
   company: string
   companySlug: string
+  companyDomain: string | null
+  logoUrl: string | null
   location: string | null
   department: string | null
   employmentType: string | null
@@ -415,9 +418,18 @@ export default function ExploreJobsPage() {
                             <span className="truncate">{String(job.location || "Location not stated")}</span>
                           </div>
                         </div>
-                        <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center ml-3">
-                          <span className="text-lg">☁️</span>
-                        </div>
+                        {/* Was a hard-coded cloud emoji on every card -- a
+                            leftover from when this page read one Cloudflare
+                            board, so Netflix and Visa both showed a cloud.
+                            CompanyLogo is the same component /jobs uses, keyed
+                            off the same domain, and degrades to the employer's
+                            initials rather than a broken image. */}
+                        <CompanyLogo
+                          name={String(job.company || "Unknown employer")}
+                          logoUrl={job.logoUrl}
+                          size={48}
+                          className="ml-3"
+                        />
                       </div>
                     </CardHeader>
                     <CardContent className="space-y-4">

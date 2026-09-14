@@ -26,6 +26,7 @@
  * This module imports jspdf and therefore only runs in the browser.
  */
 
+import { jsPDF } from 'jspdf'
 import type { ResumePlan } from './plan'
 
 /* ----------------------------- page geometry ------------------------------ */
@@ -67,7 +68,17 @@ export interface PdfResult {
  * cannot introduce the ligature problem the LaTeX preamble works around.
  */
 export async function renderPdf(plan: ResumePlan): Promise<PdfResult> {
-  const { jsPDF } = await import('jspdf')
+  // jspdf is imported statically at the top rather than with a dynamic import
+  // here. The lazy boundary is already one level up -- resume-tailor.tsx does
+  // `await import("@/lib/resume/pdf")`, so nothing in this module loads until a
+  // user actually builds a resume, and a second inner dynamic import bought
+  // nothing.
+  //
+  // It also broke CI. tsx compiles a .ts module to a `data:` URL, and a bare
+  // specifier cannot be resolved from a data: base, so on Node 20 the test run
+  // died with ERR_UNSUPPORTED_RESOLVE_REQUEST / "Invalid relative URL or base
+  // scheme is not hierarchical". Node 26 happens to tolerate it locally, which
+  // is exactly why the failure only appeared on the runner.
   const doc = new jsPDF({ unit: 'pt', format: 'letter', compress: true })
 
   let y = MARGIN_TOP

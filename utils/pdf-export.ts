@@ -22,6 +22,19 @@ interface ResumeAnalysisData {
   }
 }
 
+/*
+ * NO EMOJI IN THIS FILE.
+ *
+ * jsPDF's built-in fonts are WinAnsi-encoded. A single emoji in a string
+ * makes jsPDF switch that whole string to UTF-16, so the glyph renders as
+ * mojibake ("Keyword Suggestions" came out as a bullet-prefixed run of
+ * nulls) and the rest of the line stops being extractable -- which matters
+ * because this PDF is a resume artefact people feed to parsers.
+ *
+ * Measured: an ASCII heading round-trips as "(Keywords Found:)"; the same
+ * heading with a leading emoji round-trips as null-interleaved bytes.
+ */
+
 export const generateResumeAnalysisPDF = (data: ResumeAnalysisData) => {
   const pdf = new jsPDF()
   let yPosition = 20
@@ -127,7 +140,7 @@ export const generateResumeAnalysisPDF = (data: ResumeAnalysisData) => {
       yPosition = addText("Recommendations:", 25, yPosition)
       pdf.setFont("helvetica", "normal")
       section.recommendations.forEach((rec) => {
-        yPosition = addText(`→ ${rec}`, 30, yPosition)
+        yPosition = addText(`- ${rec}`, 30, yPosition)
         yPosition += 2
       })
     }
@@ -146,7 +159,7 @@ export const generateResumeAnalysisPDF = (data: ResumeAnalysisData) => {
   pdf.setFontSize(12)
   pdf.setFont("helvetica", "bold")
   pdf.setTextColor(34, 197, 94) // Green
-  pdf.text("✓ Keywords Found:", 20, yPosition)
+  pdf.text("Keywords Found:", 20, yPosition)
   yPosition += 8
 
   pdf.setTextColor(0, 0, 0)
@@ -161,7 +174,7 @@ export const generateResumeAnalysisPDF = (data: ResumeAnalysisData) => {
   pdf.setFontSize(12)
   pdf.setFont("helvetica", "bold")
   pdf.setTextColor(239, 68, 68) // Red
-  pdf.text("✗ Missing Keywords:", 20, yPosition)
+  pdf.text("Missing Keywords:", 20, yPosition)
   yPosition += 8
 
   pdf.setTextColor(0, 0, 0)
@@ -176,7 +189,7 @@ export const generateResumeAnalysisPDF = (data: ResumeAnalysisData) => {
   pdf.setFontSize(12)
   pdf.setFont("helvetica", "bold")
   pdf.setTextColor(147, 51, 234) // Purple
-  pdf.text("💡 Keyword Suggestions:", 20, yPosition)
+  pdf.text("Keyword Suggestions:", 20, yPosition)
   yPosition += 8
 
   pdf.setTextColor(0, 0, 0)
@@ -199,7 +212,7 @@ export const generateResumeAnalysisPDF = (data: ResumeAnalysisData) => {
   pdf.setFontSize(12)
   pdf.setFont("helvetica", "bold")
   pdf.setTextColor(34, 197, 94)
-  pdf.text("🎯 Strengths:", 20, yPosition)
+  pdf.text("Strengths:", 20, yPosition)
   yPosition += 8
 
   pdf.setTextColor(0, 0, 0)
@@ -216,7 +229,7 @@ export const generateResumeAnalysisPDF = (data: ResumeAnalysisData) => {
   pdf.setFontSize(12)
   pdf.setFont("helvetica", "bold")
   pdf.setTextColor(239, 68, 68)
-  pdf.text("🔧 Areas for Improvement:", 20, yPosition)
+  pdf.text("Areas for Improvement:", 20, yPosition)
   yPosition += 8
 
   pdf.setTextColor(0, 0, 0)
@@ -233,7 +246,7 @@ export const generateResumeAnalysisPDF = (data: ResumeAnalysisData) => {
   pdf.setFontSize(12)
   pdf.setFont("helvetica", "bold")
   pdf.setTextColor(147, 51, 234)
-  pdf.text("💡 Pro Tips:", 20, yPosition)
+  pdf.text("Pro Tips:", 20, yPosition)
   yPosition += 8
 
   pdf.setTextColor(0, 0, 0)

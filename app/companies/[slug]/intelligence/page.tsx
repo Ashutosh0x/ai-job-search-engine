@@ -321,11 +321,11 @@ export default async function CompanyIntelligencePage({
               <CardContent className="p-5">
                 <SectionHeader icon={MapPin} label="Office Locations" />
                 <div className="mt-3 space-y-4">
-                  <OfficeSection title="🇮🇳 India" offices={intel.officesIndia} />
-                  <OfficeSection title="🇬🇧 United Kingdom" offices={intel.officesUk} />
-                  <OfficeSection title="🇩🇪 Germany" offices={intel.officesGermany} />
+                  <OfficeSection title="India" offices={intel.officesIndia} />
+                  <OfficeSection title="United Kingdom" offices={intel.officesUk} />
+                  <OfficeSection title="Germany" offices={intel.officesGermany} />
                   {intel.officesOther && intel.officesOther.length > 0 && (
-                    <OfficeSection title="🌍 Other" offices={intel.officesOther} />
+                    <OfficeSection title="Other" offices={intel.officesOther} />
                   )}
                 </div>
               </CardContent>
@@ -394,7 +394,7 @@ export default async function CompanyIntelligencePage({
                   </div>
                   <Button asChild variant="default" size="sm" className="mt-4 w-full">
                     <Link href={`/companies/${params.slug}`}>
-                      View all {jobs.length} open roles →
+                      View all {jobs.length} open roles
                     </Link>
                   </Button>
                 </CardContent>

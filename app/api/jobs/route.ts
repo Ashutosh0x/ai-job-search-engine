@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { searchJobs } from '@/lib/job-index'
+import { companyLogoUrl } from '@/lib/companies/registry'
 import { guard, EXPENSIVE_READ } from '@/lib/api-guard'
 
 export const runtime = 'nodejs'
@@ -38,6 +39,10 @@ export interface JobSearchResult {
   company: string
   companySlug: string
   companyDomain: string | null
+  /** Built from the domain by the same helper /api/search uses, so both
+   *  pages show the same mark for the same employer. Null when the company
+   *  has no known domain -- the UI falls back to initials, never an emoji. */
+  logoUrl: string | null
   location: string | null
   department: string | null
   employmentType: string | null
@@ -103,6 +108,7 @@ export async function GET(request: NextRequest) {
       company: j.companyName,
       companySlug: j.companySlug,
       companyDomain: j.companyDomain ?? null,
+      logoUrl: j.companyDomain ? companyLogoUrl(j.companyDomain) : null,
       location: j.locationDisplay ?? j.location ?? null,
       department: j.department ?? null,
       employmentType: j.employmentType ?? null,
