@@ -234,6 +234,13 @@ export const COMPANIES: CompanyRecord[] = [
   // Ford Motor Company: 813 postings verified 2026-09-14.
   { slug: 'ford-motor-company', name: 'Ford Motor Company', domain: 'ford.com', valuationKind: 'unknown',
     boards: [{ provider: 'oracle', token: 'efds', site: 'CX_1', host: 'efds.fa.em5.oraclecloud.com' }] },
+  // Mozilla: 60 postings verified live on Greenhouse board `mozilla`.
+  // mozilla.org/careers/listings shows only 21 of them -- the website is a
+  // filtered view and the board is the complete source. Both job ids sampled
+  // from the website resolve on the board.
+  { slug: 'mozilla', name: 'Mozilla', domain: 'mozilla.org', valuationKind: 'unknown',
+    industry: 'Browsers & Open Web', hqLocation: 'San Francisco, CA', foundedYear: 1998,
+    boards: [{ provider: 'greenhouse', token: 'mozilla' }] },
   { slug: 'palantir', name: 'Palantir', domain: 'palantir.com', ticker: 'PLTR', valuationKind: 'public', industry: 'Data Analytics', hqLocation: 'Denver, CO', foundedYear: 2003,
     boards: [{ provider: 'lever', token: 'palantir' }] },
   { slug: 'spotify', name: 'Spotify', domain: 'spotify.com', ticker: 'SPOT', valuationKind: 'public', industry: 'Audio Streaming', hqLocation: 'Stockholm, Sweden', foundedYear: 2006,
