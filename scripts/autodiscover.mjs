@@ -269,6 +269,27 @@ async function discover(c) {
     }
     tried.push(`${url} -> ${r.url} (no verified board)`)
   }
+
+  // FALLBACK: fingerprinting only sees what the careers page reveals, and a
+  // page rendered entirely client-side reveals nothing. Measured: Delivery
+  // Hero's careers page names no vendor at all, yet `DeliveryHero` on
+  // SmartRecruiters returns 980 postings.
+  //
+  // So when the page yields nothing, try the employer's own name as a token
+  // against the APIs we support. This is a guess, but it is a CHEAP guess that
+  // is still subject to the same rule as everything else: it only counts once
+  // an endpoint has actually returned postings.
+  const base = c.name.replace(/[^A-Za-z0-9]/g, '')
+  const guesses = [...new Set([base, base.toLowerCase(), c.domain.split('.')[0]])]
+  for (const token of guesses) {
+    for (const vendor of ['smartrecruiters', 'greenhouse', 'lever', 'ashby', 'workable']) {
+      try {
+        const live = await VERIFY[vendor]({ token })
+        if (live) return { ...c, vendor, ...live, via: `token guess: ${vendor}/${token}` }
+      } catch { /* wrong guess, which is the normal case */ }
+    }
+  }
+
   return { ...c, failed: true, tried: tried.slice(0, 3) }
 }
 

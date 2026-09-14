@@ -241,6 +241,131 @@ export const COMPANIES: CompanyRecord[] = [
   { slug: 'mozilla', name: 'Mozilla', domain: 'mozilla.org', valuationKind: 'unknown',
     industry: 'Browsers & Open Web', hqLocation: 'San Francisco, CA', foundedYear: 1998,
     boards: [{ provider: 'greenhouse', token: 'mozilla' }] },
+  // Octopus Energy: 157 postings verified 2026-09-14.
+  { slug: 'octopus-energy', name: 'Octopus Energy', domain: 'octopus.energy', valuationKind: 'unknown',
+    boards: [{ provider: 'lever', token: 'octoenergy' }] },
+  // Contentsquare: 27 postings verified 2026-09-14.
+  { slug: 'contentsquare', name: 'Contentsquare', domain: 'contentsquare.com', valuationKind: 'unknown',
+    boards: [{ provider: 'lever', token: 'contentsquare' }] },
+  // Dataiku: 28 postings verified 2026-09-14.
+  { slug: 'dataiku', name: 'Dataiku', domain: 'dataiku.com', valuationKind: 'unknown',
+    boards: [{ provider: 'greenhouse', token: 'dataiku' }] },
+  // Alan: 119 postings verified 2026-09-14.
+  { slug: 'alan', name: 'Alan', domain: 'alan.com', valuationKind: 'unknown',
+    boards: [{ provider: 'ashby', token: 'alan' }] },
+  // Qonto: 43 postings verified 2026-09-14.
+  { slug: 'qonto', name: 'Qonto', domain: 'qonto.com', valuationKind: 'unknown',
+    boards: [{ provider: 'lever', token: 'qonto' }] },
+  // Pennylane: 148 postings verified 2026-09-14.
+  { slug: 'pennylane', name: 'Pennylane', domain: 'pennylane.com', valuationKind: 'unknown',
+    boards: [{ provider: 'ashby', token: 'pennylane' }] },
+  // Zeptolab: 3 postings verified 2026-09-14.
+  { slug: 'zeptolab', name: 'Zeptolab', domain: 'zeptolab.com', valuationKind: 'unknown',
+    boards: [{ provider: 'workable', token: 'zeptolab' }] },
+  // Freshworks: 138 postings verified 2026-09-14.
+  { slug: 'freshworks', name: 'Freshworks', domain: 'freshworks.com', valuationKind: 'unknown',
+    boards: [{ provider: 'smartrecruiters', token: 'Freshworks' }] },
+  // BrowserStack: 31 postings verified 2026-09-14.
+  { slug: 'browserstack', name: 'BrowserStack', domain: 'browserstack.com', valuationKind: 'unknown',
+    boards: [{ provider: 'workday', token: 'browserstack', site: 'External', host: 'browserstack.wd3.myworkdayjobs.com' }] },
+  // InMobi: 44 postings verified 2026-09-14.
+  { slug: 'inmobi', name: 'InMobi', domain: 'inmobi.com', valuationKind: 'unknown',
+    boards: [{ provider: 'greenhouse', token: 'glance' }] },
+  // SafetyCulture: 39 postings verified 2026-09-14.
+  { slug: 'safetyculture', name: 'SafetyCulture', domain: 'safetyculture.com', valuationKind: 'unknown',
+    boards: [{ provider: 'ashby', token: 'mitti' }] },
+  // Rakuten: 16 postings verified 2026-09-14.
+  { slug: 'rakuten', name: 'Rakuten', domain: 'rakuten.com', valuationKind: 'unknown',
+    boards: [{ provider: 'workday', token: 'rakuten', site: 'RakutenRewards', host: 'rakuten.wd1.myworkdayjobs.com' }] },
+  // Nubank: 119 postings verified 2026-09-14.
+  { slug: 'nubank', name: 'Nubank', domain: 'nubank.com.br', valuationKind: 'unknown',
+    boards: [{ provider: 'ashby', token: 'nubank' }] },
+  // Rappi: 24 postings verified 2026-09-14.
+  { slug: 'rappi', name: 'Rappi', domain: 'rappi.com', valuationKind: 'unknown',
+    boards: [{ provider: 'workday', token: 'rappi', site: 'Rappi_jobs', host: 'rappi.wd12.myworkdayjobs.com' }] },
+  // dLocal: 56 postings verified 2026-09-14.
+  { slug: 'dlocal', name: 'dLocal', domain: 'dlocal.com', valuationKind: 'unknown',
+    boards: [{ provider: 'lever', token: 'dlocal' }] },
+  // Andela: 17 postings verified 2026-09-14.
+  { slug: 'andela', name: 'Andela', domain: 'andela.com', valuationKind: 'unknown',
+    boards: [{ provider: 'ashby', token: 'andela' }] },
+  // Delivery Hero: 980 postings verified live on SmartRecruiters, deep
+  // pagination confirmed at offset 500. Autodiscovery's fingerprint pass missed
+  // this one -- careers.deliveryhero.com names no vendor anywhere in its HTML --
+  // and it was recovered by the token-guess fallback.
+  { slug: 'delivery-hero', name: 'Delivery Hero', domain: 'deliveryhero.com',
+    ticker: 'DHER.DE', valuationKind: 'public', industry: 'Food Delivery / Q-Commerce',
+    hqLocation: 'Berlin, Germany', foundedYear: 2011,
+    boards: [{ provider: 'smartrecruiters', token: 'DeliveryHero' }] },
+  // Deliveroo: 226 postings verified 2026-09-14.
+  { slug: 'deliveroo', name: 'Deliveroo', domain: 'deliveroo.co.uk', valuationKind: 'unknown',
+    boards: [{ provider: 'ashby', token: 'Deliveroo' }] },
+  // Improbable: 5 postings verified 2026-09-14.
+  { slug: 'improbable', name: 'Improbable', domain: 'improbable.io', valuationKind: 'unknown',
+    boards: [{ provider: 'ashby', token: 'Improbable' }] },
+  // Trainline: 34 postings verified 2026-09-14.
+  { slug: 'trainline', name: 'Trainline', domain: 'thetrainline.com', valuationKind: 'unknown',
+    boards: [{ provider: 'ashby', token: 'Trainline' }] },
+  // Adyen: 223 postings verified 2026-09-14.
+  { slug: 'adyen', name: 'Adyen', domain: 'adyen.com', valuationKind: 'unknown',
+    boards: [{ provider: 'greenhouse', token: 'Adyen' }] },
+  // Mollie: 49 postings verified 2026-09-14.
+  { slug: 'mollie', name: 'Mollie', domain: 'mollie.com', valuationKind: 'unknown',
+    boards: [{ provider: 'ashby', token: 'Mollie' }] },
+  // Wolt: 238 postings verified 2026-09-14.
+  { slug: 'wolt', name: 'Wolt', domain: 'wolt.com', valuationKind: 'unknown',
+    boards: [{ provider: 'greenhouse', token: 'Wolt' }] },
+  // N26: 73 postings verified 2026-09-14.
+  { slug: 'n26', name: 'N26', domain: 'n26.com', valuationKind: 'unknown',
+    boards: [{ provider: 'greenhouse', token: 'N26' }] },
+  // Celonis: 263 postings verified 2026-09-14.
+  { slug: 'celonis', name: 'Celonis', domain: 'celonis.com', valuationKind: 'unknown',
+    boards: [{ provider: 'greenhouse', token: 'Celonis' }] },
+  // Doctolib: 126 postings verified 2026-09-14.
+  { slug: 'doctolib', name: 'Doctolib', domain: 'doctolib.fr', valuationKind: 'unknown',
+    boards: [{ provider: 'greenhouse', token: 'Doctolib' }] },
+  // BlaBlaCar: 11 postings verified 2026-09-14.
+  { slug: 'blablacar', name: 'BlaBlaCar', domain: 'blablacar.com', valuationKind: 'unknown',
+    boards: [{ provider: 'lever', token: 'blablacar' }] },
+  // Cabify: 66 postings verified 2026-09-14.
+  { slug: 'cabify', name: 'Cabify', domain: 'cabify.com', valuationKind: 'unknown',
+    boards: [{ provider: 'greenhouse', token: 'Cabify' }] },
+  // Satispay: 92 postings verified 2026-09-14.
+  { slug: 'satispay', name: 'Satispay', domain: 'satispay.com', valuationKind: 'unknown',
+    boards: [{ provider: 'ashby', token: 'Satispay' }] },
+  // Zego: 1 postings verified 2026-09-14.
+  { slug: 'zego', name: 'Zego', domain: 'zego.com', valuationKind: 'unknown',
+    boards: [{ provider: 'ashby', token: 'Zego' }] },
+  // Swile: 29 postings verified 2026-09-14.
+  { slug: 'swile', name: 'Swile', domain: 'swile.co', valuationKind: 'unknown',
+    boards: [{ provider: 'lever', token: 'swile' }] },
+  // Swiggy: 78 postings verified 2026-09-14.
+  { slug: 'swiggy', name: 'Swiggy', domain: 'swiggy.com', valuationKind: 'unknown',
+    boards: [{ provider: 'smartrecruiters', token: 'Swiggy' }] },
+  // Grab: 421 postings verified 2026-09-14.
+  { slug: 'grab', name: 'Grab', domain: 'grab.com', valuationKind: 'unknown',
+    boards: [{ provider: 'smartrecruiters', token: 'Grab' }] },
+  // GoTo Group: 35 postings verified 2026-09-14.
+  { slug: 'goto-group', name: 'GoTo Group', domain: 'gotocompany.com', valuationKind: 'unknown',
+    boards: [{ provider: 'lever', token: 'GoToGroup' }] },
+  // Canva: 252 postings verified 2026-09-14.
+  { slug: 'canva', name: 'Canva', domain: 'canva.com', valuationKind: 'unknown',
+    boards: [{ provider: 'smartrecruiters', token: 'Canva' }] },
+  // Mercari: 2 postings verified 2026-09-14.
+  { slug: 'mercari', name: 'Mercari', domain: 'mercari.com', valuationKind: 'unknown',
+    boards: [{ provider: 'greenhouse', token: 'Mercari' }] },
+  // Coupang: 697 postings verified 2026-09-14.
+  { slug: 'coupang', name: 'Coupang', domain: 'coupang.com', valuationKind: 'unknown',
+    boards: [{ provider: 'greenhouse', token: 'Coupang' }] },
+  // Careem: 21 postings verified 2026-09-14.
+  { slug: 'careem', name: 'Careem', domain: 'careem.com', valuationKind: 'unknown',
+    boards: [{ provider: 'greenhouse', token: 'Careem' }] },
+  // Kavak: 9 postings verified 2026-09-14.
+  { slug: 'kavak', name: 'Kavak', domain: 'kavak.com', valuationKind: 'unknown',
+    boards: [{ provider: 'lever', token: 'kavak' }] },
+  // Jumia: 15 postings verified 2026-09-14.
+  { slug: 'jumia', name: 'Jumia', domain: 'jumia.com', valuationKind: 'unknown',
+    boards: [{ provider: 'greenhouse', token: 'Jumia' }] },
   { slug: 'palantir', name: 'Palantir', domain: 'palantir.com', ticker: 'PLTR', valuationKind: 'public', industry: 'Data Analytics', hqLocation: 'Denver, CO', foundedYear: 2003,
     boards: [{ provider: 'lever', token: 'palantir' }] },
   { slug: 'spotify', name: 'Spotify', domain: 'spotify.com', ticker: 'SPOT', valuationKind: 'public', industry: 'Audio Streaming', hqLocation: 'Stockholm, Sweden', foundedYear: 2006,
