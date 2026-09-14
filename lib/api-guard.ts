@@ -16,13 +16,22 @@ import { checkRateLimit, type WindowConfig } from './rate-limit'
  * a client-IP rule, which is how two routes end up limiting different things
  * under the same name.
  *
- * LIMITS ARE A SPEED BUMP, NOT A GUARANTEE
- * ----------------------------------------
- * The underlying limiter is per-process, and on serverless every cold start
- * gets a fresh map while concurrent instances share nothing. This raises the
- * cost of hammering a route from a single client; it does not stop a
- * distributed one. Anything that must truly hold belongs in Redis. Saying so
- * here keeps the next reader from over-trusting it.
+ * THIS DOES NOT ACTUALLY BOUND PRODUCTION TRAFFIC
+ * -----------------------------------------------
+ * Worth stating plainly, because wiring a guard in front of a route creates a
+ * strong impression that the route is now protected.
+ *
+ * MEASURED, 2026-09-14: 46 rapid requests to /api/jobs in production returned
+ * 46 x 200 and zero 429s, against the 40/min configured here. The identical
+ * burst against one local process produced six 429s. The limiter is
+ * per-process; Vercel spreads requests across instances and each cold start
+ * starts with an empty map.
+ *
+ * What this IS good for: a single misbehaving client or scraper that happens to
+ * keep hitting one warm instance, and making the intent explicit and testable
+ * in one place. What it is NOT: protection against a distributed flood, or a
+ * reason to treat these endpoints as safe to expose without a shared-store
+ * limiter (Upstash Redis; no UPSTASH_* vars are configured in this project).
  */
 
 /** Generous by default: these are public reads, and a real user browsing

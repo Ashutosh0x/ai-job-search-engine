@@ -15,11 +15,24 @@ type Bucket = { hits: number[]; windowMs: number; lastSeen: number }
 /**
  * Best-effort fixed-window rate limiter.
  *
- * IMPORTANT: this is per-process. On serverless each cold start gets a fresh
- * map and concurrent instances do not share state, so treat it as a speed bump
- * rather than a guarantee. Anything that truly must hold (OTP verification,
- * billing) should move to Upstash Redis or Supabase before this ships to
- * production -- see `checkRateLimitDistributed` below for the intended shape.
+ * IMPORTANT: this is per-process, and on Vercel that means it barely binds.
+ *
+ * MEASURED, 2026-09-14: 46 rapid requests to /api/jobs in production returned
+ * 46 x 200 and zero 429s, against a 40/min limit. The same 45 requests against
+ * a single local process produced six 429s exactly as configured. Vercel
+ * spreads requests across concurrent instances and each cold start begins with
+ * an empty map, so a caller has to be unlucky to land on one instance often
+ * enough to trip it.
+ *
+ * So: this raises the cost of hammering one route from one process. It does NOT
+ * bound total traffic in production, and nothing that must actually hold --
+ * OTP verification, billing, anything with a cost per call -- should rely on
+ * it. That needs a shared store (Upstash Redis is the usual choice here, and no
+ * UPSTASH_* vars are configured in this project today).
+ *
+ * An earlier version of this note pointed at `checkRateLimitDistributed`
+ * "below" as the intended shape. No such function was ever written; the
+ * reference is removed rather than left to send the next reader looking.
  */
 const buckets = new Map<string, Bucket>()
 
