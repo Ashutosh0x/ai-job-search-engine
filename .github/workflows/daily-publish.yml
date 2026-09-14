@@ -97,8 +97,14 @@ jobs:
         run: cp public/data/jobs-deploy.json /tmp/previous-deploy.json
 
       - name: Rebuild the bounded deploy index
+        # `npx tsx`, not `node`. The builder imports lib/companies/registry.ts to
+        # learn which employers must be served complete. Node 20 rejects a .ts
+        # import, the builder catches it and carries on WITHOUT curated slugs --
+        # so the index would still build, still pass the size gate, and quietly
+        # drop the served-complete guarantee that put Barclays' 1,024 roles in
+        # the slice instead of 3. Same reason refresh-jobs.yml uses tsx.
         run: |
-          NODE_OPTIONS=--max-old-space-size=12288 node scripts/build-deploy-index.mjs \
+          NODE_OPTIONS=--max-old-space-size=12288 npx tsx scripts/build-deploy-index.mjs \
             --in public/data/jobs-v2.json \
             --out public/data/jobs-deploy.json \
             --budget-mb ${{ inputs.budget_mb || '120' }}
