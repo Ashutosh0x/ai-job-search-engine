@@ -27,3 +27,21 @@ countries-states-cities-database
 docs/reports
 
 *.log
+
+# Crawl corpora. NOTE: when .vercelignore exists, .gitignore is NOT consulted,
+# so anything ignored only by git still gets uploaded. data/workday alone is
+# 667MB (a 483MB ndjson and a 214MB links file), which trips Vercel's 100MB
+# per-file limit and fails the deploy outright -- the error names the limit but
+# not the file.
+#
+# Nothing under data/ is read at runtime: the one match for "data/" in app/ and
+# lib/ is part of a remote USCIS URL in lib/visa/sponsor-registers.ts, not a
+# local path. These are inputs to scripts, not to the running site.
+data/workday
+data/financial
+walmart-roles.json
+walmart-roles.ndjson
+
+# Named individuals (see .gitignore). Not withheld from a public git repo only
+# to be uploaded to a public deployment instead.
+data/recruiter-evidence
