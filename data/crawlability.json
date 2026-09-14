@@ -1,0 +1,238 @@
+{
+  "generatedAt": "2026-09-14T02:58:25.797Z",
+  "method": "One identified User-Agent, robots.txt read first and honoured. No agent rotation, no browser impersonation, no retry of a 403 with different headers.",
+  "notDone": [
+    "no bypass of bot protection",
+    "no authenticated requests",
+    "no requests to paths robots.txt disallows"
+  ],
+  "results": [
+    {
+      "company": "Flipkart",
+      "site": "https://www.flipkartcareers.com",
+      "verdict": "no-feed",
+      "reason": "Reachable and permitted, but no machine-readable listing route was found.",
+      "robots": {
+        "disallow": [],
+        "sitemaps": []
+      },
+      "sitemap": null,
+      "findings": [
+        {
+          "route": "/robots.txt",
+          "status": 200,
+          "note": "unreadable (200)"
+        },
+        {
+          "route": "/api/jobs",
+          "status": 200,
+          "note": "returns text/html"
+        },
+        {
+          "route": "/api/search",
+          "status": 200,
+          "note": "returns text/html"
+        },
+        {
+          "route": "/search-jobs/results",
+          "status": 200,
+          "note": "returns text/html"
+        },
+        {
+          "route": "/jobs.json",
+          "status": 200,
+          "note": "returns text/html"
+        }
+      ],
+      "probedAt": "2026-09-14T02:58:25.797Z"
+    },
+    {
+      "company": "Tesla",
+      "site": "https://www.tesla.com",
+      "verdict": "edge-blocked",
+      "reason": "The origin returns 403 to an identified crawler on every route, including robots.txt. Reaching the listings would require imitating a browser, which is out of scope by policy.",
+      "robots": null,
+      "findings": [
+        {
+          "route": "/robots.txt",
+          "status": 403,
+          "note": "origin refuses an identified crawler even for robots.txt"
+        }
+      ],
+      "probedAt": "2026-09-14T02:58:24.270Z"
+    },
+    {
+      "company": "Walmart",
+      "site": "https://careers.walmart.com",
+      "verdict": "stale-feed",
+      "reason": "The sitemap is permitted and lists 15,907 requisition pages, and each carries full structured data in __NEXT_DATA__ -- but every role sampled is CLOSED. 30 sequential plus 20 random: 49 of 49 had active=false and positionAvailable=0. Live listings are served from /results and /api, which robots.txt disallows. So the permitted route exists and returns nothing current; ingesting it would add ~15,907 ghost listings.",
+      "robots": {
+        "disallow": [
+          "/api",
+          "/us/en/results",
+          "/us/es/results",
+          "/results",
+          "/cms",
+          "/debug",
+          "/docs"
+        ],
+        "sitemaps": [
+          "https://careers.walmart.com/sitemap.xml"
+        ]
+      },
+      "sitemap": {
+        "url": "https://careers.walmart.com/sitemap.xml",
+        "total": 3114,
+        "jobLike": 2508,
+        "nestedSitemaps": 0,
+        "sample": [
+          "https://careers.walmart.com/us/en/jobs/R-1075582",
+          "https://careers.walmart.com/us/en/jobs/R-1075583",
+          "https://careers.walmart.com/us/en/jobs/R-1110463"
+        ]
+      },
+      "findings": [
+        {
+          "route": "/robots.txt",
+          "status": 200,
+          "note": "7 Disallow rule(s) for *; 1 sitemap(s)"
+        },
+        {
+          "route": "/sitemap.xml",
+          "status": 200,
+          "note": "3114 urls, 2508 job-like, 0 nested"
+        },
+        {
+          "route": "/api/jobs",
+          "status": null,
+          "note": "DISALLOWED by robots.txt \u2014 not requested"
+        },
+        {
+          "route": "/api/search",
+          "status": null,
+          "note": "DISALLOWED by robots.txt \u2014 not requested"
+        },
+        {
+          "route": "/search-jobs/results",
+          "status": 200,
+          "note": "returns text/html; charset=utf-8"
+        },
+        {
+          "route": "/jobs.json",
+          "status": 200,
+          "note": "returns text/html; charset=utf-8"
+        }
+      ],
+      "probedAt": "2026-09-14T02:58:13.271Z",
+      "measured": {
+        "sitemapJobUrls": 15907,
+        "sampled": 49,
+        "open": 0,
+        "closed": 49,
+        "method": "30 sequential from the head of the sitemap plus 20 uniformly random (seed 7)",
+        "structuredDataRoute": "props.pageProps.jobDetails in __NEXT_DATA__ (no schema.org ld+json)"
+      }
+    },
+    {
+      "company": "Walmart Canada",
+      "site": "https://careers.walmart.ca",
+      "verdict": "crawlable",
+      "reason": "/search-jobs/results returns JSON and robots.txt permits it.",
+      "robots": {
+        "disallow": [],
+        "sitemaps": []
+      },
+      "sitemap": {
+        "url": "https://careers.walmart.ca/sitemap.xml",
+        "total": 1308,
+        "jobLike": 500,
+        "nestedSitemaps": 0,
+        "sample": [
+          "https://careers.walmart.ca/job/waterdown/produce-stocker/4853/100589622624",
+          "https://careers.walmart.ca/job/saint-laurent/can-fashion-associate/4853/100589621840",
+          "https://careers.walmart.ca/job/victoria/can-overnight-associate-full-time/4853/100589618880"
+        ]
+      },
+      "findings": [
+        {
+          "route": "/robots.txt",
+          "status": 200,
+          "note": "0 Disallow rule(s) for *; 0 sitemap(s)"
+        },
+        {
+          "route": "/sitemap.xml",
+          "status": 200,
+          "note": "1308 urls, 500 job-like, 0 nested"
+        },
+        {
+          "route": "/api/jobs",
+          "status": 200,
+          "note": "returns text/html; charset=utf-8"
+        },
+        {
+          "route": "/api/search",
+          "status": 200,
+          "note": "returns text/html; charset=utf-8"
+        },
+        {
+          "route": "/search-jobs/results",
+          "status": 200,
+          "note": "returns JSON"
+        },
+        {
+          "route": "/jobs.json",
+          "status": 200,
+          "note": "returns text/html; charset=utf-8"
+        }
+      ],
+      "probedAt": "2026-09-14T02:58:17.256Z"
+    },
+    {
+      "company": "Walmart Global Tech",
+      "site": "https://tech.walmart.com",
+      "verdict": "no-feed",
+      "reason": "Reachable and permitted, but no machine-readable listing route was found.",
+      "robots": {
+        "disallow": [
+          "/bin/",
+          "/tools/",
+          "/error-pages/",
+          "/cms/",
+          "/password-reset.jsp",
+          "/cms-resources.jsp",
+          "/ajax/"
+        ],
+        "sitemaps": []
+      },
+      "sitemap": null,
+      "findings": [
+        {
+          "route": "/robots.txt",
+          "status": 200,
+          "note": "7 Disallow rule(s) for *; 0 sitemap(s)"
+        },
+        {
+          "route": "/api/jobs",
+          "status": 404,
+          "note": "returns text/html;charset=utf-8"
+        },
+        {
+          "route": "/api/search",
+          "status": 404,
+          "note": "returns text/html;charset=utf-8"
+        },
+        {
+          "route": "/search-jobs/results",
+          "status": 404,
+          "note": "returns text/html;charset=utf-8"
+        },
+        {
+          "route": "/jobs.json",
+          "status": 404,
+          "note": "returns text/html;charset=utf-8"
+        }
+      ],
+      "probedAt": "2026-09-14T02:58:24.184Z"
+    }
+  ]
+}

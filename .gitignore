@@ -110,3 +110,8 @@ next-env.d.ts
 # keep building on it locally, nothing changes. Making the repository private
 # would also resolve it.
 /data/recruiter-evidence/
+
+# Walmart crawl output (scripts/crawl-walmart.mjs). Regenerable, and the
+# sitemap yields closed requisitions only -- see data/crawlability.json.
+/walmart-roles.json
+/walmart-roles.ndjson
