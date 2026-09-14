@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { getCompany } from '@/lib/job-index'
 import { getRecruitingContacts } from '@/lib/companies/recruiting-contacts'
+import { guard, PUBLIC_READ } from '@/lib/api-guard'
 
 export const runtime = 'nodejs'
 
@@ -13,9 +14,13 @@ export const runtime = 'nodejs'
  * as "current" is the kind of quiet inaccuracy worth designing against.
  */
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: { slug: string } }
 ) {
+  // No global limiter covers API routes: middleware.ts excludes them.
+  const limited = guard(request, 'company-detail', PUBLIC_READ)
+  if (limited) return limited
+
   const result = await getCompany(params.slug)
 
   if (!result) {

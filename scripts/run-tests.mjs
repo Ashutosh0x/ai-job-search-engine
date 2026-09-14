@@ -34,6 +34,7 @@ const SUITES = [
   'test-resume-build.mjs',
   'test-resume-pdf.mjs',
   'test-route-guard.mjs',
+  'test-api-guard.mjs',
   'test-backfill.mjs',
   'test-sponsors.mjs',
   'test-ssrf-guard.mjs',

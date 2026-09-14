@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getStripe, stripeUnavailable, getPlanById } from '@/lib/stripe'
 import { getSupabaseServerClient } from '@/lib/supabase'
 import { requireUser } from '@/lib/api-auth'
+import { guard } from '@/lib/api-guard'
 
 export const runtime = 'nodejs'
 
@@ -25,6 +26,11 @@ function resolveOrigin(requestOrigin: string | null): string {
 }
 
 export async function POST(request: NextRequest) {
+  // Authenticated, but authentication is not a rate limit: a signed-in
+  // caller could still open checkout sessions in a loop.
+  const limited = guard(request, 'stripe-checkout', { windowMs: 60_000, max: 10 })
+  if (limited) return limited
+
   // Billing not configured -> this endpoint is unavailable and says so. All
   // other routes, including job search, are unaffected.
   const stripe = getStripe()

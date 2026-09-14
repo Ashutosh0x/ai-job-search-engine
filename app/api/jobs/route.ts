@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { searchJobs } from '@/lib/job-index'
+import { guard, EXPENSIVE_READ } from '@/lib/api-guard'
 
 export const runtime = 'nodejs'
 
@@ -51,6 +52,10 @@ export interface JobSearchResult {
 }
 
 export async function GET(request: NextRequest) {
+  // No global limiter covers API routes: middleware.ts excludes them.
+  const limited = guard(request, 'jobs', EXPENSIVE_READ)
+  if (limited) return limited
+
   const { searchParams } = new URL(request.url)
 
   const q = (searchParams.get('q') || '').trim()

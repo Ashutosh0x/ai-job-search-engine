@@ -5,6 +5,7 @@ import {
   hasBankingIntelligence,
   BANKING_INTELLIGENCE,
 } from '@/lib/companies/banking-intelligence'
+import { guard, EXPENSIVE_READ } from '@/lib/api-guard'
 
 export const runtime = 'nodejs'
 
@@ -21,6 +22,10 @@ export const runtime = 'nodejs'
  * GET /api/company-intelligence?slug=visa&field=emailPatterns → single field
  */
 export async function GET(request: NextRequest) {
+  // No global limiter covers API routes: middleware.ts excludes them.
+  const limited = guard(request, 'company-intel', EXPENSIVE_READ)
+  if (limited) return limited
+
   const sp = new URL(request.url).searchParams
   const slug = sp.get('slug')
   const field = sp.get('field')

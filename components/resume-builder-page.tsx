@@ -3,16 +3,15 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Star, ChevronLeft, ChevronRight, Sparkles } from "lucide-react"
+import { Sparkles } from "lucide-react"
 import Navigation from "@/components/navigation"
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import TestimonialsMarquee from "@/components/testimonials-marquee"
+import IndexFacts from "@/components/index-facts"
 import ResumeTailor from "@/components/resume-tailor"
 import Lottie from "lottie-react"
 
 export default function ResumeBuilderPage() {
-  const [currentTestimonial, setCurrentTestimonial] = useState(0)
   const [ctcAnim, setCtcAnim] = useState<any | null>(null)
 
   useEffect(() => {
@@ -27,62 +26,6 @@ export default function ResumeBuilderPage() {
       isMounted = false
     }
   }, [])
-
-  const testimonials = [
-    {
-      name: "Emmanuel",
-      role: "Software Engineer",
-      company: "Polydelta",
-      companyLogo: "🚀",
-      avatar: "👨🏽‍💻",
-      quote: "I found a ton of exciting roles at startups I'd never heard of with Simplify!",
-    },
-    {
-      name: "Grace",
-      role: "Associate Product Manager",
-      company: "Google",
-      companyLogo: "🔍",
-      avatar: "👩🏻‍💼",
-      quote:
-        "Simplify notified me about Google's APM program the day it opened which was crucial in landing the offer!",
-    },
-    {
-      name: "Harshit",
-      role: "Principal TPM",
-      company: "Meta",
-      companyLogo: "📘",
-      avatar: "👨🏾‍💼",
-      quote: "Simplify made it easy to find senior positions I that fit my requirements and qualifications!",
-    },
-    {
-      name: "Albert",
-      role: "Software Engineer",
-      company: "Jane Street",
-      companyLogo: "💼",
-      avatar: "👨🏻‍💻",
-      quote: "I love the curated job lists. Makes it super easy to find roles in specific industries!",
-    },
-  ]
-
-  const companyLogos = [
-    { name: "SpaceX", logo: "🚀" },
-    { name: "Discord", logo: "🎮" },
-    { name: "Notion", logo: "📝" },
-    { name: "Canva", logo: "🎨" },
-    { name: "Duolingo", logo: "🦉" },
-    { name: "Netflix", logo: "🎬" },
-    { name: "Instacart", logo: "🛒" },
-    { name: "Visa", logo: "💳" },
-    { name: "Capital One", logo: "🏦" },
-  ]
-
-  const nextTestimonial = () => {
-    setCurrentTestimonial((prev) => (prev + 1) % testimonials.length)
-  }
-
-  const prevTestimonial = () => {
-    setCurrentTestimonial((prev) => (prev - 1 + testimonials.length) % testimonials.length)
-  }
 
   return (
     <>
@@ -118,13 +61,12 @@ export default function ResumeBuilderPage() {
               </div>
 
               <div className="flex items-center space-x-2">
-                <div className="flex">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-                  ))}
-                </div>
+                {/* Was a five-star rating and "over 1,000,000 job seekers".
+                    There is no rating source and no user count to cite, so this
+                    states something checkable instead: the builder needs no
+                    account, and it does not write your bullets for you. */}
                 <span className="text-gray-600 dark:text-gray-400">
-                  Join over 1,000,000 job seekers who use JobSpark AI
+                  Free, no account needed &middot; your bullets, reordered for the job &mdash; never rewritten
                 </span>
               </div>
             </div>
@@ -352,8 +294,9 @@ export default function ResumeBuilderPage() {
                 </span>
               </h2>
               <p className="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-                JobSpark users have created over 2 million resumes and applied to more than 40+ million jobs. In just
-                this year.
+                Paste a job description and the builder reorders your own bullets to lead with
+                the ones that evidence what the posting asks for. It never writes a bullet you
+                did not write, so everything in the output is text you can defend in an interview.
               </p>
             </div>
 
@@ -431,17 +374,13 @@ export default function ResumeBuilderPage() {
           </div>
         </section>
 
-        {/* Testimonials Section */}
+        {/* What the index actually contains, read from the index itself.
+            This replaced a "1,000,000 candidates / 25% more" claim above seven
+            testimonials attributed to people at Blackrock and Deloitte. None of
+            it was measurable, and the page is public now. */}
         <section className="py-20">
           <div className="max-w-7xl mx-auto px-6">
-            <div className="text-center mb-12">
-              <p className="text-lg text-gray-600 dark:text-gray-400 mb-2">
-                Join over <span className="font-bold text-gray-900 dark:text-white">1,000,000</span> candidates that
-                hear back <span className="font-bold text-gray-900 dark:text-white">25%</span> more with JobSpark AI
-                than on other platforms 🎉
-              </p>
-            </div>
-            <TestimonialsMarquee />
+            <IndexFacts />
           </div>
         </section>
 

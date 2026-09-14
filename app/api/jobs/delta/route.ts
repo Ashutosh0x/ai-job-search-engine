@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { loadIndex } from '@/lib/job-index'
+import { guard, EXPENSIVE_READ } from '@/lib/api-guard'
 
 export const runtime = 'nodejs'
 
@@ -48,6 +49,10 @@ const MAX_LIMIT = 500
 const DEFAULT_LIMIT = 100
 
 export async function GET(request: NextRequest) {
+  // No global limiter covers API routes: middleware.ts excludes them.
+  const limited = guard(request, 'jobs-delta', EXPENSIVE_READ)
+  if (limited) return limited
+
   const sp = new URL(request.url).searchParams
 
   const sinceRaw = sp.get('since')

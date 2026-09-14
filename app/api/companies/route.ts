@@ -1,10 +1,15 @@
-import { NextResponse } from 'next/server'
+import { type NextRequest, NextResponse } from 'next/server'
 import { listCompanies } from '@/lib/job-index'
+import { guard, PUBLIC_READ } from '@/lib/api-guard'
 
 export const runtime = 'nodejs'
 
 /** All verified companies, richest first. */
-export async function GET() {
+export async function GET(request: NextRequest) {
+  // No global limiter covers API routes: middleware.ts excludes them.
+  const limited = guard(request, 'companies', PUBLIC_READ)
+  if (limited) return limited
+
   const companies = await listCompanies()
   if (!companies) {
     return NextResponse.json(

@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { smartSearch } from '@/lib/job-index'
+import { guard, EXPENSIVE_READ } from '@/lib/api-guard'
 
 export const runtime = 'nodejs'
 
@@ -21,6 +22,10 @@ export const runtime = 'nodejs'
  * `?debug=1` adds the full per-signal score breakdown.
  */
 export async function GET(request: NextRequest) {
+  // No global limiter covers API routes: middleware.ts excludes them.
+  const limited = guard(request, 'smart-search', EXPENSIVE_READ)
+  if (limited) return limited
+
   const sp = new URL(request.url).searchParams
   const q = sp.get('q') ?? ''
   const debug = sp.get('debug') === '1'

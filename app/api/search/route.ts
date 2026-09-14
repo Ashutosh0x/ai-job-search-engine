@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { searchJobs, type JobQuery } from '@/lib/job-index'
+import { guard, EXPENSIVE_READ } from '@/lib/api-guard'
 
 export const runtime = 'nodejs'
 
@@ -29,6 +30,10 @@ export const runtime = 'nodejs'
  * next to each filter are what you would actually get.
  */
 export async function GET(request: NextRequest) {
+  // No global limiter covers API routes: middleware.ts excludes them.
+  const limited = guard(request, 'search', EXPENSIVE_READ)
+  if (limited) return limited
+
   const sp = new URL(request.url).searchParams
 
   const list = (key: string): string[] | undefined => {
