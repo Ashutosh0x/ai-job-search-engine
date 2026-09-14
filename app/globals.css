@@ -410,3 +410,28 @@
     }
   }
 }
+/* ---------------------------------------------------------------------------
+   Mobile overflow guard.
+
+   A single wide child -- an unbroken URL, a long job title, a table, a code
+   block -- makes the whole document scroll sideways on a phone, and the symptom
+   (everything looks slightly zoomed out and shifted) never points at the child
+   that caused it. Clipping at the root turns that class of bug into a local
+   one, so a wide element scrolls inside its own container or wraps.
+
+   `overflow-x: clip` rather than `hidden`: `hidden` on a root element creates a
+   scroll container and breaks `position: sticky` on descendants, which this app
+   uses for the resume preview pane.
+--------------------------------------------------------------------------- */
+html,
+body {
+  overflow-x: clip;
+  max-width: 100%;
+}
+
+/* Long unbroken strings in content we do not control: job titles from an ATS,
+   application URLs, pasted resume text. */
+.break-anywhere {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}

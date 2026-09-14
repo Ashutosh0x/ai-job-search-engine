@@ -181,7 +181,7 @@ export default function ExploreJobsPage() {
       <>
         <Navigation />
         <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50/20 to-gray-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-gray-900">
-          <div className="max-w-7xl mx-auto px-6 py-20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-20">
             {/* Loading Header */}
             <div className="text-center mb-12">
               <div className="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -194,7 +194,7 @@ export default function ExploreJobsPage() {
             </div>
 
             {/* Loading Cards */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {[...Array(6)].map((_, index) => (
                 <Card key={index} className="card-glow animate-pulse">
                   <CardHeader className="pb-3">
@@ -259,12 +259,12 @@ export default function ExploreJobsPage() {
         <div className="max-w-7xl mx-auto px-6 py-20">
           {/* Header */}
           <div className="text-center mb-12">
-            <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 bg-purple-600 rounded-xl flex items-center justify-center mr-4">
-                <Briefcase className="w-8 h-8 text-white" />
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-0 mb-6">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-purple-600 rounded-xl flex items-center justify-center shrink-0 sm:mr-4">
+                <Briefcase className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
               </div>
-              <div className="text-left">
-                <h1 className="text-4xl font-bold text-gray-900 dark:text-white">Explore Open Roles</h1>
+              <div className="text-center sm:text-left">
+                <h1 className="text-2xl sm:text-4xl font-bold text-gray-900 dark:text-white">Explore Open Roles</h1>
                 <p className="text-gray-600 dark:text-gray-400">
                   {employerCount > 0
                     ? `Across ${employerCount.toLocaleString()} employers`
@@ -272,14 +272,14 @@ export default function ExploreJobsPage() {
                 </p>
               </div>
             </div>
-            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+            <p className="text-base sm:text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
               Every role here links straight to the employer's own application page — no reposts,
               no intermediaries.
             </p>
           </div>
 
           {/* Stats */}
-          <div className="grid md:grid-cols-3 gap-6 mb-12">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6 mb-8 sm:mb-12">
             <Card className="card-glow text-center p-6">
               <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <Briefcase className="w-6 h-6 text-blue-600 dark:text-blue-400" />
@@ -309,8 +309,8 @@ export default function ExploreJobsPage() {
 
           {/* Search and Filters */}
           <Card className="card-glow mb-8">
-            <CardContent className="p-6">
-              <div className="flex flex-col md:flex-row gap-4">
+            <CardContent className="p-4 sm:p-6">
+              <div className="flex flex-col md:flex-row gap-3 sm:gap-4">
                 <div className="flex-1 relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <Input
@@ -320,11 +320,11 @@ export default function ExploreJobsPage() {
                     className="pl-10 bg-gray-50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700"
                   />
                 </div>
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center gap-3 w-full md:w-auto">
                   <select
                     value={selectedDepartment}
                     onChange={(e) => setSelectedDepartment(e.target.value)}
-                    className="px-4 py-2 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-900 dark:text-white"
+                    className="min-w-0 flex-1 md:flex-none md:max-w-xs truncate px-3 sm:px-4 py-2 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-lg text-sm text-gray-900 dark:text-white"
                   >
                     <option value="all">All Departments</option>
                     {departments.map((dept) => (
@@ -406,7 +406,7 @@ export default function ExploreJobsPage() {
                     <CardHeader className="pb-3">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
-                          <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white leading-tight mb-2">
+                          <CardTitle className="break-anywhere text-base sm:text-lg font-semibold text-gray-900 dark:text-white leading-tight mb-2">
                             {String(job.title || "Untitled Position")}
                           </CardTitle>
                           <div className="flex items-center text-sm font-medium text-gray-800 dark:text-gray-200 mb-1">

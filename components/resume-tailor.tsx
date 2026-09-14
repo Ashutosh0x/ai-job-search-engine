@@ -193,8 +193,8 @@ export default function ResumeTailor() {
   const canBuild = resumeText.trim().length > 40 && busy === null
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10">
-      <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:py-10">
+      <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
         Tailor your resume to a job description
       </h2>
       <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
@@ -242,7 +242,7 @@ export default function ResumeTailor() {
             value={resumeText}
             onChange={(e) => setResumeText(e.target.value)}
             placeholder="...or paste your resume text here."
-            className="min-h-[220px] font-mono text-xs"
+            className="min-h-[140px] sm:min-h-[220px] font-mono text-xs"
           />
         </div>
 
@@ -260,7 +260,7 @@ export default function ResumeTailor() {
             value={jobDescription}
             onChange={(e) => setJobDescription(e.target.value)}
             placeholder="Paste the full job posting here."
-            className="min-h-[220px] font-mono text-xs"
+            className="min-h-[140px] sm:min-h-[220px] font-mono text-xs"
           />
         </div>
       </div>
@@ -276,7 +276,7 @@ export default function ResumeTailor() {
             {[2, 3, 4, 5, 6].map((n) => <option key={n} value={n}>{n}</option>)}
           </select>
         </label>
-        <Button onClick={build} disabled={!canBuild} size="lg">
+        <Button onClick={build} disabled={!canBuild} size="lg" className="w-full sm:w-auto">
           {busy === "building"
             ? <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             : <FileText className="mr-2 h-4 w-4" />}
@@ -363,18 +363,18 @@ export default function ResumeTailor() {
                         <div key={b.text} className="mb-1.5 text-xs">
                           <div className="flex items-start gap-1.5">
                             <Check className="mt-0.5 h-3 w-3 shrink-0 text-emerald-600" />
-                            <span className="text-gray-700 dark:text-gray-300">{b.text}</span>
+                            <span className="break-anywhere text-gray-700 dark:text-gray-300">{b.text}</span>
                           </div>
                           {b.matched.length > 0 && (
-                            <div className="ml-4.5 mt-0.5 pl-1 text-[11px] text-emerald-700 dark:text-emerald-400">
+                            <div className="ml-5 mt-0.5 pl-1 text-[11px] text-emerald-700 dark:text-emerald-400">
                               evidences: {b.matched.join(", ")}
                             </div>
                           )}
                         </div>
                       ))}
                       {d.droppedBullets.map((b) => (
-                        <div key={b.text} className="mb-1 pl-4.5 text-[11px] text-gray-400">
-                          <span className="line-through">{b.text}</span>
+                        <div key={b.text} className="mb-1 pl-5 text-[11px] text-gray-400">
+                          <span className="break-anywhere line-through">{b.text}</span>
                           <span className="ml-1.5 not-italic">— {b.reason}</span>
                         </div>
                       ))}
@@ -428,7 +428,7 @@ export default function ResumeTailor() {
                 <summary className="cursor-pointer text-xs font-medium text-gray-600 dark:text-gray-400">
                   View LaTeX source
                 </summary>
-                <pre className="mt-2 max-h-80 overflow-auto rounded bg-gray-50 p-3 text-[11px] leading-relaxed dark:bg-gray-900 dark:text-gray-300">
+                <pre className="mt-2 max-h-64 sm:max-h-80 overflow-auto whitespace-pre rounded bg-gray-50 p-3 text-[10px] sm:text-[11px] leading-relaxed dark:bg-gray-900 dark:text-gray-300">
                   {result.latex}
                 </pre>
               </details>
@@ -463,10 +463,10 @@ export default function ResumeTailor() {
               <iframe
                 src={pdfUrl}
                 title="Resume preview"
-                className="h-[760px] w-full border-0 bg-white"
+                className="h-[60vh] min-h-[360px] w-full border-0 bg-white lg:h-[760px]"
               />
             ) : (
-              <div className="flex h-[760px] flex-col items-center justify-center gap-2 px-6 text-center">
+              <div className="flex h-[40vh] min-h-[220px] flex-col items-center justify-center gap-2 px-6 text-center lg:h-[760px]">
                 {busy === "building" ? (
                   <>
                     <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
