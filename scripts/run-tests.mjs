@@ -15,6 +15,16 @@
  * Diagnostic scripts (smoke-normalize, test-enterprise, show-examples,
  * benchmark, health-check) are deliberately excluded: they print findings
  * rather than asserting, and several make live network calls.
+ *
+ * test-oracle-adapter.mjs is excluded for the same reason, and it is worth
+ * naming explicitly because it DOES assert. It crawls Nokia's live Oracle
+ * board, so it depends on a third party being up and on the board still
+ * holding roles. That belongs in a manual check, not in a gate that blocks
+ * merges:
+ *
+ *   npx tsx scripts/test-oracle-adapter.mjs
+ *
+ * Run it after touching the Oracle adapter or Nokia's board config.
  */
 
 import { spawn } from 'child_process'

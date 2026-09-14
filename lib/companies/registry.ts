@@ -36,6 +36,15 @@ export interface CompanyBoard {
   token: string
   site?: string
   host?: string
+  /**
+   * Public careers host, when it differs from the API host.
+   *
+   * Oracle Recruiting Cloud serves its API from an unguessable pod
+   * (`fa-evmr-saasfaprod1.fa.ocs.oraclecloud.com`) while candidates apply on
+   * the employer's own domain (`jobs.nokia.com`). Links must use the latter:
+   * this index points at the employer's own posting, never an intermediary.
+   */
+  applyHost?: string
 }
 
 export interface CompanyRecord {
@@ -98,6 +107,26 @@ export const COMPANIES: CompanyRecord[] = [
   // probing rather than assumed. Verified 11 Sep 2026.
   { slug: 'doordash', name: 'DoorDash', domain: 'doordash.com', ticker: 'DASH', valuationKind: 'public', industry: 'Food Delivery', hqLocation: 'San Francisco, CA', foundedYear: 2013,
     boards: [{ provider: 'greenhouse', token: 'doordashusa' }] },
+  // LinkedIn: verified live, 53 postings on Greenhouse. The obvious guess was
+  // right here, which is not the norm -- see Razorpay below.
+  { slug: 'linkedin', name: 'LinkedIn', domain: 'linkedin.com', valuationKind: 'unknown',
+    industry: 'Professional Network', hqLocation: 'Sunnyvale, CA', foundedYear: 2003,
+    boards: [{ provider: 'greenhouse', token: 'linkedin' }] },
+  // Safe Security: Lever token is `safe`, not `safesecurity`. Verified, 21 postings.
+  { slug: 'safe-security', name: 'Safe Security', domain: 'safe.security', valuationKind: 'private',
+    industry: 'Cyber Risk Management', hqLocation: 'Palo Alto, CA', foundedYear: 2012,
+    boards: [{ provider: 'lever', token: 'safe' }] },
+  // Nokia: Oracle Recruiting Cloud, 590 postings verified. The pod name was
+  // read off jobs.nokia.com -- `fa-evmr`, where the obvious guess was `fa-eomz`.
+  { slug: 'nokia', name: 'Nokia', domain: 'nokia.com', ticker: 'NOK', valuationKind: 'public',
+    industry: 'Telecom Infrastructure', hqLocation: 'Espoo, Finland', foundedYear: 1865,
+    boards: [{
+      provider: 'oracle',
+      token: 'nokia',
+      site: 'CX_1',
+      host: 'fa-evmr-saasfaprod1.fa.ocs.oraclecloud.com',
+      applyHost: 'jobs.nokia.com',
+    }] },
   { slug: 'palantir', name: 'Palantir', domain: 'palantir.com', ticker: 'PLTR', valuationKind: 'public', industry: 'Data Analytics', hqLocation: 'Denver, CO', foundedYear: 2003,
     boards: [{ provider: 'lever', token: 'palantir' }] },
   { slug: 'spotify', name: 'Spotify', domain: 'spotify.com', ticker: 'SPOT', valuationKind: 'public', industry: 'Audio Streaming', hqLocation: 'Stockholm, Sweden', foundedYear: 2006,

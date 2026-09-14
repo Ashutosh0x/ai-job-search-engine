@@ -357,6 +357,129 @@ export class RecruiteeAdapter extends BaseAdapter {
   }
 }
 
+/**
+ * Oracle Recruiting Cloud (the "CE" candidate-experience API).
+ *
+ * Used by large enterprises that run Oracle HCM -- Nokia publishes 590 roles
+ * through it. It was worth writing an adapter for rather than skipping,
+ * because nothing else in this pipeline could reach that class of employer.
+ *
+ * TWO HOSTS, AND THEY ARE NOT INTERCHANGEABLE
+ * -------------------------------------------
+ * The API lives on an Oracle pod (`fa-evmr-saasfaprod1.fa.ocs.oraclecloud.com`)
+ * whose name is unguessable -- it was found by reading the careers page, not by
+ * pattern. The page a candidate should actually land on lives on the employer's
+ * own domain (`jobs.nokia.com`). `host` carries the first; `applyHost` the
+ * second. Linking to the pod would technically work and would still be the
+ * wrong thing: this index links to the employer's own posting, never to an
+ * intermediary, and an Oracle pod URL is not something a candidate recognises.
+ *
+ * The site number (`CX_1`) is a required finder parameter, not a path segment.
+ */
+export class OracleAdapter extends BaseAdapter {
+  readonly id: SourceId = 'oracle'
+  readonly displayName = 'Oracle Recruiting Cloud'
+  readonly hostPatterns = [/(^|\.)oraclecloud\.com$/i]
+  protected discoveryPattern = '*.fa.ocs.oraclecloud.com/*'
+  protected healthUrl() {
+    return (
+      'https://fa-evmr-saasfaprod1.fa.ocs.oraclecloud.com/hcmRestApi/resources/latest/' +
+      'recruitingCEJobRequisitions?onlyData=true&expand=requisitionList&finder=findReqs;siteNumber=CX_1,limit=1,offset=0'
+    )
+  }
+
+  /** Oracle caps a page at 200; ask for that and walk until the total is met. */
+  private static readonly PAGE = 200
+  private static readonly MAX_PAGES = 40
+
+  async fetchJobs(target: SourceTarget, opts: FetchOptions = {}): Promise<FetchResult> {
+    const warnings: string[] = []
+    const host = target.host
+    const site = target.site
+
+    if (!host || !site) {
+      return {
+        jobs: [],
+        incremental: false,
+        warnings: [`oracle:${target.token} needs both host and site (e.g. CX_1); got host=${host} site=${site}`],
+      }
+    }
+
+    // Where a candidate should land. Falls back to the API host only if no
+    // public careers host was configured, which is better than dropping the row.
+    const applyHost = target.applyHost || host
+
+    const rows: any[] = []
+    let total: number | null = null
+
+    for (let page = 0; page < OracleAdapter.MAX_PAGES; page++) {
+      const offset = page * OracleAdapter.PAGE
+      const url =
+        `https://${host}/hcmRestApi/resources/latest/recruitingCEJobRequisitions` +
+        `?onlyData=true&expand=requisitionList` +
+        `&finder=findReqs;siteNumber=${encodeURIComponent(site)},limit=${OracleAdapter.PAGE},offset=${offset}`
+
+      const data = await this.json<{ items?: any[] }>(url, {
+        cacheTtlMs: this.ttl.jobListing,
+        signal: opts.signal,
+      })
+
+      const item = data?.items?.[0]
+      const batch: any[] = item?.requisitionList ?? []
+      if (total === null) total = Number(item?.TotalJobsCount ?? 0) || null
+
+      if (!batch.length) break
+      rows.push(...batch)
+      if (total !== null && rows.length >= total) break
+    }
+
+    if (!rows.length) {
+      return { jobs: [], incremental: false, warnings: [`oracle:${target.token} returned no requisitions`] }
+    }
+    if (total !== null && rows.length < total) {
+      warnings.push(`oracle:${target.token} read ${rows.length} of ${total} postings before the page budget ran out`)
+    }
+
+    const jobs = this.mapRows(rows, target, (j) => ({
+      source: this.id,
+      target,
+      sourceId: String(j.Id),
+      requisitionId: String(j.Id),
+      title: String(j.Title ?? '').trim(),
+      company: target.companyName ?? null,
+      companyDomain: target.companyDomain ?? null,
+      // Oracle gives one display string plus an ISO country code. Both are
+      // kept: the string is what the employer wrote, the code is reliable.
+      locationRaw: j.PrimaryLocation ?? null,
+      additionalLocations: [],
+      // ShortDescriptionStr is a truncated teaser, not the full posting. It is
+      // still the only description this endpoint returns without a per-job
+      // fetch, and labelling it honestly beats fetching 590 detail pages.
+      descriptionHtml: j.ShortDescriptionStr ?? null,
+      department: j.Department ?? j.JobFamily ?? j.Organization ?? null,
+      employmentType: j.JobType ?? j.JobSchedule ?? null,
+      // ORA_REMOTE / ORA_HYBRID / ORA_ONSITE. Anything else is unknown rather
+      // than assumed on-site.
+      remoteFlag:
+        j.WorkplaceTypeCode === 'ORA_REMOTE'
+          ? true
+          : j.WorkplaceTypeCode === 'ORA_ONSITE' || j.WorkplaceTypeCode === 'ORA_HYBRID'
+            ? false
+            : null,
+      postedAt: toIso(j.PostedDate),
+      updatedAt: toIso(j.PostedDate),
+      applicationUrl: `https://${applyHost}/en/sites/${site}/job/${j.Id}`,
+      canonicalUrl: `https://${applyHost}/en/sites/${site}/job/${j.Id}`,
+      extra: {
+        workplaceType: j.WorkplaceType ?? null,
+        country: j.PrimaryLocationCountry ?? null,
+      },
+    }), warnings)
+
+    return { jobs, incremental: false, warnings }
+  }
+}
+
 /* --------------------------------- Workday -------------------------------- */
 
 /**

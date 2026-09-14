@@ -40,6 +40,10 @@ for (const c of COMPANIES) {
   for (const b of c.boards) {
     targets.push({
       source: b.provider, token: b.token, site: b.site, host: b.host,
+      // Oracle serves its API from a pod and its applications from the
+      // employer's own domain. Without this the apply link points at
+      // oraclecloud.com, which is not where a candidate should land.
+      applyHost: b.applyHost,
       companySlug: c.slug, companyName: c.name, companyDomain: c.domain,
       discoveredVia: 'curated', confidence: 1,
     })

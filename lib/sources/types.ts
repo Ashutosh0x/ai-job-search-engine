@@ -13,6 +13,7 @@ export type SourceId =
   | 'breezy' | 'comeet' | 'jazzhr' | 'pinpoint' | 'rippling' | 'workable'
   | 'icims' | 'taleo' | 'successfactors' | 'eightfold' | 'avature'
   | 'phenom' | 'ukg' | 'dover' | 'gem' | 'wellfound' | 'mokahr' | 'keka'
+  | 'oracle'
   | 'custom' | 'search' | 'unknown'
 
 /** How much we trust a source's data by default. Learned values override these. */
@@ -47,6 +48,8 @@ export interface SourceTarget {
   site?: string
   /** Explicit host when the source is sharded. */
   host?: string
+  /** Public careers host, when the API host is not where people apply. */
+  applyHost?: string
   /** Employer domain when known -- used to link to the company record. */
   companyDomain?: string
   companyName?: string
