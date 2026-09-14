@@ -127,6 +127,98 @@ export const COMPANIES: CompanyRecord[] = [
       host: 'fa-evmr-saasfaprod1.fa.ocs.oraclecloud.com',
       applyHost: 'jobs.nokia.com',
     }] },
+  // Netskope: 142 postings verified live.
+  { slug: 'netskope', name: 'Netskope', domain: 'netskope.com', valuationKind: 'unknown',
+    industry: 'Cloud Security (SASE)', hqLocation: 'Santa Clara, CA', foundedYear: 2012,
+    boards: [{ provider: 'greenhouse', token: 'netskope' }] },
+  // Tailscale: 59 postings verified live.
+  { slug: 'tailscale', name: 'Tailscale', domain: 'tailscale.com', valuationKind: 'unknown',
+    industry: 'Zero Trust Networking', hqLocation: 'Toronto, Canada', foundedYear: 2019,
+    boards: [{ provider: 'greenhouse', token: 'tailscale' }] },
+  // Dragos: 58 postings verified live.
+  { slug: 'dragos', name: 'Dragos', domain: 'dragos.com', valuationKind: 'unknown',
+    industry: 'Industrial (OT) Cybersecurity', hqLocation: 'Hanover, MD', foundedYear: 2016,
+    boards: [{ provider: 'greenhouse', token: 'dragos' }] },
+  // Huntress: 35 postings verified live.
+  { slug: 'huntress', name: 'Huntress', domain: 'huntress.com', valuationKind: 'unknown',
+    industry: 'Managed Detection & Response', hqLocation: 'Columbia, MD', foundedYear: 2015,
+    boards: [{ provider: 'greenhouse', token: 'huntress' }] },
+  // Recorded Future: 39 postings verified live.
+  { slug: 'recorded-future', name: 'Recorded Future', domain: 'recordedfuture.com', valuationKind: 'unknown',
+    industry: 'Threat Intelligence', hqLocation: 'Somerville, MA', foundedYear: 2009,
+    boards: [{ provider: 'greenhouse', token: 'recordedfuture' }] },
+  // Orca Security: 9 postings verified live.
+  { slug: 'orca-security', name: 'Orca Security', domain: 'orca.security', valuationKind: 'unknown',
+    industry: 'Cloud Security Posture', hqLocation: 'Portland, OR', foundedYear: 2019,
+    boards: [{ provider: 'greenhouse', token: 'orcasecurity' }] },
+  // Expel: 8 postings verified live.
+  { slug: 'expel', name: 'Expel', domain: 'expel.com', valuationKind: 'unknown',
+    industry: 'Managed Detection & Response', hqLocation: 'Herndon, VA', foundedYear: 2016,
+    boards: [{ provider: 'greenhouse', token: 'expel' }] },
+  // Cybereason: 8 postings verified live.
+  { slug: 'cybereason', name: 'Cybereason', domain: 'cybereason.com', valuationKind: 'unknown',
+    industry: 'Endpoint Detection & Response', hqLocation: 'Boston, MA', foundedYear: 2012,
+    boards: [{ provider: 'greenhouse', token: 'cybereason' }] },
+  // Snyk: 1 postings verified live.
+  { slug: 'snyk', name: 'Snyk', domain: 'snyk.io', valuationKind: 'unknown',
+    industry: 'Developer Security', hqLocation: 'Boston, MA', foundedYear: 2015,
+    boards: [{ provider: 'ashby', token: 'snyk' }] },
+  // Tenable: 41 postings verified live.
+  { slug: 'tenable', name: 'Tenable', domain: 'tenable.com', valuationKind: 'unknown',
+    industry: 'Exposure Management', hqLocation: 'Columbia, MD', foundedYear: 2002,
+    boards: [{ provider: 'greenhouse', token: 'tenableinc' }] },
+  // Qualys: 162 postings verified live.
+  { slug: 'qualys', name: 'Qualys', domain: 'qualys.com', valuationKind: 'unknown',
+    industry: 'Vulnerability Management', hqLocation: 'Foster City, CA', foundedYear: 1999,
+    boards: [{ provider: 'workday', token: 'qualys', site: 'Careers', host: 'qualys.wd5.myworkdayjobs.com' }] },
+  // Arctic Wolf: 111 postings verified live.
+  { slug: 'arctic-wolf', name: 'Arctic Wolf', domain: 'arcticwolf.com', valuationKind: 'unknown',
+    industry: 'Security Operations', hqLocation: 'Eden Prairie, MN', foundedYear: 2012,
+    boards: [{ provider: 'workday', token: 'arcticwolf', site: 'External', host: 'arcticwolf.wd1.myworkdayjobs.com' }] },
+  // Proofpoint: 147 postings verified live.
+  { slug: 'proofpoint', name: 'Proofpoint', domain: 'proofpoint.com', valuationKind: 'unknown',
+    industry: 'Email & Data Security', hqLocation: 'Sunnyvale, CA', foundedYear: 2002,
+    boards: [{ provider: 'workday', token: 'proofpoint', site: 'proofpointcareers', host: 'proofpoint.wd5.myworkdayjobs.com' }] },
+  // Darktrace: 76 postings verified live.
+  { slug: 'darktrace', name: 'Darktrace', domain: 'darktrace.com', valuationKind: 'unknown',
+    industry: 'AI Cyber Defence', hqLocation: 'Cambridge, UK', foundedYear: 2013,
+    boards: [{ provider: 'workday', token: 'darktrace', site: 'DarktaceExternal', host: 'darktrace.wd3.myworkdayjobs.com' }] },
+  // Fortinet: 939 postings verified live.
+  { slug: 'fortinet', name: 'Fortinet', domain: 'fortinet.com', valuationKind: 'unknown',
+    industry: 'Network Security', hqLocation: 'Sunnyvale, CA', foundedYear: 2000,
+    boards: [{ provider: 'oracle', token: 'fortinet', site: 'CX_2001', host: 'edel.fa.us2.oraclecloud.com', applyHost: 'careers.fortinet.com' }] },
+  // KLA: 1004 postings verified live.
+  { slug: 'kla', name: 'KLA', domain: 'kla.com', valuationKind: 'unknown',
+    industry: 'Semiconductor Process Control', hqLocation: 'Milpitas, CA', foundedYear: 1997,
+    boards: [{ provider: 'workday', token: 'kla', site: 'Search', host: 'kla.wd1.myworkdayjobs.com' }] },
+  // Analog Devices: 802 postings verified live.
+  { slug: 'analog-devices', name: 'Analog Devices', domain: 'analog.com', valuationKind: 'unknown',
+    industry: 'Analog & Mixed-Signal Semiconductors', hqLocation: 'Wilmington, MA', foundedYear: 1965,
+    boards: [{ provider: 'workday', token: 'analogdevices', site: 'External', host: 'analogdevices.wd1.myworkdayjobs.com' }] },
+  // Texas Instruments: 706 postings verified live.
+  { slug: 'texas-instruments', name: 'Texas Instruments', domain: 'ti.com', valuationKind: 'unknown',
+    industry: 'Semiconductors', hqLocation: 'Dallas, TX', foundedYear: 1930,
+    boards: [{ provider: 'oracle', token: 'ti', site: 'CX', host: 'edbz.fa.us2.oraclecloud.com', applyHost: 'careers.ti.com' }] },
+  // Marvell Technology: 176 postings verified live.
+  { slug: 'marvell', name: 'Marvell Technology', domain: 'marvell.com', valuationKind: 'unknown',
+    industry: 'Data Infrastructure Semiconductors', hqLocation: 'Santa Clara, CA', foundedYear: 1995,
+    boards: [{ provider: 'workday', token: 'marvell', site: 'MarvellCareers', host: 'marvell.wd1.myworkdayjobs.com' }] },
+  // SiFive: 121 postings verified live.
+  { slug: 'sifive', name: 'SiFive', domain: 'sifive.com', valuationKind: 'unknown',
+    industry: 'RISC-V Processor IP', hqLocation: 'Santa Clara, CA', foundedYear: 2015,
+    boards: [{ provider: 'workday', token: 'sifive', site: 'sifivecareers', host: 'sifive.wd1.myworkdayjobs.com' }] },
+  // Astera Labs: 46 postings verified live.
+  { slug: 'astera-labs', name: 'Astera Labs', domain: 'asteralabs.com', valuationKind: 'unknown',
+    industry: 'Connectivity Semiconductors', hqLocation: 'Santa Clara, CA', foundedYear: 2017,
+    boards: [{ provider: 'ashby', token: 'astera' }] },
+  // Relativity Space: 336 postings verified live.
+  { slug: 'relativity-space', name: 'Relativity Space', domain: 'relativityspace.com', valuationKind: 'unknown',
+    industry: 'Aerospace / Launch', hqLocation: 'Long Beach, CA', foundedYear: 2015,
+    boards: [{ provider: 'greenhouse', token: 'relativity' }] },
+  // Boom Supersonic: 10 postings verified live.
+  { slug: 'boom-supersonic', name: 'Boom Supersonic', domain: 'boomsupersonic.com', valuationKind: 'unknown',
+    industry: 'Aerospace', hqLocation: 'Denver, CO', foundedYear: 2014,
+    boards: [{ provider: 'ashby', token: 'boom' }] },
   { slug: 'palantir', name: 'Palantir', domain: 'palantir.com', ticker: 'PLTR', valuationKind: 'public', industry: 'Data Analytics', hqLocation: 'Denver, CO', foundedYear: 2003,
     boards: [{ provider: 'lever', token: 'palantir' }] },
   { slug: 'spotify', name: 'Spotify', domain: 'spotify.com', ticker: 'SPOT', valuationKind: 'public', industry: 'Audio Streaming', hqLocation: 'Stockholm, Sweden', foundedYear: 2006,

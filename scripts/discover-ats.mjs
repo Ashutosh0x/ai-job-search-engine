@@ -24,14 +24,17 @@ const UA =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36'
 const TIMEOUT = 25_000
 
-async function get(url) {
+async function get(url, init = {}) {
   const ctl = new AbortController()
   const t = setTimeout(() => ctl.abort(), TIMEOUT)
   try {
     const r = await fetch(url, {
       redirect: 'follow',
       signal: ctl.signal,
-      headers: { 'user-agent': UA, accept: 'text/html,application/json,*/*' },
+      ...init,
+      // Workday's search is a POST with a JSON body, so callers need to pass
+      // method/headers/body through rather than only ever issuing a GET.
+      headers: { 'user-agent': UA, accept: 'text/html,application/json,*/*', ...(init.headers || {}) },
     })
     return { ok: r.ok, status: r.status, url: r.url, text: await r.text() }
   } catch (e) {
@@ -58,9 +61,27 @@ const FINGERPRINTS = [
   {
     vendor: 'oracle',
     test: (html, url) => {
-      const host = (url + html).match(/(fa-[a-z]+-saasfaprod\d*\.fa\.ocs\.oraclecloud\.com)/)
-      const site = (url + html).match(/\/sites\/(CX_\d+)/) || html.match(/siteNumber["'= ]+(CX_\d+)/)
+      // Oracle pods are not all named alike. The first version required
+      // `fa-<x>-saasfaprod<n>.fa.ocs.oraclecloud.com`, which is Nokia's shape
+      // and missed Fortinet's `edel.fa.us2.oraclecloud.com` entirely. Match any
+      // oraclecloud host, then take the site number wherever it appears.
+      const host = (url + html).match(/([a-z0-9-]+\.fa\.[a-z0-9.]*oraclecloud\.com)/i)
+      const site =
+        (url + html).match(/\/sites\/(CX(?:_\d+)?)/) ||
+        html.match(/siteNumber["'= ]+(CX(?:_\d+)?)/)
       return host && site ? { host: host[1], site: site[1], token: `${host[1]}|${site[1]}` } : null
+    },
+  },
+  {
+    vendor: 'workday',
+    // Declared twice on purpose: the entry above catches the canonical
+    // myworkdayjobs URL, this one catches a tenant named only in page script.
+    test: (html, url) => {
+      const m = (url + html).match(/([a-z0-9-]+\.wd\d+\.myworkdayjobs\.com)/)
+      if (!m) return null
+      const site =
+        html.match(/myworkdayjobs\.com\/(?:[a-z-]+\/)?([A-Za-z0-9_-]{2,40})(?:["'/?]|$)/)
+      return site ? { host: m[1], site: site[1], token: `${m[1]}|${site[1]}` } : null
     },
   },
   {
@@ -157,6 +178,37 @@ const VERIFY = {
     const item = d.items?.[0]
     const rows = item?.requisitionList ?? []
     return rows.length ? { count: item?.TotalJobsCount ?? rows.length, sample: rows[0]?.Title } : null
+  },
+  /**
+   * Workday. Its search is a POST, which is why the first version of this file
+   * FOUND eight Workday tenants and verified none of them -- there was simply
+   * no verifier for the vendor it detected most often.
+   *
+   * The site segment in a careers URL is frequently wrong (a locale, a vanity
+   * path), so a failed site is retried against the handful of names Workday
+   * tenants actually use before the tenant is written off.
+   */
+  async workday(f) {
+    const tenant = f.host.split('.')[0]
+    const candidates = [...new Set([f.site, 'External', 'Careers', 'External_Career_Site',
+                                    `${tenant}careers`, `${tenant}_careers`, 'Search'])]
+    for (const site of candidates) {
+      if (!site) continue
+      const r = await get(`https://${f.host}/wday/cxs/${tenant}/${site}/jobs`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ appliedFacets: {}, limit: 20, offset: 0, searchText: '' }),
+      })
+      if (!r.ok) continue
+      try {
+        const d = JSON.parse(r.text)
+        const jobs = d.jobPostings ?? []
+        if (jobs.length) {
+          return { count: d.total ?? jobs.length, sample: jobs[0]?.title, site, token: `${f.host}|${site}` }
+        }
+      } catch { /* not JSON */ }
+    }
+    return null
   },
   async eightfold(f) {
     const domain = f.host.replace('.eightfold.ai', '.com')
