@@ -43,6 +43,8 @@ export interface JobSearchResult {
    *  pages show the same mark for the same employer. Null when the company
    *  has no known domain -- the UI falls back to initials, never an emoji. */
   logoUrl: string | null
+  /** Early-career category, or null for an ordinary role. */
+  earlyCareer: string | null
   location: string | null
   department: string | null
   employmentType: string | null
@@ -68,6 +70,9 @@ export async function GET(request: NextRequest) {
   const workType = (searchParams.get('workType') || '').trim()
   const jobType = (searchParams.get('type') || '').trim()
   const department = (searchParams.get('department') || '').trim()
+  // apprenticeship | graduate | internship | placement | trainee |
+  // entry-level | junior, or `any` for all of them.
+  const earlyCareer = (searchParams.get('earlyCareer') || '').trim()
 
   const pageSize = Math.min(
     MAX_PAGE_SIZE,
@@ -83,6 +88,7 @@ export async function GET(request: NextRequest) {
       remote: workType && workType !== 'any' ? /remote/i.test(workType) : undefined,
       employmentTypes: jobType && jobType !== 'any' ? [jobType] : undefined,
       departments: department && department !== 'all' ? [department] : undefined,
+      earlyCareer: earlyCareer && earlyCareer !== 'all' ? [earlyCareer] : undefined,
       sort: q ? 'relevance' : 'recent',
       page,
       pageSize,
@@ -109,6 +115,7 @@ export async function GET(request: NextRequest) {
       companySlug: j.companySlug,
       companyDomain: j.companyDomain ?? null,
       logoUrl: j.companyDomain ? companyLogoUrl(j.companyDomain) : null,
+      earlyCareer: j.earlyCareer ?? null,
       location: j.locationDisplay ?? j.location ?? null,
       department: j.department ?? null,
       employmentType: j.employmentType ?? null,
@@ -133,6 +140,7 @@ export async function GET(request: NextRequest) {
       // Corpus-wide facets, not derived from this page of results. The Explore
       // page used to compute its filter options and its headline counts from
       // whatever 20 rows it happened to receive, which made both wrong.
+      earlyCareer: result.facets.earlyCareer,
       companies: result.facets.companies,
       countries: result.facets.countries,
       cities: result.facets.cities,

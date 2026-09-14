@@ -32,6 +32,7 @@ interface Job {
   companySlug: string
   companyDomain: string | null
   logoUrl: string | null
+  earlyCareer: string | null
   location: string | null
   department: string | null
   employmentType: string | null
@@ -56,6 +57,7 @@ interface JobsResponse {
   hasMore: boolean
   /** Corpus-wide, not derived from this page of results. */
   departments: Facet[]
+  earlyCareer: Facet[]
   companies: Facet[]
   countries: Facet[]
   deployment?: { companies?: number; corpusTotal?: number; bounded?: boolean }
@@ -73,6 +75,7 @@ export default function ExploreJobsPage() {
   const [error, setError] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedDepartment, setSelectedDepartment] = useState<string>("all")
+  const [selectedCategory, setSelectedCategory] = useState<string>("all")
 
   // Server-reported, never inferred from the rows on screen.
   const [total, setTotal] = useState(0)
@@ -80,6 +83,7 @@ export default function ExploreJobsPage() {
   const [totalPages, setTotalPages] = useState(1)
   const [hasMore, setHasMore] = useState(false)
   const [departments, setDepartments] = useState<Facet[]>([])
+  const [categories, setCategories] = useState<Facet[]>([])
   const [employerCount, setEmployerCount] = useState(0)
   const [generatedAt, setGeneratedAt] = useState<string | null>(null)
 
@@ -111,6 +115,7 @@ export default function ExploreJobsPage() {
       })
       if (searchQuery.trim()) params.set("q", searchQuery.trim())
       if (selectedDepartment !== "all") params.set("department", selectedDepartment)
+      if (selectedCategory !== "all") params.set("earlyCareer", selectedCategory)
 
       const response = await fetch(`/api/jobs?${params.toString()}`)
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
@@ -141,6 +146,7 @@ export default function ExploreJobsPage() {
       // response needs to populate them.
       if (!opts.append) {
         if (Array.isArray(data.departments)) setDepartments(data.departments)
+        if (Array.isArray(data.earlyCareer)) setCategories(data.earlyCareer)
         const employers = data.deployment?.companies ?? data.companies?.length ?? 0
         setEmployerCount(employers)
       }
@@ -168,9 +174,10 @@ export default function ExploreJobsPage() {
     const id = setTimeout(() => { void fetchJobs({ page: 1 }) }, searchQuery ? 350 : 0)
     return () => clearTimeout(id)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery, selectedDepartment])
+  }, [searchQuery, selectedDepartment, selectedCategory])
 
-  const hasFilters = Boolean(searchQuery.trim()) || selectedDepartment !== "all"
+  const hasFilters =
+    Boolean(searchQuery.trim()) || selectedDepartment !== "all" || selectedCategory !== "all"
 
   const handleRetry = () => {
     void fetchJobs({ page: 1 })
@@ -307,6 +314,47 @@ export default function ExploreJobsPage() {
             </Card>
           </div>
 
+          {/* Early-career categories.
+              These are a stored classification, not a text search: "apprentice"
+              as a query returns 45 rows and includes "Apprenticeship Programme
+              Manager", while the classifier finds 2,726 real early-career roles
+              across ten languages. Counts come from the corpus facet, so a chip
+              never promises results it cannot deliver. */}
+          {categories.length > 0 && (
+            <div className="mb-6 -mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+              <div className="flex gap-2 pb-1 sm:flex-wrap">
+                <button
+                  type="button"
+                  onClick={() => setSelectedCategory("all")}
+                  className={`shrink-0 rounded-full border px-3.5 py-1.5 text-sm transition-colors ${
+                    selectedCategory === "all"
+                      ? "border-purple-600 bg-purple-600 text-white"
+                      : "border-gray-200 bg-white text-gray-700 hover:border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
+                  }`}
+                >
+                  All roles
+                </button>
+                {categories.map((c) => (
+                  <button
+                    key={c.value}
+                    type="button"
+                    onClick={() => setSelectedCategory(c.value)}
+                    className={`shrink-0 rounded-full border px-3.5 py-1.5 text-sm capitalize transition-colors ${
+                      selectedCategory === c.value
+                        ? "border-purple-600 bg-purple-600 text-white"
+                        : "border-gray-200 bg-white text-gray-700 hover:border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
+                    }`}
+                  >
+                    {c.value.replace("-", " ")}
+                    <span className={`ml-1.5 ${selectedCategory === c.value ? "text-purple-200" : "text-gray-400"}`}>
+                      {c.count.toLocaleString()}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Search and Filters */}
           <Card className="card-glow mb-8">
             <CardContent className="p-4 sm:p-6">
@@ -386,6 +434,7 @@ export default function ExploreJobsPage() {
                     } else {
                       setSearchQuery("")
                       setSelectedDepartment("all")
+                      setSelectedCategory("all")
                     }
                   }}
                   variant="ghost"
@@ -424,12 +473,18 @@ export default function ExploreJobsPage() {
                             CompanyLogo is the same component /jobs uses, keyed
                             off the same domain, and degrades to the employer's
                             initials rather than a broken image. */}
-                        <CompanyLogo
-                          name={String(job.company || "Unknown employer")}
-                          logoUrl={job.logoUrl}
-                          size={48}
-                          className="ml-3"
-                        />
+                        <div className="ml-3 flex flex-col items-end gap-1.5">
+                          <CompanyLogo
+                            name={String(job.company || "Unknown employer")}
+                            logoUrl={job.logoUrl}
+                            size={48}
+                          />
+                          {job.earlyCareer && (
+                            <span className="whitespace-nowrap rounded-full bg-purple-100 px-2 py-0.5 text-[10px] font-medium capitalize text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
+                              {job.earlyCareer.replace("-", " ")}
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </CardHeader>
                     <CardContent className="space-y-4">
