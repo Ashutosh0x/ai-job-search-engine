@@ -1,6 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const MINTLIFY_SERVER = 'http://localhost:3001';
+/**
+ * Where the docs server lives.
+ *
+ * Configurable because this proxy only ever pointed at a LOCAL Mintlify dev
+ * server, while middleware enabled it in production -- where no such server
+ * exists, so the whole /docs section answered 404 on the deployed site. Unset
+ * means the proxy is off and middleware leaves /docs alone.
+ */
+const MINTLIFY_SERVER = process.env.DOCS_PROXY_ORIGIN || 'http://localhost:3001';
+
+/**
+ * Headers never forwarded to the docs server.
+ *
+ * The proxy copied every inbound header verbatim, which handed the caller's
+ * session cookie and Authorization bearer to whatever origin was configured. A
+ * docs renderer needs neither, and a proxy should not widen the set of things
+ * holding a user's credentials.
+ */
+const STRIPPED_HEADERS = new Set(['host', 'cookie', 'authorization', 'x-forwarded-for']);
 
 function buildTargetUrl(request: NextRequest, params: { path: string[] }) {
   const path = params.path?.join('/') || '';
@@ -13,7 +31,7 @@ function buildTargetUrl(request: NextRequest, params: { path: string[] }) {
 function forwardHeaders(request: NextRequest) {
   const headers = new Headers();
   request.headers.forEach((value, key) => {
-    if (key.toLowerCase() === 'host') return;
+    if (STRIPPED_HEADERS.has(key.toLowerCase())) return;
     headers.set(key, value);
   });
   headers.set('X-Forwarded-Host', request.headers.get('host') || 'localhost:3000');

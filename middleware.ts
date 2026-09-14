@@ -38,11 +38,21 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // ── Docs proxy (production only) ─────────────────────────────────
-  if (process.env.NODE_ENV === 'production' && pathname.startsWith('/docs')) {
-    const newPathname = pathname.replace('/docs', '/api/docs');
+  // ── Docs proxy ───────────────────────────────────────────────────
+  //
+  // This used to fire on `NODE_ENV === 'production'`, which is backwards. The
+  // thing it rewrites to is a proxy for a LOCAL Mintlify dev server
+  // (`npx mintlify dev --port 3001`) -- it even rewrites HMR asset paths. On
+  // Vercel there is no localhost:3001, so every /docs request in production hit
+  // a dead proxy while /docs in development was never rewritten at all. The
+  // deployed site answered 404 on the entire documentation section.
+  //
+  // The proxy is now opt-in on an explicitly configured origin. With
+  // DOCS_PROXY_ORIGIN unset -- the normal production case -- /docs is left
+  // alone rather than rewritten into something that cannot work.
+  if (process.env.DOCS_PROXY_ORIGIN && pathname.startsWith('/docs')) {
     const url = request.nextUrl.clone();
-    url.pathname = newPathname;
+    url.pathname = pathname.replace('/docs', '/api/docs');
     return NextResponse.rewrite(url);
   }
 

@@ -72,6 +72,8 @@ interface Snapshot {
   generatedAt: string
   /** Present when this index is a bounded deployment slice, not the full corpus. */
   deployment?: { bounded: boolean; corpusTotal: number; note: string } | null
+  /** Present ONLY when shards failed to load and the index is incomplete. */
+  degraded?: { expectedJobs: number | null; loadedJobs: number; missingShards: string[] } | null
   sources: string[]
   companies: IndexedCompany[]
   jobs: IndexedJob[]
@@ -194,6 +196,7 @@ async function readIndexFile(file: string): Promise<any | null> {
   // rest. Reading only the primary would serve a fraction of the index and look
   // entirely healthy doing it, which is the failure mode this codebase keeps
   // running into. So a named shard that cannot be read is LOUD.
+  const missingShards: string[] = []
   if (Array.isArray(parsed?.shards) && parsed.shards.length) {
     for (const name of parsed.shards) {
       const shardFile = dataPath(String(name))
@@ -207,6 +210,9 @@ async function readIndexFile(file: string): Promise<any | null> {
             `(${(err as Error).message}). Serving a PARTIAL index: ` +
             `${parsed.jobs.length} jobs loaded of an expected ${parsed.jobCount ?? '?'}.`
         )
+        // Logging alone leaves the API answering as though nothing is wrong.
+        // Record it so the response can say so too.
+        missingShards.push(String(name))
       }
     }
     if (typeof parsed.jobCount === 'number' && parsed.jobs.length !== parsed.jobCount) {
@@ -214,6 +220,18 @@ async function readIndexFile(file: string): Promise<any | null> {
         `[job-index] shard total mismatch: loaded ${parsed.jobs.length}, ` +
           `header says ${parsed.jobCount}.`
       )
+    }
+  }
+
+  // A degraded index must be able to SAY it is degraded. Serving 53,439 of
+  // 101,496 jobs while reporting success is the failure this file keeps
+  // guarding against, and a server-side console.error is invisible to the
+  // caller deciding whether to trust the result.
+  if (missingShards.length > 0 || (typeof parsed?.jobCount === 'number' && parsed.jobs.length !== parsed.jobCount)) {
+    parsed.degraded = {
+      expectedJobs: parsed.jobCount ?? null,
+      loadedJobs: parsed.jobs.length,
+      missingShards,
     }
   }
 
@@ -277,6 +295,7 @@ async function loadV2(): Promise<Snapshot | null> {
       // index that does not announce itself is indistinguishable from a corpus
       // that simply has fewer jobs in it.
       deployment: v2.deployment ?? null,
+      degraded: v2.degraded ?? null,
       sources: [...new Set(v2.jobs.map((j: any) => j.source))],
       companies: [...companyMap.values()],
       jobs: v2.jobs.map((j: any) => ({
@@ -440,6 +459,8 @@ export interface SearchResult {
   retrieval?: { matchedInCorpus: number | null; examined: number; truncated: boolean }
   /** Set when this deployment serves a bounded slice rather than the full corpus. */
   deployment?: { bounded: boolean; corpusTotal: number; note: string }
+  /** Set when shards failed to load, so the caller can distrust the result. */
+  degraded?: { expectedJobs: number | null; loadedJobs: number; missingShards: string[] } | null
   facets: {
     departments: { value: string; count: number }[]
     companies: { value: string; label: string; count: number }[]
@@ -647,6 +668,8 @@ export async function searchJobs(query: JobQuery): Promise<SearchResult | null> 
     // Announce a bounded index. Without this a deployment serving 25k of
     // 242k jobs looks identical to one where the market only has 25k.
     ...(index.deployment?.bounded ? { deployment: index.deployment } : {}),
+    // Always surfaced when set. A partial index is not a smaller market.
+    ...(index.degraded ? { degraded: index.degraded } : {}),
     // Retrieval is depth-capped, so `total` counts what survived filtering
     // WITHIN that cap -- it is not the corpus-wide match count. Saying so is
     // the difference between an honest "showing the top 1,500 of 8,214" and a
