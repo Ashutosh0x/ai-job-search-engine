@@ -65,6 +65,7 @@ const SUITES = [
   'test-early-career.mjs',
   'test-parse-query.mjs',
   'test-android-classify.mjs',
+  'test-security-roles.mjs',
   'test-pagination.mjs',
   'test-workday-cap.mjs',
   'test-workday-location.mjs',
