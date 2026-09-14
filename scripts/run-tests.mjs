@@ -33,6 +33,7 @@ const SUITES = [
   'test-resume-falsepos.mjs',
   'test-resume-build.mjs',
   'test-resume-pdf.mjs',
+  'test-route-guard.mjs',
   'test-backfill.mjs',
   'test-sponsors.mjs',
   'test-ssrf-guard.mjs',

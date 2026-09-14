@@ -37,112 +37,140 @@ interface Job {
   applyUrl: string
 }
 
+interface Facet {
+  value: string
+  count: number
+  label?: string
+}
+
 interface JobsResponse {
   success: boolean
   jobs: Job[]
   total: number
-  fallback?: boolean
+  page: number
+  pageSize: number
+  totalPages: number
+  hasMore: boolean
+  /** Corpus-wide, not derived from this page of results. */
+  departments: Facet[]
+  companies: Facet[]
+  countries: Facet[]
+  deployment?: { companies?: number; corpusTotal?: number; bounded?: boolean }
+  generatedAt?: string
   error?: string
   details?: string
 }
 
+const PAGE_SIZE = 24
+
 export default function ExploreJobsPage() {
   const [jobs, setJobs] = useState<Job[]>([])
-  const [filteredJobs, setFilteredJobs] = useState<Job[]>([])
   const [loading, setLoading] = useState(true)
+  const [loadingMore, setLoadingMore] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedDepartment, setSelectedDepartment] = useState<string>("all")
 
-  // Derived, not hardcoded. This page reads /api/jobs -- every employer, not
-  // one board -- but the copy still said "Cloudflare Careers" from back when it
-  // read a single Greenhouse board, so it named the wrong employer on every
-  // row it showed.
-  const companyCount = useMemo(
-    () => new Set(jobs.map((j) => j.company).filter(Boolean)).size,
-    [jobs]
-  )
+  // Server-reported, never inferred from the rows on screen.
+  const [total, setTotal] = useState(0)
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+  const [hasMore, setHasMore] = useState(false)
+  const [departments, setDepartments] = useState<Facet[]>([])
+  const [employerCount, setEmployerCount] = useState(0)
+  const [generatedAt, setGeneratedAt] = useState<string | null>(null)
 
-  const fetchJobs = async () => {
-    setLoading(true)
+  /**
+   * Fetch one page from /api/jobs.
+   *
+   * WHY THIS IS SERVER-SIDE NOW
+   * ---------------------------
+   * This page used to request /api/jobs with no parameters -- one page of 20 --
+   * and then filter those 20 in the browser. So the search box searched 20 of
+   * 113,416 postings, the department dropdown offered only the departments that
+   * happened to appear in them, and the headline "Open Positions" figure showed
+   * 20. Every filter silently operated on 0.02% of the corpus.
+   *
+   * The API already accepted q, department, page and pageSize and already
+   * returned corpus-wide facets. Nothing new was needed server-side; this page
+   * simply was not asking.
+   */
+  const fetchJobs = async (opts: { page?: number; append?: boolean } = {}) => {
+    const nextPage = opts.page ?? 1
+    if (opts.append) setLoadingMore(true)
+    else setLoading(true)
     setError(null)
 
     try {
-      const response = await fetch("/api/jobs")
+      const params = new URLSearchParams({
+        page: String(nextPage),
+        pageSize: String(PAGE_SIZE),
+      })
+      if (searchQuery.trim()) params.set("q", searchQuery.trim())
+      if (selectedDepartment !== "all") params.set("department", selectedDepartment)
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
+      const response = await fetch(`/api/jobs?${params.toString()}`)
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
 
       const data: JobsResponse = await response.json()
-
-      if (data.success && Array.isArray(data.jobs)) {
-        // Ensure all job properties are properly typed
-        // Require only what the card cannot render without. `location` and
-        // `department` are legitimately null for many employers -- Workday's
-        // list endpoint publishes neither -- and demanding them here threw away
-        // real postings.
-        const validJobs = data.jobs.filter(
-          (job) =>
-            job &&
-            typeof job.id === "string" &&
-            typeof job.title === "string" &&
-            typeof job.applyUrl === "string",
-        )
-
-        setJobs(validJobs)
-        setFilteredJobs(validJobs)
-
-        if (data.fallback) {
-          setError("Using demo data - API temporarily unavailable")
-        }
-      } else {
+      if (!data.success || !Array.isArray(data.jobs)) {
         throw new Error(data.error || "Invalid response format")
+      }
+
+      // Require only what the card cannot render without. `location` and
+      // `department` are legitimately null for many employers -- Workday's list
+      // endpoint publishes neither -- and demanding them throws away real rows.
+      const valid = data.jobs.filter(
+        (job) =>
+          job &&
+          typeof job.id === "string" &&
+          typeof job.title === "string" &&
+          typeof job.applyUrl === "string",
+      )
+
+      setJobs((prev) => (opts.append ? [...prev, ...valid] : valid))
+      setTotal(data.total ?? 0)
+      setPage(data.page ?? nextPage)
+      setTotalPages(data.totalPages ?? 1)
+      setHasMore(Boolean(data.hasMore))
+      if (data.generatedAt) setGeneratedAt(data.generatedAt)
+      // Facets are corpus-wide and identical on every page, so only the first
+      // response needs to populate them.
+      if (!opts.append) {
+        if (Array.isArray(data.departments)) setDepartments(data.departments)
+        const employers = data.deployment?.companies ?? data.companies?.length ?? 0
+        setEmployerCount(employers)
       }
     } catch (err) {
       console.error("Error fetching jobs:", err)
       setError(err instanceof Error ? err.message : "Failed to load jobs")
-
-      // Set empty array as fallback
-      setJobs([])
-      setFilteredJobs([])
+      if (!opts.append) {
+        setJobs([])
+        setTotal(0)
+      }
     } finally {
       setLoading(false)
+      setLoadingMore(false)
     }
   }
 
+  /**
+   * Re-query when the search or department changes.
+   *
+   * Debounced at 350ms: each keystroke is a real search across the whole index,
+   * and firing one per character would be both wasteful and enough traffic to
+   * matter on a route with no rate limit.
+   */
   useEffect(() => {
-    fetchJobs()
-  }, [])
+    const id = setTimeout(() => { void fetchJobs({ page: 1 }) }, searchQuery ? 350 : 0)
+    return () => clearTimeout(id)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery, selectedDepartment])
 
-  // Filter jobs based on search query and department
-  useEffect(() => {
-    let filtered = jobs
-
-    if (searchQuery) {
-      filtered = filtered.filter(
-        (job) =>
-          job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (job.company ?? "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (job.location ?? "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (job.department ?? "").toLowerCase().includes(searchQuery.toLowerCase()),
-      )
-    }
-
-    if (selectedDepartment !== "all") {
-      filtered = filtered.filter((job) => job.department === selectedDepartment)
-    }
-
-    setFilteredJobs(filtered)
-  }, [jobs, searchQuery, selectedDepartment])
-
-  // Get unique departments for filter
-  const departments = Array.from(
-    new Set(jobs.map((job) => job.department).filter((d): d is string => Boolean(d)))
-  ).sort()
+  const hasFilters = Boolean(searchQuery.trim()) || selectedDepartment !== "all"
 
   const handleRetry = () => {
-    fetchJobs()
+    void fetchJobs({ page: 1 })
   }
 
   if (loading) {
@@ -235,8 +263,8 @@ export default function ExploreJobsPage() {
               <div className="text-left">
                 <h1 className="text-4xl font-bold text-gray-900 dark:text-white">Explore Open Roles</h1>
                 <p className="text-gray-600 dark:text-gray-400">
-                  {companyCount > 0
-                    ? `Across ${companyCount.toLocaleString()} employers`
+                  {employerCount > 0
+                    ? `Across ${employerCount.toLocaleString()} employers`
                     : "Across every employer we track"}
                 </p>
               </div>
@@ -253,8 +281,12 @@ export default function ExploreJobsPage() {
               <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <Briefcase className="w-6 h-6 text-blue-600 dark:text-blue-400" />
               </div>
-              <div className="text-2xl font-bold text-gray-900 dark:text-white">{jobs.length}</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Open Positions</div>
+              <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                {total.toLocaleString()}
+              </div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">
+                {searchQuery || selectedDepartment !== "all" ? "Matching Positions" : "Open Positions"}
+              </div>
             </Card>
             <Card className="card-glow text-center p-6">
               <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center mx-auto mb-4">
@@ -293,8 +325,8 @@ export default function ExploreJobsPage() {
                   >
                     <option value="all">All Departments</option>
                     {departments.map((dept) => (
-                      <option key={dept} value={dept}>
-                        {dept}
+                      <option key={dept.value} value={dept.value}>
+                        {dept.value} ({dept.count.toLocaleString()})
                       </option>
                     ))}
                   </select>
@@ -307,34 +339,46 @@ export default function ExploreJobsPage() {
 
               <div className="flex items-center justify-between mt-4">
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-                  Showing {filteredJobs.length} of {jobs.length} jobs
+                  Showing {jobs.length.toLocaleString()} of {total.toLocaleString()} jobs
                 </div>
                 <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
                   <Clock className="w-4 h-4" />
-                  <span>Updated {new Date().toLocaleDateString()}</span>
+                  <span>
+                    {generatedAt
+                      ? `Index built ${new Date(generatedAt).toLocaleDateString()}`
+                      : "Loading index date"}
+                  </span>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           {/* Jobs Grid */}
-          {filteredJobs.length === 0 ? (
+          {jobs.length === 0 ? (
             <Card className="card-glow text-center p-12">
               <CardContent className="space-y-4">
                 <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto">
                   <Search className="w-8 h-8 text-gray-400" />
                 </div>
+                {/* An empty result and a failed request are different things.
+                    This branch used to test jobs.length === 0 inside a block
+                    already guarded by it, so a search that simply matched
+                    nothing told the user the site was broken. */}
                 <div>
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">No Jobs Found</h3>
+                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                    {error ? "Could not load jobs" : "No jobs matched"}
+                  </h3>
                   <p className="text-gray-600 dark:text-gray-400">
-                    {jobs.length === 0
-                      ? "Unable to load jobs at this time. Please try again later."
-                      : "Try adjusting your search criteria or browse all available positions."}
+                    {error
+                      ? error
+                      : hasFilters
+                        ? "No posting in the index matches that search. Try a broader term or clear the department filter."
+                        : "The index returned no postings."}
                   </p>
                 </div>
                 <Button
                   onClick={() => {
-                    if (jobs.length === 0) {
+                    if (error) {
                       handleRetry()
                     } else {
                       setSearchQuery("")
@@ -344,13 +388,13 @@ export default function ExploreJobsPage() {
                   variant="ghost"
                   className="text-purple-600 dark:text-purple-400"
                 >
-                  {jobs.length === 0 ? "Retry" : "Clear Filters"}
+                  {error ? "Retry" : "Clear filters"}
                 </Button>
               </CardContent>
             </Card>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredJobs.map((job) => {
+              {jobs.map((job) => {
                 // Safety check to ensure job is valid
                 if (!job || typeof job !== "object") return null
 
@@ -413,6 +457,37 @@ export default function ExploreJobsPage() {
                 )
               })}
             </div>
+          )}
+
+          {/* Paging. The grid holds one server page at a time and appends, so
+              the count below is what has actually been loaded, not an estimate. */}
+          {jobs.length > 0 && hasMore && (
+            <div className="mt-10 text-center">
+              <Button
+                onClick={() => void fetchJobs({ page: page + 1, append: true })}
+                disabled={loadingMore}
+                variant="outline"
+                size="lg"
+              >
+                {loadingMore ? (
+                  <>
+                    <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                    Loading
+                  </>
+                ) : (
+                  `Load more (page ${page} of ${totalPages.toLocaleString()})`
+                )}
+              </Button>
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                {jobs.length.toLocaleString()} of {total.toLocaleString()} shown
+              </p>
+            </div>
+          )}
+
+          {jobs.length > 0 && !hasMore && total > PAGE_SIZE && (
+            <p className="mt-10 text-center text-sm text-gray-500 dark:text-gray-400">
+              All {total.toLocaleString()} matching roles shown.
+            </p>
           )}
 
           {/* Footer */}

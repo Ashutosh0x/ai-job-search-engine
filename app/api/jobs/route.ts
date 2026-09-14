@@ -119,6 +119,12 @@ export async function GET(request: NextRequest) {
       totalPages: result.totalPages,
       hasMore: result.page < result.totalPages,
       departments: result.facets.departments,
+      // Corpus-wide facets, not derived from this page of results. The Explore
+      // page used to compute its filter options and its headline counts from
+      // whatever 20 rows it happened to receive, which made both wrong.
+      companies: result.facets.companies,
+      countries: result.facets.countries,
+      cities: result.facets.cities,
       // Carried through so the page can say it is showing a bounded slice
       // rather than implying it has the whole market.
       deployment: result.deployment,

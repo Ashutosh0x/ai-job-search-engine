@@ -4,18 +4,34 @@ import type { NextRequest } from 'next/server';
 /**
  * Protected routes that require authentication.
  * Unauthenticated visitors are redirected to /login.
+ *
+ * `/resume` is here because it stores uploads and analysis history against an
+ * account. `/resume-builder` is deliberately NOT: it keeps nothing, and
+ * /api/resume/build is already unauthenticated on the same reasoning -- a
+ * resume should never have to be uploaded, or an account created, to find out
+ * how it matches a posting.
  */
 const PROTECTED_PREFIXES = [
   '/dashboard',
   '/profile',
   '/settings',
   '/resume',
-  '/resume-builder',
   '/preferences',
 ];
 
+/**
+ * Match on whole path segments, not raw string prefixes.
+ *
+ * `pathname.startsWith('/resume')` is true for '/resume-builder' and for any
+ * future '/resumes' or '/resume-tips', so dropping a route from the list above
+ * would not actually unprotect it -- a shorter entry keeps matching. Requiring
+ * the next character to be '/' (or end of path) makes this list mean what it
+ * appears to mean.
+ */
 function isProtectedRoute(pathname: string): boolean {
-  return PROTECTED_PREFIXES.some((prefix) => pathname.startsWith(prefix));
+  return PROTECTED_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(prefix + '/'),
+  );
 }
 
 export function middleware(request: NextRequest) {
