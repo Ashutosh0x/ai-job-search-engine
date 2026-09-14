@@ -31,6 +31,8 @@ const SUITES = [
   'test-hydration.mjs',
   'test-resume.mjs',
   'test-resume-falsepos.mjs',
+  'test-resume-build.mjs',
+  'test-resume-pdf.mjs',
   'test-backfill.mjs',
   'test-sponsors.mjs',
   'test-ssrf-guard.mjs',

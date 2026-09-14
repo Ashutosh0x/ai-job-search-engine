@@ -8,6 +8,7 @@ import Navigation from "@/components/navigation"
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import TestimonialsMarquee from "@/components/testimonials-marquee"
+import ResumeTailor from "@/components/resume-tailor"
 import Lottie from "lottie-react"
 
 export default function ResumeBuilderPage() {
@@ -87,6 +88,11 @@ export default function ResumeBuilderPage() {
     <>
       <Navigation />
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50/20 to-gray-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-gray-900">
+        {/* The actual builder. Anchored so the hero CTA can jump to it. */}
+        <section id="build" className="scroll-mt-20 border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950">
+          <ResumeTailor />
+        </section>
+
         {/* Hero Section */}
         <section className="max-w-7xl mx-auto px-6 py-20">
           <div className="grid lg:grid-cols-2 gap-12 items-center">

@@ -22,8 +22,55 @@ export class GreenhouseAdapter extends BaseAdapter {
     return 'https://boards-api.greenhouse.io/v1/boards/stripe/jobs'
   }
 
+  /**
+   * Board tokens that are all digits are not company names.
+   *
+   * Most Greenhouse tokens read like the employer ("stripe"), so using the
+   * token as a display name works and the pipeline relies on it. A handful are
+   * numeric -- board 103644278 is Lume Deodorant, 8451 is 84.51 -- and those
+   * shipped into the index as company names, so search results showed a row
+   * whose employer was "103644278".
+   *
+   * Greenhouse exposes the real name on the board endpoint, which this adapter
+   * never called. Resolve it only when needed: one extra request per numeric
+   * board, cached for the process, and never on the common path.
+   *
+   * Note that a numeric token is not proof of a bad name -- board 540 really is
+   * called "540". Resolution returns whatever the board says and does not
+   * second-guess it.
+   */
+  private static boardNames = new Map<string, string | null>()
+
+  private async resolveBoardName(token: string, warnings: string[]): Promise<string | null> {
+    if (GreenhouseAdapter.boardNames.has(token)) {
+      return GreenhouseAdapter.boardNames.get(token) ?? null
+    }
+    let name: string | null = null
+    try {
+      const board = await this.json<{ name?: string }>(
+        `https://boards-api.greenhouse.io/v1/boards/${encodeURIComponent(token)}`,
+        { cacheTtlMs: this.ttl.jobListing },
+      )
+      // Greenhouse pads some names with trailing whitespace ("84.51 ").
+      const n = board?.name?.trim()
+      if (n) name = n
+      else warnings.push(`greenhouse:${token} board endpoint returned no name`)
+    } catch {
+      warnings.push(`greenhouse:${token} board name could not be resolved`)
+    }
+    GreenhouseAdapter.boardNames.set(token, name)
+    return name
+  }
+
   async fetchJobs(target: SourceTarget, opts: FetchOptions = {}): Promise<FetchResult> {
     const warnings: string[] = []
+
+    // A numeric token would otherwise become the displayed employer name.
+    let companyName = target.companyName ?? null
+    if (!companyName || /^\d+$/.test(companyName)) {
+      companyName = (await this.resolveBoardName(target.token, warnings)) ?? companyName
+    }
+
     const url = `https://boards-api.greenhouse.io/v1/boards/${encodeURIComponent(target.token)}/jobs?content=true`
     const data = await this.json<{ jobs?: any[] }>(url, {
       cacheTtlMs: this.ttl.jobListing,
@@ -37,7 +84,7 @@ export class GreenhouseAdapter extends BaseAdapter {
       sourceId: String(j.id),
       requisitionId: j.requisition_id ? String(j.requisition_id) : String(j.id),
       title: String(j.title ?? '').trim(),
-      company: target.companyName ?? null,
+      company: companyName,
       companyDomain: target.companyDomain ?? null,
       // `departments` and `offices` are arrays of objects; String()-ing them
       // yields "[object Object]", which is what the original code shipped.
