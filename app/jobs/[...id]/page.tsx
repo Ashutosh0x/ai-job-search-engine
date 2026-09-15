@@ -26,6 +26,7 @@ import {
   Globe,
   Laptop,
   MapPin,
+  MessagesSquare,
   Wallet,
   BriefcaseBusiness,
 } from "lucide-react"
@@ -299,6 +300,12 @@ export default async function JobDetailPage({ params }: Params) {
 
               {/* Desktop actions. The mobile equivalent is the sticky bar. */}
               <div className="hidden shrink-0 flex-col gap-2 sm:flex">
+                <Button asChild variant="outline" size="lg">
+                  <Link href={`/ai-interview?jobId=${encodeURIComponent(job.externalId)}`}>
+                    AI Interview
+                    <MessagesSquare className="ml-1.5 h-4 w-4" aria-hidden="true" />
+                  </Link>
+                </Button>
                 <Button asChild size="lg">
                   <a href={applyHref(job.externalId)} {...APPLY_LINK_ATTRS}>
                     Apply
@@ -546,6 +553,14 @@ export default async function JobDetailPage({ params }: Params) {
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 p-3 backdrop-blur supports-[backdrop-filter]:bg-white/80 dark:border-slate-800 dark:bg-slate-950/95 sm:hidden">
         <div className="flex items-center gap-2">
           <ShareJobButton title={job.title} company={job.companyName} path={jobPath(job)} compact />
+          <Button asChild variant="outline" size="lg" className="shrink-0 px-3">
+            <Link
+              href={`/ai-interview?jobId=${encodeURIComponent(job.externalId)}`}
+              aria-label={`Practice for ${job.title} with AI Interview`}
+            >
+              <MessagesSquare className="h-4 w-4" aria-hidden="true" />
+            </Link>
+          </Button>
           <Button asChild size="lg" className="flex-1">
             <a href={applyHref(job.externalId)} {...APPLY_LINK_ATTRS}>
               Apply on {job.companyName}

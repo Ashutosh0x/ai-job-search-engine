@@ -155,3 +155,20 @@ so a stale index is *visible* rather than passed off as live.
 
 The query shape is deliberately one Postgres can execute directly, so moving to
 Supabase is mechanical rather than a rewrite.
+
+## Voice-first interview room
+
+`app/ai-interview/page.tsx` resolves the optional canonical job ID through the
+same `getJobById()` boundary used by job details, then hands only title,
+company, and extracted skills to the client-side interview room. The room is a
+privacy-preserving browser voice layer: microphone amplitude drives a reusable
+organic bubble, and browser speech APIs enhance the session where supported.
+
+Signed-in session work is server-side. `lib/ai-interview/interviewer.ts`
+contains provider-neutral plan/turn/evaluation interfaces and the Gemini
+implementation; `interview_sessions` and `interview_turns` retain structured
+text only. API routes authenticate the caller, verify session ownership, and
+re-resolve canonical job data before prompting. No provider credential, raw
+audio, or editable evaluation state reaches the browser. See
+[AI-INTERVIEW.md](AI-INTERVIEW.md) for deployment setup and the planned
+streaming-WebRTC provider boundary.

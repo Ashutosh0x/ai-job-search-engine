@@ -18,7 +18,12 @@
   <img alt="Stripe" src="https://img.shields.io/badge/Stripe-Billing-635BFF?style=flat-square&logo=stripe&logoColor=white">
   <img alt="Gemini" src="https://img.shields.io/badge/Gemini-2.5_Flash-8E75B2?style=flat-square&logo=googlegemini&logoColor=white">
   <img alt="Resend" src="https://img.shields.io/badge/Resend-Email-000000?style=flat-square&logo=resend&logoColor=white">
-  <img alt="Node.js" src="https://img.shields.io/badge/Node.js-20+-5FA04E?style=flat-square&logo=nodedotjs&logoColor=white">
+  <img alt="Node.js" src="https://img.shields.io/badge/Node.js-24+-5FA04E?style=flat-square&logo=nodedotjs&logoColor=white">
+</p>
+<p align="center">
+  <img alt="Browser Voice APIs" src="https://img.shields.io/badge/Browser_Voice-getUserMedia_%2B_Web_Speech-E34F26?style=flat-square&logo=html5&logoColor=white">
+  <img alt="Web Audio" src="https://img.shields.io/badge/Web_Audio-live_microphone_visualizer-9146FF?style=flat-square&logo=webaudio&logoColor=white">
+  <img alt="Lucide" src="https://img.shields.io/badge/Lucide-Interface_icons-F56565?style=flat-square&logo=lucide&logoColor=white">
 </p>
 
 <p align="center">
@@ -61,6 +66,7 @@ Three things follow from reading the source rather than an aggregator:
 | **Ghost-job signals** | Stale and repost patterns are surfaced as *signals with evidence*, never as a verdict. Staleness is measured primarily from **`firstSeenAt`** — when this crawler first observed the posting, tracked in `.ingest-state.json` — not from the employer's `postedAt`. That matters because Workday publishes no date at list time; `postedAt` is only the fallback branch (`lib/pipeline/quality.ts:185`). Repost counts and talent-pipeline phrasing are also date-independent. A suspected ghost job is ranked lower and labelled, never hidden. |
 | **Company-level filters** | Valuation tier, hiring momentum (open-role count), and which ATS the employer runs. Aggregators expose headcount, not company value — so they cannot separate a 500-person unicorn from a 500-person agency. |
 | **Resume ↔ job matching, evidence-first** | A resume is scored against a *target job*, never in the abstract. Each requirement maps to the resume span that supports it, graded DIRECT / STRONG / WEAK / INSUFFICIENT / CONTRADICTED / ABSENT. Assertion detection means `"No hands-on experience with Kubernetes"`, `"Interested in learning Rust"` and `"Managed a team of Python developers"` never count as skills. |
+| **Voice-first AI Interview** | Every job detail page can open a calm, full-screen practice room at `/ai-interview?jobId=…`. It validates the job server-side; signed-in sessions create a Gemini-backed interview plan, adaptive follow-ups, structured text transcript, and job-specific practice assessment. Browser voice APIs enhance the experience where supported; raw microphone audio is never uploaded or recorded. |
 | **Cross-board dedupe** | The same requisition legitimately appears on several boards. A four-tier cascade (requisition id → apply URL → title+location → fuzzy) collapses them, keeps the most direct apply link, and records how certain the match was. |
 
 ## Provenance
@@ -228,6 +234,7 @@ Setup in full: **[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)**.
 | [Data model](docs/DATA-MODEL.md) | `CanonicalJob`, the company registry, the 23 migrations |
 | [Development](docs/DEVELOPMENT.md) | Env vars, scripts, tests, known gaps |
 | [Security](docs/SECURITY.md) | Threat model and the September 2026 audit |
+| [AI Interview](docs/AI-INTERVIEW.md) | Voice-first interview room, browser capabilities, privacy, and the production-provider boundary |
 | [Resume intelligence](docs/resume-intelligence-audit.md) | Audit of the resume feature, the hardcode inventory, and the evidence-first design |
 | [Zero-cost architecture](docs/zero-cost-architecture.md) | Client-side/extension blueprint, with six verified corrections |
 | [Audit report](AUDIT-2026.md) | The full remediation write-up |
@@ -262,6 +269,12 @@ Stated plainly, because a README that only lists wins is not much use:
   bypass, SSRF and cache poisoning.
 - **Rate limiting is per-process**, so on serverless it is a speed bump rather
   than a guarantee — and it is the control protecting password reset.
+- **AI Interview uses browser voice APIs today, not a streaming WebRTC voice
+  provider.** Signed-in sessions persist structured text turns and an
+  AI-generated practice assessment through authenticated server routes; raw
+  audio is never stored. Browser speech recognition varies by browser, and
+  streaming STT/TTS, short-lived WebRTC tokens, and reconnect recovery remain
+  the next production phase; see [AI Interview](docs/AI-INTERVIEW.md).
 - **Supabase-backed features need a project.** Auth, profiles and resumes are
   down whenever `NEXT_PUBLIC_SUPABASE_URL` points at a project that no longer
   exists. The search engine itself needs none of it — it reads the snapshot.
