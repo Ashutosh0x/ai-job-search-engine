@@ -351,6 +351,32 @@ export const COMPANIES: CompanyRecord[] = [
   // Canva: 252 postings verified 2026-09-14.
   { slug: 'canva', name: 'Canva', domain: 'canva.com', valuationKind: 'unknown',
     boards: [{ provider: 'smartrecruiters', token: 'Canva' }] },
+  // ---- Japan-relevant employers, verified 2026-09-15 -------------------
+  // Found by reading each employer's own careers page (scripts/discover-ats.mjs)
+  // and probing the platforms already supported here. Japan coverage was 2,393
+  // of 130,863 postings; most Japanese companies sit on domestic ATS platforms
+  // (HERP, Talentio, jobcan) that have no adapter yet, so these are the ones
+  // reachable today.
+  // PayPay: 85 postings verified 2026-09-15.
+  { slug: 'paypay', name: 'PayPay', domain: 'paypay.ne.jp', valuationKind: 'unknown',
+    industry: 'Fintech', hqLocation: 'Tokyo, Japan', foundedYear: 2018,
+    boards: [{ provider: 'greenhouse', token: 'paypay' }] },
+  // SmartNews: 30 postings verified 2026-09-15.
+  { slug: 'smartnews', name: 'SmartNews', domain: 'smartnews.com', valuationKind: 'unknown',
+    industry: 'News & Media', hqLocation: 'Tokyo, Japan', foundedYear: 2012,
+    boards: [{ provider: 'workable', token: 'smartnews' }] },
+  // Autify: 1 posting verified 2026-09-15.
+  { slug: 'autify', name: 'Autify', domain: 'autify.com', valuationKind: 'unknown',
+    industry: 'Developer Tools', hqLocation: 'Tokyo, Japan', foundedYear: 2016,
+    boards: [{ provider: 'lever', token: 'Autify' }] },
+  // Tanium: 48 postings verified 2026-09-15. US-headquartered, hires in Japan.
+  { slug: 'tanium', name: 'Tanium', domain: 'tanium.com', valuationKind: 'unknown',
+    industry: 'Security', hqLocation: 'Kirkland, WA', foundedYear: 2007,
+    boards: [{ provider: 'greenhouse', token: 'tanium' }] },
+  // Agoda: 299 postings verified 2026-09-15. APAC-wide, including Japan.
+  { slug: 'agoda', name: 'Agoda', domain: 'agoda.com', valuationKind: 'unknown',
+    industry: 'Travel Marketplace', hqLocation: 'Singapore', foundedYear: 2005,
+    boards: [{ provider: 'greenhouse', token: 'agoda' }] },
   // Mercari: 2 postings verified 2026-09-14.
   { slug: 'mercari', name: 'Mercari', domain: 'mercari.com', valuationKind: 'unknown',
     boards: [{ provider: 'greenhouse', token: 'Mercari' }] },

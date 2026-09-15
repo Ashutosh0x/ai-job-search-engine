@@ -3,6 +3,7 @@ import path from 'path'
 import { parseIntent, describeIntent, type ParsedIntent } from './search/intent'
 import { buildIndex, retrieve, type BuiltIndex } from './search/inverted-index'
 import { rankJob, explainRank, DEFAULT_WEIGHTS } from './search/rank'
+import { diversify } from './search/diversify'
 import {
   COMPANY_BY_SLUG,
   companyLogoUrl,
@@ -83,33 +84,145 @@ interface Snapshot {
   warnings: string[]
 }
 
-let cache: { data: Snapshot; loadedAt: number; mtimeMs: number } | null = null
+let cache: { data: Snapshot; loadedAt: number; mtimeMs: number; file?: string | null } | null = null
 const CACHE_TTL_MS = 5 * 60 * 1000
 
 /**
- * Index file, in preference order.
+ * THE PRODUCTION INDEX IS ONE FILE, NAMED HERE.
  *
- * `jobs-deploy.json` is a bounded slice built by scripts/build-deploy-index.mjs
- * and is what ships to a serverless host: the full index is 382MB and cannot be
- * loaded by a Vercel function at any field projection (measured -- 199MB even
- * with descriptions stripped entirely). Locally the full file is present and
- * wins, so development sees the whole corpus and production sees the slice,
- * with no code difference between them.
+ * `jobs-deploy.json` (plus the shards it names) is the only thing this app
+ * serves. It is built by scripts/build-deploy-index.mjs, committed to the repo,
+ * and is the sole index that survives .vercelignore into a deployment.
+ *
+ * WHY THIS IS NOT A CANDIDATE LIST ANY MORE
+ * -----------------------------------------
+ * It used to try `jobs-v2.json` first and fall back. That file is not a serving
+ * artifact at all -- it is the PIPELINE INTERMEDIATE, the raw full-corpus output
+ * of scripts/refresh.mjs that build-deploy-index.mjs then reduces into the
+ * bounded slice. The CI workflows cache it between runs; .gitignore and
+ * .vercelignore both exclude it. Serving from it meant serving from whatever
+ * state the crawler happened to leave on disk.
+ *
+ * MEASURED, 2026-09-15: an interrupted `npm run ingest` left a well-formed
+ * jobs-v2.json holding 935 postings beside a jobs-deploy.json holding 113,416.
+ * It parsed fine, so it won, and searching "London" returned ZERO results while
+ * 2,768 London postings sat in the file next to it.
+ *
+ * A first pass fixed that by ranking candidates on job count. That stopped the
+ * specific failure but kept the real defect: which file gets served was still
+ * decided by whatever happened to be on disk. Two machines with the same commit
+ * could serve different corpora, and neither would say so.
+ *
+ * So there is now exactly one production index, and no automatic fallback to a
+ * different one. If it is missing, every read says the index is unavailable --
+ * loudly, and with the command that builds it -- rather than quietly serving
+ * something smaller that looks like a working site with a thin job market.
+ *
+ * THE LOCAL FULL-CORPUS CASE
+ * --------------------------
+ * A developer who has run a full ingest can still serve all of it, by saying so
+ * explicitly:
+ *
+ *   JOB_INDEX_FILE=public/data/jobs-v2.json npm run dev
+ *
+ * That is an override someone chose, not a guess the loader made, and it is
+ * reported in the startup log and on /api/health.
  */
-const INDEX_CANDIDATES = ['jobs-v2.json', 'jobs-deploy.json']
-const dataPath = (f: string) => path.join(process.cwd(), 'public', 'data', f)
+const PRODUCTION_INDEX = 'jobs-deploy.json'
 
-async function resolveIndexFile(): Promise<string | null> {
-  for (const f of INDEX_CANDIDATES) {
+/**
+ * What the last successful load actually served.
+ *
+ * Exposed so an operator can answer "which corpus is this deployment serving?"
+ * from outside the process -- see app/api/health/route.ts. A wrong index is
+ * invisible from the UI: it looks like a working site with a thin job market.
+ */
+export interface IndexLoadInfo {
+  file: string
+  origin: IndexSource['origin']
+  jobs: number
+  generatedAt: string | null
+  at: string
+}
+let lastLoad: IndexLoadInfo | null = null
+export function lastIndexLoad(): IndexLoadInfo | null {
+  return lastLoad
+}
+
+/**
+ * Legacy v1 snapshot, used only when the production index is absent AND the
+ * operator has not overridden it. Kept because it is the one artifact that
+ * predates the v2 pipeline and some local checkouts still have only that.
+ * It is never preferred, and serving it is announced.
+ */
+const LEGACY_SNAPSHOT = 'jobs-snapshot.json'
+
+const dataPath = (f: string) =>
+  path.isAbsolute(f) ? f : path.join(process.cwd(), 'public', 'data', f)
+
+/** The operator's explicit choice, if there is one. */
+function configuredIndexFile(): string | null {
+  const v = process.env.JOB_INDEX_FILE?.trim()
+  if (!v) return null
+  // Accept either a bare filename or a repo-relative path, so both
+  // `JOB_INDEX_FILE=jobs-v2.json` and `JOB_INDEX_FILE=public/data/jobs-v2.json`
+  // do what the person meant.
+  return path.isAbsolute(v) ? v : path.join(process.cwd(), v.replace(/^\.?[\/]/, ''))
+}
+
+export interface IndexSource {
+  file: string
+  /** How this file came to be chosen, for logs and /api/health. */
+  origin: 'configured' | 'production' | 'legacy-snapshot'
+}
+
+/**
+ * Resolve which file to serve. Deterministic: the same filesystem always yields
+ * the same answer, and the answer does not depend on file sizes or mtimes.
+ */
+async function resolveIndexSource(): Promise<IndexSource | null> {
+  const configured = configuredIndexFile()
+  if (configured) {
     try {
-      await stat(dataPath(f))
-      return dataPath(f)
-    } catch { /* try the next */ }
+      await stat(configured)
+      return { file: configured, origin: 'configured' }
+    } catch {
+      // An override that points at nothing is an operator error and must not be
+      // silently ignored -- that is how you end up debugging the wrong corpus.
+      console.error(
+        `[job-index] JOB_INDEX_FILE points at ${configured}, which does not exist. ` +
+          'Refusing to guess; set it correctly or unset it to use the production index.',
+      )
+      return null
+    }
   }
+
+  const production = dataPath(PRODUCTION_INDEX)
+  try {
+    await stat(production)
+    return { file: production, origin: 'production' }
+  } catch { /* fall through to the legacy snapshot */ }
+
+  const legacy = dataPath(LEGACY_SNAPSHOT)
+  try {
+    await stat(legacy)
+    console.warn(
+      `[job-index] ${PRODUCTION_INDEX} is missing; serving the legacy ${LEGACY_SNAPSHOT}. ` +
+        'Rebuild with `npx tsx scripts/build-deploy-index.mjs`.',
+    )
+    return { file: legacy, origin: 'legacy-snapshot' }
+  } catch { /* nothing to serve */ }
+
+  console.error(
+    `[job-index] No job index found. Expected public/data/${PRODUCTION_INDEX}. ` +
+      'Build it with `npx tsx scripts/build-deploy-index.mjs`.',
+  )
   return null
 }
 
-const V2_PATH = () => dataPath('jobs-v2.json')
+async function resolveIndexFile(): Promise<string | null> {
+  return (await resolveIndexSource())?.file ?? null
+}
 
 /**
  * Has the index file changed since we cached it?
@@ -122,9 +235,16 @@ const V2_PATH = () => dataPath('jobs-v2.json')
  *
  * The TTL stays as the upper bound for the case stat cannot answer (the v1
  * fallback snapshot, or a filesystem that does not report mtime usefully).
+ *
+ * IT MUST WATCH THE FILE WE ACTUALLY LOADED. This used to re-resolve the
+ * preferred candidate independently of the load, so when the preferred file was
+ * skipped -- too large, unparseable, or now out-ranked -- the cache key tracked
+ * a file the served data had not come from. Rewriting the file being served
+ * then changed no mtime the cache could see, and the refresh stayed invisible
+ * for the full TTL: exactly the staleness this function exists to prevent.
  */
-async function indexMtime(): Promise<number> {
-  const f = await resolveIndexFile()
+async function indexMtime(file?: string | null): Promise<number> {
+  const f = file ?? (await resolveIndexFile())
   if (!f) return 0
   try {
     return (await stat(f)).mtimeMs
@@ -161,6 +281,73 @@ async function indexMtime(): Promise<number> {
  * with headroom, at no measurable cost.
  */
 const RETRIEVAL_DEPTH = 10000
+
+/**
+ * Depth to use when the query ALSO carries structured filters.
+ *
+ * THE BUG THIS FIXES
+ * ------------------
+ * Retrieval truncates by relevance, and the structured filters run afterwards
+ * over whatever survived. So a broad keyword plus a narrow filter loses almost
+ * everything: the filter can only choose from the top N by BM25, and a London
+ * posting ranked 12,000th for "engineer" is discarded before the location
+ * filter ever sees it.
+ *
+ * MEASURED, 2026-09-15, over the 113,416-posting served index:
+ *
+ *   q=engineer&location=London   ->      34 results
+ *   true number in the corpus    ->     829
+ *
+ * 96% of the matching jobs were gone, and nothing on the page said so -- 34
+ * looks like a complete answer to a reasonable search. It gets worse as the
+ * corpus grows, because the truncation point moves further up the ranking.
+ *
+ * WHY A BIGGER NUMBER IS THE RIGHT FIX
+ * ------------------------------------
+ * Because depth is very nearly free. `retrieve` walks every posting containing
+ * a query term whatever the limit is -- the limit only decides how much of the
+ * sorted result is handed back. Re-measured at five runs each, median:
+ *
+ *   query                      10,000   30,000   60,000   120,000   matched
+ *   engineer                     13ms     10ms     10ms       9ms    29,335
+ *   software engineer            12ms     13ms     12ms      12ms    32,054
+ *   senior backend engineer      15ms     15ms     16ms      15ms    40,052
+ *   react developer               1ms      1ms      1ms       2ms     4,009
+ *
+ * Flat. 100,000 sits above the largest match count in the corpus, so filtering
+ * sees the whole match set rather than a relevance-truncated prefix.
+ *
+ * It stays conditional because the cost that IS real is downstream: every
+ * candidate is spread into a new object before filtering. Paying that for 40k
+ * rows to show 20 of them is pointless when there is no filter to apply, and
+ * the unfiltered case genuinely only needs the top of the ranking.
+ */
+const FILTERED_RETRIEVAL_DEPTH = 100000
+
+/**
+ * Does this query narrow by anything other than the keyword?
+ *
+ * Only these make the truncation lossy -- sort and paging operate on whatever
+ * survived, so they do not change how much must be retrieved.
+ */
+function hasStructuredFilter(q: JobQuery): boolean {
+  return Boolean(
+    q.location ||
+      q.remote ||
+      q.postedWithinDays ||
+      q.minSalary ||
+      q.minValuation ||
+      q.minOpenRoles ||
+      q.cities?.length ||
+      q.countries?.length ||
+      q.departments?.length ||
+      q.companies?.length ||
+      q.providers?.length ||
+      q.employmentTypes?.length ||
+      q.earlyCareer?.length ||
+      q.valuationTiers?.length,
+  )
+}
 
 /**
  * Load the search index.
@@ -241,24 +428,38 @@ async function readIndexFile(file: string): Promise<any | null> {
   return parsed
 }
 
-async function loadV2(): Promise<Snapshot | null> {
+async function loadV2(source: IndexSource): Promise<(Snapshot & { loadedFile?: string }) | null> {
   try {
-    // Try each candidate in turn rather than committing to the first that
-    // EXISTS. A file being present is not the same as it being loadable.
+    // The source is already resolved. If the chosen file cannot be read that is
+    // reported as a failure rather than worked around by serving a different
+    // corpus -- see resolveIndexSource().
     let v2: any = null
-    for (const name of INDEX_CANDIDATES) {
-      const path = dataPath(name)
-      try {
-        await stat(path)
-      } catch { continue }
-      try {
-        const parsed = await readIndexFile(path)
-        if (parsed && Array.isArray(parsed.jobs) && parsed.jobs.length) { v2 = parsed; break }
-      } catch (err) {
-        console.error(`[job-index] failed to load ${name}:`, (err as Error).message)
-      }
+    try {
+      v2 = await readIndexFile(source.file)
+    } catch (err) {
+      console.error(`[job-index] failed to read ${source.file}:`, (err as Error).message)
+      return null
     }
-    if (!v2) return null
+    if (!v2 || !Array.isArray(v2.jobs) || !v2.jobs.length) {
+      console.error(
+        `[job-index] ${source.file} holds no postings. Refusing to serve an empty index as though ` +
+          'it were a job market with nothing in it.',
+      )
+      return null
+    }
+
+    const loadedFile = source.file
+    lastLoad = {
+      file: source.file,
+      origin: source.origin,
+      jobs: v2.jobs.length,
+      generatedAt: v2.generatedAt ?? null,
+      at: new Date().toISOString(),
+    }
+    console.info(
+      `[job-index] serving ${path.basename(source.file)} ` +
+        `(${v2.jobs.length.toLocaleString('en-US')} postings, origin=${source.origin})`,
+    )
 
     // Companies are derived from the jobs themselves: the v2 pipeline discovers
     // employers rather than reading them from a curated list.
@@ -344,7 +545,10 @@ async function loadV2(): Promise<Snapshot | null> {
         sourceCount: j.sourceCount ?? (j.sourceUrls ?? []).length,
       })),
       warnings: [],
-    } as unknown as Snapshot
+      // Which file this came from, so the cache watches the file actually
+      // served rather than re-deriving a preference that may differ.
+      loadedFile,
+    } as unknown as Snapshot & { loadedFile?: string }
   } catch {
     return null
   }
@@ -353,38 +557,63 @@ async function loadV2(): Promise<Snapshot | null> {
 export async function loadIndex(): Promise<Snapshot | null> {
   if (cache && Date.now() - cache.loadedAt < CACHE_TTL_MS) {
     // Serve the cache only while the file behind it is unchanged. A refresh
-    // rewrites jobs-v2.json, and the whole point of refreshing is that the new
-    // jobs become visible -- not that they wait for a timer.
-    const mtime = await indexMtime()
+    // rewrites the index, and the whole point of refreshing is that the new
+    // jobs become visible -- not that they wait for a timer. Watch the file the
+    // cached data actually came from; see indexMtime().
+    const mtime = await indexMtime(cache.file)
     if (mtime === cache.mtimeMs) return cache.data
   }
 
-  const v2 = await loadV2()
-  if (v2) {
-    v2.companies = v2.companies.map((c) => ({
-      ...c,
-      logoUrl: companyLogoUrl(c.domain),
-      valuationTier: valuationTier(c.valuationUsd),
-    }))
-    cache = { data: v2, loadedAt: Date.now(), mtimeMs: await indexMtime() }
-    return v2
+  /**
+   * Resolve ONCE, then load what was resolved.
+   *
+   * The legacy path used to be an unconditional `catch`-style fallback: if
+   * loadV2 returned null for ANY reason, the v1 snapshot was loaded instead. So
+   * a typo in JOB_INDEX_FILE, or a corrupt production index, quietly served a
+   * different 9,648-posting corpus and reported success. That is the same class
+   * of failure as the 935-row file, arrived at from the other direction.
+   *
+   * Now the source decides the loader, and a resolution failure is a failure.
+   */
+  const source = await resolveIndexSource()
+  if (!source) return null
+
+  const loaded =
+    source.origin === 'legacy-snapshot' ? await loadLegacySnapshot(source) : await loadV2(source)
+  if (!loaded) return null
+
+  loaded.companies = loaded.companies.map((c) => ({
+    ...c,
+    logoUrl: companyLogoUrl(c.domain),
+    valuationTier: valuationTier(c.valuationUsd),
+  }))
+  cache = {
+    data: loaded,
+    loadedAt: Date.now(),
+    mtimeMs: await indexMtime(source.file),
+    file: source.file,
   }
+  return loaded
+}
 
+/**
+ * The pre-v2 snapshot. A different schema, so it gets its own reader rather
+ * than being coerced through the v2 mapper.
+ */
+async function loadLegacySnapshot(source: IndexSource): Promise<Snapshot | null> {
   try {
-    const file = path.join(process.cwd(), 'public', 'data', 'jobs-snapshot.json')
-    const raw = await readFile(file, 'utf8')
-    const parsed = JSON.parse(raw) as Snapshot
-
-    // Decorate companies with derived display fields once, at load.
-    parsed.companies = parsed.companies.map((c) => ({
-      ...c,
-      logoUrl: companyLogoUrl(c.domain),
-      valuationTier: valuationTier(c.valuationUsd),
-    }))
-
-    cache = { data: parsed, loadedAt: Date.now(), mtimeMs: await indexMtime() }
+    const parsed = JSON.parse(await readFile(source.file, 'utf8')) as Snapshot
+    if (!Array.isArray(parsed?.jobs) || !parsed.jobs.length) return null
+    lastLoad = {
+      file: source.file,
+      origin: source.origin,
+      jobs: parsed.jobs.length,
+      generatedAt: parsed.generatedAt ?? null,
+      at: new Date().toISOString(),
+    }
     return parsed
-  } catch {
+  } catch (err) {
+    console.error(`[job-index] failed to read legacy snapshot ${source.file}:`, (err as Error).message)
     return null
   }
 }
@@ -419,9 +648,116 @@ export interface JobQuery {
   pageSize?: number
 }
 
+/** The page size actually used, clamped. Shared so diversification blocks
+ *  line up exactly with the pages the caller will slice. */
+function pageSizeFor(query: JobQuery): number {
+  return Math.min(100, Math.max(1, query.pageSize ?? 20))
+}
+
 /** Tokenise once; used for both matching and scoring. */
 function tokens(text: string): string[] {
   return text.toLowerCase().split(/[^a-z0-9+#.]+/).filter((t) => t.length > 1)
+}
+
+/* --------------------------- location matching ---------------------------- */
+
+/**
+ * Split a place name into comparable tokens.
+ *
+ * Accents are folded so "Asuncion" finds "Asunción" and "Dusseldorf" finds
+ * "Düsseldorf" -- the corpus carries the accented form, almost nobody types it.
+ */
+export function locationTokens(text: string): string[] {
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .split(/[^a-z0-9]+/)
+    .filter(Boolean)
+}
+
+/**
+ * Shortest token that may be matched by PREFIX rather than in full.
+ *
+ * Prefix matching is what lets "san fran" find San Francisco. Allowing it on
+ * very short tokens is what broke the filter, so it is gated on length.
+ */
+const LOCATION_PREFIX_MIN = 3
+
+/** Does `needle` equal `hay`, or prefix it when it is long enough to be meant? */
+function tokenHit(needle: string, hay: string): boolean {
+  if (needle === hay) return true
+  return needle.length >= LOCATION_PREFIX_MIN && hay.startsWith(needle)
+}
+
+/**
+ * Does one normalised location key satisfy a location query?
+ *
+ * WHY THIS IS NOT A SUBSTRING TEST
+ * --------------------------------
+ * It used to be `k.includes(loc) || loc.includes(k)` over raw strings. The
+ * second half is there for a real reason -- a query of "London, United Kingdom"
+ * has to match a row keyed only "london" -- but on raw substrings it also makes
+ * every SHORT key match inside any longer word.
+ *
+ * The corpus carries 2,577 keys of "us", 441 of "in", 84 of "ca", 43 of "it"
+ * and 30 of "il", because ATS feeds emit fragments like "IN, KA, Bengaluru".
+ * So, MEASURED over the 113,416-posting served index:
+ *
+ *   query     matched   wrong   how wrong
+ *   Austin      5,349   3,969   74.2%  -- "au[stin]" pulled in all of Australia
+ *   Berlin        710     448   63.1%  -- "berl[in]" pulled in all of India
+ *   Dublin      1,289     442   34.3%  -- same "in"
+ *   Milan         181      50   27.6%  -- "m[il]an" pulled in Tel Aviv
+ *   Chicago     1,339      91    6.8%  -- "chi[ca]go" pulled in Canada
+ *
+ * Three quarters of an Austin search was Sydney. Comparing WHOLE TOKENS keeps
+ * the containment in both directions -- which is the useful part -- while
+ * making "au" stop matching inside "austin".
+ */
+export function locationKeyMatches(locTokens: string[], key: string): boolean {
+  const keyTokens = locationTokens(key)
+  if (!keyTokens.length || !locTokens.length) return false
+
+  // Query narrows the key: "london" against "greater london area".
+  const queryInKey = locTokens.every((q) => keyTokens.some((k) => tokenHit(q, k)))
+  if (queryInKey) return true
+
+  // Key narrows the query: a row keyed only "london" against a "london, united
+  // kingdom" query. Guarded by the same length rule, so a two-letter key
+  // fragment can no longer swallow an unrelated city.
+  //
+  // It must also cover the query's HEAD -- the most specific thing asked for.
+  // Without that, "London, United Kingdom" also matches every row keyed just
+  // "United Kingdom", because those tokens are all present in the query too:
+  // the search widens from a city to a country the moment you name the country,
+  // which is the opposite of what adding detail should do. Measured: 3,380
+  // results against 2,768 for "London" alone, the extra 612 being UK rows with
+  // no city at all.
+  const head = queryHead(locTokens)
+  if (head && !keyTokens.some((k) => tokenHit(k, head) || tokenHit(head, k))) return false
+
+  return keyTokens.every((k) => locTokens.some((q) => tokenHit(k, q)))
+}
+
+/**
+ * The most specific token in a location query.
+ *
+ * Place names are written most-specific-first in both user input and ATS feeds
+ * ("Munich, Bavaria, Germany"), so that is the first token -- after skipping
+ * qualifiers that describe a place rather than name one, which is what keeps
+ * "Greater London" pointed at London.
+ */
+const LOCATION_QUALIFIERS = new Set([
+  'greater', 'metro', 'metropolitan', 'area', 'region', 'city', 'county',
+  'district', 'state', 'province', 'downtown', 'central', 'near', 'in',
+])
+
+function queryHead(locTokens: string[]): string | null {
+  for (const t of locTokens) {
+    if (!LOCATION_QUALIFIERS.has(t)) return t
+  }
+  return null
 }
 
 /**
@@ -530,9 +866,12 @@ export async function searchJobs(query: JobQuery): Promise<SearchResult | null> 
   // though it were the number of matching jobs.
   let retrievalTotal: number | null = null
   let retrievalTruncated = false
+  // Reported back so a truncated result can say how deep it actually looked.
+  let retrievalDepth = RETRIEVAL_DEPTH
 
   if (qTokens.length) {
-    const result = retrieve(indexFor(index), query.q!, RETRIEVAL_DEPTH)
+    retrievalDepth = hasStructuredFilter(query) ? FILTERED_RETRIEVAL_DEPTH : RETRIEVAL_DEPTH
+    const result = retrieve(indexFor(index), query.q!, retrievalDepth)
     retrievalTotal = result.totalMatched
     retrievalTruncated = result.truncated
     rows = result.candidates.map((c) => {
@@ -559,14 +898,16 @@ export async function searchJobs(query: JobQuery): Promise<SearchResult | null> 
     rows = rows.filter((r) => r.score > 0)
   }
   if (query.location) {
-    const loc = query.location.trim().toLowerCase()
-    // Match against the normalised keys (city / region / country / aliases)
-    // and fall back to the raw string for rows ingested before normalisation.
-    rows = rows.filter((r) =>
-      r.locationKeys?.length
-        ? r.locationKeys.some((k) => k.includes(loc) || loc.includes(k))
-        : (r.location ?? '').toLowerCase().includes(loc)
-    )
+    const locTokens = locationTokens(query.location)
+    if (locTokens.length) {
+      // Match against the normalised keys (city / region / country / aliases)
+      // and fall back to the raw string for rows ingested before normalisation.
+      rows = rows.filter((r) =>
+        r.locationKeys?.length
+          ? r.locationKeys.some((k) => locationKeyMatches(locTokens, k))
+          : locationKeyMatches(locTokens, r.location ?? '')
+      )
+    }
   }
   if (query.remote) {
     rows = rows.filter((r) => r.isRemote)
@@ -655,23 +996,54 @@ export async function searchJobs(query: JobQuery): Promise<SearchResult | null> 
   const time = (v: string | null) => (v ? new Date(v).getTime() : 0)
 
   rows.sort((a, b) => {
+    let primary: number
     switch (sort) {
       case 'recent':
-        return time(b.postedAt) - time(a.postedAt)
+        primary = time(b.postedAt) - time(a.postedAt)
+        break
       case 'valuation':
-        return (b.company?.valuationUsd ?? 0) - (a.company?.valuationUsd ?? 0)
+        primary = (b.company?.valuationUsd ?? 0) - (a.company?.valuationUsd ?? 0)
+        break
       case 'openings':
-        return (b.company?.openRoles ?? 0) - (a.company?.openRoles ?? 0)
+        primary = (b.company?.openRoles ?? 0) - (a.company?.openRoles ?? 0)
+        break
       case 'salary':
-        return (b.salaryMax ?? b.salaryMin ?? 0) - (a.salaryMax ?? a.salaryMin ?? 0)
+        primary = (b.salaryMax ?? b.salaryMin ?? 0) - (a.salaryMax ?? a.salaryMin ?? 0)
+        break
       case 'relevance':
       default:
-        return b.score - a.score || time(b.postedAt) - time(a.postedAt)
+        primary = b.score - a.score || time(b.postedAt) - time(a.postedAt)
     }
+    if (primary !== 0) return primary
+    /**
+     * Explicit tiebreak on a unique key.
+     *
+     * Every sort here has enormous tie groups -- 57.9% of the corpus has no
+     * posted date, 96.4% no salary -- and ordering within a tie was left to
+     * Array.prototype.sort's stability. That happens to be deterministic in V8,
+     * but it makes pagination correctness depend on an engine guarantee rather
+     * than on this code. With a unique final key the order is total, so page 2
+     * cannot repeat or skip a row from page 1 under any implementation.
+     */
+    return a.externalId < b.externalId ? -1 : a.externalId > b.externalId ? 1 : 0
   })
 
+  /**
+   * Stop one employer owning the page.
+   *
+   * Only for relevance, and only when a keyword query ran: that is the sort
+   * that places near-identical requisitions next to each other. "recent" and
+   * "salary" already interleave employers naturally, and reordering them would
+   * break the promise the sort makes.
+   *
+   * Nothing is removed -- `total` below is taken after this and is unchanged.
+   */
+  if (sort === 'relevance' && qTokens.length) {
+    rows = diversify(rows, (r) => r.companySlug, { blockSize: pageSizeFor(query) })
+  }
+
   const total = rows.length
-  const pageSize = Math.min(100, Math.max(1, query.pageSize ?? 20))
+  const pageSize = pageSizeFor(query)
   const page = Math.max(1, query.page ?? 1)
   const start = (page - 1) * pageSize
 
@@ -694,7 +1066,7 @@ export async function searchJobs(query: JobQuery): Promise<SearchResult | null> 
     // the difference between an honest "showing the top 1,500 of 8,214" and a
     // silent "1,500 results" that looks like the whole truth.
     ...(retrievalTruncated
-      ? { retrieval: { matchedInCorpus: retrievalTotal, examined: RETRIEVAL_DEPTH, truncated: true } }
+      ? { retrieval: { matchedInCorpus: retrievalTotal, examined: retrievalDepth, truncated: true } }
       : retrievalTotal !== null
         ? { retrieval: { matchedInCorpus: retrievalTotal, examined: retrievalTotal, truncated: false } }
         : {}),
@@ -718,6 +1090,107 @@ export async function getCompany(
     .filter((j) => j.companySlug === slug)
     .sort((a, b) => (b.postedAt ?? '').localeCompare(a.postedAt ?? ''))
   return { company, jobs }
+}
+
+/* ------------------------------ single job -------------------------------- */
+
+/**
+ * A posting's URL path.
+ *
+ * Every id in the corpus is exactly three colon-separated parts
+ * (`provider:companyToken:sourceId`), all 113,416 unique, none containing a
+ * slash -- so the parts map onto path segments losslessly and
+ * `/jobs/ashby/openai/9471b38b-...` round-trips back to the id exactly.
+ *
+ * Encoding the whole id into one segment would have worked too, but a URL is
+ * read by people as well as parsers, and a path that names the board and the
+ * employer says something useful before the page loads.
+ */
+export function jobPath(job: Pick<IndexedJob, 'externalId'>): string {
+  return `/jobs/${job.externalId.split(':').map(encodeURIComponent).join('/')}`
+}
+
+/** Inverse of jobPath. Returns null for a shape that cannot be an id. */
+export function jobIdFromSegments(segments: string[]): string | null {
+  if (!Array.isArray(segments) || segments.length !== 3) return null
+  const parts = segments.map((s) => {
+    try { return decodeURIComponent(s) } catch { return s }
+  })
+  if (parts.some((p) => !p || p.includes(':'))) return null
+  return parts.join(':')
+}
+
+/**
+ * One posting by id.
+ *
+ * A linear scan of the loaded array, which is the same cost the company page
+ * already pays and is dominated by the index load itself. Building a Map keyed
+ * by id would add a 113k-entry structure to every server instance to save a few
+ * milliseconds on a page that is not the hot path; measure before adding it.
+ */
+export async function getJobById(
+  id: string,
+): Promise<{ job: IndexedJob; company: IndexedCompany | null } | null> {
+  const index = await loadIndex()
+  if (!index) return null
+  const job = index.jobs.find((j) => j.externalId === id)
+  if (!job) return null
+  const company = index.companies.find((c) => c.slug === job.companySlug) ?? null
+  return { job, company }
+}
+
+/**
+ * Postings a reader of this one would plausibly want next.
+ *
+ * Ranked on overlap that is actually present in the data rather than on a
+ * similarity model there is no room for here: shared title tokens first (the
+ * strongest signal available), then shared skills, same company, same city.
+ * Only 20.7% of rows carry skills and 42.1% a posted date, so a rule that
+ * depended on either would return nothing for most jobs -- each signal
+ * contributes when present instead of being required.
+ */
+export async function similarJobs(job: IndexedJob, limit = 6): Promise<IndexedJob[]> {
+  const index = await loadIndex()
+  if (!index) return []
+
+  const stop = new Set(['the', 'and', 'for', 'with', 'senior', 'staff', 'lead', 'junior'])
+  const titleTokens = new Set(tokens(job.title).filter((t) => !stop.has(t)))
+  const skills = new Set((job.skills ?? []).map((s) => s.toLowerCase()))
+
+  const scored: { job: IndexedJob; score: number }[] = []
+  for (const other of index.jobs) {
+    if (other.externalId === job.externalId) continue
+
+    let score = 0
+    for (const t of tokens(other.title)) if (titleTokens.has(t)) score += 3
+    // A title-token overlap is the floor: without it the rest is noise, and
+    // "same company" alone would fill the list with unrelated departments.
+    if (score === 0) continue
+
+    if (skills.size) {
+      for (const sk of other.skills ?? []) if (skills.has(sk.toLowerCase())) score += 2
+    }
+    if (other.companySlug === job.companySlug) score += 1
+    if (job.city && other.city && other.city === job.city) score += 2
+    if (job.isRemote && other.isRemote) score += 1
+    if (other.postedAt) score += 0.5
+
+    scored.push({ job: other, score })
+  }
+
+  scored.sort((a, b) => b.score - a.score || (b.job.postedAt ?? '').localeCompare(a.job.postedAt ?? ''))
+
+  // Spread across employers so the list is not six roles at one company.
+  const out: IndexedJob[] = []
+  const perCompany = new Map<string, number>()
+  for (const { job: candidate } of scored) {
+    const seen = perCompany.get(candidate.companySlug) ?? 0
+    if (seen >= 2) continue
+    perCompany.set(candidate.companySlug, seen + 1)
+    out.push(candidate)
+    if (out.length >= limit) break
+  }
+  return out
 }
 
 export { COMPANY_BY_SLUG }

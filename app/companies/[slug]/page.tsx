@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { getCompany } from "@/lib/job-index"
+import { getCompany, jobPath } from "@/lib/job-index"
 import { formatValuation } from "@/lib/companies/registry"
 import { hasBankingIntelligence } from "@/lib/companies/banking-intelligence"
 import { getRecruitingContacts } from "@/lib/companies/recruiting-contacts"
@@ -11,8 +11,49 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ExternalLink, MapPin, Clock, ArrowLeft, Shield } from "lucide-react"
+import type { Metadata } from "next"
+import { absoluteUrl } from "@/lib/site"
+import { applyHref, APPLY_LINK_ATTRS } from "@/lib/analytics/links"
+import { TrackView } from "@/components/analytics/track-view"
 
-export const dynamic = "force-dynamic"
+/**
+ * Re-rendered hourly rather than on every request.
+ *
+ * Was `force-dynamic`, which opts the page out of the CDN entirely -- every
+ * visitor re-scanned a 113,416-row index to rebuild the same page. The data
+ * behind it only changes when the crawler publishes a new index.
+ */
+export const revalidate = 3600
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string }
+}): Promise<Metadata> {
+  const result = await getCompany(params.slug)
+  if (!result) return { title: "Company not found" }
+
+  const { company, jobs } = result
+  const title = `${company.name} jobs — ${jobs.length.toLocaleString("en-US")} open roles`
+  const description = [
+    `${jobs.length.toLocaleString("en-US")} open roles at ${company.name}`,
+    company.industry,
+    company.hqLocation,
+  ]
+    .filter(Boolean)
+    .join(" · ") +
+    ". Read from the company's own applicant tracking system; every role links to its own application page."
+
+  return {
+    title,
+    description,
+    alternates: { canonical: `/companies/${company.slug}` },
+    openGraph: { type: "website", title, description, url: absoluteUrl(`/companies/${company.slug}`) },
+    twitter: { card: "summary", title, description },
+    // A company with nothing open is a thin page.
+    robots: jobs.length > 0 ? undefined : { index: false, follow: true },
+  }
+}
 
 function timeAgo(iso?: string | null) {
   if (!iso) return null
@@ -51,6 +92,8 @@ export default async function CompanyPage({ params }: { params: { slug: string }
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+      <TrackView event={{ type: "company_view", companySlug: company.slug }} />
+
       <Navigation />
 
       <div className="mx-auto max-w-6xl px-4 py-6">
@@ -110,9 +153,9 @@ export default async function CompanyPage({ params }: { params: { slug: string }
 
             {/* Metrics */}
             <div className="mt-6 grid grid-cols-2 gap-4 border-t border-slate-100 pt-5 dark:border-slate-800 md:grid-cols-4">
-              <Metric label="Open roles" value={jobs.length.toLocaleString()} />
-              <Metric label="Remote roles" value={remote.toLocaleString()} />
-              <Metric label="Posted last 30 days" value={recent.toLocaleString()} />
+              <Metric label="Open roles" value={jobs.length.toLocaleString("en-US")} />
+              <Metric label="Remote roles" value={remote.toLocaleString("en-US")} />
+              <Metric label="Posted last 30 days" value={recent.toLocaleString("en-US")} />
               <Metric
                 label={company.valuationKind === "public" ? "Market cap" : "Valuation"}
                 value={valuation}
@@ -129,7 +172,7 @@ export default async function CompanyPage({ params }: { params: { slug: string }
               <p className="mt-3 text-xs leading-relaxed text-slate-400">
                 {company.valuationSource}
                 {company.valuationAsOf && (
-                  <> · as of {new Date(company.valuationAsOf).toLocaleDateString()}</>
+                  <> · as of {new Date(company.valuationAsOf).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</>
                 )}
               </p>
             )}
@@ -175,8 +218,12 @@ export default async function CompanyPage({ params }: { params: { slug: string }
                   <Card key={job.externalId} className="transition-shadow hover:shadow-sm">
                     <CardContent className="flex flex-wrap items-center justify-between gap-3 p-4">
                       <div className="min-w-0">
-                        <h3 className="truncate font-medium text-slate-900 dark:text-slate-100">
-                          {job.title}
+                        <h3 className="font-medium text-slate-900 dark:text-slate-100">
+                          {/* Links to the posting's own page. The only link on
+                              this row used to leave the site entirely. */}
+                          <Link href={jobPath(job)} className="line-clamp-2 hover:underline">
+                            {job.title}
+                          </Link>
                         </h3>
                         <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500">
                           {job.location && (
@@ -196,7 +243,7 @@ export default async function CompanyPage({ params }: { params: { slug: string }
                         </div>
                       </div>
                       <Button asChild size="sm" variant="outline">
-                        <a href={job.applyUrl} target="_blank" rel="noopener noreferrer">
+                        <a href={applyHref(job.externalId)} {...APPLY_LINK_ATTRS}>
                           Apply <ExternalLink className="ml-1.5 h-3 w-3" />
                         </a>
                       </Button>

@@ -20,6 +20,17 @@ public/data/ibm-jobs.json
 # Crawler state: large, machine-local, and meaningless in a read-only runtime.
 .ingest-state.json
 
+# Backups the pipeline writes beside the index it is about to rewrite.
+#
+# These are ignored by git (*.bak) but .gitignore is NOT consulted when this
+# file exists, so they were being uploaded: 118MB of them, as
+# public/data/jobs-deploy.json.pre-earlycareer.bak and its shard. Everything
+# under public/ is publicly servable, so a superseded copy of the whole index
+# was downloadable at its own URL -- stale job data served as though current,
+# to anyone who guessed the name.
+*.bak
+public/data/*.bak
+
 # The vendored location dataset is ~2.5GB of SQL/CSV used only by seed scripts.
 countries-states-cities-database
 

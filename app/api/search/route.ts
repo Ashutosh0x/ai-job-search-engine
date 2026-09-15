@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { searchJobs, type JobQuery } from '@/lib/job-index'
-import { guard, EXPENSIVE_READ } from '@/lib/api-guard'
+import { guard, EXPENSIVE_READ, publicReadCache } from '@/lib/api-guard'
 
 export const runtime = 'nodejs'
 
@@ -85,5 +85,5 @@ export async function GET(request: NextRequest) {
     )
   }
 
-  return NextResponse.json({ success: true, ...result })
+  return NextResponse.json({ success: true, ...result }, { headers: publicReadCache() })
 }

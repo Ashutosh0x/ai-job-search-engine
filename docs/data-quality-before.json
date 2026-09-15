@@ -1,0 +1,503 @@
+{
+  "generatedAt": "2026-09-15T07:46:20.361Z",
+  "index": {
+    "file": "public\\data\\jobs-deploy.json",
+    "indexGeneratedAt": "2026-09-14T21:33:50.957Z",
+    "declaredJobCount": 130863,
+    "actualJobCount": 130863
+  },
+  "totals": {
+    "jobs": 130863,
+    "sources": 10,
+    "companies": 736,
+    "countries": 133
+  },
+  "coverage": {
+    "title": 130863,
+    "company": 130863,
+    "applicationUrl": 130863,
+    "anyLocation": 123630,
+    "city": 118734,
+    "country": 103464,
+    "postedAt": 57008,
+    "description": 42897,
+    "salary": 4109,
+    "employmentType": 31992,
+    "seniority": 69102,
+    "skills": 25042,
+    "remote": 9027,
+    "directApply": 130863,
+    "jobPostingSchemaEligible": 42264
+  },
+  "malformed": {
+    "missingTitle": 0,
+    "missingCompany": 0,
+    "missingApplyUrl": 0,
+    "invalidApplyUrl": 0,
+    "missingDescription": 87966,
+    "thinDescription": 283,
+    "missingPostedAt": 73855,
+    "invalidPostedAt": 0,
+    "missingLocationEntirely": 1,
+    "cityIsCountryCode": 4761,
+    "cityIsUsStateCode": 204,
+    "cityIsAmbiguousCode": 628,
+    "cityIsNonPlaceWord": 435,
+    "countryIsCode": 3,
+    "missingCountry": 25214,
+    "missingCity": 9626,
+    "suspectCountryForCity": 68,
+    "missingSalaryCurrency": 0,
+    "salaryInverted": 0
+  },
+  "duplicates": {
+    "duplicateExternalIdGroups": 0,
+    "duplicateExternalIdRows": 0,
+    "duplicateApplicationUrlGroups": 0,
+    "duplicateApplicationUrlRows": 0,
+    "duplicateIdentityGroups": 5107,
+    "duplicateIdentityRows": 22699
+  },
+  "freshness": {
+    "datedRows": 57008,
+    "medianAgeDays": 39.5,
+    "p90AgeDays": 187.6,
+    "olderThan30d": 32627,
+    "olderThan90d": 13823,
+    "olderThan180d": 6039
+  },
+  "bySource": {
+    "workday": 70607,
+    "greenhouse": 18869,
+    "custom": 18384,
+    "smartrecruiters": 10481,
+    "ashby": 8573,
+    "eightfold": 2541,
+    "lever": 842,
+    "recruitee": 334,
+    "mokahr": 210,
+    "workable": 22
+  },
+  "topCountries": {
+    "United States": 48255,
+    "India": 21918,
+    "United Kingdom": 3578,
+    "Singapore": 3019,
+    "Germany": 2859,
+    "Japan": 2229,
+    "France": 2130,
+    "China": 1772,
+    "Canada": 1514,
+    "Taiwan": 1279,
+    "Malaysia": 1021,
+    "Ireland": 994,
+    "Mexico": 895,
+    "Philippines": 882,
+    "Australia": 764,
+    "Netherlands": 748,
+    "Hong Kong SAR China": 709,
+    "Spain": 665,
+    "Israel": 627,
+    "South Korea": 584,
+    "Brazil": 584,
+    "Poland": 581,
+    "Italy": 381,
+    "Argentina": 348,
+    "Vietnam": 342
+  },
+  "samples": {
+    "missingTitle": [],
+    "missingCompany": [],
+    "missingApplyUrl": [],
+    "invalidApplyUrl": [],
+    "missingDescription": [
+      {
+        "id": "smartrecruiters:SopraSteria1:744000149337912",
+        "company": "Sopra Steria",
+        "title": "FPGA Verification Engineer (Entry Level)",
+        "locationRaw": "East Hartford, CT, us"
+      },
+      {
+        "id": "smartrecruiters:Endava:744000149279979",
+        "company": "Endava",
+        "title": "Junior Software Engineer (C/C++, Linux)",
+        "locationRaw": "Ho Chi Minh City, vn"
+      },
+      {
+        "id": "smartrecruiters:O-I:744000149276839",
+        "company": "O-I",
+        "title": "Manufacturing Solution Analyst (Junior/Regular)",
+        "locationRaw": "Poznań, Województwo wielkopolskie, pl"
+      },
+      {
+        "id": "smartrecruiters:O-I:744000149265549",
+        "company": "O-I",
+        "title": "Business Solutions Intern",
+        "locationRaw": "Poznań, Województwo wielkopolskie, pl"
+      },
+      {
+        "id": "smartrecruiters:Endava:744000149257399",
+        "company": "Endava",
+        "title": "Junior Software Engineer (C/Python, Cloud)",
+        "locationRaw": "Ho Chi Minh City, vn"
+      }
+    ],
+    "thinDescription": [
+      {
+        "id": "custom:CX_1001:210783722",
+        "company": "JPMorgan Chase",
+        "title": "Data Platform DevOps Engineer – Senior Associate (Enterprise Data Solutions)",
+        "locationRaw": "Plano, TX, United States",
+        "length": 36
+      },
+      {
+        "id": "custom:CX_1001:210783781",
+        "company": "JPMorgan Chase",
+        "title": "Asset Based Lending Field Examination - Senior Associate",
+        "locationRaw": "Dallas, TX, United States",
+        "length": 47
+      },
+      {
+        "id": "custom:CX_1001:210789837",
+        "company": "JPMorgan Chase",
+        "title": "Equity Operations Transformation Project Manager - Associate",
+        "locationRaw": "BOURNEMOUTH, DORSET, United Kingdom",
+        "length": 41
+      },
+      {
+        "id": "custom:CX_1001:210763120",
+        "company": "JPMorgan Chase",
+        "title": "2027 Commercial & Investment Bank Markets Full-Time Analyst Program - Research",
+        "locationRaw": "New York, NY, United States",
+        "length": 34
+      },
+      {
+        "id": "custom:CX_1001:210788461",
+        "company": "JPMorgan Chase",
+        "title": "Compensation Associate - Global Investment Bank",
+        "locationRaw": "Jersey City, NJ, United States",
+        "length": 42
+      }
+    ],
+    "missingPostedAt": [
+      {
+        "id": "workday:globalhr:01872989",
+        "company": "Globalhr",
+        "title": "FPGA Electrical Design Engineer Intern (Summer 2027)(Onsite)",
+        "locationRaw": "US-AZ-TUCSON-M02 ~ 1151 E Hermans Rd ~ BLDG M02"
+      },
+      {
+        "id": "workday:disney:10158116-1",
+        "company": "Disney",
+        "title": "Marvel Business Affairs and Legal JD Intern, Spring 2027",
+        "locationRaw": "Remote Worker Location, USA"
+      },
+      {
+        "id": "workday:abb:JR00044385",
+        "company": "ABB",
+        "title": "Commercial Strategy Intern - Spring 2027",
+        "locationRaw": "Remote, Florida, USA"
+      },
+      {
+        "id": "workday:amgen:R-255709",
+        "company": "Amgen",
+        "title": "Undergrad Intern – Machine Learning Engineer – Technology, AI & Data (Summer 2027)",
+        "locationRaw": "United States - Remote"
+      },
+      {
+        "id": "workday:amgen:R-255743",
+        "company": "Amgen",
+        "title": "Grad Intern – Machine Learning Engineer – Technology, AI & Data (Summer 2027)",
+        "locationRaw": "United States - Remote"
+      }
+    ],
+    "invalidPostedAt": [],
+    "missingLocationEntirely": [
+      {
+        "id": "mokahr:tripoverseas:989b019a-0721-439b-8933-241aebe642d4",
+        "company": "Trip.com Group",
+        "title": "Marketing Campaign & Design Contractor",
+        "locationRaw": null
+      }
+    ],
+    "cityIsCountryCode": [
+      {
+        "id": "custom:amazon:10538325",
+        "company": "Amazon",
+        "title": "【新卒採用2028入社/ 非技術職／正社員】オペレーション部門・エリアマネージャー職",
+        "locationRaw": "JP, 23, Tokyo",
+        "city": "JP"
+      },
+      {
+        "id": "custom:amazon:10537998",
+        "company": "Amazon",
+        "title": "Data Center Engineering Operations Technician Internship",
+        "locationRaw": "US, VA, Sterling",
+        "city": "US"
+      },
+      {
+        "id": "custom:amazon:10535822",
+        "company": "Amazon",
+        "title": "Data Center Rack Installation Technician (Entry Level)",
+        "locationRaw": "ES, Huesca",
+        "city": "ES"
+      },
+      {
+        "id": "custom:amazon:10535821",
+        "company": "Amazon",
+        "title": "Data Center Rack Installation Technician (Entry Level)",
+        "locationRaw": "ES, Zaragoza",
+        "city": "ES"
+      },
+      {
+        "id": "custom:amazon:10532290",
+        "company": "Amazon",
+        "title": "Business Strategy & Execution Operations Engineering Intern Spring and Summer 2027 (Bellevue, WA )",
+        "locationRaw": "US, WA, Bellevue",
+        "city": "US"
+      }
+    ],
+    "cityIsUsStateCode": [
+      {
+        "id": "workday:cigna:26009535",
+        "company": "Cigna",
+        "title": "The Cigna Group's Technology Development Program - AI Engineering Track Summer Internship",
+        "locationRaw": "TX, Austin, 11501 Alterra Pkwy STE 500",
+        "city": "TX"
+      },
+      {
+        "id": "workday:cigna:26009529",
+        "company": "Cigna",
+        "title": "The Cigna Group's Technology Development Program  -  Infrastructure & Cloud Engineering Track Summer Internship",
+        "locationRaw": "CT, Bloomfield, 900 Cottage Grove Rd Wilde Bldg",
+        "city": "CT"
+      },
+      {
+        "id": "workday:cigna:26010711",
+        "company": "Cigna",
+        "title": "Analytics Leadership Development Program (ALDP) Summer Internship",
+        "locationRaw": "CT, Bloomfield, 900 Cottage Grove Rd Wilde Bldg",
+        "city": "CT"
+      },
+      {
+        "id": "workday:cigna:26010712",
+        "company": "Cigna",
+        "title": "Artificial Intelligence Innovation Development Program (AIIDP) Summer Internship",
+        "locationRaw": "NC, Raleigh, 701 Corporate Center Dr STE 200",
+        "city": "NC"
+      },
+      {
+        "id": "workday:capri:R_786055",
+        "company": "Capri",
+        "title": "Junior Copywriter",
+        "locationRaw": "NY Metro Area",
+        "city": "NY"
+      }
+    ],
+    "cityIsAmbiguousCode": [
+      {
+        "id": "custom:amazon:10538066",
+        "company": "Amazon",
+        "title": "ML Systems Software Development Engineer Intern, Annapurna Labs - 2027",
+        "locationRaw": "CA, ON, Toronto",
+        "city": "CA"
+      },
+      {
+        "id": "custom:amazon:10535280",
+        "company": "Amazon",
+        "title": "Software Development Engineer Intern, ROBOTICS - 2027",
+        "locationRaw": "CA, ON, Toronto",
+        "city": "CA"
+      },
+      {
+        "id": "custom:amazon:10537298",
+        "company": "Amazon",
+        "title": "Praktikum im Bereich Logistik - Mannheim - 2027",
+        "locationRaw": "DE, BW, Mannheim",
+        "city": "DE"
+      },
+      {
+        "id": "custom:amazon:10525952",
+        "company": "Amazon",
+        "title": "Financial Analyst Intern, NL/RE&E Finance team",
+        "locationRaw": "IN, KA, Bengaluru",
+        "city": "IN"
+      },
+      {
+        "id": "smartrecruiters:KPFFConsultingEngineers:3743990015204056",
+        "company": "KPFF Consulting Engineers",
+        "title": "Structural Engineering Intern - 2027",
+        "locationRaw": "St. Louis, MO, us",
+        "city": "MO"
+      }
+    ],
+    "cityIsNonPlaceWord": [
+      {
+        "id": "workday:amgen:R-255709",
+        "company": "Amgen",
+        "title": "Undergrad Intern – Machine Learning Engineer – Technology, AI & Data (Summer 2027)",
+        "locationRaw": "United States - Remote",
+        "city": "Remote"
+      },
+      {
+        "id": "workday:amgen:R-255743",
+        "company": "Amgen",
+        "title": "Grad Intern – Machine Learning Engineer – Technology, AI & Data (Summer 2027)",
+        "locationRaw": "United States - Remote",
+        "city": "Remote"
+      },
+      {
+        "id": "workday:globalhr:01873096",
+        "company": "Globalhr",
+        "title": "Summer Intern (Remote)",
+        "locationRaw": "US-CT-REMOTE",
+        "city": "Remote"
+      },
+      {
+        "id": "workday:caci:331551",
+        "company": "Caci",
+        "title": "Business/Systems Analyst Intern - Summer 2027",
+        "locationRaw": "Remote (Any State)",
+        "city": "Remote"
+      },
+      {
+        "id": "workday:salesforce:JR318163",
+        "company": "Salesforce",
+        "title": "Junior Technical Support Engineer【障害者採用】",
+        "locationRaw": "Japan - Remote",
+        "city": "Remote"
+      }
+    ],
+    "countryIsCode": [
+      {
+        "id": "smartrecruiters:SMAC1:744000115669297",
+        "company": "SMAC",
+        "title": "Alternance - Ingénieur(e) Bureau d'Etudes de Prix F/H",
+        "locationRaw": "AIX-EN-PROVENCE, fr",
+        "country": "AIX"
+      },
+      {
+        "id": "smartrecruiters:SMAC1:744000115660038",
+        "company": "SMAC",
+        "title": "Alternance - Chargé(e) d'Affaires SAS F/H",
+        "locationRaw": "AIX-EN-PROVENCE, fr",
+        "country": "AIX"
+      },
+      {
+        "id": "smartrecruiters:SMAC1:744000115658547",
+        "company": "SMAC",
+        "title": "Alternance - Conducteur(trice) de Travaux F/H",
+        "locationRaw": "AIX-EN-PROVENCE, fr",
+        "country": "AIX"
+      }
+    ],
+    "missingCountry": [
+      {
+        "id": "custom:amazon:10538325",
+        "company": "Amazon",
+        "title": "【新卒採用2028入社/ 非技術職／正社員】オペレーション部門・エリアマネージャー職",
+        "locationRaw": "JP, 23, Tokyo"
+      },
+      {
+        "id": "custom:amazon:10535822",
+        "company": "Amazon",
+        "title": "Data Center Rack Installation Technician (Entry Level)",
+        "locationRaw": "ES, Huesca"
+      },
+      {
+        "id": "custom:amazon:10535821",
+        "company": "Amazon",
+        "title": "Data Center Rack Installation Technician (Entry Level)",
+        "locationRaw": "ES, Zaragoza"
+      },
+      {
+        "id": "custom:amazon:10538066",
+        "company": "Amazon",
+        "title": "ML Systems Software Development Engineer Intern, Annapurna Labs - 2027",
+        "locationRaw": "CA, ON, Toronto"
+      },
+      {
+        "id": "custom:amazon:10537442",
+        "company": "Amazon",
+        "title": "Operations Engineering Intern -  start date Q3 2027",
+        "locationRaw": "ES, B, Barcelona"
+      }
+    ],
+    "missingCity": [
+      {
+        "id": "mokahr:tripoverseas:46f101b9-f678-4668-916e-6e40db700fd6",
+        "company": "Trip.com Group",
+        "title": "Operations Intern",
+        "locationRaw": "Japan"
+      },
+      {
+        "id": "mokahr:tripoverseas:f6c0f7a2-585b-4549-844d-556e3d56c0af",
+        "company": "Trip.com Group",
+        "title": "Partnership Marketing Project Support Intern",
+        "locationRaw": "South Korea"
+      },
+      {
+        "id": "mokahr:tripoverseas:7845e345-d5b1-4e6c-83a4-f75acf006fed",
+        "company": "Trip.com Group",
+        "title": "Market Executive (Business Development Support) - Intern",
+        "locationRaw": "Germany"
+      },
+      {
+        "id": "mokahr:tripoverseas:6aafd996-ccdd-4963-8dc4-717e3265492f",
+        "company": "Trip.com Group",
+        "title": "Legal Intern",
+        "locationRaw": "Netherlands"
+      },
+      {
+        "id": "mokahr:tripoverseas:36d19d5a-c7cb-41fe-889e-190d2cc053ca",
+        "company": "Trip.com Group",
+        "title": "Marketing Campaign Intern, MY",
+        "locationRaw": "Malaysia"
+      }
+    ],
+    "suspectCountryForCity": [
+      {
+        "id": "custom:amazon:10528565",
+        "company": "Amazon",
+        "title": "Operations & Logistics Internship Toscana",
+        "locationRaw": "IT, PI, Pisa",
+        "head": "IT",
+        "country": "United States"
+      },
+      {
+        "id": "custom:amazon:10528563",
+        "company": "Amazon",
+        "title": "Operations & Logistics Internship Sicilia",
+        "locationRaw": "IT, PA, Palermo",
+        "head": "IT",
+        "country": "United States"
+      },
+      {
+        "id": "custom:amazon:10528500",
+        "company": "Amazon",
+        "title": "Operations & Logistics Internship - Umbria",
+        "locationRaw": "IT, PG, Soccorso",
+        "head": "IT",
+        "country": "United States"
+      },
+      {
+        "id": "custom:amazon:10528501",
+        "company": "Amazon",
+        "title": "Operations & Logistics Internship - Sardegna",
+        "locationRaw": "IT, CA, Cagliari",
+        "head": "IT",
+        "country": "United States"
+      },
+      {
+        "id": "custom:amazon:10528445",
+        "company": "Amazon",
+        "title": "Operations & Logistics Internship - Puglia",
+        "locationRaw": "IT, Bitonto (ba)",
+        "head": "IT",
+        "country": "United States"
+      }
+    ],
+    "missingSalaryCurrency": [],
+    "salaryInverted": []
+  }
+}

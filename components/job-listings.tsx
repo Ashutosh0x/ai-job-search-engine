@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -21,6 +22,9 @@ import {
 } from "lucide-react"
 import Navigation from "@/components/navigation"
 import { CompanyLogo } from "@/components/company-logo"
+import { applyHref, APPLY_LINK_ATTRS } from "@/lib/analytics/links"
+import { track } from "@/lib/analytics/client"
+import { TrackImpression } from "@/components/analytics/impression"
 
 /**
  * Job search UI.
@@ -56,6 +60,17 @@ const OPENINGS = [
   { min: 500, label: "500+ open roles" },
 ]
 
+/**
+ * Path to a posting's own page.
+ *
+ * Ids are `provider:companyToken:sourceId` and every one of the 113,416 in the
+ * corpus has exactly that shape, so the parts map onto path segments losslessly.
+ * Mirrors jobPath() in lib/job-index.ts, which is the server-side inverse.
+ */
+function jobHref(externalId: string): string {
+  return `/jobs/${externalId.split(":").map(encodeURIComponent).join("/")}`
+}
+
 const SORTS = [
   { id: "relevance", label: "Relevance" },
   { id: "recent", label: "Most recent" },
@@ -69,7 +84,7 @@ function formatValuation(usd?: number | null) {
   if (usd >= 1e12) return `$${(usd / 1e12).toFixed(1)}T`
   if (usd >= 1e9) return `$${(usd / 1e9).toFixed(usd >= 1e10 ? 0 : 1)}B`
   if (usd >= 1e6) return `$${(usd / 1e6).toFixed(0)}M`
-  return `$${usd.toLocaleString()}`
+  return `$${usd.toLocaleString("en-US")}`
 }
 
 function timeAgo(iso?: string | null) {
@@ -106,20 +121,49 @@ interface SearchResponse {
 }
 
 export default function JobListings() {
-  const [q, setQ] = useState("")
-  const [debouncedQ, setDebouncedQ] = useState("")
-  const [location, setLocation] = useState("")
-  const [remoteOnly, setRemoteOnly] = useState(false)
-  const [tiers, setTiers] = useState<string[]>([])
-  const [minOpenRoles, setMinOpenRoles] = useState<number | null>(null)
-  const [postedWithinDays, setPostedWithinDays] = useState<number | null>(null)
-  const [departments, setDepartments] = useState<string[]>([])
-  const [cities, setCities] = useState<string[]>([])
-  const [countries, setCountries] = useState<string[]>([])
-  const [companies, setCompanies] = useState<string[]>([])
-  const [sort, setSort] = useState("relevance")
-  const [page, setPage] = useState(1)
-  const [showFilters, setShowFilters] = useState(false)
+  /**
+   * THE SEARCH IS RESTORED FROM THE URL, AND WRITTEN BACK TO IT.
+   *
+   * Every filter on this page lived only in component state. A search with a
+   * query, three countries, a valuation tier and a date range could not be
+   * linked to a colleague, bookmarked, or survive a reload -- and reloading
+   * silently returned an unfiltered result set, which looks like the filters
+   * failed rather than like the state was never kept.
+   *
+   * Initial state is read from the query string here; the effect below writes
+   * it back as it changes.
+   */
+  const params = useSearchParams()
+  const str = (k: string, d = "") => params.get(k) ?? d
+  const list = (k: string) => {
+    const raw = params.get(k)
+    return raw ? raw.split(",").map((v) => v.trim()).filter(Boolean) : []
+  }
+  const num = (k: string) => {
+    const raw = params.get(k)
+    if (raw === null) return null
+    const n = Number(raw)
+    return Number.isFinite(n) && n > 0 ? n : null
+  }
+
+  const [q, setQ] = useState(() => str("q"))
+  const [debouncedQ, setDebouncedQ] = useState(() => str("q"))
+  const [location, setLocation] = useState(() => str("location"))
+  const [remoteOnly, setRemoteOnly] = useState(() => params.get("remote") === "true")
+  const [tiers, setTiers] = useState<string[]>(() => list("valuationTier"))
+  const [minOpenRoles, setMinOpenRoles] = useState<number | null>(() => num("minOpenRoles"))
+  const [postedWithinDays, setPostedWithinDays] = useState<number | null>(() => num("postedWithinDays"))
+  const [departments, setDepartments] = useState<string[]>(() => list("department"))
+  const [cities, setCities] = useState<string[]>(() => list("city"))
+  const [countries, setCountries] = useState<string[]>(() => list("country"))
+  const [companies, setCompanies] = useState<string[]>(() => list("company"))
+  const [sort, setSort] = useState(() => str("sort", "relevance"))
+  const [page, setPage] = useState(() => num("page") ?? 1)
+  // Open the rail on load when the URL already carries filters, so a shared
+  // link shows WHY it is showing what it is showing.
+  const [showFilters, setShowFilters] = useState(
+    () => [...params.keys()].some((k) => k !== "q" && k !== "sort" && k !== "page"),
+  )
 
   const [data, setData] = useState<SearchResponse | null>(null)
   const [loading, setLoading] = useState(true)
@@ -132,7 +176,15 @@ export default function JobListings() {
 
   // Any filter change resets to the first page; without this you can end up
   // on page 7 of a 2-page result set and see an empty list.
+  //
+  // Skipped on the first run, which would otherwise discard a `page` restored
+  // from the URL and send every shared link back to page 1.
+  const firstFilterRun = useRef(true)
   useEffect(() => {
+    if (firstFilterRun.current) {
+      firstFilterRun.current = false
+      return
+    }
     setPage(1)
   }, [debouncedQ, location, remoteOnly, tiers, minOpenRoles, postedWithinDays, departments, cities, countries, companies, sort])
 
@@ -154,18 +206,70 @@ export default function JobListings() {
     return p.toString()
   }, [debouncedQ, location, remoteOnly, tiers, minOpenRoles, postedWithinDays, departments, cities, countries, companies, sort, page])
 
+  /**
+   * Mirror the search into the address bar.
+   *
+   * `history.replaceState` rather than router.replace: this runs on every
+   * filter change, and a router navigation per change would re-render the tree
+   * and re-read searchParams, which is a loop. replaceState updates the URL
+   * without a navigation, which is exactly what is wanted -- the address bar
+   * always describes what is on screen, and reload or share reproduces it.
+   *
+   * `pageSize` is dropped because it is a transport detail, not part of the
+   * search someone would share.
+   */
+  useEffect(() => {
+    const share = new URLSearchParams(queryString)
+    share.delete("pageSize")
+    if (share.get("page") === "1") share.delete("page")
+    if (share.get("sort") === "relevance") share.delete("sort")
+    const qs = share.toString()
+    window.history.replaceState(null, "", qs ? `/jobs?${qs}` : "/jobs")
+  }, [queryString])
+
   const reqId = useRef(0)
+  const inFlight = useRef<AbortController | null>(null)
   useEffect(() => {
     const id = ++reqId.current
+    // Cancel the superseded request rather than only ignoring its response:
+    // typing across a 113k-row index otherwise leaves a queue of scans running
+    // that nobody is waiting for.
+    inFlight.current?.abort()
+    const controller = new AbortController()
+    inFlight.current = controller
     setLoading(true)
-    fetch(`/api/search?${queryString}`)
+    fetch(`/api/search?${queryString}`, { signal: controller.signal })
       .then((r) => r.json())
       .then((json) => {
         // Ignore responses from superseded requests so a slow early query
         // cannot overwrite a fast later one.
-        if (id === reqId.current) setData(json)
+        if (id === reqId.current) {
+          setData(json)
+          if (page === 1) {
+            track({
+              type: 'search',
+              query: debouncedQ || undefined,
+              location: location || undefined,
+              sort,
+              filters: {
+                ...(remoteOnly ? { remote: 'true' } : {}),
+                ...(tiers.length ? { valuationTier: tiers.join('|') } : {}),
+                ...(countries.length ? { country: countries.join('|') } : {}),
+                ...(cities.length ? { city: cities.join('|') } : {}),
+                ...(departments.length ? { department: departments.join('|') } : {}),
+                ...(companies.length ? { company: companies.join('|') } : {}),
+                ...(postedWithinDays ? { postedWithinDays: String(postedWithinDays) } : {}),
+                ...(minOpenRoles ? { minOpenRoles: String(minOpenRoles) } : {}),
+              },
+              resultCount: typeof json?.total === 'number' ? json.total : 0,
+              page: 1,
+            })
+          }
+        }
       })
-      .catch(() => {
+      .catch((err) => {
+        // An abort is us cancelling our own request, not a failure to report.
+        if (err?.name === "AbortError") return
         if (id === reqId.current) setData({ success: false, error: "Could not reach the search service" })
       })
       .finally(() => {
@@ -368,7 +472,7 @@ export default function JobListings() {
                 ) : data?.success ? (
                   <>
                     <strong className="text-slate-900 dark:text-slate-100">
-                      {data.total?.toLocaleString()}
+                      {data.total?.toLocaleString("en-US")}
                     </strong>{" "}
                     {data.total === 1 ? "role" : "roles"}
                     {data.generatedAt && (
@@ -461,13 +565,20 @@ export default function JobListings() {
             )}
 
             <div className="space-y-3">
-              {jobs.map((job: any) => {
+              {jobs.map((job: any, index: number) => {
                 const salary = formatSalary(job.salaryMin, job.salaryMax, job.salaryCurrency)
                 const posted = timeAgo(job.postedAt)
                 const valuation = formatValuation(job.company?.valuationUsd)
 
                 return (
-                  <Card key={job.externalId} className="transition-shadow hover:shadow-md">
+                  <TrackImpression
+                    key={job.externalId}
+                    jobId={job.externalId}
+                    companySlug={job.companySlug}
+                    position={(data?.page ? (data.page - 1) * 20 : 0) + index + 1}
+                    query={debouncedQ || undefined}
+                  >
+                  <Card className="transition-shadow hover:shadow-md">
                     <CardContent className="p-4">
                       <div className="flex gap-4">
                         <Link href={`/companies/${job.companySlug}`} aria-label={job.companyName}>
@@ -481,8 +592,18 @@ export default function JobListings() {
                         <div className="min-w-0 flex-1">
                           <div className="flex flex-wrap items-start justify-between gap-2">
                             <div className="min-w-0">
-                              <h3 className="truncate font-semibold text-slate-900 dark:text-slate-100">
-                                {job.title}
+                              {/* The title is the link to the posting's own
+                                  page. Before this every card's only outbound
+                                  link left the site, so the job pages had no
+                                  internal links at all -- unreachable to a
+                                  reader browsing and invisible to a crawler. */}
+                              <h3 className="font-semibold text-slate-900 dark:text-slate-100">
+                                <Link
+                                  href={jobHref(job.externalId)}
+                                  className="line-clamp-2 hover:underline"
+                                >
+                                  {job.title}
+                                </Link>
                               </h3>
                               <Link
                                 href={`/companies/${job.companySlug}`}
@@ -492,7 +613,7 @@ export default function JobListings() {
                               </Link>
                             </div>
                             <Button asChild size="sm" variant="outline">
-                              <a href={job.applyUrl} target="_blank" rel="noopener noreferrer">
+                              <a href={applyHref(job.externalId)} {...APPLY_LINK_ATTRS}>
                                 Apply <ExternalLink className="ml-1.5 h-3 w-3" />
                               </a>
                             </Button>
@@ -543,6 +664,7 @@ export default function JobListings() {
                       </div>
                     </CardContent>
                   </Card>
+                  </TrackImpression>
                 )
               })}
             </div>

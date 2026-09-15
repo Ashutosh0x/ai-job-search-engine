@@ -1,3 +1,4 @@
+import { tokenizeText, expandQueryTokens } from './normalize'
 /**
  * Inverted index with BM25 scoring, for candidate retrieval.
  *
@@ -88,11 +89,16 @@ export interface BuiltIndex {
   docCount: number
 }
 
+/**
+ * Tokenise for indexing.
+ *
+ * Delegates to lib/search/normalize.ts so documents and queries are folded the
+ * same way. It used to be a bare lowercase-and-split, which meant no accent
+ * folding ("Zürich" shattered into "z" and "rich"), no morphology ("engineer"
+ * missed every "Engineering Manager") and no abbreviations.
+ */
 export function tokenize(text: string): string[] {
-  return text
-    .toLowerCase()
-    .split(/[^a-z0-9+#.]+/)
-    .filter((t) => t.length > 1 && t.length < 40)
+  return tokenizeText(text)
 }
 
 /**
@@ -171,7 +177,14 @@ export interface RetrievalResult {
  * of the query terms are never visited -- which is the entire point.
  */
 export function retrieve(index: BuiltIndex, query: string, limit = 500): RetrievalResult {
-  const terms = [...new Set(tokenize(query))]
+  /**
+   * Query terms, plus curated alternatives.
+   *
+   * Expansion is query-side only: "ml engineer" also searches "machine" and
+   * "learning" without those synonyms being written into the index, which would
+   * inflate it and distort the document statistics BM25 depends on.
+   */
+  const terms = expandQueryTokens(query)
   if (!terms.length) return { candidates: [], totalMatched: 0, truncated: false }
 
   // doc -> accumulated score

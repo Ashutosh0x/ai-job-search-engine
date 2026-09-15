@@ -1,0 +1,22 @@
+[
+  { "name": "CyberAgent", "domain": "cyberagent.co.jp", "careers": "https://www.cyberagent.co.jp/careers/professional/" },
+  { "name": "DeNA", "domain": "dena.com", "careers": "https://career.dena.com/" },
+  { "name": "SmartNews", "domain": "smartnews.com", "careers": "https://careers.smartnews.com/" },
+  { "name": "PayPay", "domain": "paypay.ne.jp", "careers": "https://about.paypay.ne.jp/career/" },
+  { "name": "Money Forward", "domain": "moneyforward.com", "careers": "https://recruit.moneyforward.com/" },
+  { "name": "Sansan", "domain": "sansan.com", "careers": "https://media.sansan-engineering.com/recruit" },
+  { "name": "freee", "domain": "freee.co.jp", "careers": "https://jobs.freee.co.jp/" },
+  { "name": "Timee", "domain": "timee.co.jp", "careers": "https://timee.co.jp/recruit/" },
+  { "name": "IVRy", "domain": "ivry.jp", "careers": "https://recruit.ivry.jp/" },
+  { "name": "Tanium", "domain": "tanium.com", "careers": "https://www.tanium.com/careers/" },
+  { "name": "Woven by Toyota", "domain": "woven.toyota", "careers": "https://woven.toyota/en/careers/" },
+  { "name": "Mercari", "domain": "mercari.com", "careers": "https://careers.mercari.com/" },
+  { "name": "LINE Yahoo", "domain": "lycorp.co.jp", "careers": "https://www.lycorp.co.jp/en/recruit/" },
+  { "name": "Preferred Networks", "domain": "preferred.jp", "careers": "https://www.preferred.jp/en/careers/" },
+  { "name": "SODA", "domain": "soda-inc.jp", "careers": "https://recruit.soda-inc.jp/" },
+  { "name": "Autify", "domain": "autify.com", "careers": "https://autify.com/careers" },
+  { "name": "Algomatic", "domain": "algomatic.jp", "careers": "https://algomatic.jp/recruit" },
+  { "name": "Kyash", "domain": "kyash.co", "careers": "https://kyash.co/recruit" },
+  { "name": "Studist", "domain": "studist.jp", "careers": "https://recruit.studist.jp/" },
+  { "name": "Ubie", "domain": "ubie.life", "careers": "https://recruit.ubie.life/" }
+]

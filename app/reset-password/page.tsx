@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect } from "react";
+import React, { Suspense, useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,42 @@ import { getSupabaseClientSafe } from "@/lib/supabase";
  * inlined and actually present.
  */
 
+/**
+ * `useSearchParams` must sit under a Suspense boundary.
+ *
+ * Without one Next fails the build with `missing-suspense-with-csr-bailout`.
+ * This page hit it the moment server rendering was restored: the root layout
+ * used to return null on the server for every route, so nothing here was ever
+ * prerendered and the error had no opportunity to fire. Fixing SSR surfaced it
+ * rather than caused it.
+ */
 export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={<ResetPasswordSkeleton />}>
+      <ResetPasswordForm />
+    </Suspense>
+  );
+}
+
+/** The page's own frame, so the layout does not shift when the form resolves. */
+function ResetPasswordSkeleton() {
+  return (
+    <>
+      <Navigation />
+      <div className="min-h-screen flex">
+        <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900" />
+        <div className="flex-1 flex items-center justify-center p-4 sm:p-8">
+          <div className="w-full max-w-md space-y-4">
+            <div className="h-8 w-40 animate-pulse rounded bg-gray-200 dark:bg-gray-800" />
+            <div className="h-64 animate-pulse rounded-xl bg-gray-200 dark:bg-gray-800" />
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function ResetPasswordForm() {
   const [step, setStep] = useState<'request' | 'verify'>('request');
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');

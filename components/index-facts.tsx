@@ -76,14 +76,14 @@ export default function IndexFacts() {
         <div className="text-center">
           <Briefcase className="mx-auto mb-2 h-6 w-6 text-purple-600 dark:text-purple-400" />
           <div className="text-3xl font-bold text-gray-900 dark:text-white">
-            {data.total.toLocaleString()}
+            {data.total.toLocaleString("en-US")}
           </div>
           <div className="text-sm text-gray-600 dark:text-gray-400">indexed roles</div>
         </div>
         <div className="text-center">
           <Building2 className="mx-auto mb-2 h-6 w-6 text-purple-600 dark:text-purple-400" />
           <div className="text-3xl font-bold text-gray-900 dark:text-white">
-            {employers.toLocaleString()}
+            {employers.toLocaleString("en-US")}
           </div>
           <div className="text-sm text-gray-600 dark:text-gray-400">employers</div>
         </div>
@@ -106,7 +106,7 @@ export default function IndexFacts() {
                 className="rounded-full border border-gray-200 bg-white px-3 py-1.5 text-sm text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
               >
                 {c.label ?? c.value}
-                <span className="ml-1.5 text-gray-400">{c.count.toLocaleString()}</span>
+                <span className="ml-1.5 text-gray-400">{c.count.toLocaleString("en-US")}</span>
               </span>
             ))}
           </div>
@@ -115,9 +115,9 @@ export default function IndexFacts() {
 
       {built && (
         <p className="mt-8 text-center text-xs text-gray-500 dark:text-gray-400">
-          Index built {built.toLocaleDateString()}
+          Index built {built.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
           {data.deployment?.bounded && data.deployment.corpusTotal
-            ? ` — a ${data.total.toLocaleString()}-role slice of ${data.deployment.corpusTotal.toLocaleString()} crawled, bounded to fit the deployment`
+            ? ` — a ${data.total.toLocaleString("en-US")}-role slice of ${data.deployment.corpusTotal.toLocaleString("en-US")} crawled, bounded to fit the deployment`
             : ""}
         </p>
       )}

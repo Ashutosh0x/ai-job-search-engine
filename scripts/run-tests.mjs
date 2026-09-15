@@ -40,6 +40,17 @@ const HERE = dirname(fileURLToPath(import.meta.url))
 
 const SUITES = [
   'test-location.mjs',
+  'test-location-filter.mjs',
+  'test-index-selection.mjs',
+  'test-job-posting-schema.mjs',
+  'test-ssr-render.mjs',
+  'test-search-recall.mjs',
+  'test-search-invariants.mjs',
+  'test-search-normalize.mjs',
+  'test-diversify.mjs',
+  'test-analytics.mjs',
+  'test-analytics-redirect.mjs',
+  'test-analytics-funnel.mjs',
   'test-retrieval.mjs',
   'test-registry-slugs.mjs',
   'test-merge.mjs',

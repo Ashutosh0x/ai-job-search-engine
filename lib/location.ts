@@ -1,3 +1,4 @@
+import { detectReversal, isMacroRegion } from './location-order'
 /**
  * Location normalisation.
  *
@@ -129,7 +130,20 @@ const NON_PLACE =
 function titleCase(s: string): string {
   return s
     .split(/\s+/)
-    .map((w) => (w.length > 2 ? w[0].toUpperCase() + w.slice(1) : w.toUpperCase()))
+    .map((w) => {
+      if (!w) return w
+      /**
+       * A short word is upper-cased only when it was ALREADY written as a code.
+       *
+       * The rule used to be "two characters or fewer -> upper-case", which is
+       * right for a bare state code and wrong inside a place name: "st louis"
+       * became "ST Louis", and the same hit St Paul, Da Nang and Le Havre.
+       * Respecting the input's own casing separates a code from a word without
+       * needing to know which places exist.
+       */
+      if (w.length <= 3 && w === w.toUpperCase() && /[A-Z]/.test(w)) return w
+      return w[0].toUpperCase() + w.slice(1)
+    })
     .join(' ')
 }
 
@@ -169,8 +183,24 @@ function looksLikeStreetAddress(token: string): boolean {
   // A leading building/house number, or a postcode-style alphanumeric block.
   if (/^\d+[\w-]*\s/.test(t)) return true
   if (/^[A-Z]?\d{3,}[A-Z]{0,2}\b/i.test(t)) return true
-  // Thoroughfare words, in the languages that show up in ATS data.
-  if (/\b(road|rd|street|st|avenue|ave|lane|ln|drive|dr|boulevard|blvd|highway|hwy|suite|ste|floor|building|bldg|block|plot|jalan|calle|rua|strasse|straße|via)\b/i.test(t)) {
+  // Thoroughfare words spelled out. Unambiguous wherever they appear.
+  if (/\b(road|street|avenue|lane|drive|boulevard|highway|suite|floor|building|block|plot|jalan|calle|rua|strasse|straße|via)\b/i.test(t)) {
+    return true
+  }
+  /**
+   * The ABBREVIATIONS only mean a thoroughfare when they are not the first word.
+   *
+   * "st" was matched anywhere, so "St Louis" read as a street and was dropped:
+   * "St Louis, MO, United States" parsed to a city of "MO". The same collision
+   * hits St Paul, St Petersburg and every other Saint- city, and "dr" for Drive
+   * against a leading title.
+   *
+   * A real address ENDS with the thoroughfare type ("Main St", "Park Ave"), so
+   * position is what separates the two readings. Requiring it to be the last
+   * word rather than merely not-the-first also keeps "Port St Lucie" -- a real
+   * city with the abbreviation in the middle -- out of the street bucket.
+   */
+  if (/\S+\s+(rd|st|ave|ln|dr|blvd|hwy|ste|bldg)\.?$/i.test(t)) {
     return true
   }
   // "Tech Park", "Business Park", "Industrial Estate" -- campus names, not cities.
@@ -384,6 +414,69 @@ function dashCountry(s: string): { country: string; rest: string } | null {
  * Parse one location string. Handles the Workday "US-CA-San Francisco" form,
  * the "<country> - <city>" form, comma-separated forms, and bare remote markers.
  */
+/**
+ * Is this comma list written country-first ("US, TX, Austin")?
+ *
+ * Narrow on purpose, because guessing wrong here relocates a job to another
+ * continent. All three conditions must hold:
+ *
+ *   1. The first component is a BARE two or three letter code. Requiring a code
+ *      rather than any country name is what keeps "Georgia, Atlanta" out: the
+ *      full name is far more often a US state in that position, and nothing in
+ *      the string settles it.
+ *   2. That code resolves to a real country.
+ *   3. The LAST component is not itself a country. "Paris, France" and
+ *      "Berlin, DE" are already city-first and must be left alone; so is
+ *      "LA, California, United States", where the trailing country is the
+ *      evidence that "LA" is Los Angeles and not Laos.
+ */
+/**
+ * Classify the component order of a comma list.
+ *
+ * The rules live in location-order.ts; this binds them to the lookup tables in
+ * this module. `canonCountry` is the curated alias table and misses most ISO
+ * codes, so `countryFromCode` backs it up -- that gap is why "GR, Athens" was
+ * left with a city of "GR".
+ */
+/**
+ * Is this "REGION_CODE, Country" with no city? ("OH, United States")
+ *
+ * Requires a bare two/three-letter head and a tail that genuinely resolves to a
+ * country, so "Austin, TX" (tail is not a country) and "Paris, France" (head is
+ * not a code) are both unaffected.
+ */
+function regionAndCountryOnly(parts: string[]): boolean {
+  const head = parts[0].trim()
+  if (!/^[A-Za-z]{2,3}$/.test(head)) return false
+  const tail = parts[1].trim()
+  /**
+   * The tail must be a country SPELLED OUT, not another bare code.
+   *
+   * Without this, "US, CA, Remote" -- which the remote strip reduces to
+   * "US, CA" -- matched with CA read as Canada, so a Californian job was filed
+   * in Canada. A pair of codes is country-then-region, which detectReversal
+   * already handles correctly; this rule is only for the spelled-out form.
+   */
+  if (/^[A-Za-z]{2,3}$/.test(tail)) return false
+
+  return canonCountry(tail) !== null || countryFromCode(tail) !== null || isCountryName(tail)
+}
+
+function reversal(parts: string[]) {
+  return detectReversal(parts, {
+    usStates: US_STATES,
+    headCountry,
+    canonCountry: (v: string) => canonCountry(v),
+    countryFromCode: (v: string) => countryFromCode(v),
+    isCountryName: (v: string) => isCountryName(v),
+  })
+}
+
+/** The country a leading code names, by alias table or ISO code. */
+function headCountry(code: string): string | null {
+  return canonCountry(code) ?? countryFromCode(code)
+}
+
 export function parseLocation(raw: string | null | undefined): ParsedLocation {
   const original = (raw ?? '').trim()
   const empty: ParsedLocation = {
@@ -398,7 +491,10 @@ export function parseLocation(raw: string | null | undefined): ParsedLocation {
 
   if (!original) return empty
 
-  const isRemote = REMOTE_RE.test(original) && !HYBRID_RE.test(original)
+  // "Worldwide"/"Global" name a hiring scope of everywhere, which is remote by
+  // definition; REMOTE_RE does not cover them because they are not the word.
+  const isRemote =
+    (REMOTE_RE.test(original) || isMacroRegion(original)) && !HYBRID_RE.test(original)
 
   // "In-Office", "Hybrid" etc. describe an arrangement, not a place. Keep them
   // visible rather than inventing a location for them.
@@ -414,6 +510,26 @@ export function parseLocation(raw: string | null | undefined): ParsedLocation {
     .trim()
   // Also handle a trailing arrangement: "New York, NY (Hybrid)".
   work = work.replace(/\s*[\(\[]\s*(?:remote|hybrid|on[- ]?site|onsite|in[- ]?office)\s*[\)\]]\s*$/i, '').trim()
+
+  /**
+   * "Remote (US)" / "Remote [EMEA]" -- the place is inside the brackets.
+   *
+   * Handled before the trailing-word strip below, because that strip would
+   * leave "(US)" behind and the bracket would end up in the city.
+   */
+  const bracketed = work.match(/^\s*(?:fully\s+)?(?:remote|virtual|distributed)\s*[\(\[]([^)\]]+)[\)\]]\s*$/i)
+  if (bracketed) work = bracketed[1].trim()
+
+  /**
+   * A TRAILING arrangement word: "US Remote", "London - Remote", "India (Remote".
+   *
+   * Only the leading form was stripped, so "US Remote" became a city literally
+   * named "US Remote" -- 0% of which resolve to anywhere. Providers write the
+   * arrangement on whichever side reads better to them.
+   */
+  work = work
+    .replace(/[\s,\-–—:|]*[\(\[]?\s*(?:fully\s+)?(?:remote|virtual|distributed|wfh|work from home)\s*[\)\]]?\s*$/i, '')
+    .trim()
   if (REMOTE_RE.test(work) && work.replace(REMOTE_RE, '').replace(/[^a-z]/gi, '') === '') {
     return {
       raw: original,
@@ -467,9 +583,95 @@ export function parseLocation(raw: string | null | undefined): ParsedLocation {
           KNOWN_COUNTRIES.has(asCountry.toLowerCase()))
       if (isKnownCountry) {
         country = asCountry
+      } else if (isMacroRegion(only)) {
+        // A continent or "worldwide" is a hiring SCOPE, not a place the job is
+        // at. Leaving it in `city` produced rows whose city was "Europe" or
+        // "EMEA", which no city filter can ever match and which reads as a
+        // parse failure to anyone looking at the card. It stays visible in
+        // `raw` and in the display string instead.
+        city = null
       } else {
         city = canonCity(only)
       }
+    } else if (parts.length >= 2 && reversal(parts)) {
+      /**
+       * COUNTRY-FIRST FEEDS: "US, TX, Austin", "AU, NSW, Sydney", "NZ, Auckland".
+       *
+       * Several boards emit location components in the reverse of the usual
+       * order -- country code first, city last. The parser assumed city-first
+       * everywhere, so the country code landed in the CITY slot.
+       *
+       * MEASURED over the 113,416-posting served index: 5,322 rows carry a bare
+       * country code as their city. 3,539 of them say the city is "US".
+       *
+       * It was not only cosmetic. "IT, RI, Passo Corese" -- a town in Italy --
+       * parsed as city "IT", region "Rhode Island", country "United States",
+       * because the second component was read as a US state abbreviation. The
+       * posting was filed in the wrong country, so a search for Italy missed it
+       * and a search for the United States returned it.
+       *
+       * The detection is deliberately narrow: see countryFirstOrder().
+       */
+      const order = reversal(parts)!
+      const last = parts[parts.length - 1].trim()
+
+      if (order.kind === 'country-first') {
+        country = headCountry(parts[0]) ?? canonCountry(parts[0]) ?? parts[0]
+
+        /**
+         * A bare code in the last slot is a REGION, not a city.
+         *
+         * "US, CA" has no city in it. Running it through canonCity produced a
+         * city literally named "Ca", which is the class of value this whole
+         * pass exists to remove. When the code expands to a US state and the
+         * country agrees, it becomes the region; otherwise it is dropped rather
+         * than promoted to a city name.
+         */
+        if (/^[A-Za-z]{2,3}$/.test(last)) {
+          const up = last.toUpperCase()
+          region = country === 'United States' ? (US_STATES[up] ?? null) : null
+          city = null
+        } else {
+          city = isMacroRegion(last) ? null : canonCity(last)
+        }
+        // The middle component is a regional code in the country's own scheme
+        // (TX, NSW, KA, and China's numeric provinces). Expand it when it is a
+        // US state and the country agrees; otherwise keep it only if it reads
+        // as a name rather than a code, because an unexpanded "13" tells nobody
+        // anything.
+        const middle = parts.length >= 3 ? parts[1].trim() : null
+        if (middle) {
+          const upper = middle.toUpperCase()
+          if (country === 'United States' && US_STATES[upper]) region = US_STATES[upper]
+          else if (/^[A-Za-z][A-Za-z\s'-]{2,}$/.test(middle)) region = titleCase(middle)
+          else region = null
+        }
+      } else {
+        // region-first: "OH, Columbus", "CA, San Francisco".
+        region = US_STATES[parts[0].trim().toUpperCase()] ?? null
+        country = 'United States'
+        city = isMacroRegion(last) ? null : canonCity(last)
+        // Recorded, not resolved. "DE, Berlin" is Delaware or Germany and the
+        // string cannot say which; resolveAmbiguousLocations settles it from
+        // unambiguous sightings of the same city elsewhere in the corpus.
+        ambiguousCode = order.ambiguous
+      }
+    } else if (parts.length === 2 && regionAndCountryOnly(parts)) {
+      /**
+       * "OH, United States", "SG, Singapore", "MH, India" -- a REGION and a
+       * country, with no city at all.
+       *
+       * detectReversal correctly refuses these (a trailing country means the
+       * string is city-first), and the city-first path then put the bare code
+       * in the city field. 51 rows said their city was "OH".
+       *
+       * There is no city here to find. Saying so is the accurate answer;
+       * promoting the region code to a city is not.
+       */
+      country = canonCountry(parts[1]) ?? countryFromCode(parts[1]) ?? titleCase(parts[1])
+      const code = parts[0].trim().toUpperCase()
+      region = country === 'United States' ? (US_STATES[code] ?? null) : null
+      city = null
     } else if (parts.length >= 2) {
       // Drop leading street-address components so the city slot holds a city.
       // "No.16 Hongfeng Road, Nanjing, China" -> Nanjing, China.

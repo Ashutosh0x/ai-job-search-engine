@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { searchJobs } from '@/lib/job-index'
 import { companyLogoUrl } from '@/lib/companies/registry'
-import { guard, EXPENSIVE_READ } from '@/lib/api-guard'
+import { guard, EXPENSIVE_READ, publicReadCache } from '@/lib/api-guard'
 
 export const runtime = 'nodejs'
 
@@ -148,7 +148,7 @@ export async function GET(request: NextRequest) {
       // rather than implying it has the whole market.
       deployment: result.deployment,
       generatedAt: result.generatedAt,
-    })
+    }, { headers: publicReadCache() })
   } catch (error) {
     console.error('Error fetching jobs:', error)
     return NextResponse.json(

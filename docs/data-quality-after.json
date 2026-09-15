@@ -1,0 +1,503 @@
+{
+  "generatedAt": "2026-09-15T07:46:43.211Z",
+  "index": {
+    "file": "public\\data\\jobs-deploy.json",
+    "indexGeneratedAt": "2026-09-14T21:33:50.957Z",
+    "declaredJobCount": 130863,
+    "actualJobCount": 130863
+  },
+  "totals": {
+    "jobs": 130863,
+    "sources": 10,
+    "companies": 736,
+    "countries": 134
+  },
+  "coverage": {
+    "title": 130863,
+    "company": 130863,
+    "applicationUrl": 130863,
+    "anyLocation": 123634,
+    "city": 118328,
+    "country": 105366,
+    "postedAt": 57008,
+    "description": 42897,
+    "salary": 4109,
+    "employmentType": 31992,
+    "seniority": 69102,
+    "skills": 25042,
+    "remote": 9027,
+    "directApply": 130863,
+    "jobPostingSchemaEligible": 42266
+  },
+  "malformed": {
+    "missingTitle": 0,
+    "missingCompany": 0,
+    "missingApplyUrl": 0,
+    "invalidApplyUrl": 0,
+    "missingDescription": 87966,
+    "thinDescription": 283,
+    "missingPostedAt": 73855,
+    "invalidPostedAt": 0,
+    "missingLocationEntirely": 1,
+    "cityIsCountryCode": 57,
+    "cityIsUsStateCode": 156,
+    "cityIsAmbiguousCode": 12,
+    "cityIsNonPlaceWord": 34,
+    "countryIsCode": 3,
+    "missingCountry": 23630,
+    "missingCity": 9606,
+    "suspectCountryForCity": 18,
+    "missingSalaryCurrency": 0,
+    "salaryInverted": 0
+  },
+  "duplicates": {
+    "duplicateExternalIdGroups": 0,
+    "duplicateExternalIdRows": 0,
+    "duplicateApplicationUrlGroups": 0,
+    "duplicateApplicationUrlRows": 0,
+    "duplicateIdentityGroups": 5029,
+    "duplicateIdentityRows": 22272
+  },
+  "freshness": {
+    "datedRows": 57008,
+    "medianAgeDays": 39.5,
+    "p90AgeDays": 187.6,
+    "olderThan30d": 32628,
+    "olderThan90d": 13823,
+    "olderThan180d": 6039
+  },
+  "bySource": {
+    "workday": 70607,
+    "greenhouse": 18869,
+    "custom": 18384,
+    "smartrecruiters": 10481,
+    "ashby": 8573,
+    "eightfold": 2541,
+    "lever": 842,
+    "recruitee": 334,
+    "mokahr": 210,
+    "workable": 22
+  },
+  "topCountries": {
+    "United States": 48244,
+    "India": 22372,
+    "United Kingdom": 3757,
+    "Singapore": 3013,
+    "Germany": 2997,
+    "Japan": 2338,
+    "France": 2199,
+    "China": 1832,
+    "Canada": 1560,
+    "Taiwan": 1298,
+    "Malaysia": 1040,
+    "Ireland": 1037,
+    "Mexico": 944,
+    "Australia": 903,
+    "Philippines": 885,
+    "Netherlands": 756,
+    "Spain": 724,
+    "Hong Kong SAR China": 709,
+    "Brazil": 667,
+    "Israel": 655,
+    "South Korea": 624,
+    "Poland": 613,
+    "Italy": 452,
+    "Thailand": 352,
+    "Argentina": 348
+  },
+  "samples": {
+    "missingTitle": [],
+    "missingCompany": [],
+    "missingApplyUrl": [],
+    "invalidApplyUrl": [],
+    "missingDescription": [
+      {
+        "id": "smartrecruiters:SopraSteria1:744000149337912",
+        "company": "Sopra Steria",
+        "title": "FPGA Verification Engineer (Entry Level)",
+        "locationRaw": "East Hartford, CT, us"
+      },
+      {
+        "id": "smartrecruiters:Endava:744000149279979",
+        "company": "Endava",
+        "title": "Junior Software Engineer (C/C++, Linux)",
+        "locationRaw": "Ho Chi Minh City, vn"
+      },
+      {
+        "id": "smartrecruiters:O-I:744000149276839",
+        "company": "O-I",
+        "title": "Manufacturing Solution Analyst (Junior/Regular)",
+        "locationRaw": "Poznań, Województwo wielkopolskie, pl"
+      },
+      {
+        "id": "smartrecruiters:O-I:744000149265549",
+        "company": "O-I",
+        "title": "Business Solutions Intern",
+        "locationRaw": "Poznań, Województwo wielkopolskie, pl"
+      },
+      {
+        "id": "smartrecruiters:Endava:744000149257399",
+        "company": "Endava",
+        "title": "Junior Software Engineer (C/Python, Cloud)",
+        "locationRaw": "Ho Chi Minh City, vn"
+      }
+    ],
+    "thinDescription": [
+      {
+        "id": "custom:CX_1001:210783722",
+        "company": "JPMorgan Chase",
+        "title": "Data Platform DevOps Engineer – Senior Associate (Enterprise Data Solutions)",
+        "locationRaw": "Plano, TX, United States",
+        "length": 36
+      },
+      {
+        "id": "custom:CX_1001:210783781",
+        "company": "JPMorgan Chase",
+        "title": "Asset Based Lending Field Examination - Senior Associate",
+        "locationRaw": "Dallas, TX, United States",
+        "length": 47
+      },
+      {
+        "id": "custom:CX_1001:210789837",
+        "company": "JPMorgan Chase",
+        "title": "Equity Operations Transformation Project Manager - Associate",
+        "locationRaw": "BOURNEMOUTH, DORSET, United Kingdom",
+        "length": 41
+      },
+      {
+        "id": "custom:CX_1001:210763120",
+        "company": "JPMorgan Chase",
+        "title": "2027 Commercial & Investment Bank Markets Full-Time Analyst Program - Research",
+        "locationRaw": "New York, NY, United States",
+        "length": 34
+      },
+      {
+        "id": "custom:CX_1001:210788461",
+        "company": "JPMorgan Chase",
+        "title": "Compensation Associate - Global Investment Bank",
+        "locationRaw": "Jersey City, NJ, United States",
+        "length": 42
+      }
+    ],
+    "missingPostedAt": [
+      {
+        "id": "workday:globalhr:01872989",
+        "company": "Globalhr",
+        "title": "FPGA Electrical Design Engineer Intern (Summer 2027)(Onsite)",
+        "locationRaw": "US-AZ-TUCSON-M02 ~ 1151 E Hermans Rd ~ BLDG M02"
+      },
+      {
+        "id": "workday:disney:10158116-1",
+        "company": "Disney",
+        "title": "Marvel Business Affairs and Legal JD Intern, Spring 2027",
+        "locationRaw": "Remote Worker Location, USA"
+      },
+      {
+        "id": "workday:abb:JR00044385",
+        "company": "ABB",
+        "title": "Commercial Strategy Intern - Spring 2027",
+        "locationRaw": "Remote, Florida, USA"
+      },
+      {
+        "id": "workday:amgen:R-255709",
+        "company": "Amgen",
+        "title": "Undergrad Intern – Machine Learning Engineer – Technology, AI & Data (Summer 2027)",
+        "locationRaw": "United States - Remote"
+      },
+      {
+        "id": "workday:amgen:R-255743",
+        "company": "Amgen",
+        "title": "Grad Intern – Machine Learning Engineer – Technology, AI & Data (Summer 2027)",
+        "locationRaw": "United States - Remote"
+      }
+    ],
+    "invalidPostedAt": [],
+    "missingLocationEntirely": [
+      {
+        "id": "mokahr:tripoverseas:989b019a-0721-439b-8933-241aebe642d4",
+        "company": "Trip.com Group",
+        "title": "Marketing Campaign & Design Contractor",
+        "locationRaw": null
+      }
+    ],
+    "cityIsCountryCode": [
+      {
+        "id": "custom:amazon:10537439",
+        "company": "Amazon",
+        "title": "Operations Engineering Intern -  start date Q2 2027",
+        "locationRaw": "LU, Luxembourg",
+        "city": "LU"
+      },
+      {
+        "id": "custom:amazon:10537436",
+        "company": "Amazon",
+        "title": "Operations Engineering Intern -  start date Q1 2027",
+        "locationRaw": "LU, Luxembourg",
+        "city": "LU"
+      },
+      {
+        "id": "custom:amazon:10538435",
+        "company": "Amazon",
+        "title": "Senior Partner Account Manager, Singapore Public Sector , ASEAN Partner and Specialist Organisation",
+        "locationRaw": "SG, Singapore",
+        "city": "SG"
+      },
+      {
+        "id": "custom:amazon:10538465",
+        "company": "Amazon",
+        "title": "Audit and Compliance Manager, Transportation Risk and Compliance, Transportation Risk & Compliance (TRC) Field Ops, EUR LM",
+        "locationRaw": "LU, Luxembourg",
+        "city": "LU"
+      },
+      {
+        "id": "custom:amazon:10538224",
+        "company": "Amazon",
+        "title": "Senior Security Solution Architect, APJC Customer Security, APJC Customer Security",
+        "locationRaw": "SG, Singapore",
+        "city": "SG"
+      }
+    ],
+    "cityIsUsStateCode": [
+      {
+        "id": "workday:capri:R_786055",
+        "company": "Capri",
+        "title": "Junior Copywriter",
+        "locationRaw": "NY Metro Area",
+        "city": "Ny"
+      },
+      {
+        "id": "workday:capri:R_786056",
+        "company": "Capri",
+        "title": "Junior Copywriter",
+        "locationRaw": "NY Metro Area",
+        "city": "Ny"
+      },
+      {
+        "id": "custom:amazon:10537477",
+        "company": "Amazon",
+        "title": "Customer Service Team Manager , Customer Service",
+        "locationRaw": "CO, Virtual",
+        "city": "Co"
+      },
+      {
+        "id": "greenhouse:spacex:8743269002",
+        "company": "SpaceX",
+        "title": "Ground Network Specialist (Starlink)",
+        "locationRaw": "Remote - WA",
+        "city": "Wa"
+      },
+      {
+        "id": "greenhouse:samsara:8186048",
+        "company": "Samsara",
+        "title": "Enterprise Core Account Executive - Public Sector",
+        "locationRaw": "Remote - AZ",
+        "city": "AZ"
+      }
+    ],
+    "cityIsAmbiguousCode": [
+      {
+        "id": "custom:amazon:10525738",
+        "company": "Amazon",
+        "title": "Transportation Representative, IB Sked",
+        "locationRaw": "IN, MH, Virtual",
+        "city": "IN"
+      },
+      {
+        "id": "custom:CX_1001:210790775",
+        "company": "JPMorgan Chase",
+        "title": "U.S. Private Bank - Private Banker - Vice President",
+        "locationRaw": "MD, United States",
+        "city": "MD"
+      },
+      {
+        "id": "greenhouse:spacex:8703151002",
+        "company": "SpaceX",
+        "title": "Starlink Growth Lead, US Northeast",
+        "locationRaw": "Remote - PA",
+        "city": "PA"
+      },
+      {
+        "id": "custom:CX_1:341392",
+        "company": "Oracle",
+        "title": "Lead Principal Data Systems Software Engineer",
+        "locationRaw": "CA, United States",
+        "city": "CA"
+      },
+      {
+        "id": "custom:amazon:10529862",
+        "company": "Amazon",
+        "title": "Transportation Representative, AmazonNowCO, RoW APEX",
+        "locationRaw": "IN, AP, Na - Virtual",
+        "city": "In"
+      }
+    ],
+    "cityIsNonPlaceWord": [
+      {
+        "id": "workday:globalhr:01873096",
+        "company": "Globalhr",
+        "title": "Summer Intern (Remote)",
+        "locationRaw": "US-CT-REMOTE",
+        "city": "Remote"
+      },
+      {
+        "id": "ashby:snowflake:cdebc456-bb4f-4cc7-84fc-dccb8499a8f6",
+        "company": "Snowflake",
+        "title": "Strategic Account Executive, Majors Acquisition",
+        "locationRaw": "US-TX-Remote",
+        "city": "Remote"
+      },
+      {
+        "id": "ashby:snowflake:89588286-28f8-495c-99d6-cfe4a169c006",
+        "company": "Snowflake",
+        "title": "Account Executive, Enterprise Acquisition",
+        "locationRaw": "US-WA-Remote",
+        "city": "Remote"
+      },
+      {
+        "id": "ashby:snowflake:e70eb2d2-0029-442b-8f7f-edde190d91f0",
+        "company": "Snowflake",
+        "title": "Account Executive, Enterprise",
+        "locationRaw": "US-NC-Remote",
+        "city": "Remote"
+      },
+      {
+        "id": "ashby:snowflake:6871df54-d22b-4417-bf49-322deea4ad29",
+        "company": "Snowflake",
+        "title": "Business Development & Capture - PubSec",
+        "locationRaw": "US-DC-Remote",
+        "city": "Remote"
+      }
+    ],
+    "countryIsCode": [
+      {
+        "id": "smartrecruiters:SMAC1:744000115669297",
+        "company": "SMAC",
+        "title": "Alternance - Ingénieur(e) Bureau d'Etudes de Prix F/H",
+        "locationRaw": "AIX-EN-PROVENCE, fr",
+        "country": "AIX"
+      },
+      {
+        "id": "smartrecruiters:SMAC1:744000115660038",
+        "company": "SMAC",
+        "title": "Alternance - Chargé(e) d'Affaires SAS F/H",
+        "locationRaw": "AIX-EN-PROVENCE, fr",
+        "country": "AIX"
+      },
+      {
+        "id": "smartrecruiters:SMAC1:744000115658547",
+        "company": "SMAC",
+        "title": "Alternance - Conducteur(trice) de Travaux F/H",
+        "locationRaw": "AIX-EN-PROVENCE, fr",
+        "country": "AIX"
+      }
+    ],
+    "missingCountry": [
+      {
+        "id": "smartrecruiters:DeliveryHero:744000149351519",
+        "company": "Delivery Hero",
+        "title": "Logistics Intern",
+        "locationRaw": "Santa Cruz, bo"
+      },
+      {
+        "id": "smartrecruiters:BoschGroup:744000149193289",
+        "company": "Bosch Group",
+        "title": "[Internship] Sales Support Intern",
+        "locationRaw": "Hà Nội, vn"
+      },
+      {
+        "id": "recruitee:chmedia:2720594",
+        "company": "CH Media",
+        "title": "Praktikum Social Media Tele 1 (a) 100 %",
+        "locationRaw": "Luzern, Luzern, Schweiz"
+      },
+      {
+        "id": "recruitee:chmedia:2720575",
+        "company": "CH Media",
+        "title": "Trainee Journalismus Aarau (a) 100 %",
+        "locationRaw": "Aarau, Aargau, Schweiz"
+      },
+      {
+        "id": "recruitee:chmedia:2720586",
+        "company": "CH Media",
+        "title": "Trainee Journalismus St. Gallen (a) 100 %",
+        "locationRaw": "St. Gallen, Sankt Gallen, Schweiz"
+      }
+    ],
+    "missingCity": [
+      {
+        "id": "mokahr:tripoverseas:46f101b9-f678-4668-916e-6e40db700fd6",
+        "company": "Trip.com Group",
+        "title": "Operations Intern",
+        "locationRaw": "Japan"
+      },
+      {
+        "id": "mokahr:tripoverseas:f6c0f7a2-585b-4549-844d-556e3d56c0af",
+        "company": "Trip.com Group",
+        "title": "Partnership Marketing Project Support Intern",
+        "locationRaw": "South Korea"
+      },
+      {
+        "id": "mokahr:tripoverseas:7845e345-d5b1-4e6c-83a4-f75acf006fed",
+        "company": "Trip.com Group",
+        "title": "Market Executive (Business Development Support) - Intern",
+        "locationRaw": "Germany"
+      },
+      {
+        "id": "mokahr:tripoverseas:6aafd996-ccdd-4963-8dc4-717e3265492f",
+        "company": "Trip.com Group",
+        "title": "Legal Intern",
+        "locationRaw": "Netherlands"
+      },
+      {
+        "id": "mokahr:tripoverseas:36d19d5a-c7cb-41fe-889e-190d2cc053ca",
+        "company": "Trip.com Group",
+        "title": "Marketing Campaign Intern, MY",
+        "locationRaw": "Malaysia"
+      }
+    ],
+    "suspectCountryForCity": [
+      {
+        "id": "greenhouse:stripe:8175644",
+        "company": "Stripe",
+        "title": "Project Manager, People Mergers & Acquisitions (M&A)",
+        "locationRaw": "SF, SEA, NYC, US-Rem",
+        "head": "SF",
+        "country": "United States"
+      },
+      {
+        "id": "greenhouse:stripe:8175673",
+        "company": "Stripe",
+        "title": "Program Manager, Competitive Programs",
+        "locationRaw": "SF, NYC, Seattle, Remote",
+        "head": "SF",
+        "country": "United States"
+      },
+      {
+        "id": "greenhouse:stripe:8144262",
+        "company": "Stripe",
+        "title": "Specialist Solutions Architect, Data",
+        "locationRaw": "SF, NY, Remote",
+        "head": "SF",
+        "country": "United States"
+      },
+      {
+        "id": "greenhouse:stripe:7983725",
+        "company": "Stripe",
+        "title": "Staff Product Manager, Billing",
+        "locationRaw": "SF, NY, SEA, Remote-US",
+        "head": "SF",
+        "country": "United States"
+      },
+      {
+        "id": "greenhouse:stripe:8155639",
+        "company": "Stripe",
+        "title": "Enterprise Services Manager, Professional Services Sales",
+        "locationRaw": "SF, Seattle, NYC, Chicago",
+        "head": "SF",
+        "country": "United States"
+      }
+    ],
+    "missingSalaryCurrency": [],
+    "salaryInverted": []
+  }
+}

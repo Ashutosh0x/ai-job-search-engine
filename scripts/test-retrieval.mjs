@@ -17,9 +17,28 @@ const t = (name, ok, detail) => {
 
 /* ------------------------------- tokenizer -------------------------------- */
 {
-  t('keeps dotted and plus/hash tokens',
-    ['node.js', 'c++', 'c#'].every((x) => tokenize(`we use ${x} here`).includes(x)),
-    tokenize('we use node.js c++ c# here'))
+  /**
+   * Punctuation-bearing identifiers must not be SHATTERED by the split.
+   *
+   * "c++", "c#" and ".net" are distinct terms that lose their meaning without
+   * the punctuation, so the split class deliberately keeps +, # and . .
+   */
+  t('keeps plus/hash tokens whole',
+    ['c++', 'c#'].every((x) => tokenize(`we use ${x} here`).includes(x)),
+    tokenize('we use c++ c# here'))
+
+  /**
+   * "node.js" stays ONE token and is then canonicalised to "node" by
+   * lib/search/normalize.ts, so "Node.js", "nodejs" and "Node" all reach the
+   * same posting list. The invariant is that it does not become the two tokens
+   * "node" and "js" -- that would make it match every unrelated JavaScript role.
+   */
+  t('"node.js" is one token, not two',
+    tokenize('we use node.js here').length === 4, tokenize('we use node.js here'))
+  t('"node.js" and "nodejs" reach the same term',
+    tokenize('node.js')[0] === tokenize('nodejs')[0],
+    [tokenize('node.js'), tokenize('nodejs')])
+
   t('drops single characters', !tokenize('a b node').includes('a'), tokenize('a b node'))
 }
 

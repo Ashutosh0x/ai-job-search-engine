@@ -85,3 +85,31 @@ export function guard(
     { status: 429, headers: { 'Retry-After': String(retryAfter) } },
   )
 }
+
+
+/**
+ * Cache headers for a public, read-only search response.
+ *
+ * These routes answer from a JSON index that is rewritten only when the crawler
+ * publishes, yet every request re-loaded and re-scanned it with no cache
+ * headers at all -- so a hundred people running the same search paid for a
+ * hundred full scans, and the per-process rate limiter (which barely binds on
+ * Vercel; see above) was the only thing between the index and a scraper.
+ *
+ * `s-maxage` caches at the CDN, not in the browser: a shared cache absorbs the
+ * repeats while each visitor still gets a fresh response to their own first
+ * request. `stale-while-revalidate` means the refresh happens behind a served
+ * response rather than in front of one.
+ *
+ * `max-age=0` keeps it out of private browser caches, so a signed-in user is
+ * never shown another session's response from disk.
+ *
+ * 60s is chosen against how often the index actually changes (a crawl
+ * publishes a few times a day), not against how fresh results feel -- at this
+ * cadence those are the same thing.
+ */
+export function publicReadCache(seconds = 60, staleSeconds = 300): Record<string, string> {
+  return {
+    'Cache-Control': `public, max-age=0, s-maxage=${seconds}, stale-while-revalidate=${staleSeconds}`,
+  }
+}

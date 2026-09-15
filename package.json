@@ -30,7 +30,10 @@
     "test-auth-flow": "node scripts/test-auth-flow.js",
     "test-forgot-password": "node scripts/test-forgot-password.js",
     "test-password-reset-flow": "node scripts/test-password-reset-flow.js",
-    "test-password-reset-validation": "node scripts/test-password-reset-validation.js"
+    "test-password-reset-validation": "node scripts/test-password-reset-validation.js",
+    "analytics:prune": "tsx scripts/prune-analytics.mjs",
+    "data-quality": "node --max-old-space-size=8192 scripts/data-quality.mjs",
+    "backfill-locations": "tsx scripts/backfill-locations.mjs"
   },
   "dependencies": {
     "@geist-ui/react": "^2.2.5",

@@ -7,7 +7,26 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { AlertCircle } from "lucide-react"
 
-export const dynamic = "force-dynamic"
+import type { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Companies hiring now",
+  description:
+    "Every employer in the index, each admitted only after its own applicant tracking " +
+    "system was reached and found to hold live postings.",
+  alternates: { canonical: "/companies" },
+}
+
+/**
+ * Re-rendered hourly rather than on every request.
+ *
+ * This was `force-dynamic`, which opts out of the CDN entirely: each visitor
+ * re-ran the whole company aggregation against a 113,416-row index. The
+ * underlying data changes only when the crawler publishes a new index, so an
+ * hour of caching costs nothing in freshness and takes the page off the
+ * critical path.
+ */
+export const revalidate = 3600
 
 /**
  * Company directory, ordered by valuation.
@@ -53,7 +72,7 @@ export default async function CompaniesPage() {
         <header className="mb-6">
           <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Companies</h1>
           <p className="mt-1 text-sm text-slate-500">
-            {companies.length} verified employers · {totalRoles.toLocaleString()} open roles.
+            {companies.length} verified employers · {totalRoles.toLocaleString("en-US")} open roles.
             Each one confirmed by reading its own applicant tracking system.
           </p>
         </header>
