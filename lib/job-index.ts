@@ -2,6 +2,7 @@ import { readFile, stat } from 'fs/promises'
 import path from 'path'
 import { parseIntent, describeIntent, type ParsedIntent } from './search/intent'
 import { buildIndex, retrieve, type BuiltIndex } from './search/inverted-index'
+import { tokenizeText } from './search/normalize'
 import { rankJob, explainRank, DEFAULT_WEIGHTS } from './search/rank'
 import { diversify } from './search/diversify'
 import {
@@ -654,9 +655,22 @@ function pageSizeFor(query: JobQuery): number {
   return Math.min(100, Math.max(1, query.pageSize ?? 20))
 }
 
-/** Tokenise once; used for both matching and scoring. */
+/**
+ * Tokenise once; used for both matching and scoring.
+ *
+ * MUST be the same tokeniser the inverted index uses.
+ *
+ * This was a local ASCII-only split while retrieval had moved to
+ * lib/search/normalize.ts, and the two disagreed in the one case that matters:
+ * a query written in Japanese produced ZERO tokens here, so `qTokens.length`
+ * was 0, the keyword branch never ran, and searching 「インフラエンジニア」
+ * returned the ENTIRE 130,863-posting corpus as though no query had been typed.
+ *
+ * A search gate and a search index that tokenise differently will always find
+ * some input where one sees a query and the other does not.
+ */
 function tokens(text: string): string[] {
-  return text.toLowerCase().split(/[^a-z0-9+#.]+/).filter((t) => t.length > 1)
+  return tokenizeText(text)
 }
 
 /* --------------------------- location matching ---------------------------- */

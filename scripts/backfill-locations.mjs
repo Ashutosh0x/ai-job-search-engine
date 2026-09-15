@@ -42,6 +42,7 @@ import { readFileSync, writeFileSync, renameSync, existsSync, statSync } from 'f
 import { join } from 'path'
 import { parseLocation } from '../lib/location.ts'
 import { resolveAmbiguousLocations } from '../lib/pipeline/resolve-locations.ts'
+import { canonicalJapaneseCity } from '../lib/location-japan.ts'
 
 const argv = process.argv.slice(2)
 const WRITE = argv.includes('--write')
@@ -125,10 +126,31 @@ function isImprovement(oldJob, next) {
     (oldJob.country && !next.country && !defects(oldJob).includes('countryIsCode'))
   if (lost) return false
 
+  /**
+   * A pure CANONICALISATION also counts as an improvement.
+   *
+   * "Tokyo-to" -> "Tokyo" fixes no defect and fills no empty field, so the
+   * rules above rejected it -- and the city facet stayed split across "Tokyo"
+   * (1,584), "Tokyo-to" (64) and "JP - Tokyo" (24), meaning a filter on any one
+   * of them missed the other two. Same for "Hiroshima - Fab 15" (220) reading
+   * as a different city from "Hiroshima" (34).
+   *
+   * Narrow on purpose: accepted ONLY when the new value is exactly what
+   * canonicalJapaneseCity() derives from the old one. That cannot admit an
+   * arbitrary rewrite -- it is the identity check for a rename this codebase
+   * already decided is correct.
+   */
+  const canonicalised =
+    oldJob.city &&
+    next.city &&
+    oldJob.city !== next.city &&
+    canonicalJapaneseCity(oldJob.city) === next.city
+
   const gained =
     nextDefects < oldDefects ||
     (!oldJob.city && next.city) ||
     (!oldJob.country && next.country) ||
+    canonicalised ||
     (oldJob.city !== next.city && nextDefects < oldDefects)
   return Boolean(gained) || nextDefects < oldDefects
 }

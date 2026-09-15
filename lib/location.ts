@@ -1,3 +1,4 @@
+import { canonicalJapaneseCity, hasJapaneseScript, japanesePlaceToEnglish } from './location-japan'
 import { detectReversal, isMacroRegion } from './location-order'
 /**
  * Location normalisation.
@@ -165,7 +166,23 @@ function canonCountry(token: string): string | null {
 }
 
 function canonCity(token: string): string {
-  const t = token.trim().toLowerCase()
+  /**
+   * Japanese handling first.
+   *
+   * Measured over the served index: "Tokyo" (1,570), "Tokyo-to" (64) and
+   * "JP - Tokyo" (24) were three separate entries in the city facet, so
+   * filtering any one of them silently missed the other two. "Hiroshima - Fab
+   * 15" (220) read as a different city from "Hiroshima" (34), splitting one
+   * site across two facets. And "Japan" (69) sat in the city field entirely.
+   *
+   * canonicalJapaneseCity returns null for a value that is not a city at all,
+   * which is the one case the generic path cannot express.
+   */
+  const jp = canonicalJapaneseCity(token)
+  if (jp === null && /^(japan|jp|jpn|日本)$/i.test(token.trim())) return ''
+  const base = jp ?? token
+
+  const t = base.trim().toLowerCase()
   return CITY_ALIASES[t] ?? titleCase(t)
 }
 
@@ -743,6 +760,17 @@ export function parseLocation(raw: string | null | undefined): ParsedLocation {
         }
       }
     }
+  }
+
+  /**
+   * The region gets the same Japanese treatment as the city.
+   *
+   * Without this, "横浜市, 神奈川県, jp" resolved the city to Yokohama and left
+   * the region as 神奈川県 -- so the display string mixed scripts and the region
+   * facet carried an entry nobody searching in English could match.
+   */
+  if (region && hasJapaneseScript(region)) {
+    region = japanesePlaceToEnglish(region) ?? region
   }
 
   const display =

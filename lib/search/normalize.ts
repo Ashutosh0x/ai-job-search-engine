@@ -1,3 +1,4 @@
+import { japaneseTermTokens } from '../location-japan'
 /**
  * Query and document normalisation for search.
  *
@@ -192,11 +193,26 @@ export function foldToken(token: string): string {
  * meaning without them.
  */
 export function tokenizeText(text: string): string[] {
-  return foldAccents(text)
+  const latin = foldAccents(text)
     .toLowerCase()
     .split(/[^a-z0-9+#.]+/)
     .filter((t) => t.length > 1 && t.length < 40)
     .map(foldToken)
+
+  /**
+   * Japanese titles also index their English equivalents.
+   *
+   * 843 postings in the corpus carry a Japanese title, and the split above is
+   * ASCII-only -- so every one of them tokenised to nothing and was reachable
+   * only by an exact-substring accident. Adding the English terms alongside
+   * means "infrastructure engineer" finds インフラエンジニア, without removing
+   * the Japanese text for anyone searching in Japanese.
+   *
+   * The check is a cheap regex, so the 99.4% of postings with no Japanese in
+   * them pay almost nothing for it.
+   */
+  const japanese = japaneseTermTokens(text).map(foldToken)
+  return japanese.length ? [...latin, ...japanese] : latin
 }
 
 /**

@@ -379,7 +379,11 @@ export const COMPANIES: CompanyRecord[] = [
     boards: [{ provider: 'greenhouse', token: 'agoda' }] },
   // Mercari: 2 postings verified 2026-09-14.
   { slug: 'mercari', name: 'Mercari', domain: 'mercari.com', valuationKind: 'unknown',
-    boards: [{ provider: 'greenhouse', token: 'Mercari' }] },
+    // Workable, not Greenhouse. MEASURED 2026-09-15: greenhouse:Mercari returns
+    // 2 postings, workable:mercari returns 142 -- all in Minato City, Tokyo.
+    // The Greenhouse board is a near-empty remnant; Workable is where Mercari
+    // actually posts.
+    boards: [{ provider: 'workable', token: 'mercari' }] },
   // Coupang: 697 postings verified 2026-09-14.
   { slug: 'coupang', name: 'Coupang', domain: 'coupang.com', valuationKind: 'unknown',
     boards: [{ provider: 'greenhouse', token: 'Coupang' }] },

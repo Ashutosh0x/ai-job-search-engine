@@ -41,6 +41,7 @@ const HERE = dirname(fileURLToPath(import.meta.url))
 const SUITES = [
   'test-location.mjs',
   'test-location-filter.mjs',
+  'test-japan.mjs',
   'test-index-selection.mjs',
   'test-job-posting-schema.mjs',
   'test-ssr-render.mjs',
