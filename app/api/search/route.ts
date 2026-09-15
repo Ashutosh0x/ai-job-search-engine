@@ -65,6 +65,7 @@ export async function GET(request: NextRequest) {
     employmentTypes: list('employmentType'),
     earlyCareer: list('earlyCareer'),
     minSalary: num('minSalary'),
+    salaryCurrency: sp.get('salaryCurrency')?.trim().toUpperCase() || undefined,
     sort: (sp.get('sort') as JobQuery['sort']) ?? undefined,
     page: num('page'),
     pageSize: num('pageSize'),

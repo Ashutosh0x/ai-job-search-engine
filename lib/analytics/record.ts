@@ -2,6 +2,9 @@ import { randomUUID } from 'crypto'
 import type { NextRequest } from 'next/server'
 import { deriveIdentity, hasOptedOut } from './identity'
 import { getAnalyticsStore } from './store'
+// Exposed here so end-to-end callers can observe the precise singleton used
+// by record(), including in Node test loaders that resolve TS specifiers twice.
+export { getAnalyticsStore, __resetAnalyticsStore } from './store'
 import {
   normalizePath,
   normalizeQuery,

@@ -53,6 +53,15 @@ console.log('\nPrecision traps')
   t('India country', i.countries.includes('India'), i.countries)
 }
 {
+  const i = parseIntent('Tokyo platform engineer 年収1000万円以上', vocab)
+  t('Japanese annual salary -> 10000000 JPY', i.salaryMin===10000000 && i.salaryCurrency==='JPY', [i.salaryMin,i.salaryCurrency])
+  t('Japanese salary is shown with the yen sign', describeIntent(i).some((part) => part.includes('¥10,000,000')), describeIntent(i))
+}
+{
+  const i = parseIntent('インフラエンジニア', vocab)
+  t('Japanese role produces a retrieval topic', i.topic.includes('infrastructure') && i.topic.includes('engineer'), i)
+}
+{
   const i = parseIntent('kubernetes', vocab)
   t('bare skill query still has a topic', i.topic.length>0, i.topic)
 }

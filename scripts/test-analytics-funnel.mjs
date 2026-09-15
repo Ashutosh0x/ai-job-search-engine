@@ -9,8 +9,11 @@
  * It exercises the real store through its real interface, so a driver that
  * accepts writes and loses them fails here rather than in production.
  */
-import { __resetAnalyticsStore, getAnalyticsStore } from '../lib/analytics/store.ts'
-import { buildEvent, record, __resetDedupe } from '../lib/analytics/record.ts'
+// Read the store accessor through record.ts so this end-to-end test observes
+// the exact singleton used by record(), including under Node 20's tsx loader.
+import {
+  __resetAnalyticsStore, buildEvent, getAnalyticsStore, record, __resetDedupe,
+} from '../lib/analytics/record.ts'
 import { computeTotals, computeJobs, computeQueries, computeFunnel, opportunityScore } from '../lib/analytics/metrics.ts'
 
 let pass = 0, fail = 0

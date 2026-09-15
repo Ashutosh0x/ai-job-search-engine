@@ -1,4 +1,5 @@
 import { canonicalSkill, SKILL_SURFACE_FORMS } from '../pipeline/skills'
+import { tokenizeText } from './normalize'
 
 /**
  * Natural-language query -> structured search intent.
@@ -141,6 +142,37 @@ function blankSpans(text: string, spans: [number, number][]): string {
  * Returns the amount in whole currency units.
  */
 function parseSalary(text: string): { min: number; currency: string; matched: string } | null {
+  // Japanese listings commonly express annual compensation as 年収1000万円,
+  // while English-speaking candidates often write ¥10M. Both are yen, but
+  // 万 is ten thousand rather than the western k multiplier.
+  const yenWithMarker = text.match(/(?:年収\s*)?([¥￥]|jpy\s*)(\d[\d,]*(?:\.\d+)?)\s*(万円?|man|m)?\s*(?:円)?(?:以上|\+)?/i)
+  if (yenWithMarker) {
+    let min = Number(yenWithMarker[2].replace(/,/g, ''))
+    const unit = (yenWithMarker[3] ?? '').toLowerCase()
+    if (unit === '万' || unit === '万円' || unit === 'man') min *= 10_000
+    else if (unit === 'm') min *= 1_000_000
+    if (Number.isFinite(min) && min >= 1_000) {
+      return { min: Math.round(min), currency: 'JPY', matched: yenWithMarker[0] }
+    }
+  }
+  const yenAnnual = text.match(/年収\s*(\d[\d,]*(?:\.\d+)?)\s*(万円?|万|man|m)?\s*(?:円)?(?:以上|\+)?/i)
+  if (yenAnnual) {
+    let min = Number(yenAnnual[1].replace(/,/g, ''))
+    const unit = (yenAnnual[2] ?? '').toLowerCase()
+    if (unit === '万' || unit === '万円' || unit === 'man') min *= 10_000
+    else if (unit === 'm') min *= 1_000_000
+    if (Number.isFinite(min) && min >= 1_000) {
+      return { min: Math.round(min), currency: 'JPY', matched: yenAnnual[0] }
+    }
+  }
+  const yenMan = text.match(/(\d[\d,]*(?:\.\d+)?)\s*(万円?|万|man)\s*(?:円)?(?:以上|\+)?/i)
+  if (yenMan) {
+    const min = Number(yenMan[1].replace(/,/g, '')) * 10_000
+    if (Number.isFinite(min) && min >= 1_000) {
+      return { min: Math.round(min), currency: 'JPY', matched: yenMan[0] }
+    }
+  }
+
   // Indian lakh/crore notation is common and does not fit the k/m pattern.
   const lakh = text.match(/(?:₹|rs\.?\s*|inr\s*)?(\d+(?:\.\d+)?)\s*(l|lpa|lakhs?)\b/i)
   if (lakh) {
@@ -307,11 +339,10 @@ export function parseIntent(
 
   // --- residue: what the user is actually looking for
   const residue = blankSpans(text, allSpans)
-  const terms = residue
-    .toLowerCase()
-    .split(/[^a-z0-9+#.]+/)
-    .map((t) => t.trim())
-    .filter((t) => t.length > 1 && !STOPWORDS.has(t))
+  // Use the retrieval tokeniser. The former ASCII-only split erased Japanese
+  // role queries here, so smart search treated infrastructure-engineer text as
+  // an empty query even though ordinary search handled it.
+  const terms = tokenizeText(residue).filter((t) => !STOPWORDS.has(t))
 
   out.titleTerms = terms
   out.topic = terms.join(' ')
@@ -338,8 +369,13 @@ export function describeIntent(intent: ParsedIntent): string[] {
     parts.push(intent.postedWithinDays === 1 ? 'posted today' : `posted in the last ${intent.postedWithinDays} days`)
   }
   if (intent.salaryMin) {
-    const sym = intent.salaryCurrency === 'INR' ? '₹' : intent.salaryCurrency === 'EUR' ? '€' : intent.salaryCurrency === 'GBP' ? '£' : '$'
-    parts.push(`paying over ${sym}${intent.salaryMin.toLocaleString()}`)
+    const sym = intent.salaryCurrency === 'INR' ? '₹'
+      : intent.salaryCurrency === 'JPY' ? '¥'
+      : intent.salaryCurrency === 'EUR' ? '€'
+      : intent.salaryCurrency === 'GBP' ? '£'
+      : '$'
+    // A server's host locale must not change the API's English explanation.
+    parts.push(`paying over ${sym}${intent.salaryMin.toLocaleString('en-US')}`)
   }
   return parts
 }

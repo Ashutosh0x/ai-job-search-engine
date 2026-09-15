@@ -644,6 +644,8 @@ export interface JobQuery {
   /** apprenticeship | graduate | internship | placement | trainee | entry-level | junior */
   earlyCareer?: string[]
   minSalary?: number
+  /** Currency for a salary floor. Omit only for an intentional raw comparison. */
+  salaryCurrency?: string
   sort?: 'relevance' | 'recent' | 'valuation' | 'openings' | 'salary'
   page?: number
   pageSize?: number
@@ -965,7 +967,11 @@ export async function searchJobs(query: JobQuery): Promise<SearchResult | null> 
       : rows.filter((r) => r.earlyCareer && set.has(r.earlyCareer.toLowerCase()))
   }
   if (query.minSalary) {
-    rows = rows.filter((r) => (r.salaryMax ?? r.salaryMin ?? 0) >= query.minSalary!)
+    const currency = query.salaryCurrency?.trim().toUpperCase()
+    rows = rows.filter((r) =>
+      (!currency || r.salaryCurrency?.toUpperCase() === currency) &&
+      (r.salaryMax ?? r.salaryMin ?? 0) >= query.minSalary!
+    )
   }
   // ---- Company-level filters: the ones no major job board offers ----------
   if (query.valuationTiers?.length) {
@@ -1290,6 +1296,7 @@ export async function smartSearch(
     remote: intent.remoteOnly || undefined,
     postedWithinDays: intent.postedWithinDays ?? undefined,
     minSalary: intent.salaryMin ?? undefined,
+    salaryCurrency: intent.salaryCurrency ?? undefined,
     ...filterOverrides,
     // Pool size is a retrieval concern and must not be overwritten by the
     // caller's display page size, or the ranker only ever sees one page.

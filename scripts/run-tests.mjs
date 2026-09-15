@@ -43,6 +43,7 @@ const SUITES = [
   'test-location-filter.mjs',
   'test-japan.mjs',
   'test-index-selection.mjs',
+  'test-read-index.mjs',
   'test-job-posting-schema.mjs',
   'test-ssr-render.mjs',
   'test-search-recall.mjs',

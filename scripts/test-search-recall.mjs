@@ -36,7 +36,10 @@ const t = (name, cond, got) => {
   else { fail++; console.log(`  FAIL ${name}`, got !== undefined ? `-> ${JSON.stringify(got)}` : '') }
 }
 
-function job(i, { title, city, country, remote = false, dept = 'Engineering' }) {
+function job(i, {
+  title, city, country, remote = false, dept = 'Engineering',
+  salaryMin = null, salaryMax = null, salaryCurrency = null,
+}) {
   return {
     id: `greenhouse:acme:${i}`,
     source: 'greenhouse',
@@ -54,7 +57,7 @@ function job(i, { title, city, country, remote = false, dept = 'Engineering' }) 
     employmentType: 'Full-time',
     seniority: 'mid',
     department: dept,
-    salaryMin: null, salaryMax: null, salaryCurrency: null,
+    salaryMin, salaryMax, salaryCurrency,
     skills: [],
     postedAt: '2026-09-01T00:00:00.000Z',
     firstSeenAt: '2026-09-01T00:00:00.000Z',
@@ -71,7 +74,11 @@ function job(i, { title, city, country, remote = false, dept = 'Engineering' }) 
  * the truncation lossy in production.
  */
 const JOBS = [
-  ...Array.from({ length: 20000 }, (_, i) => job(i, { title: 'Engineer', city: 'Berlin', country: 'Germany' })),
+  ...Array.from({ length: 20000 }, (_, i) => job(i, {
+    title: 'Engineer', city: 'Berlin', country: 'Germany',
+    ...(i === 0 ? { salaryMin: 10_000_000, salaryCurrency: 'JPY' } : {}),
+    ...(i === 1 ? { salaryMin: 120_000, salaryCurrency: 'USD' } : {}),
+  })),
   ...Array.from({ length: 300 }, (_, i) =>
     job(100000 + i, {
       title: 'Engineer of Distributed Systems and Platform Reliability Group',
@@ -93,7 +100,12 @@ const info = console.info
 console.info = () => {}
 
 try {
-  const { searchJobs } = await import(`../lib/job-index.ts?recall=${Math.random()}`)
+  // Node 20's tsx loader wraps a query-string TypeScript import in `default`,
+  // while newer Node releases expose its named exports directly. The random
+  // query is intentional cache-busting for this temporary index, so accept
+  // both interop shapes instead of making the suite Node-version dependent.
+  const jobIndexModule = await import(`../lib/job-index.ts?recall=${Math.random()}`)
+  const searchJobs = jobIndexModule.searchJobs ?? jobIndexModule.default?.searchJobs
 
   /* -------------------- keyword + location ------------------------------- */
   {
@@ -134,6 +146,14 @@ try {
 
     const remote = await searchJobs({ q: 'engineer', remote: true, pageSize: 1 })
     t('remote filter narrows to nothing when no row is remote', remote.total === 0, remote.total)
+  }
+
+  /* ---------------------------- salary currency ------------------------- */
+  {
+    const yen = await searchJobs({ minSalary: 10_000_000, salaryCurrency: 'JPY', pageSize: 5 })
+    const dollars = await searchJobs({ minSalary: 100_000, salaryCurrency: 'USD', pageSize: 5 })
+    t('a yen floor only compares yen salaries', yen.total === 1 && yen.jobs[0]?.salaryCurrency === 'JPY', yen)
+    t('a dollar floor only compares dollar salaries', dollars.total === 1 && dollars.jobs[0]?.salaryCurrency === 'USD', dollars)
   }
 
   /* -------------------- combining filters narrows monotonically ---------- */

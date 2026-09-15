@@ -44,7 +44,12 @@ const t = (name, cond, got) => {
   else { fail++; console.log(`  FAIL ${name}`, got !== undefined ? `-> ${JSON.stringify(got)}` : '') }
 }
 
-const { ClientRootLayout } = await import('../components/client-root-layout.tsx')
+// tsx exposes a TypeScript module as named exports on newer Node releases, but
+// as a CommonJS-shaped `default` object on Node 20. CI deliberately tests Node
+// 20, so read both interop shapes. This is a test-loader detail, not an
+// application export difference.
+const layoutModule = await import('../components/client-root-layout.tsx')
+const ClientRootLayout = layoutModule.ClientRootLayout ?? layoutModule.default?.ClientRootLayout
 
 /* ------------------- the root layout must render children ----------------- */
 {

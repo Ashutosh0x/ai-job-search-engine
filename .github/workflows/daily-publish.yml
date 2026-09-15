@@ -56,7 +56,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
           cache: npm
 
       - run: npm ci
@@ -98,7 +98,7 @@ jobs:
 
       - name: Rebuild the bounded deploy index
         # `npx tsx`, not `node`. The builder imports lib/companies/registry.ts to
-        # learn which employers must be served complete. Node 20 rejects a .ts
+        # learn which employers must be served complete. Plain Node rejects a .ts
         # import, the builder catches it and carries on WITHOUT curated slugs --
         # so the index would still build, still pass the size gate, and quietly
         # drop the served-complete guarantee that put Barclays' 1,024 roles in

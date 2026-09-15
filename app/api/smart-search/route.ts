@@ -65,6 +65,7 @@ export async function GET(request: NextRequest) {
       visa: result.intent.visa,
       postedWithinDays: result.intent.postedWithinDays,
       salaryMin: result.intent.salaryMin,
+      salaryCurrency: result.intent.salaryCurrency,
       companies: result.intent.companies,
       facets: result.intent.facets,
     },

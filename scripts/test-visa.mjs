@@ -74,5 +74,17 @@ console.log('\nUK / EU / CANADA')
   t('EU Blue Card detected', r.visaTypes.includes('EU Blue Card'), r.visaTypes)
 }
 
+console.log('\nJAPAN')
+{
+  const r = classifyVisa(pad+'就労ビザ取得支援あり。高度専門職ビザの申請をサポートします。', { country: 'Japan' })
+  t('Japanese visa support -> EXPLICIT', r.status==='SPONSORSHIP_EXPLICIT', r)
+  t('Japanese visa type is captured', r.visaTypes.includes('Japan Highly Skilled Professional'), r.visaTypes)
+  t('Japanese visa country is captured', r.visaCountries.includes('Japan'), r.visaCountries)
+}
+{
+  const r = classifyVisa(pad+'就労ビザのサポートはありません。', { country: 'Japan' })
+  t('Japanese no-sponsorship -> NOT_AVAILABLE', r.status==='SPONSORSHIP_NOT_AVAILABLE', r)
+}
+
 console.log(`\n${pass} passed, ${fail} failed`)
 process.exit(fail===0?0:1)

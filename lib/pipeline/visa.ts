@@ -66,6 +66,8 @@ const POSITIVE_STRONG: Rule[] = [
   { id: 'offers-sponsorship', re: /\b(offers?|providing|provides)\s+(visa\s+|immigration\s+)?sponsorship\b/i, polarity: 'positive', weight: 0.95 },
   { id: 'eligible-for-sponsorship', re: /\b(is|are)\s+eligible\s+for\s+(visa\s+)?sponsorship\b/i, polarity: 'positive', weight: 0.95 },
   { id: 'sponsor-licence', re: /\b(licensed|approved)\s+(uk\s+)?visa\s+sponsor\b|\bsponsor\s+licence\b/i, polarity: 'positive', weight: 0.95 },
+  { id: 'japan-visa-support', re: /(?:就労|就業)?ビザ(?:取得)?(?:の)?(?:支援|サポート)(?:あり|有り|を提供|を行(?:い|う)|可能)/i, polarity: 'positive', weight: 0.95 },
+  { id: 'japan-visa-sponsorship', re: /(?:就労|就業)?ビザ(?:の)?(?:スポンサー(?:シップ)?|スポンサード)(?:あり|有り|を提供|を行(?:い|う)|可能)/i, polarity: 'positive', weight: 0.95 },
 ]
 
 /**
@@ -104,6 +106,7 @@ const NEGATIVE_STRONG: Rule[] = [
   { id: 'no-sponsorship-now-or-future', re: /\b(now\s+or\s+in\s+the\s+future|either\s+now\s+or\s+in\s+the\s+future)\b[^.]{0,80}\bsponsor|sponsor[^.]{0,80}\bnow\s+or\s+in\s+the\s+future\b/i, polarity: 'negative', weight: 1.0 },
   { id: 'must-not-require-sponsorship', re: /\b(must\s+not|without\s+the\s+need\s+for|do\s+not)\s+(\w+\s+){0,3}?require\s+(\w+\s+){0,2}?sponsorship\b/i, polarity: 'negative', weight: 1.0 },
   { id: 'not-sponsoring', re: /\b(not|no\s+longer)\s+sponsoring\b/i, polarity: 'negative', weight: 1.0 },
+  { id: 'japan-visa-support-unavailable', re: /(?:就労|就業)?ビザ(?:の)?(?:支援|サポート|スポンサー(?:シップ)?|スポンサード)(?:は|が)?(?:不可|なし|無し|ありません|対応していません|提供していません)/i, polarity: 'negative', weight: 1.0 },
 ]
 
 /**
@@ -141,6 +144,9 @@ const VISA_TYPES: [RegExp, string][] = [
   [/\bglobal\s+talent\s+stream\b/i, 'Global Talent Stream'],
   [/\bsubclass\s*(482|186|494)\b|\btss\s+visa\b/i, 'Australia TSS'],
   [/\bhighly\s+skilled\s+migrant\b/i, 'NL Highly Skilled Migrant'],
+  [/高度専門職(?:ビザ|在留資格)?/, 'Japan Highly Skilled Professional'],
+  [/技術(?:・|\/)?人文知識(?:・|\/)?国際業務/, 'Japan Engineer/Specialist in Humanities/International Services'],
+  [/特定技能(?:ビザ|在留資格)?/, 'Japan Specified Skilled Worker'],
 ]
 
 /** Countries named near sponsorship language. */
@@ -157,6 +163,7 @@ const VISA_COUNTRY_HINTS: [RegExp, string][] = [
   [/\b(france|french)\b/i, 'France'],
   [/\b(switzerland|swiss)\b/i, 'Switzerland'],
   [/\b(united\s+arab\s+emirates|uae|dubai)\b/i, 'United Arab Emirates'],
+  [/\b(japan|japanese)\b|日本/, 'Japan'],
 ]
 
 /* ------------------------------- extraction ------------------------------- */
@@ -165,7 +172,7 @@ const VISA_COUNTRY_HINTS: [RegExp, string][] = [
 function sentences(text: string): string[] {
   return text
     .replace(/\s+/g, ' ')
-    .split(/(?<=[.!?;])\s+|(?:\s*[•·\-\*]\s+)/)
+    .split(/(?<=[.!?;。])\s+|(?:\s*[•·\-\*]\s+)/)
     .map((s) => s.trim())
     .filter((s) => s.length > 12 && s.length < 400)
 }
