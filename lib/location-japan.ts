@@ -134,6 +134,45 @@ const CITY_ALIASES: Record<string, string> = {
   'kawasaki-shi': 'Kawasaki',
   'saitama-shi': 'Saitama',
   'sendai-shi': 'Sendai',
+
+  // Tokyo's 23 special wards (特別区) in romaji.
+  // 48 of 59 -ku rows in the corpus are "Chiyoda-ku". Without this, each ward
+  // was a separate city facet entry — so "Tokyo" missed every posting whose
+  // ATS wrote the ward name instead.
+  'chiyoda-ku': 'Tokyo',
+  'minato-ku': 'Tokyo',
+  'shibuya-ku': 'Tokyo',
+  'shinjuku-ku': 'Tokyo',
+  'shinagawa-ku': 'Tokyo',
+  'meguro-ku': 'Tokyo',
+  'setagaya-ku': 'Tokyo',
+  'toshima-ku': 'Tokyo',
+  'nakano-ku': 'Tokyo',
+  'suginami-ku': 'Tokyo',
+  'bunkyo-ku': 'Tokyo',
+  'taito-ku': 'Tokyo',
+  'sumida-ku': 'Tokyo',
+  'koto-ku': 'Tokyo',
+  'ota-ku': 'Tokyo',
+  'edogawa-ku': 'Tokyo',
+  'nerima-ku': 'Tokyo',
+  'adachi-ku': 'Tokyo',
+  'katsushika-ku': 'Tokyo',
+  'arakawa-ku': 'Tokyo',
+  'itabashi-ku': 'Tokyo',
+  // NOTE: chuo-ku, kita-ku, nishi-ku, naka-ku exist in BOTH Tokyo and Osaka.
+  // They are NOT mapped here — without surrounding context there is no way to
+  // choose, and defaulting to Tokyo mis-resolved "Japan, Osaka, Kita-ku".
+
+  // Yokohama wards (seen in corpus: Tsuzuki-ku)
+  'tsuzuki-ku': 'Yokohama',
+  'kohoku-ku': 'Yokohama',
+  'nishi-ku': 'Yokohama',
+  'naka-ku': 'Yokohama',
+
+  // Osaka wards (for when context is clearly Osaka)
+  'yodogawa-ku': 'Osaka',
+  'kita-ku osaka': 'Osaka',
 }
 
 /**
@@ -177,6 +216,27 @@ export function canonicalJapaneseCity(raw: string | null | undefined): string | 
   // 5. The alias table, after the above so "JP - Tokyo-to" resolves too.
   const alias = CITY_ALIASES[s.toLowerCase()]
   if (alias) return alias
+
+  // 6. Space-separated ward+city+country strings.
+  //    "Chiyoda-ku Tokyo Japan" is 48 of 59 -ku rows. The location parser splits
+  //    on commas, but this string has no commas. Look for a -ku word, resolve it
+  //    via the alias table, and use that. If nothing resolves, return the input
+  //    minus trailing country tokens ("Japan", "JP").
+  const words = s.split(/\s+/)
+  if (words.length >= 2) {
+    const kuWord = words.find(w => /-ku$/i.test(w))
+    if (kuWord) {
+      const kuAlias = CITY_ALIASES[kuWord.toLowerCase()]
+      if (kuAlias) return kuAlias
+    }
+    // Also strip trailing "Japan"/"JP" from a multi-word value so the city
+    // field doesn't carry a country.
+    const stripped = words.filter(w => !/^(japan|jp|jpn)$/i.test(w)).join(' ').trim()
+    if (stripped && stripped !== s) {
+      const strippedAlias = CITY_ALIASES[stripped.toLowerCase()]
+      if (strippedAlias) return strippedAlias
+    }
+  }
 
   return s || null
 }
