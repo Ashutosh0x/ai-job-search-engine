@@ -171,6 +171,12 @@ export default function Navigation() {
             >
               Explore Jobs
             </Link>
+            <Link
+              href="/recruiters"
+              className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-medium"
+            >
+              Recruiters
+            </Link>
           </div>
 
           {/* Right Side */}
@@ -305,6 +311,13 @@ export default function Navigation() {
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Explore Jobs
+                </Link>
+                <Link
+                  href="/recruiters"
+                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Recruiters
                 </Link>
               </div>
 

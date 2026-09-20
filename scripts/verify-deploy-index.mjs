@@ -22,6 +22,8 @@
  * branch untouched with no obvious cause.
  */
 import { openSync, readSync, closeSync, statSync, existsSync } from 'fs'
+import { dirname, join, basename, resolve } from 'path'
+import { fileURLToPath } from 'url'
 
 const args = process.argv.slice(2)
 const val = (n, d) => { const i = args.indexOf(`--${n}`); return i !== -1 && args[i + 1] ? args[i + 1] : d }
@@ -57,15 +59,43 @@ export function readIndexHead(path, bytes = 4096) {
   const jobCount = /"jobCount"\s*:\s*(\d+)/.exec(text)
   const corpusTotal = /"corpusTotal"\s*:\s*(\d+)/.exec(text)
   const generatedAt = /"generatedAt"\s*:\s*"([^"]+)"/.exec(text)
+
+  // `shards` names the files this index needs to serve its jobCount. It sits
+  // in the head alongside the counters, so the same bounded read reaches it.
+  // `shardsFound` distinguishes "declares an empty list" from "the field was
+  // not in the bytes we read" — treating those the same would let a truncated
+  // read look like an unsharded index.
+  const shardsMatch = /"shards"\s*:\s*\[([^\]]*)\]/.exec(text)
+  const shards = shardsMatch
+    ? Array.from(shardsMatch[1].matchAll(/"([^"]+)"/g)).map((m) => m[1])
+    : []
+
   return {
     jobCount: jobCount ? Number(jobCount[1]) : null,
     corpusTotal: corpusTotal ? Number(corpusTotal[1]) : null,
     generatedAt: generatedAt ? generatedAt[1] : null,
+    shards,
+    shardsFound: Boolean(shardsMatch),
   }
 }
 
 const fail = (msg) => { console.error(`FAIL  ${msg}`); process.exit(1) }
 const ok = (msg) => console.log(`ok    ${msg}`)
+
+/**
+ * Only gate when run as a command.
+ *
+ * `readIndexHead` is exported and worth testing directly, but importing this
+ * file used to execute the whole gate as a side effect — so a test that merely
+ * imported the helper ran the checks against the repo's real index and exited
+ * the test process on the first failure.
+ */
+const invokedDirectly = process.argv[1] &&
+  resolve(process.argv[1]) === fileURLToPath(import.meta.url)
+
+if (!invokedDirectly) {
+  // Imported for its helpers; the caller runs its own checks.
+} else {
 
 if (!existsSync(FILE)) fail(`${FILE} does not exist — nothing was built`)
 
@@ -74,9 +104,43 @@ if (head.jobCount === null) fail(`${FILE} has no jobCount in its head — not a 
 if (head.jobCount === 0) fail(`${FILE} contains 0 jobs`)
 ok(`${FILE}: ${head.jobCount.toLocaleString()} jobs of ${(head.corpusTotal ?? 0).toLocaleString()} corpus (built ${head.generatedAt})`)
 
+// The index NAMES its own shards. Trust that list, not a guessed sequence.
+//
+// This used to probe `.2.json` … `.10.json` and keep whichever happened to
+// exist. A shard the index declares but that is missing from disk therefore
+// passed silently: the local checkout had `shards: ["jobs-deploy.2.json",
+// "jobs-deploy.3.json"]` and `jobCount: 130,863`, but only 51,920 jobs were
+// loadable because shard 3 was absent — and the gate reported "2 shard(s)"
+// and accepted it. An index that cannot serve the jobs it claims is exactly
+// what this script exists to stop.
+const shardDir = dirname(FILE)
+const declaredPaths = head.shards.map((s) => join(shardDir, String(s)))
+
+for (const shardPath of declaredPaths) {
+  if (!existsSync(shardPath)) {
+    fail(`${basename(FILE)} declares shard "${basename(shardPath)}" but it is missing from disk. ` +
+         `The index claims ${head.jobCount.toLocaleString()} jobs it cannot serve.`)
+  }
+}
+
+// A shard on disk the index does NOT declare is an orphan from an older build.
+// Only checked when we actually read a `shards` field: without that, every
+// shard would look stray and the gate would reject a healthy index.
+if (head.shardsFound) {
+  // Compare RESOLVED paths. `join()` yields "public\data\x.json" on Windows
+  // while the probe below builds "public/data/x.json", so a raw string
+  // comparison reports every declared shard as a stray on Windows only.
+  const declaredResolved = new Set(declaredPaths.map((p) => resolve(p)))
+  const strays = Array.from({ length: 9 }, (_, i) => FILE.replace(/\.json$/, `.${i + 2}.json`))
+    .filter((p) => existsSync(p) && !declaredResolved.has(resolve(p)))
+  for (const stray of strays) {
+    fail(`${basename(stray)} is on disk but ${basename(FILE)} does not declare it in "shards" — ` +
+         `a stale orphan from an earlier build, or the index is under-reporting itself.`)
+  }
+}
+
 // Every shard counts against the per-file limit independently.
-const shards = [FILE, ...Array.from({ length: 9 }, (_, i) => FILE.replace(/\.json$/, `.${i + 2}.json`))]
-  .filter((p) => existsSync(p))
+const shards = [FILE, ...declaredPaths].filter((p) => existsSync(p))
 
 let totalMb = 0
 for (const shard of shards) {
@@ -110,3 +174,5 @@ if (FLOOR_AGAINST) {
 }
 
 console.log('\ndeploy index accepted')
+
+}

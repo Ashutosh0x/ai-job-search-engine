@@ -64,6 +64,15 @@ export interface IndexedJob {
   freshnessScore?: number
   isDirectApplication?: boolean
   sourceCount?: number
+  /**
+   * The company's recruiting contact, attached at read time by
+   * `attachRecruiterContacts` in lib/companies/job-recruiter-contact.ts.
+   *
+   * Never present in the snapshot on disk: a contact belongs to a company, and
+   * writing it onto each of ~113k postings would copy one fact tens of
+   * thousands of times and let those copies drift apart.
+   */
+  recruiterContact?: import('./companies/job-recruiter-contact').RecruiterContactSummary
 }
 
 export interface IndexedCompany extends CompanyRecord {

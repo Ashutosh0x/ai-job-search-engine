@@ -115,3 +115,9 @@ next-env.d.ts
 # sitemap yields closed requisitions only -- see data/crawlability.json.
 /walmart-roles.json
 /walmart-roles.ndjson
+
+# Third-party extension pulled apart for analysis; not ours to redistribute.
+signalhire-extension/
+
+# Supervisor rollback copies and logs.
+.refresh-backup/

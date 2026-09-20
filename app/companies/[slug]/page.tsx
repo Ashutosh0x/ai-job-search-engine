@@ -5,6 +5,7 @@ import { formatValuation } from "@/lib/companies/registry"
 import { hasBankingIntelligence } from "@/lib/companies/banking-intelligence"
 import { getRecruitingContacts } from "@/lib/companies/recruiting-contacts"
 import RecruitingIntelligence from "@/components/recruiting-intelligence"
+import { CompanyContactFinder } from "@/components/contacts/company-contact-finder"
 import Navigation from "@/components/navigation"
 import { CompanyLogo } from "@/components/company-logo"
 import { Card, CardContent } from "@/components/ui/card"
@@ -196,6 +197,17 @@ export default async function CompanyPage({ params }: { params: { slug: string }
             talentOrg={recruiting.talentOrg}
             mailPosture={recruiting.mailPosture}
             lastVerifiedAt={recruiting.metadata?.generatedAt ?? recruiting.checkedAt ?? null}
+          />
+        </div>
+
+        {/* Find Contacts — pattern-based discovery, kept separate from the
+            evidence-backed panel above so the two are never confused. */}
+        <div className="mb-6" id="find-contacts">
+          <CompanyContactFinder
+            companyName={company.name}
+            domain={recruiting.emailPattern?.domain ?? company.domain ?? null}
+            emailPatterns={recruiting.emailPatterns}
+            publishedContacts={recruiting.publishedContacts}
           />
         </div>
 

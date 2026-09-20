@@ -33,7 +33,11 @@
     "test-password-reset-validation": "node scripts/test-password-reset-validation.js",
     "analytics:prune": "tsx scripts/prune-analytics.mjs",
     "data-quality": "node --max-old-space-size=8192 scripts/data-quality.mjs",
-    "backfill-locations": "tsx scripts/backfill-locations.mjs"
+    "backfill-locations": "tsx scripts/backfill-locations.mjs",
+    "refresh": "tsx scripts/refresh.mjs",
+    "refresh:live": "tsx scripts/refresh-supervisor.mjs",
+    "refresh:once": "tsx scripts/refresh-supervisor.mjs --once",
+    "verify-index": "node scripts/verify-deploy-index.mjs --file public/data/jobs-deploy.json"
   },
   "dependencies": {
     "@geist-ui/react": "^2.2.5",
@@ -74,6 +78,7 @@
     "clsx": "^2.1.1",
     "cmdk": "1.0.4",
     "date-fns": "4.1.0",
+    "disposable-email-domains": "^1.0.62",
     "dotenv": "^17.2.1",
     "embla-carousel-react": "8.5.1",
     "framer-motion": "^12.23.12",

@@ -214,5 +214,33 @@ const withBoards = COMPANIES.filter((c) => c.boards?.length)
     collisions.map(([k, rows]) => `${k}: ${rows.map((r) => `${r.slug}@${r.host}`).join(' vs ')}`))
 }
 
+/* ---- Every company is reachable by the crawlers ---- */
+{
+  // Three crawl scripts each carried this regex:
+  //   /slug:\s*'([^']+)',\s*name:\s*'([^']+)',\s*domain:\s*'([^']+)'/g
+  // It requires a SINGLE-quoted name, and 114 of the registry's 387 entries
+  // are written `name: "Ramp"`. Those companies — Ramp, Plaid, CoreWeave,
+  // Vanta, Sentry, Mercury among them — were skipped by every crawl, and the
+  // scripts cheerfully reported success over the 273 they could see.
+  const { parseRegistry } = await import('./lib/parse-registry.mjs')
+  const { companies, declared, missed } = parseRegistry()
+
+  t('the shared registry parser matches every declared company',
+    missed === 0,
+    `${companies.length} parsed vs ${declared} declared (${missed} missed)`)
+
+  t('the registry parser accepts double-quoted names',
+    companies.some((c) => c.slug === 'ramp'),
+    'Ramp is declared with name: "Ramp" and must be parsed')
+
+  const dupes = companies.length - new Set(companies.map((c) => c.slug)).size
+  t('the parser returns no duplicate slugs', dupes === 0, `${dupes} duplicates`)
+
+  const badDomain = companies.filter((c) => !/^[a-z0-9.-]+\.[a-z]{2,}$/.test(c.domain))
+  t('every parsed domain is well formed',
+    badDomain.length === 0,
+    badDomain.slice(0, 5).map((c) => `${c.slug}=${c.domain}`).join(', '))
+}
+
 console.log(`\n${pass} passed, ${fail} failed`)
 process.exit(fail === 0 ? 0 : 1)

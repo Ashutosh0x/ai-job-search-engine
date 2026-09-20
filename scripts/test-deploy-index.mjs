@@ -121,5 +121,50 @@ const job = (i, slug, over = {}) => ({
   }
 }
 
+/* ---- readIndexHead reports the shards the index declares ---- */
+{
+  // The gate used to probe `.2.json` … `.10.json` and keep whichever existed,
+  // so a shard the index DECLARED but that was missing from disk passed
+  // silently. The committed index declares jobs-deploy.3.json, that file is
+  // absent from the checkout, and the gate still said "2 shard(s), accepted"
+  // for an index that could only serve 51,920 of its claimed 130,863 jobs.
+  const { readIndexHead } = await import('./verify-deploy-index.mjs')
+  const dir = mkdtempSync(join(tmpdir(), 'shard-head-'))
+  try {
+    const { writeFileSync } = await import('fs')
+
+    const sharded = join(dir, 'idx.json')
+    writeFileSync(sharded, JSON.stringify({
+      generatedAt: new Date().toISOString(),
+      jobCount: 100,
+      deployment: { corpusTotal: 500 },
+      shards: ['idx.2.json', 'idx.3.json'],
+      jobs: [],
+    }))
+    const head = readIndexHead(sharded)
+    t('readIndexHead extracts the declared shard list',
+      Array.isArray(head.shards) && head.shards.length === 2,
+      JSON.stringify(head.shards))
+    t('readIndexHead names the shards exactly',
+      head.shards[0] === 'idx.2.json' && head.shards[1] === 'idx.3.json',
+      JSON.stringify(head.shards))
+    t('shardsFound is true when the field was read', head.shardsFound === true)
+
+    // An unsharded index must not look like one whose field was truncated
+    // away — otherwise every shard on disk would be reported as an orphan.
+    const plain = join(dir, 'plain.json')
+    writeFileSync(plain, JSON.stringify({
+      generatedAt: new Date().toISOString(), jobCount: 10, jobs: [],
+    }))
+    const plainHead = readIndexHead(plain)
+    t('an index with no shards field reports shardsFound false',
+      plainHead.shardsFound === false && plainHead.shards.length === 0)
+
+    t('readIndexHead still reads jobCount alongside shards', head.jobCount === 100)
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+}
+
 console.log(`\n${pass} passed, ${fail} failed`)
 process.exit(fail === 0 ? 0 : 1)

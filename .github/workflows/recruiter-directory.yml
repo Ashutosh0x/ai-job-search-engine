@@ -1,0 +1,131 @@
+name: Recruiter directory
+
+# Crawls employer careers pages for published recruiting contacts, merges the
+# evidence-backed recruiter records, and commits the directory so Vercel ships
+# it with the next build.
+#
+# WHY IT IS SEPARATE FROM daily-publish.yml
+# -----------------------------------------
+# daily-publish writes a ~108 MB job index and runs for hours. This artefact is
+# well under a megabyte and takes under an hour, so coupling them would mean a
+# slow job-index crawl could block a cheap contacts refresh, and a failure in
+# either would be reported as a failure of both. Different size, different
+# runtime, different failure profile: its own workflow.
+#
+# WHY THE CRAWL IS BUDGETED RATHER THAN EXHAUSTIVE
+# ------------------------------------------------
+# A full pass over the registry is ~20 minutes of live HTTP today and grows
+# with every company added. The builder re-crawls the stalest entries first and
+# stops at the budget, carrying everything else forward from the committed
+# directory. A run that hits the budget therefore publishes slightly older data
+# for some employers, never a directory with holes in it.
+
+on:
+  schedule:
+    # 06:00 UTC — after daily-publish (05:00) so the two crawls are not
+    # competing for the runner's network, and the registry it reads is current.
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+    inputs:
+      budget_minutes:
+        description: 'Crawl budget in minutes'
+        required: false
+        default: '45'
+      force:
+        description: 'Re-crawl every company, ignoring staleness'
+        type: boolean
+        required: false
+        default: false
+
+concurrency:
+  group: recruiter-directory
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      - run: npm ci
+
+      - name: Keep the current directory for comparison
+        run: |
+          if [ -f public/data/recruiter-directory.json ]; then
+            cp public/data/recruiter-directory.json /tmp/previous-directory.json
+          fi
+
+      - name: Crawl and build
+        # tsx, not node: the builder imports lib/contacts/*.ts and
+        # lib/sources/robots.ts directly, so plain Node cannot resolve them.
+        env:
+          # Optional. Without it, GitHub commit search is limited to 10 requests
+          # a minute and most org lookups are skipped, so email patterns are
+          # simply absent rather than wrong.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npx tsx scripts/build-recruiter-directory.mjs \
+            --out public/data/recruiter-directory.json \
+            --budget-minutes ${{ inputs.budget_minutes || '45' }} \
+            --concurrency 6 \
+            ${{ inputs.force == true && '--force' || '' }}
+
+      - name: Gate the directory before it can be committed
+        # Rejects malformed or unsourced addresses, any address attached to a
+        # named person, patterns with no observations behind them, and a
+        # collapse in contact count (what a broken crawl looks like).
+        run: |
+          node scripts/verify-recruiter-directory.mjs \
+            --file public/data/recruiter-directory.json \
+            ${{ hashFiles('/tmp/previous-directory.json') != '' && '--floor-against /tmp/previous-directory.json' || '' }}
+
+      - name: Commit and push
+        id: push
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Only the directory. A crawl also touches caches and logs, and
+          # `git add -A` in a scheduled job is how unrelated state gets
+          # committed by a bot.
+          git add public/data/recruiter-directory.json
+
+          if git diff --cached --quiet; then
+            echo "No directory change — nothing to publish."
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          SUMMARY=$(node scripts/verify-recruiter-directory.mjs --file public/data/recruiter-directory.json | head -1)
+          git commit -m "data: refresh recruiter directory ($(date -u +%Y-%m-%d))" -m "$SUMMARY"
+
+          # Rebase rather than force: daily-publish shares this branch and a
+          # force-push would drop whatever it landed during this crawl.
+          git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+          echo "pushed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "### Recruiter directory"
+            echo ""
+            if [ "${{ steps.push.outputs.pushed }}" = "true" ]; then
+              echo "Pushed a refreshed directory to \`${GITHUB_REF_NAME}\`."
+            else
+              echo "No change to publish."
+            fi
+            echo ""
+            node scripts/verify-recruiter-directory.mjs --file public/data/recruiter-directory.json 2>&1 | sed 's/^/    /'
+          } >> "$GITHUB_STEP_SUMMARY"

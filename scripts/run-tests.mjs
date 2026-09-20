@@ -30,6 +30,19 @@
  * Boeing's live career site. Run it after touching the Radancy adapter --
  * that one parses generated HTML, so a template change on the vendor's side
  * breaks it without any code change here.
+ *
+ * scripts/test-contact-discovery.mjs is excluded on the same principle: it
+ * exercises the /api/contacts/* routes against a running server and a live
+ * Supabase project, so it fails on a clean checkout for reasons that have
+ * nothing to do with the code under test. Start the dev server and run it by
+ * hand after touching those routes:
+ *
+ *   npm run dev
+ *   node scripts/test-contact-discovery.mjs
+ *
+ * The pure half of that pipeline -- inference, generation, normalisation and
+ * the export writers -- is covered by test-contact-pipeline.mjs, which is in
+ * the gate below.
  */
 
 import { spawn } from 'child_process'
@@ -55,6 +68,11 @@ const SUITES = [
   'test-analytics-funnel.mjs',
   'test-retrieval.mjs',
   'test-registry-slugs.mjs',
+  'test-robots.mjs',
+  'test-email-patterns.mjs',
+  'test-contact-pipeline.mjs',
+  'test-linkedin-parser.mjs',
+  'test-careers-scraper.mjs',
   'test-merge.mjs',
   'test-hydration.mjs',
   'test-resume.mjs',
@@ -72,6 +90,7 @@ const SUITES = [
   'test-quality.mjs',
   'test-dedupe.mjs',
   'test-deploy-index.mjs',
+  'test-jobs-query.mjs',
   'test-rank.mjs',
   'test-workplace.mjs',
   'test-skills.mjs',

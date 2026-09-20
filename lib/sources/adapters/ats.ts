@@ -13,6 +13,52 @@ import { toIso } from '../types'
 
 /* ------------------------------- Greenhouse ------------------------------- */
 
+/**
+ * Values that describe HOW someone works, not WHERE.
+ *
+ * Greenhouse lets a board use `location.name` for either. When it holds one of
+ * these, the posting's geography has to come from `offices` instead, or the
+ * job ends up unplaceable.
+ */
+const WORKPLACE_TYPE = /^(hybrid|remote|in[\s-]?office|distributed|on[\s-]?site|flexible|anywhere)$/i
+
+/**
+ * The best available place string for a Greenhouse posting.
+ *
+ * Prefers `location.name` -- it is the most specific field when a board uses
+ * it properly -- and falls back to the office list when it holds a workplace
+ * type. `offices[].location` is fuller than `.name` ("Washington, DC, United
+ * States" vs "Washington, DC"), so it wins where present.
+ *
+ * Returns the original value when there is no office to fall back to: losing
+ * "Remote" entirely would be worse than keeping an imprecise answer.
+ */
+function greenhouseLocation(j: any): string | null {
+  const raw = j?.location?.name ? String(j.location.name).trim() : null
+  if (raw && !WORKPLACE_TYPE.test(raw)) return raw
+
+  const offices = Array.isArray(j?.offices) ? j.offices : []
+  const places = offices
+    .map((o: any) => String(o?.location ?? o?.name ?? '').trim())
+    .filter((s: string) => s && !WORKPLACE_TYPE.test(s))
+
+  if (places.length > 0) {
+    // Multiple offices stay in additionalLocations; the primary is the first.
+    return places[0]
+  }
+
+  // Some boards carry it in a metadata field instead.
+  const meta = Array.isArray(j?.metadata) ? j.metadata : []
+  for (const m of meta) {
+    if (!/location/i.test(String(m?.name ?? ''))) continue
+    const value = Array.isArray(m?.value) ? m.value[0] : m?.value
+    const text = value ? String(value).trim() : ''
+    if (text && !WORKPLACE_TYPE.test(text)) return text
+  }
+
+  return raw
+}
+
 export class GreenhouseAdapter extends BaseAdapter {
   readonly id: SourceId = 'greenhouse'
   readonly displayName = 'Greenhouse'
@@ -88,7 +134,15 @@ export class GreenhouseAdapter extends BaseAdapter {
       companyDomain: target.companyDomain ?? null,
       // `departments` and `offices` are arrays of objects; String()-ing them
       // yields "[object Object]", which is what the original code shipped.
-      locationRaw: j.location?.name ?? null,
+      //
+      // Some boards put the WORKPLACE TYPE in `location.name` rather than a
+      // place. Cloudflare is the clearest case: every posting reads "Hybrid",
+      // "Remote" or "In-Office", and the real geography sits in `offices`.
+      // Taking `location.name` at face value left 274 of Cloudflare's 283
+      // indexed jobs with no city and no country, so they matched no location
+      // filter at all -- a search for their London roles returned nothing.
+      // 487 postings across 53 employers were in that state.
+      locationRaw: greenhouseLocation(j),
       additionalLocations: Array.isArray(j.offices)
         ? j.offices.map((o: any) => o?.name).filter(Boolean)
         : [],

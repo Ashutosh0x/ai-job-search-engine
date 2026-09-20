@@ -1,6 +1,18 @@
 import { BaseAdapter, absoluteUrl } from './base'
 import type { FetchOptions, FetchResult, RawJob, SourceId, SourceTarget } from '../types'
 import { toIso, htmlToText } from '../types'
+import { parseRobots, robotsDecision, type RobotsPolicy } from '../robots'
+
+const CRAWLER_AGENT = 'JobSparkAI/1.0'
+
+interface SiteRobots {
+  /** Origin whose policy was read. Rules never apply to another host. */
+  origin: string
+  policy: RobotsPolicy | null
+  /** The publisher refused or could not serve its policy, so do not crawl. */
+  refused: boolean
+  reason: string | null
+}
 
 /**
  * Entity decode for text pulled straight out of attributes and text nodes.
@@ -51,6 +63,68 @@ export class CustomSiteAdapter extends BaseAdapter {
   }
 
   /**
+   * Read robots.txt before touching an unrecognised company site.
+   *
+   * A 404 is an explicit absence of restrictions. A refusal, timeout, or 5xx
+   * is not permission to proceed: the generic adapter has no documented API
+   * contract to fall back on, so the conservative result is to skip the site
+   * and record why. Known ATS adapters are unaffected by this policy.
+   */
+  private async readRobots(pageUrl: string, opts: FetchOptions = {}): Promise<SiteRobots> {
+    let origin: string
+    try {
+      origin = new URL(pageUrl).origin
+    } catch {
+      return { origin: '', policy: null, refused: true, reason: 'invalid site URL' }
+    }
+
+    const res = await this.get(`${origin}/robots.txt`, {
+      cacheTtlMs: this.ttl.atsDetection,
+      retries: 0,
+      signal: opts.signal,
+    }).catch(() => null)
+
+    if (res?.status === 404 || res?.status === 410) {
+      return { origin, policy: null, refused: false, reason: null }
+    }
+    if (!res?.ok || !res.body) {
+      const status = res?.status || 'unreachable'
+      return { origin, policy: null, refused: true, reason: `robots.txt ${status}` }
+    }
+
+    return {
+      origin,
+      policy: parseRobots(res.body, CRAWLER_AGENT),
+      refused: false,
+      reason: null,
+    }
+  }
+
+  /** True only when a URL belongs to, and is allowed by, this site's policy. */
+  private canFetch(robots: SiteRobots, url: string, warnings?: string[]): boolean {
+    let candidate: URL
+    try {
+      candidate = new URL(url)
+    } catch {
+      warnings?.push(`custom:${url} skipped (invalid URL)`)
+      return false
+    }
+
+    if (candidate.origin !== robots.origin) {
+      warnings?.push(`custom:${url} skipped (outside the verified robots.txt origin)`)
+      return false
+    }
+
+    const decision = robotsDecision(robots.policy, candidate.toString())
+    if (!decision.allowed) {
+      warnings?.push(
+        `custom:${candidate.pathname} skipped (disallowed by robots.txt${decision.rule ? `: ${decision.rule.pattern}` : ''})`,
+      )
+    }
+    return decision.allowed
+  }
+
+  /**
    * Locate a career page on a domain by trying conventional paths and the
    * sitemap. Returns a target whose `site` is the resolved careers URL.
    */
@@ -59,20 +133,21 @@ export class CustomSiteAdapter extends BaseAdapter {
 
     // robots.txt often points at the sitemap, which is the cheapest reliable
     // way to find job URLs without guessing paths.
-    const robots = await this.get(`${base}/robots.txt`, {
-      cacheTtlMs: this.ttl.atsDetection,
-      retries: 0,
-    }).catch(() => null)
-    if (robots?.ok && robots.body) {
-      const sitemapLine = robots.body.match(/^\s*sitemap:\s*(\S+)/im)
-      if (sitemapLine) {
-        const found = await this.findCareersInSitemap(sitemapLine[1])
+    const robots = await this.readRobots(base)
+    if (robots.refused) return null
+
+    if (robots.policy?.sitemaps.length) {
+      for (const sitemap of robots.policy.sitemaps) {
+        const sitemapUrl = absoluteUrl(`${robots.origin}/`, sitemap)
+        if (!this.canFetch(robots, sitemapUrl)) continue
+        const found = await this.findCareersInSitemap(sitemapUrl, robots)
         if (found) return found
       }
     }
 
     for (const path of CAREER_PATHS) {
       const url = `${base}${path}`
+      if (!this.canFetch(robots, url)) continue
       const res = await this.get(url, { cacheTtlMs: this.ttl.atsDetection, retries: 0 }).catch(() => null)
       if (res?.ok && res.body && /job|position|opening|vacanc|role/i.test(res.body)) {
         return url
@@ -81,16 +156,31 @@ export class CustomSiteAdapter extends BaseAdapter {
     return null
   }
 
-  private async findCareersInSitemap(sitemapUrl: string): Promise<string | null> {
+  private async findCareersInSitemap(sitemapUrl: string, robots: SiteRobots): Promise<string | null> {
+    if (!this.canFetch(robots, sitemapUrl)) return null
     const res = await this.get(sitemapUrl, { cacheTtlMs: this.ttl.atsDetection, retries: 0 }).catch(() => null)
     if (!res?.ok || !res.body) return null
     const locs = [...res.body.matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/gi)].map((m) => m[1])
-    return locs.find((u) => /\/(careers?|jobs?|open-positions|vacancies)(\/|$)/i.test(u)) ?? null
+    return locs.find(
+      (u) => /\/(careers?|jobs?|open-positions|vacancies)(\/|$)/i.test(u) && this.canFetch(robots, u),
+    ) ?? null
   }
 
   async fetchJobs(target: SourceTarget, opts: FetchOptions = {}): Promise<FetchResult> {
     const warnings: string[] = []
     const pageUrl = target.site || (target.token.startsWith('http') ? target.token : `https://${target.token}`)
+
+    const robots = await this.readRobots(pageUrl, opts)
+    if (robots.refused) {
+      return {
+        jobs: [],
+        incremental: false,
+        warnings: [`custom:${pageUrl} not crawled (${robots.reason}; no permission could be established)`],
+      }
+    }
+    if (!this.canFetch(robots, pageUrl, warnings)) {
+      return { jobs: [], incremental: false, warnings }
+    }
 
     const res = await this.get(pageUrl, { cacheTtlMs: this.ttl.jobListing, signal: opts.signal }).catch(() => null)
     if (!res?.ok || !res.body) {
@@ -115,7 +205,7 @@ export class CustomSiteAdapter extends BaseAdapter {
     //
     // Checking only the landing page therefore reported "no structured job data
     // found" for employers who publish it perfectly well, one level down.
-    jobs = await this.fromSitemap(pageUrl, target, warnings, opts)
+    jobs = await this.fromSitemap(pageUrl, target, warnings, opts, robots)
     if (jobs.length) return { jobs, incremental: false, warnings }
 
     // 4 -- paginated server-rendered listing
@@ -126,7 +216,7 @@ export class CustomSiteAdapter extends BaseAdapter {
     // title, organisation, every location and the canonical link in the HTML.
     // That is 1 request per 20 roles instead of 1 per role, so it is both
     // cheaper and politer than the sitemap fallback above.
-    jobs = await this.fromPaginatedListing(pageUrl, target, warnings, opts)
+    jobs = await this.fromPaginatedListing(pageUrl, target, warnings, opts, robots)
     if (jobs.length) return { jobs, incremental: false, warnings }
 
     warnings.push(`custom:${pageUrl} no structured job data found`)
@@ -146,7 +236,8 @@ export class CustomSiteAdapter extends BaseAdapter {
     pageUrl: string,
     target: SourceTarget,
     warnings: string[],
-    opts: FetchOptions
+    opts: FetchOptions,
+    robots: SiteRobots,
   ): Promise<RawJob[]> {
     const LINK_RE =
       /href="((?:[^"]*\/)?jobs\/results\/(\d+)-([a-z0-9-]+))[^"]*"[^>]*aria-label="(?:Learn more about )?([^"]+)"/g
@@ -158,6 +249,7 @@ export class CustomSiteAdapter extends BaseAdapter {
 
     for (let page = 1; page <= maxPages; page++) {
       const url = `${pageUrl}${pageUrl.includes('?') ? '&' : '?'}page=${page}`
+      if (!this.canFetch(robots, url, warnings)) break
       const res = await this.get(url, { cacheTtlMs: this.ttl.jobListing, signal: opts.signal }).catch(() => null)
       if (!res?.ok || !res.body) break
       const html = res.body
@@ -258,39 +350,50 @@ export class CustomSiteAdapter extends BaseAdapter {
     pageUrl: string,
     target: SourceTarget,
     warnings: string[],
-    opts: FetchOptions
+    opts: FetchOptions,
+    robots: SiteRobots,
   ): Promise<RawJob[]> {
-    const origin = new URL(pageUrl).origin
-
     // Prefer the sitemap robots.txt advertises; fall back to conventional paths.
-    const candidates: string[] = []
-    const robots = await this.get(`${origin}/robots.txt`, {
-      cacheTtlMs: this.ttl.atsDetection, retries: 0, signal: opts.signal,
-    }).catch(() => null)
-    if (robots?.ok && robots.body) {
-      for (const m of robots.body.matchAll(/^\s*sitemap:\s*(\S+)/gim)) candidates.push(m[1])
-    }
-    candidates.push(`${pageUrl.replace(/\/$/, '')}/sitemap.xml`, `${origin}/sitemap.xml`)
+    const candidates = [
+      ...(robots.policy?.sitemaps ?? []).map((url) => absoluteUrl(`${robots.origin}/`, url)),
+      `${pageUrl.replace(/\/$/, '')}/sitemap.xml`,
+      `${robots.origin}/sitemap.xml`,
+    ]
 
     let urls: string[] = []
-    for (const sm of candidates) {
+    for (const sm of [...new Set(candidates)]) {
+      if (!this.canFetch(robots, sm, warnings)) continue
       const r = await this.get(sm, { cacheTtlMs: this.ttl.discovery, retries: 0, signal: opts.signal })
         .catch(() => null)
       if (!r?.ok || !r.body) continue
 
       // A sitemap index points at further sitemaps rather than pages.
-      const nested = [...r.body.matchAll(/<sitemap>[\s\S]*?<loc>([^<]+)<\/loc>/gi)].map((m) => m[1])
-      const locs = [...r.body.matchAll(/<url>[\s\S]*?<loc>([^<]+)<\/loc>/gi)].map((m) => m[1])
+      const nested = [...r.body.matchAll(/<sitemap>[\s\S]*?<loc>([^<]+)<\/loc>/gi)]
+        .map((m) => absoluteUrl(sm, m[1]))
+      const locs = [...r.body.matchAll(/<url>[\s\S]*?<loc>([^<]+)<\/loc>/gi)]
+        .map((m) => absoluteUrl(sm, m[1]))
 
-      urls = locs.filter((u) => /\/job[\/-]/i.test(u))
+      const jobLocs = locs.filter((u) => /\/job[\/-]/i.test(u))
+      const blockedLocs = jobLocs.filter((u) => !this.canFetch(robots, u))
+      if (blockedLocs.length) {
+        warnings.push(`custom:${pageUrl} skipped ${blockedLocs.length} sitemap job URLs disallowed by robots.txt`)
+      }
+      urls = jobLocs.filter((u) => this.canFetch(robots, u))
       if (urls.length) break
 
       for (const child of nested.slice(0, 5)) {
+        if (!this.canFetch(robots, child, warnings)) continue
         const cr = await this.get(child, { cacheTtlMs: this.ttl.discovery, retries: 0, signal: opts.signal })
           .catch(() => null)
         if (!cr?.ok || !cr.body) continue
-        const childLocs = [...cr.body.matchAll(/<url>[\s\S]*?<loc>([^<]+)<\/loc>/gi)].map((m) => m[1])
-        urls.push(...childLocs.filter((u) => /\/job[\/-]/i.test(u)))
+        const childLocs = [...cr.body.matchAll(/<url>[\s\S]*?<loc>([^<]+)<\/loc>/gi)]
+          .map((m) => absoluteUrl(child, m[1]))
+        const childJobs = childLocs.filter((u) => /\/job[\/-]/i.test(u))
+        const blockedChildJobs = childJobs.filter((u) => !this.canFetch(robots, u))
+        if (blockedChildJobs.length) {
+          warnings.push(`custom:${pageUrl} skipped ${blockedChildJobs.length} nested sitemap job URLs disallowed by robots.txt`)
+        }
+        urls.push(...childJobs.filter((u) => this.canFetch(robots, u)))
       }
       if (urls.length) break
     }

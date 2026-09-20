@@ -500,6 +500,13 @@ export default async function JobDetailPage({ params }: Params) {
                       View all {company.name} roles
                     </Link>
                   </Button>
+                  {/* The recruiting contact lives on the company page, next to
+                      the evidence behind it, rather than being restated here. */}
+                  <Button asChild variant="ghost" className="mt-2 w-full">
+                    <Link href={`/companies/${company.slug}#find-contacts`}>
+                      Find recruiter contact
+                    </Link>
+                  </Button>
                   {company.domain && (
                     <a
                       href={`https://${company.domain}`}

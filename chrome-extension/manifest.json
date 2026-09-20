@@ -1,0 +1,44 @@
+{
+  "manifest_version": 3,
+  "name": "AI Job Search - LinkedIn Insight",
+  "version": "2.0.0",
+  "description": "Extract LinkedIn profile insights and find recruiter contacts for your AI-powered job search",
+  "permissions": ["activeTab", "storage"],
+  "host_permissions": ["https://*.linkedin.com/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.linkedin.com/*"],
+      "js": [
+        "content-scripts/parse-helpers.js",
+        "content-scripts/linkedin-parser.js",
+        "content-scripts/search-parser.js"
+      ],
+      "css": ["content-scripts/overlay.css"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["http://localhost/*", "https://ai-job-search-engine.vercel.app/*"],
+      "js": ["content-scripts/webapp-bridge.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "externally_connectable": {
+    "matches": ["http://localhost/*", "https://ai-job-search-engine.vercel.app/*"]
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

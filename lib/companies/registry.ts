@@ -832,9 +832,30 @@ export const COMPANIES: CompanyRecord[] = [
   { slug: 'figma', name: 'Figma', domain: 'figma.com', valuationKind: 'unknown',
     industry: 'Design Software', hqLocation: 'San Francisco, CA', foundedYear: 2012,
     boards: [{ provider: 'greenhouse', token: 'figma' }] },
+  // Cloudflare's Greenhouse board puts the WORKPLACE TYPE in `location.name`
+  // -- every posting reads "Hybrid", "Remote" or "In-Office" -- and keeps the
+  // real geography in `offices`. See greenhouseLocation() in
+  // lib/sources/adapters/ats.ts; without it 274 of their 283 indexed roles had
+  // no city and no country and matched no location filter.
   { slug: 'cloudflare', name: 'Cloudflare', domain: 'cloudflare.com', ticker: 'NET', valuationKind: 'public',
     industry: 'Internet Infrastructure', hqLocation: 'San Francisco, CA', foundedYear: 2009,
     boards: [{ provider: 'greenhouse', token: 'cloudflare' }] },
+
+  // AT&T runs two Workday sites on the same `att` tenant and they are NOT
+  // duplicates: ATTGeneral carries the standing requisitions (1,288 live at
+  // registration) and ATTCollege carries the internship and graduate-programme
+  // intake (9). Registering only the first silently drops every early-career
+  // role, which is the half this site most needs.
+  //
+  // att.jobs is their marketing careers site and its robots.txt disallows
+  // /search-jobs/, so the Workday feed below is the route the employer
+  // actually publishes.
+  { slug: 'att', name: 'AT&T', domain: 'att.com', ticker: 'T', valuationKind: 'public',
+    industry: 'Telecommunications', hqLocation: 'Dallas, TX', foundedYear: 1983,
+    boards: [
+      { provider: 'workday', token: 'att', site: 'ATTGeneral', host: 'att.wd1.myworkdayjobs.com' },
+      { provider: 'workday', token: 'att', site: 'ATTCollege', host: 'att.wd1.myworkdayjobs.com' },
+    ] },
   { slug: 'scale-ai', name: 'Scale AI', domain: 'scale.com', valuationKind: 'private',
     reportedValuationUsd: 29_000_000_000, valuationAsOf: '2025-06-13',
     valuationSource: 'Meta investment, Jun 2025',

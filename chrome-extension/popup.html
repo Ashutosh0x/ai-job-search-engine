@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Job Search - Contact Finder</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <div class="logo-area">
+      <div class="logo-icon">🔍</div>
+      <h1>Contact Finder</h1>
+    </div>
+  </header>
+
+  <main>
+    <section class="card settings-section">
+      <h3>Settings</h3>
+      <div class="form-group">
+        <label for="apiUrl">API URL</label>
+        <div class="input-row">
+          <input type="text" id="apiUrl" placeholder="http://localhost:3000">
+          <button id="saveSettingsBtn" class="btn btn-secondary">Save</button>
+        </div>
+        <div id="settingsMessage" class="message"></div>
+      </div>
+    </section>
+
+    <section class="card search-section">
+      <h3>Manual Search</h3>
+      <form id="searchForm">
+        <div class="form-group">
+          <input type="text" id="firstName" placeholder="First Name" required>
+        </div>
+        <div class="form-group">
+          <input type="text" id="lastName" placeholder="Last Name" required>
+        </div>
+        <div class="form-group">
+          <input type="text" id="company" placeholder="Company Domain (e.g. apple.com)">
+        </div>
+        <button type="submit" class="btn btn-primary w-100" id="searchBtn">Find Email</button>
+      </form>
+    </section>
+
+    <section id="resultsSection" class="card" style="display: none;">
+      <h3>Results</h3>
+      <div id="resultsList"></div>
+    </section>
+    
+    <section class="card recent-section">
+      <h3>Recent Searches</h3>
+      <div id="recentList" class="recent-list">
+        <!-- Filled by JS -->
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <a href="http://localhost:3000/dashboard" target="_blank" rel="noopener">Go to Dashboard</a>
+  </footer>
+
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -4,6 +4,12 @@
   "functions": {
     "app/api/**/*.ts": {
       "maxDuration": 60
+    },
+    "app/api/search/**/*.ts": {
+      "maxDuration": 30
+    },
+    "app/api/jobs/**/*.ts": {
+      "maxDuration": 30
     }
   }
 }
