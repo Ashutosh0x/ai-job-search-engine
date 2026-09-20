@@ -45,6 +45,34 @@ next-env.d.ts
 # perfectly healthy.
 !/public/data/jobs-deploy.json
 !/public/data/jobs-deploy.*.json
+
+# ...and the recruiter directory, for exactly the same reason.
+#
+# It fell into the same trap the paragraph above describes: /recruiters
+# deployed and rendered, but /api/recruiters answered 503 "The recruiter
+# directory has not been built yet", because the page shipped and its data did
+# not. The daily workflow commits this file, so ignoring it meant the workflow
+# had nothing to commit and the route could never work in production.
+#
+# ~430 KB, far below any limit. Any new artefact a route READS at runtime
+# needs a negation here; anything a script merely produces does not.
+!/public/data/recruiter-directory.json
+
+# The same trap again, found by scripts/test-deployable-data.mjs rather than
+# by anyone noticing. All three are read at request time and none of them
+# shipped, so in production:
+#
+#   recruiting-intelligence.json  every company page's Recruiting Intelligence
+#   recruiting-contacts.json      panel was empty. Jane Street serves 17
+#                                 recruiters locally and served 0 live.
+#   term-stats.json               the resume builder's corpus statistics were
+#                                 missing from /api/resume/build.
+#
+# Nothing errored. The panels simply rendered with nothing in them, which is
+# indistinguishable from an employer having no published recruiting contacts.
+!/public/data/recruiting-intelligence.json
+!/public/data/recruiting-contacts.json
+!/public/data/term-stats.json
 /.ingest-state.json
 /public/data/ibm-jobs.json
 

@@ -1,0 +1,387 @@
+{
+  "generatedAt": "2026-09-12T12:53:53.124Z",
+  "method": "Official ATS application channel + employer-published role-based addresses + DOMAIN-level MX/SPF/DMARC. No individual is named or addressed; no mailbox is probed.",
+  "records": {
+    "jpmorgan-chase": {
+      "slug": "jpmorgan-chase",
+      "name": "JPMorgan Chase",
+      "domain": "jpmorganchase.com",
+      "ats": "Oracle Cloud HCM (unverified: no public JSON API)",
+      "publishedContacts": [],
+      "mailPosture": {
+        "domain": "jpmorgan.com",
+        "hasMx": true,
+        "mx": [
+          "cluster14.us.messagelabs.com",
+          "cluster14.us.messagelabs.com",
+          "cluster14.us.messagelabs.com"
+        ],
+        "hasSpf": true,
+        "dmarcPolicy": "reject"
+      },
+      "checkedAt": "2026-09-12T12:53:44.530Z"
+    },
+    "morgan-stanley": {
+      "slug": "morgan-stanley",
+      "name": "Morgan Stanley",
+      "domain": "morganstanley.com",
+      "ats": "Workday ms/External (VERIFIED 1,286 roles)",
+      "publishedContacts": [],
+      "mailPosture": {
+        "domain": "morganstanley.com",
+        "hasMx": true,
+        "mx": [
+          "mx1.morganstanley.com",
+          "mx2.morganstanley.com",
+          "mx3.morganstanley.com"
+        ],
+        "hasSpf": true,
+        "dmarcPolicy": "reject"
+      },
+      "checkedAt": "2026-09-12T12:53:44.627Z"
+    },
+    "citi": {
+      "slug": "citi",
+      "name": "Citi",
+      "domain": "citi.com",
+      "ats": "Workday citi/2 (VERIFIED; citi_careers 404s)",
+      "publishedContacts": [],
+      "mailPosture": {
+        "domain": "citi.com",
+        "hasMx": true,
+        "mx": [
+          "mx-a.mail.citi.com",
+          "mx-b.mail.citi.com"
+        ],
+        "hasSpf": true,
+        "dmarcPolicy": "reject"
+      },
+      "checkedAt": "2026-09-12T12:53:44.805Z"
+    },
+    "bank-of-america": {
+      "slug": "bank-of-america",
+      "name": "Bank of America",
+      "domain": "bankofamerica.com",
+      "ats": "Workday ghr/Lateral-US (VERIFIED 2,005)",
+      "publishedContacts": [],
+      "mailPosture": {
+        "domain": "bankofamerica.com",
+        "hasMx": true,
+        "mx": [
+          "mxa-0000ec05.gslb.pphosted.com",
+          "mxb-0000ec05.gslb.pphosted.com"
+        ],
+        "hasSpf": true,
+        "dmarcPolicy": "reject"
+      },
+      "checkedAt": "2026-09-12T12:53:44.937Z"
+    },
+    "wells-fargo": {
+      "slug": "wells-fargo",
+      "name": "Wells Fargo",
+      "domain": "wellsfargo.com",
+      "ats": "Workday wf/WellsFargoJobs (VERIFIED 1,796)",
+      "publishedContacts": [],
+      "mailPosture": {
+        "domain": "wellsfargo.com",
+        "hasMx": true,
+        "mx": [
+          "mxa-00004003.gslb.pphosted.com",
+          "mxb-00004003.gslb.pphosted.com"
+        ],
+        "hasSpf": true,
+        "dmarcPolicy": "reject"
+      },
+      "checkedAt": "2026-09-12T12:53:45.207Z"
+    },
+    "citadel": {
+      "slug": "citadel",
+      "name": "Citadel",
+      "domain": "citadel.com",
+      "ats": "UNKNOWN (Greenhouse claim disproven: 404)",
+      "publishedContacts": [],
+      "mailPosture": {
+        "domain": "citadel.com",
+        "hasMx": true,
+        "mx": [
+          "mxa-001f6701.gslb.pphosted.com",
+          "mxb-001f6701.gslb.pphosted.com"
+        ],
+        "hasSpf": true,
+        "dmarcPolicy": "quarantine"
+      },
+      "checkedAt": "2026-09-12T12:53:45.291Z"
+    },
+    "visa": {
+      "slug": "visa",
+      "name": "Visa",
+      "domain": "visa.com",
+      "ats": "Workday visa/Visa (VERIFIED 760)",
+      "publishedContacts": [],
+      "mailPosture": {
+        "domain": "visa.com",
+        "hasMx": true,
+        "mx": [
+          "portal1i.visa.com",
+          "portal2i.visa.com",
+          "portal3i.visa.com"
+        ],
+        "hasSpf": true,
+        "dmarcPolicy": "quarantine"
+      },
+      "checkedAt": "2026-09-12T12:53:45.370Z"
+    },
+    "mastercard": {
+      "slug": "mastercard",
+      "name": "Mastercard",
+      "domain": "mastercard.com",
+      "ats": "Workday mastercard/CorporateCareers (VERIFIED 1,055)",
+      "publishedContacts": [],
+      "mailPosture": {
+        "domain": "mastercard.com",
+        "hasMx": true,
+        "mx": [
+          "mxb-00078002.gslb.pphosted.com",
+          "mxa-00078002.gslb.pphosted.com",
+          "mc.smtp.1.mastercard.com"
+        ],
+        "hasSpf": true,
+        "dmarcPolicy": "reject"
+      },
+      "checkedAt": "2026-09-12T12:53:45.586Z"
+    },
+    "paypal": {
+      "slug": "paypal",
+      "name": "PayPal",
+      "domain": "paypal.com",
+      "ats": "Workday paypal/jobs (VERIFIED 128)",
+      "publishedContacts": [],
+      "mailPosture": {
+        "domain": "paypal.com",
+        "hasMx": true,
+        "mx": [
+          "mx1.paypalcorp.com",
+          "mx2.paypalcorp.com"
+        ],
+        "hasSpf": true,
+        "dmarcPolicy": "reject"
+      },
+      "checkedAt": "2026-09-12T12:53:45.727Z"
+    },
+    "barclays": {
+      "slug": "barclays",
+      "name": "Barclays",
+      "domain": "barclays.com",
+      "ats": "Workday barclays/External_Career_Site_Barclays (VERIFIED 1,014)",
+      "publishedContacts": [],
+      "mailPosture": {
+        "domain": "barclays.com",
+        "hasMx": true,
+        "mx": [
+          "mxb-00146204.gslb.pphosted.com",
+          "mxa-00146204.gslb.pphosted.com"
+        ],
+        "hasSpf": true,
+        "dmarcPolicy": "reject"
+      },
+      "checkedAt": "2026-09-12T12:53:48.284Z"
+    },
+    "hsbc": {
+      "slug": "hsbc",
+      "name": "HSBC",
+      "domain": "hsbc.com",
+      "ats": "Eightfold (adapter exists; not called here)",
+      "publishedContacts": [],
+      "mailPosture": {
+        "domain": "hsbc.com",
+        "hasMx": true,
+        "mx": [
+          "mxb-00299f02.gslb.pphosted.com",
+          "mxa-00299f02.gslb.pphosted.com"
+        ],
+        "hasSpf": true,
+        "dmarcPolicy": "reject"
+      },
+      "checkedAt": "2026-09-12T12:53:49.362Z"
+    },
+    "standard-chartered": {
+      "slug": "standard-chartered",
+      "name": "Standard Chartered",
+      "domain": "sc.com",
+      "ats": "Workday peopleplus/SCB_Careers (VERIFIED 55)",
+      "publishedContacts": [],
+      "mailPosture": {
+        "domain": "sc.com",
+        "hasMx": true,
+        "mx": [
+          "mxb-001ac208.gslb.pphosted.com",
+          "mxa-001ac208.gslb.pphosted.com"
+        ],
+        "hasSpf": true,
+        "dmarcPolicy": "reject"
+      },
+      "checkedAt": "2026-09-12T12:53:49.547Z"
+    },
+    "national-australia-bank": {
+      "slug": "national-australia-bank",
+      "name": "National Australia Bank",
+      "domain": "nab.com.au",
+      "ats": "Workday nab/NAB_Careers (VERIFIED 277)",
+      "publishedContacts": [],
+      "mailPosture": {
+        "domain": "nab.com.au",
+        "hasMx": true,
+        "mx": [
+          "nabcts.mail.protection.outlook.com"
+        ],
+        "hasSpf": true,
+        "dmarcPolicy": "reject"
+      },
+      "checkedAt": "2026-09-12T12:53:49.719Z"
+    },
+    "deutsche-bank": {
+      "slug": "deutsche-bank",
+      "name": "Deutsche Bank",
+      "domain": "db.com",
+      "ats": "Workday db/DBWebsite (VERIFIED 1,136)",
+      "publishedContacts": [],
+      "mailPosture": {
+        "domain": "db.com",
+        "hasMx": true,
+        "mx": [
+          "smtp12.db.com",
+          "smtp13.db.com",
+          "smtp24.db.com"
+        ],
+        "hasSpf": true,
+        "dmarcPolicy": "reject"
+      },
+      "checkedAt": "2026-09-12T12:53:49.937Z"
+    },
+    "commerzbank": {
+      "slug": "commerzbank",
+      "name": "Commerzbank",
+      "domain": "commerzbank.com",
+      "ats": "SAP SuccessFactors (no public JSON API)",
+      "publishedContacts": [],
+      "mailPosture": {
+        "domain": "commerzbank.com",
+        "hasMx": true,
+        "mx": [
+          "commerzbank-com.mail.protection.outlook.com"
+        ],
+        "hasSpf": true,
+        "dmarcPolicy": "reject"
+      },
+      "checkedAt": "2026-09-12T12:53:50.540Z"
+    },
+    "mufg": {
+      "slug": "mufg",
+      "name": "MUFG",
+      "domain": "mufg.jp",
+      "ats": "Workday mufgub/MUFG-Careers (VERIFIED 660)",
+      "publishedContacts": [],
+      "mailPosture": {
+        "domain": "mufg.jp",
+        "hasMx": true,
+        "mx": [
+          "msgwe.bk.mufg.jp",
+          "msgww.bk.mufg.jp"
+        ],
+        "hasSpf": true,
+        "dmarcPolicy": "reject"
+      },
+      "checkedAt": "2026-09-12T12:53:51.998Z"
+    },
+    "bny-mellon": {
+      "slug": "bny-mellon",
+      "name": "BNY",
+      "domain": "bny.com",
+      "ats": "Oracle Cloud HCM (no public JSON API)",
+      "publishedContacts": [],
+      "mailPosture": {
+        "domain": "bny.com",
+        "hasMx": true,
+        "mx": [
+          "mxa-00157d02.gslb.pphosted.com",
+          "mxb-00157d02.gslb.pphosted.com"
+        ],
+        "hasSpf": true,
+        "dmarcPolicy": "reject"
+      },
+      "checkedAt": "2026-09-12T12:53:52.179Z"
+    },
+    "hdfc-bank": {
+      "slug": "hdfc-bank",
+      "name": "HDFC Bank",
+      "domain": "hdfcbank.com",
+      "ats": "SAP SuccessFactors (no public JSON API)",
+      "publishedContacts": [],
+      "mailPosture": {
+        "domain": "hdfcbank.com",
+        "hasMx": true,
+        "mx": [
+          "hdfcbank-com.mail.protection.outlook.com"
+        ],
+        "hasSpf": true,
+        "dmarcPolicy": "reject"
+      },
+      "checkedAt": "2026-09-12T12:53:52.358Z"
+    },
+    "state-bank-of-india": {
+      "slug": "state-bank-of-india",
+      "name": "State Bank of India",
+      "domain": "sbi.co.in",
+      "ats": "in-house CRPD / TCS iON",
+      "publishedContacts": [],
+      "mailPosture": {
+        "domain": "sbi.co.in",
+        "hasMx": true,
+        "mx": [
+          "sbi-co-in.mail.protection.outlook.com"
+        ],
+        "hasSpf": true,
+        "dmarcPolicy": "reject"
+      },
+      "checkedAt": "2026-09-12T12:53:52.475Z"
+    },
+    "npci": {
+      "slug": "npci",
+      "name": "NPCI",
+      "domain": "npci.org.in",
+      "ats": "Darwinbox (no public JSON API)",
+      "publishedContacts": [],
+      "mailPosture": {
+        "domain": "npci.org.in",
+        "hasMx": true,
+        "mx": [
+          "mh4.npci.org.in",
+          "mh2.npci.org.in",
+          "mh3.npci.org.in"
+        ],
+        "hasSpf": true,
+        "dmarcPolicy": "reject"
+      },
+      "checkedAt": "2026-09-12T12:53:52.762Z"
+    },
+    "jane-street": {
+      "slug": "jane-street",
+      "name": "Jane Street",
+      "domain": "janestreet.com",
+      "ats": "Greenhouse janestreet (VERIFIED 230 roles)",
+      "publishedContacts": [],
+      "mailPosture": {
+        "domain": "janestreet.com",
+        "hasMx": true,
+        "mx": [
+          "mxin3.mail.janestreet.com",
+          "mxin2.mail.janestreet.com",
+          "mxin1.mail.janestreet.com"
+        ],
+        "hasSpf": true,
+        "dmarcPolicy": "quarantine"
+      },
+      "checkedAt": "2026-09-12T12:53:53.124Z"
+    }
+  }
+}
