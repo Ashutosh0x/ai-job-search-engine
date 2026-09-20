@@ -93,6 +93,7 @@ const SUITES = [
   'test-jobs-query.mjs',
   'test-build-safety.mjs',
   'test-deployable-data.mjs',
+  'test-recruiter-crawler.mjs',
   'test-rank.mjs',
   'test-workplace.mjs',
   'test-skills.mjs',

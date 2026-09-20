@@ -1,0 +1,91 @@
+{
+  "benchmarkedAt": "2026-09-20T15:05:08.347Z",
+  "maxPagesPerDomain": 18,
+  "domains": 4,
+  "summary": {
+    "oldCompanies": 1,
+    "newCompanies": 1,
+    "oldAddresses": 1,
+    "newAddresses": 1,
+    "totalPages": 61,
+    "totalUrls": 1613,
+    "totalMs": 200668
+  },
+  "rows": [
+    {
+      "domain": "stripe.com",
+      "old": [
+        "careers@stripe.com"
+      ],
+      "new": [
+        "careers@stripe.com"
+      ],
+      "gained": [],
+      "pagesCrawled": 18,
+      "urlsDiscovered": 1248,
+      "rejected": [
+        {
+          "email": "accommodations@stripe.com",
+          "why": "\"accommodations@\" is candidate support (accessibility/feedback), not a recruiting contact"
+        },
+        {
+          "email": "candidatefeedback-applications@stripe.com",
+          "why": "\"candidatefeedback-applications@\" is candidate support (accessibility/feedback), not a recruiting contact"
+        }
+      ],
+      "elapsedMs": 24743
+    },
+    {
+      "domain": "elastic.co",
+      "old": [],
+      "new": [],
+      "gained": [],
+      "pagesCrawled": 18,
+      "urlsDiscovered": 154,
+      "rejected": [
+        {
+          "email": "candidate_accessibility@elastic.co",
+          "why": "\"candidate_accessibility@\" is candidate support (accessibility/feedback), not a recruiting contact"
+        }
+      ],
+      "elapsedMs": 28463
+    },
+    {
+      "domain": "datadoghq.com",
+      "old": [],
+      "new": [],
+      "gained": [],
+      "pagesCrawled": 18,
+      "urlsDiscovered": 186,
+      "rejected": [
+        {
+          "email": "dashinfo@datadoghq.com",
+          "why": "on the company domain"
+        },
+        {
+          "email": "analystrelations@datadoghq.com",
+          "why": "on the company domain"
+        },
+        {
+          "email": "info@datadoghq.com",
+          "why": "\"info@\" is a generic corporate mailbox, not a recruiting one"
+        },
+        {
+          "email": "press@datadoghq.com",
+          "why": "\"press@\" is a generic corporate mailbox, not a recruiting one"
+        }
+      ],
+      "elapsedMs": 48415
+    },
+    {
+      "domain": "gitlab.com",
+      "old": [],
+      "new": [],
+      "gained": [],
+      "pagesCrawled": 7,
+      "urlsDiscovered": 25,
+      "rejected": [],
+      "elapsedMs": 99047
+    }
+  ]
+}
