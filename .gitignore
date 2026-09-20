@@ -121,3 +121,6 @@ signalhire-extension/
 
 # Supervisor rollback copies and logs.
 .refresh-backup/
+
+# Unrelated local project living in this folder; not part of this app.
+arc-node/

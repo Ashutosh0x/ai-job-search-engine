@@ -1,0 +1,225 @@
+{
+  "host": "jobs.sap.com",
+  "location": "bangalore",
+  "crawledAt": "2026-09-20T10:35:55.280Z",
+  "statedTotal": 2,
+  "collected": 35,
+  "byLocation": {
+    "Bangalore, IN, 560066": 24,
+    "Bangalore, IN, 560103": 1,
+    "Bangalore, KA, IN, 560066": 7,
+    "Bangalore, KA, IN, 562149": 3
+  },
+  "jobs": [
+    {
+      "title": "Data Science Expert",
+      "url": "https://jobs.sap.com/job/Bangalore-Data-Science-Expert-560066/1431171833/",
+      "location": "Bangalore, IN, 560066",
+      "postedAt": null
+    },
+    {
+      "title": "Data Science Expert- Finance & Spend, Data Labs",
+      "url": "https://jobs.sap.com/job/Bangalore-Data-Science-Expert-Finance-&amp;-Spend%2C-Data-Labs-560066/1431162733/",
+      "location": "Bangalore, IN, 560066",
+      "postedAt": null
+    },
+    {
+      "title": "Data and Applied Science Expert - SAP Data Labs -CX Team",
+      "url": "https://jobs.sap.com/job/Bangalore-Data-and-Applied-Science-Expert-SAP-Data-Labs-CX-Team-560066/1431175033/",
+      "location": "Bangalore, IN, 560066",
+      "postedAt": null
+    },
+    {
+      "title": "Senior Data Scientist- Finance & Spend, Data Labs",
+      "url": "https://jobs.sap.com/job/Bangalore-Senior-Data-Scientist-Finance-&amp;-Spend%2C-Data-Labs-560066/1431133133/",
+      "location": "Bangalore, IN, 560066",
+      "postedAt": null
+    },
+    {
+      "title": "Senior Data Scientist",
+      "url": "https://jobs.sap.com/job/Bangalore-Senior-Data-Scientist-560066/1431173333/",
+      "location": "Bangalore, IN, 560066",
+      "postedAt": null
+    },
+    {
+      "title": "Senior Data and Applied Science - SAP Data Labs - CX Team",
+      "url": "https://jobs.sap.com/job/Bangalore-Senior-Data-and-Applied-Science-SAP-Data-Labs-CX-Team-560066/1431179533/",
+      "location": "Bangalore, IN, 560066",
+      "postedAt": null
+    },
+    {
+      "title": "Data Science Chief Expert - Finance",
+      "url": "https://jobs.sap.com/job/Bangalore-Data-Science-Chief-Expert-Finance-560066/1430740933/",
+      "location": "Bangalore, IN, 560066",
+      "postedAt": null
+    },
+    {
+      "title": "Data Science Leader - Finance",
+      "url": "https://jobs.sap.com/job/Bangalore-Data-Science-Leader-Finance-560066/1430724833/",
+      "location": "Bangalore, IN, 560066",
+      "postedAt": null
+    },
+    {
+      "title": "Data Science Chief Expert - Spend Management",
+      "url": "https://jobs.sap.com/job/Bangalore-Data-Science-Chief-Expert-Spend-Management-560066/1430748733/",
+      "location": "Bangalore, IN, 560066",
+      "postedAt": null
+    },
+    {
+      "title": "Senior Machine Learning Engineer-Office of the CTO",
+      "url": "https://jobs.sap.com/job/Bangalore-Senior-Machine-Learning-Engineer-Office-of-the-CTO-560066/1437018233/",
+      "location": "Bangalore, IN, 560066",
+      "postedAt": null
+    },
+    {
+      "title": "IT Technology Services Senior Specialist - SAP Basis, Service Disruption Management",
+      "url": "https://jobs.sap.com/job/Bangalore-IT-Technology-Services-Senior-Specialist-SAP-Basis%2C-Service-Disruption-Management-560066/1431428433/",
+      "location": "Bangalore, IN, 560066",
+      "postedAt": null
+    },
+    {
+      "title": "IT Technology Services Senior Specialist - Linux Administration, Hyperscaler, Pacemaker operations",
+      "url": "https://jobs.sap.com/job/Bangalore-IT-Technology-Services-Senior-Specialist-Linux-Administration%2C-Hyperscaler%2C-Pacemaker-operations-560066/1429724433/",
+      "location": "Bangalore, IN, 560066",
+      "postedAt": null
+    },
+    {
+      "title": "Expert Machine Learning Engineer (Agentic AI, SAP BTP)",
+      "url": "https://jobs.sap.com/job/Bangalore-Expert-Machine-Learning-Engineer-%28Agentic-AI%2C-SAP-BTP%29-560066/1430038033/",
+      "location": "Bangalore, IN, 560066",
+      "postedAt": null
+    },
+    {
+      "title": "Senior Developer",
+      "url": "https://jobs.sap.com/job/Bangalore-Senior-Developer-560103/1384474433/",
+      "location": "Bangalore, IN, 560103",
+      "postedAt": null
+    },
+    {
+      "title": "EOS Senior Service Execution Specialist",
+      "url": "https://jobs.sap.com/job/Bangalore-EOS-Senior-Service-Execution-Specialist-560066/1434651433/",
+      "location": "Bangalore, IN, 560066",
+      "postedAt": null
+    },
+    {
+      "title": "EOS Service Execution Specialist",
+      "url": "https://jobs.sap.com/job/Bangalore-EOS-Service-Execution-Specialist-560066/1434652333/",
+      "location": "Bangalore, IN, 560066",
+      "postedAt": null
+    },
+    {
+      "title": "IT Technology Services Specialist - Automation Reliability Engineer",
+      "url": "https://jobs.sap.com/job/Bangalore-IT-Technology-Services-Specialist-Automation-Reliability-Engineer-560066/1380865233/",
+      "location": "Bangalore, IN, 560066",
+      "postedAt": null
+    },
+    {
+      "title": "Data and Applied Scientist Specialist/Expert",
+      "url": "https://jobs.sap.com/job/Bangalore-Data-and-Applied-Scientist-SpecialistExpert-560066/1292489801/",
+      "location": "Bangalore, IN, 560066",
+      "postedAt": null
+    },
+    {
+      "title": "IT Technology Services Senior Specialist - SAP HANA DBA",
+      "url": "https://jobs.sap.com/job/Bangalore-IT-Technology-Services-Senior-Specialist-SAP-HANA-DBA-560066/1392761333/",
+      "location": "Bangalore, IN, 560066",
+      "postedAt": null
+    },
+    {
+      "title": "SAP Basis, Migration and upgrade Technical Project Manager (10-15 years)",
+      "url": "https://jobs.sap.com/job/Bangalore-SAP-Basis%2C-Migration-and-upgrade-Technical-Project-Manager-%2810-15-years%29-560066/1274217501/",
+      "location": "Bangalore, IN, 560066",
+      "postedAt": null
+    },
+    {
+      "title": "Senior Developer - ECS Cross Delivery ServiceNow CoE",
+      "url": "https://jobs.sap.com/job/Bangalore-Senior-Developer-ECS-Cross-Delivery-ServiceNow-CoE-560066/1269729701/",
+      "location": "Bangalore, IN, 560066",
+      "postedAt": null
+    },
+    {
+      "title": "Technical Product Manager (m/f/d) for API Management @ BTP Integration Suite",
+      "url": "https://jobs.sap.com/job/Bangalore-Technical-Product-Manager-%28mfd%29-for-API-Management-%40-BTP-Integration-Suite-560066/1280449101/",
+      "location": "Bangalore, IN, 560066",
+      "postedAt": null
+    },
+    {
+      "title": "Principal AI Architect (Office of the CTO)",
+      "url": "https://jobs.sap.com/job/Bangalore-Principal%C2%A0AI%C2%A0Architect%C2%A0%28Office-of-the-CTO%29-560066/1424596033/",
+      "location": "Bangalore, IN, 560066",
+      "postedAt": null
+    },
+    {
+      "title": "Senior Project Consultant- Development- Learning office (8+ yrs.)",
+      "url": "https://jobs.sap.com/job/Bangalore-Senior-Project-Consultant-Development-Learning-office-%288%2B-yrs_%29-560066/1420768333/",
+      "location": "Bangalore, IN, 560066",
+      "postedAt": null
+    },
+    {
+      "title": "Data Science Expert (Exp 8 - 16Y)",
+      "url": "https://jobs.sap.com/job/Bangalore-Data-Science-Expert-%28Exp-8-16Y%29-560066/1405745533/",
+      "location": "Bangalore, IN, 560066",
+      "postedAt": null
+    },
+    {
+      "title": "Data Science Leader, HCM",
+      "url": "https://jobs.sap.com/job/Bangalore-Data-Science-Leader%2C-HCM-KA-560066/1429526333/",
+      "location": "Bangalore, KA, IN, 560066",
+      "postedAt": null
+    },
+    {
+      "title": "Data Science Leader, CX",
+      "url": "https://jobs.sap.com/job/Bangalore-Data-Science-Leader%2C-CX-KA-560066/1429526533/",
+      "location": "Bangalore, KA, IN, 560066",
+      "postedAt": null
+    },
+    {
+      "title": "Data Science Leader, Domain Models",
+      "url": "https://jobs.sap.com/job/Bangalore-Data-Science-Leader%2C-Domain-Models-KA-560066/1429527533/",
+      "location": "Bangalore, KA, IN, 560066",
+      "postedAt": null
+    },
+    {
+      "title": "Forward Deployed Data Engineering Expert",
+      "url": "https://jobs.sap.com/job/Bangalore-Forward-Deployed-Data-Engineering-Expert-KA-562149/1435749033/",
+      "location": "Bangalore, KA, IN, 562149",
+      "postedAt": null
+    },
+    {
+      "title": "Business Processes Principal Consultant - CIS",
+      "url": "https://jobs.sap.com/job/Bangalore-Business-Processes-Principal-Consultant-CIS-KA-562149/1426430833/",
+      "location": "Bangalore, KA, IN, 562149",
+      "postedAt": null
+    },
+    {
+      "title": "Forward Deployed Engineering Manager",
+      "url": "https://jobs.sap.com/job/Bangalore-Forward-Deployed-Engineering-Manager-KA-562149/1423778933/",
+      "location": "Bangalore, KA, IN, 562149",
+      "postedAt": null
+    },
+    {
+      "title": "Project Consultant- Capacity Management (4-8 yrs.)",
+      "url": "https://jobs.sap.com/job/Bangalore-Project-Consultant-Capacity-Management-%284-8-yrs_%29-KA-560066/1432337433/",
+      "location": "Bangalore, KA, IN, 560066",
+      "postedAt": null
+    },
+    {
+      "title": "Senior Machine Learning Engineer, SAP Application AI Team",
+      "url": "https://jobs.sap.com/job/Bangalore-Senior-Machine-Learning-Engineer%2C-SAP-Application-AI-Team-KA-560066/1427779033/",
+      "location": "Bangalore, KA, IN, 560066",
+      "postedAt": null
+    },
+    {
+      "title": "Senior Platform Engineer - SAP Integration Suite - Integration Cell",
+      "url": "https://jobs.sap.com/job/Bangalore-Senior-Platform-Engineer-SAP-Integration-Suite-Integration-Cell-KA-560066/1420555133/",
+      "location": "Bangalore, KA, IN, 560066",
+      "postedAt": null
+    },
+    {
+      "title": "Forward Deployed Application/ML Engineering Expert",
+      "url": "https://jobs.sap.com/job/Bangalore-Forward-Deployed-ApplicationML-Engineering-Expert-KA-560066/1398927533/",
+      "location": "Bangalore, KA, IN, 560066",
+      "postedAt": null
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { 
   ContactDiscoveryRequest, 
   ContactDiscoveryResult, 
@@ -11,10 +11,22 @@ import { getObservedPatterns } from './pattern-source';
 import { scrapeCareersPage, scrapeGitHubEmails, scrapePublicProfiles, PublicProfiles } from './scraper';
 import { verifyEmail } from './verify';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+/**
+ * Resolved per call, never at module scope.
+ *
+ * `createClient` throws "supabaseUrl is required" when the env is missing, and
+ * a module-level call runs at IMPORT time -- which during `next build` is the
+ * "Collecting page data" phase. CI and a fresh Vercel project have no env
+ * vars, so a top-level client fails the build of every route that transitively
+ * imports this file, long before any request exists. Returns null rather than
+ * throwing: discovery still works without a database, it just cannot cache.
+ */
+function getServiceClient(): SupabaseClient | null {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) return null;
+  return createClient(url, key);
+}
 
 /**
  * Resolves a domain from a company name if not provided.
@@ -49,7 +61,8 @@ export async function discoverContact(request: ContactDiscoveryRequest): Promise
 
     // Keep the Supabase cache warm when a live lookup did find something, so
     // the next request for this domain does not repeat the rate-limited call.
-    if (origin === 'live' && patterns.length > 0) {
+    const supabase = getServiceClient();
+    if (supabase && origin === 'live' && patterns.length > 0) {
       await supabase.from('email_patterns').upsert(
         patterns.map(p => ({
           domain: p.domain,

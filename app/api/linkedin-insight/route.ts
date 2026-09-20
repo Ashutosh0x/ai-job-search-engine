@@ -1,13 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { analyzeProfile } from '@/lib/linkedin/analyzer';
 import { LinkedInProfile } from '@/lib/linkedin/types';
 import { discoverContact } from '@/lib/contacts/enricher';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
-const supabase = createClient(supabaseUrl, supabaseServiceKey);
+/**
+ * Resolved per request, never at module scope.
+ *
+ * `createClient('', '')` throws "supabaseUrl is required", and a module-level
+ * call runs at IMPORT time -- during `next build` that is the "Collecting page
+ * data" phase, which has no env vars in CI or on a fresh Vercel project. A
+ * top-level client therefore fails the whole build rather than one request.
+ */
+function getServiceClient(): SupabaseClient | null {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) return null;
+  return createClient(url, key);
+}
 
 const requestSchema = z.object({
   profile: z.any(), // Assuming full profile object is passed
@@ -52,7 +63,8 @@ export async function POST(req: NextRequest) {
 
     // 3. Save to Supabase if requested
     let savedAt = undefined;
-    if (saveProfile && userId) {
+    const supabase = getServiceClient();
+    if (saveProfile && userId && supabase) {
       const { data, error } = await supabase
         .from('linkedin_profiles')
         .upsert(
@@ -111,6 +123,16 @@ export async function GET(req: NextRequest) {
 
     if (!userId) {
       return NextResponse.json({ error: 'userId is required' }, { status: 400 });
+    }
+
+    const supabase = getServiceClient();
+    if (!supabase) {
+      // Fail closed and say so, rather than returning an empty list that reads
+      // as "this user has saved no profiles".
+      return NextResponse.json(
+        { error: 'Profile storage is not configured on this deployment' },
+        { status: 503 }
+      );
     }
 
     const { data, error } = await supabase
