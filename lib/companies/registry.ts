@@ -820,6 +820,18 @@ export const COMPANIES: CompanyRecord[] = [
   // SmartRecruiters omit at list time.
   //
   // `site` is the careers landing page; CustomSiteAdapter finds the sitemap.
+  // EY runs SAP SuccessFactors Career Site Builder. `site: 'ey'` is a PATH
+  // PREFIX, not a Workday-style site id: the board serves search at
+  // careers.ey.com/ey/search/ rather than /search/.
+  //
+  // 8,519 live roles at registration — the single largest board in this
+  // registry. It was absent because `successfactors` had a SourceId and a
+  // 0.95 confidence but no adapter, so anything registered under it ingested
+  // nothing and reported success.
+  { slug: 'ey', name: 'EY', domain: 'ey.com', valuationKind: 'private',
+    industry: 'Professional Services', hqLocation: 'London, UK', foundedYear: 1989,
+    boards: [{ provider: 'successfactors', token: 'ey', host: 'careers.ey.com', site: 'ey' }] },
+
   { slug: 'ebay', name: 'eBay', domain: 'ebay.com', ticker: 'EBAY', valuationKind: 'public',
     industry: 'E-commerce Marketplace', hqLocation: 'San Jose, CA', foundedYear: 1995,
     boards: [{ provider: 'custom', token: 'ebay', host: 'jobs.ebayinc.com', site: 'https://jobs.ebayinc.com/us/en' }] },

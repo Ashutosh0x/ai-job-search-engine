@@ -1,0 +1,1297 @@
+{
+  "host": "careers.ey.com",
+  "location": null,
+  "crawledAt": "2026-09-20T15:14:40.619Z",
+  "statedTotal": 343,
+  "collected": 200,
+  "byLocation": {
+    "Victoria, British Columbia, CA, V8W 2B7": 1,
+    "Melbourne, VIC, AU, 3000 +1 more&hellip;": 1,
+    "Paris La Défense, FR, 92037": 8,
+    "Eschborn / Frankfurt (Main), HE, DE, 65760 +6 more&hellip;": 2,
+    "New York, NY, US, 10001-8604 +5 more&hellip;": 1,
+    "London, GB, SE1 2AF +3 more&hellip;": 1,
+    "Bangkok, Bangkok, TH, 10330": 4,
+    "Grand-Lancy / Geneva, CH, 1212": 1,
+    "Bengaluru, KA, IN, 560016": 3,
+    "Milano, IT, 20123": 2,
+    "Santiago, Z. Metrop. Santiago, CL": 2,
+    "São Paulo JK, SP, BR, 04543-011": 9,
+    "CABA, B, AR, 1001": 2,
+    "Taguig, PH, 1634": 9,
+    "Linz, AT, 4020": 1,
+    "Ciudad de México, Ciudad de México, MX, 11520": 1,
+    "London, GB, SE1 2AF +1 more&hellip;": 1,
+    "Bermuda, BM, HM08": 1,
+    "Chennai, TN, IN, 600032 +1 more&hellip;": 2,
+    "Buffalo, NY, US, 14203": 1,
+    "Ebene, MU": 1,
+    "Amsterdam, NL, 1083 HP": 2,
+    "Sydney, NSW, AU, 2000 +4 more&hellip;": 2,
+    "São Paulo JK, SP, BR, 04543-011 +15 more&hellip;": 1,
+    "Brisbane, QLD, AU, 4000": 1,
+    "Warszawa, PL, 00-124 +5 more&hellip;": 2,
+    "Arnhem, NL, 6827 AV": 1,
+    "Rotterdam, NL, 3011 XZ": 1,
+    "Katowice, Śląskie, PL, 40-202": 5,
+    "Alpharetta, GA, US, 30009 +2 more&hellip;": 2,
+    "Vienna, AT, 1220 +5 more&hellip;": 1,
+    "Noida, UP, IN, 201304": 4,
+    "Dubai, AE, 9267": 1,
+    "Madrid, M, ES, 28003": 1,
+    "TN": 3,
+    "Toronto, ON, CA, M5H 0B3": 4,
+    "Wrocław, DS, PL, 50-086 +2 more&hellip;": 1,
+    "London, GB, SE1 2AF": 2,
+    "Warszawa, MZ, PL, 01-208 +2 more&hellip;": 1,
+    "Bari, BA, IT, 70121": 1,
+    "New York, NY, US, 10001-8604 +11 more&hellip;": 1,
+    "Malaga, ES, 29590": 2,
+    "Bengaluru, KA, IN, 560001": 37,
+    "Kuala Lumpur, Federal Territory of Kuala Lumpur, MY, 50490": 3,
+    "Kolkata, WB, IN, 700091 +2 more&hellip;": 2,
+    "SG, 048583": 2,
+    "Bilbao, ES, 48009": 1,
+    "Eschborn / Frankfurt (Main), HE, DE, 65760 +17 more&hellip;": 1,
+    "Luxembourg, LU, L-1855": 1,
+    "Jakarta, ID, 12190": 1,
+    "Sydney, NSW, AU, 2000": 2,
+    "Diegem, BE, 1831": 2,
+    "Dublin 2, IE": 4,
+    "Linz, AT, 4020 +3 more&hellip;": 1,
+    "Stuttgart, BW, DE, 70629 +7 more&hellip;": 1,
+    "Hyderabad, TG, IN, 500081": 1,
+    "Ankara, TR, 06510": 1,
+    "Tampa, FL, US, 33602": 1,
+    "Den Haag, NL, 2596 CZ": 1,
+    "New York, NY, US, 10001-8604 +6 more&hellip;": 1,
+    "Eindhoven, NL, 5613 AM +2 more&hellip;": 1,
+    "London, GB, SE1 2AF +4 more&hellip;": 1,
+    "Msida, MT, MSD 1751": 1,
+    "Valencia, ES, 46023": 1,
+    "Mumbai, MH, IN, 400028": 9,
+    "Chennai, TN, IN, 600113": 6,
+    "Kolkata, WB, IN, 700091": 1,
+    "Buenos Aires, CABA, AR, 1437": 2,
+    "Gurugram, HR, IN, 122003": 3,
+    "Camana Bay, KY, KY11106": 1,
+    "Lima, PE, 15073": 1,
+    "Noida, UP, IN, 201301 +9 more&hellip;": 1,
+    "Toronto, ON, CA, M5H 0B3 +16 more&hellip;": 1,
+    "Washington, DC, US, 20005": 1,
+    "Zurich, CH, 8005 +2 more&hellip;": 1,
+    "Fortaleza, CE, BR, 60811-341": 1,
+    "San Antonio, TX, US, 78205": 1,
+    "St. Louis, MO, US, 63105": 1,
+    "Milano, IT, 20123 +1 more&hellip;": 1,
+    "San Antonio, TX, US, 78249": 1,
+    "Wrocław, DS, PL, 50-086 +1 more&hellip;": 1,
+    "San Antonio, TX, US, 78249 +3 more&hellip;": 1,
+    "New York, NY, US, 10001-8604 +2 more&hellip;": 1,
+    "Vienna, AT, 1220 +1 more&hellip;": 1,
+    "Barcelona, ES, 08017": 1,
+    "New Delhi, National Capital Territory, IN, 110037": 3
+  },
+  "jobs": [
+    {
+      "title": "Account Executive; Government Public Sector; Associate Director - Victoria",
+      "url": "https://careers.ey.com/ey/job/Victoria-Account-Executive-Government-Public-Sector-Associate-Director-Victoria-Brit-V8W-2B7/1379208533/",
+      "location": "Victoria, British Columbia, CA, V8W 2B7",
+      "postedAt": null
+    },
+    {
+      "title": "Senior Manager - Tax Controversy",
+      "url": "https://careers.ey.com/ey/job/Melbourne-Senior-Manager-Tax-Controversy-VIC-3000/1378761933/",
+      "location": "Melbourne, VIC, AU, 3000 +1 more&hellip;",
+      "postedAt": null
+    },
+    {
+      "title": "Consultant Senior ou Manager en Transformation digitale- secteur financier F/H",
+      "url": "https://careers.ey.com/ey/job/Paris-La-D%C3%A9fense-Consultant-Senior-ou-Manager-en-Transformation-digitale-secteur-financier-FH-92037/1378919533/",
+      "location": "Paris La Défense, FR, 92037",
+      "postedAt": null
+    },
+    {
+      "title": "(Senior) Manager Data & Analytics - Consulting (Financial Services) (w/m/d)",
+      "url": "https://careers.ey.com/ey/job/Eschborn-Frankfurt-%28Main%29-%28Senior%29-Manager-Data-&amp;-Analytics-Consulting-%28Financial-Services%29-%28wmd%29-HE-65760/1282309601/",
+      "location": "Eschborn / Frankfurt (Main), HE, DE, 65760 +6 more&hellip;",
+      "postedAt": null
+    },
+    {
+      "title": "Financial Services Tech Consulting Senior Manager - Asset Management",
+      "url": "https://careers.ey.com/ey/job/New-York-Financial-Services-Tech-Consulting-Senior-Manager-Asset-Management-NY-10001-8604/1282006001/",
+      "location": "New York, NY, US, 10001-8604 +5 more&hellip;",
+      "postedAt": null
+    },
+    {
+      "title": "Manager, Cybersecurity, Privacy, TC, UKI",
+      "url": "https://careers.ey.com/ey/job/London-Manager%2C-Cybersecurity%2C-Privacy%2C-TC%2C-UKI-SE1-2AF/1288395601/",
+      "location": "London, GB, SE1 2AF +3 more&hellip;",
+      "postedAt": null
+    },
+    {
+      "title": "Consulting, Business Analyst (Core Banking) - Senior to Manager",
+      "url": "https://careers.ey.com/ey/job/Bangkok-Consulting%2C-Business-Analyst-%28Core-Banking%29-Senior-to-Manager-Bang-10330/1368881233/",
+      "location": "Bangkok, Bangkok, TH, 10330",
+      "postedAt": null
+    },
+    {
+      "title": "(Senior) Consultant - Business Consulting - Supply Chain Procurement - Zurich, Lausanne or Geneva",
+      "url": "https://careers.ey.com/ey/job/Grand-Lancy-Geneva-%28Senior%29-Consultant-Business-Consulting-Supply-Chain-Procurement-Zurich%2C-Lausanne-or-Geneva-1212/1281355301/",
+      "location": "Grand-Lancy / Geneva, CH, 1212",
+      "postedAt": null
+    },
+    {
+      "title": "Manager/Senior Manager - Expert(e) en outils de consolidation - secteur financier (F/H)",
+      "url": "https://careers.ey.com/ey/job/Paris-La-D%C3%A9fense-ManagerSenior-Manager-Expert%28e%29-en-outils-de-consolidation-secteur-financier-%28FH%29-92037/1388541533/",
+      "location": "Paris La Défense, FR, 92037",
+      "postedAt": null
+    },
+    {
+      "title": "Consulting, Solution Architect - Agentic AI Conversational Banking",
+      "url": "https://careers.ey.com/ey/job/Bangkok-Consulting%2C-Solution-Architect-Agentic-AI-Conversational-Banking-Bang-10330/1368881533/",
+      "location": "Bangkok, Bangkok, TH, 10330",
+      "postedAt": null
+    },
+    {
+      "title": "TTT - .NET Full Stack- Azure OpenAI - Tax Senior",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-TTT-_NET-Full-Stack-Azure-OpenAI-Tax-Senior-KA-560016/1388028033/",
+      "location": "Bengaluru, KA, IN, 560016",
+      "postedAt": null
+    },
+    {
+      "title": "Senior Cyber Strategy, Risk & Governance",
+      "url": "https://careers.ey.com/ey/job/Milano-Senior-Cyber-Strategy%2C-Risk-&amp;-Governance-20123/1408425333/",
+      "location": "Milano, IT, 20123",
+      "postedAt": null
+    },
+    {
+      "title": "Asistentes Centro de Excelencia Auditoría",
+      "url": "https://careers.ey.com/ey/job/Santiago-Asistentes-Centro-de-Excelencia-Auditor%C3%ADa-Z_-M/1408573633/",
+      "location": "Santiago, Z. Metrop. Santiago, CL",
+      "postedAt": null
+    },
+    {
+      "title": "Tech Lead Java - Financial Services",
+      "url": "https://careers.ey.com/ey/job/S%C3%A3o-Paulo-JK-Tech-Lead-Java-Financial-Services-SP-04543-011/1408377933/",
+      "location": "São Paulo JK, SP, BR, 04543-011",
+      "postedAt": null
+    },
+    {
+      "title": "Product Owner",
+      "url": "https://careers.ey.com/ey/job/S%C3%A3o-Paulo-JK-Product-Owner-SP-04543-011/1408450533/",
+      "location": "São Paulo JK, SP, BR, 04543-011",
+      "postedAt": null
+    },
+    {
+      "title": "Risk Consulting - Internal Audit (Process & Control)",
+      "url": "https://careers.ey.com/ey/job/Bangkok-Risk-Consulting-Internal-Audit-%28Process-&amp;-Control%29-Bang-10330/1408248433/",
+      "location": "Bangkok, Bangkok, TH, 10330",
+      "postedAt": null
+    },
+    {
+      "title": "Latam TA² Operations & Innovation Senior Specialist",
+      "url": "https://careers.ey.com/ey/job/CABA-Latam-TA%C2%B2-Operations-&amp;-Innovation-Senior-Specialist-B-1001/1408410133/",
+      "location": "CABA, B, AR, 1001",
+      "postedAt": null
+    },
+    {
+      "title": "GDS Assurance - Technology Risk (NFS) - Senior Associate - Oracle",
+      "url": "https://careers.ey.com/ey/job/Taguig-GDS-Assurance-Technology-Risk-%28NFS%29-Senior-Associate-Oracle-1634/1408415433/",
+      "location": "Taguig, PH, 1634",
+      "postedAt": null
+    },
+    {
+      "title": "Rechtsanwaltsanwärter:in im Bereich Wirtschaftsrecht",
+      "url": "https://careers.ey.com/eylaw_at/job/Linz-Rechtsanwaltsanw%C3%A4rterin-im-Bereich-Wirtschaftsrecht-4020/1397821233/",
+      "location": "Linz, AT, 4020",
+      "postedAt": null
+    },
+    {
+      "title": "Collaborateur expérimenté - Service Financier - Paris - H/F",
+      "url": "https://careers.ey.com/ey/job/Paris-La-D%C3%A9fense-Collaborateur-exp%C3%A9riment%C3%A9-Service-Financier-Paris-HF-92037/1408398833/",
+      "location": "Paris La Défense, FR, 92037",
+      "postedAt": null
+    },
+    {
+      "title": "GDS Tax - TTT Senior",
+      "url": "https://careers.ey.com/ey/job/Taguig-GDS-Tax-TTT-Senior-1634/1280818401/",
+      "location": "Taguig, PH, 1634",
+      "postedAt": null
+    },
+    {
+      "title": "Gerente de Impostos Diretos, São Paulo",
+      "url": "https://careers.ey.com/ey/job/S%C3%A3o-Paulo-JK-Gerente-de-Impostos-Diretos%2C-S%C3%A3o-Paulo-SP-04543-011/1281425401/",
+      "location": "São Paulo JK, SP, BR, 04543-011",
+      "postedAt": null
+    },
+    {
+      "title": "Méx - CDMX - Assurance - Audit Services - Senior 3 1",
+      "url": "https://careers.ey.com/ey/job/Ciudad-de-M%C3%A9xico-M%C3%A9x-CDMX-Assurance-Audit-Services-Senior-3-1-Ciud-11520/1281158901/",
+      "location": "Ciudad de México, Ciudad de México, MX, 11520",
+      "postedAt": null
+    },
+    {
+      "title": "GDS Consulting_Oracle Finance Fusion Senior Consultant",
+      "url": "https://careers.ey.com/ey/job/Taguig-GDS-Consulting_Oracle-Finance-Fusion-Senior-Consultant-1634/1280480601/",
+      "location": "Taguig, PH, 1634",
+      "postedAt": null
+    },
+    {
+      "title": "Director, Digital Health Care, TST , UKI",
+      "url": "https://careers.ey.com/ey/job/London-Director%2C-Digital-Health-Care%2C-TST-%2C-UKI-SE1-2AF/1391214633/",
+      "location": "London, GB, SE1 2AF +1 more&hellip;",
+      "postedAt": null
+    },
+    {
+      "title": "FSO Tax - Wealth & Asset Management/GCR - Experienced Staff",
+      "url": "https://careers.ey.com/ey/job/Bermuda-FSO-Tax-Wealth-&amp;-Asset-ManagementGCR-Experienced-Staff-HM08/1397976433/",
+      "location": "Bermuda, BM, HM08",
+      "postedAt": null
+    },
+    {
+      "title": "EY - GDS Consulting - Mainframe Modernization- GEN AI - Senior",
+      "url": "https://careers.ey.com/ey/job/Chennai-EY-GDS-Consulting-Mainframe-Modernization-GEN-AI-Senior-TN-600032/1403668033/",
+      "location": "Chennai, TN, IN, 600032 +1 more&hellip;",
+      "postedAt": null
+    },
+    {
+      "title": "Sales Executive, Financial Services - Associate Director, Buffalo, NY - BCM",
+      "url": "https://careers.ey.com/ey/job/Buffalo-Sales-Executive%2C-Financial-Services-Associate-Director%2C-Buffalo%2C-NY-BCM-NY-14203/1397847233/",
+      "location": "Buffalo, NY, US, 14203",
+      "postedAt": null
+    },
+    {
+      "title": "Assistant Manager - Digital & AI Transformation Lead - Tech Consulting - EY Mauritius",
+      "url": "https://careers.ey.com/ey/job/Ebene-Assistant-Manager-Digital-&amp;-AI-Transformation-Lead-Tech-Consulting-EY-Mauritius/1388192233/",
+      "location": "Ebene, MU",
+      "postedAt": null
+    },
+    {
+      "title": "EY-Parthenon Senior Consultant Software Strategy",
+      "url": "https://careers.ey.com/ey/job/Amsterdam-EY-Parthenon-Senior-Consultant-Software-Strategy-1083-HP/1408210133/",
+      "location": "Amsterdam, NL, 1083 HP",
+      "postedAt": null
+    },
+    {
+      "title": "Senior Consultant AI Specialist (Financial Services) (w/m/d)",
+      "url": "https://careers.ey.com/ey/job/Eschborn-Frankfurt-%28Main%29-Senior-Consultant-AI-Specialist-%28Financial-Services%29-%28wmd%29-HE-65760/1397551633/",
+      "location": "Eschborn / Frankfurt (Main), HE, DE, 65760 +6 more&hellip;",
+      "postedAt": null
+    },
+    {
+      "title": "Vaga Afirmativa para Pessoas 50+ de Assessor (a) de Impostos Indiretos",
+      "url": "https://careers.ey.com/ey/job/S%C3%A3o-Paulo-JK-Vaga-Afirmativa-para-Pessoas-50%2B-de-Assessor-%28a%29-de-Impostos-Indiretos-SP-04543-011/1380134933/",
+      "location": "São Paulo JK, SP, BR, 04543-011",
+      "postedAt": null
+    },
+    {
+      "title": "EY Parthenon - Manager - Turnaround & Restructuring Strategy",
+      "url": "https://careers.ey.com/ey/job/Sydney-EY-Parthenon-Manager-Turnaround-&amp;-Restructuring-Strategy-NSW-2000/1388337133/",
+      "location": "Sydney, NSW, AU, 2000 +4 more&hellip;",
+      "postedAt": null
+    },
+    {
+      "title": "Engenheiro (a) de Dados Júnior (Vaga Exclusiva PCD) - Banco de Talentos",
+      "url": "https://careers.ey.com/ey/job/S%C3%A3o-Paulo-JK-Engenheiro-%28a%29-de-Dados-J%C3%BAnior-%28Vaga-Exclusiva-PCD%29-Banco-de-Talentos-SP-04543-011/1388538433/",
+      "location": "São Paulo JK, SP, BR, 04543-011 +15 more&hellip;",
+      "postedAt": null
+    },
+    {
+      "title": "Senior Manager - Corporate Tax",
+      "url": "https://careers.ey.com/ey/job/Brisbane-Senior-Manager-Corporate-Tax-QLD-4000/1378774333/",
+      "location": "Brisbane, QLD, AU, 4000",
+      "postedAt": null
+    },
+    {
+      "title": "SM - LS - BC Sector - Lifesciences Digital R And D",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-SM-LS-BC-Sector-Lifesciences-Digital-R-And-D-KA-560016/1378832533/",
+      "location": "Bengaluru, KA, IN, 560016",
+      "postedAt": null
+    },
+    {
+      "title": "Senior Manager in Business Consulting Finance GBS team",
+      "url": "https://careers.ey.com/ey/job/Warszawa-Senior-Manager-in-Business-Consulting-Finance-GBS-team-00-124/1379067933/",
+      "location": "Warszawa, PL, 00-124 +5 more&hellip;",
+      "postedAt": null
+    },
+    {
+      "title": "SAP AMS Consultant, Technology Consulting",
+      "url": "https://careers.ey.com/ey/job/Bangkok-SAP-AMS-Consultant%2C-Technology-Consulting-Bang-10330/1374693433/",
+      "location": "Bangkok, Bangkok, TH, 10330",
+      "postedAt": null
+    },
+    {
+      "title": "(Senior) Consultant - Local Mobility",
+      "url": "https://careers.ey.com/ey/job/Arnhem-%28Senior%29-Consultant-Local-Mobility-6827-AV/1378811833/",
+      "location": "Arnhem, NL, 6827 AV",
+      "postedAt": null
+    },
+    {
+      "title": "(Senior) Consultant - Local Mobility",
+      "url": "https://careers.ey.com/ey/job/Rotterdam-%28Senior%29-Consultant-Local-Mobility-3011-XZ/1378811333/",
+      "location": "Rotterdam, NL, 3011 XZ",
+      "postedAt": null
+    },
+    {
+      "title": "Senior Consultant in Business Consulting Finance GBS team",
+      "url": "https://careers.ey.com/ey/job/Warszawa-Senior-Consultant-in-Business-Consulting-Finance-GBS-team-00-124/1379068433/",
+      "location": "Warszawa, PL, 00-124 +5 more&hellip;",
+      "postedAt": null
+    },
+    {
+      "title": "Data Engineer",
+      "url": "https://careers.ey.com/ey/job/Katowice-Data-Engineer-%C5%9Al%C4%85s-40-202/1397870833/",
+      "location": "Katowice, Śląskie, PL, 40-202",
+      "postedAt": null
+    },
+    {
+      "title": "Service Delivery Center - QA Guidewire Testing Manager",
+      "url": "https://careers.ey.com/ey/job/Alpharetta-Service-Delivery-Center-QA-Guidewire-Testing-Manager-GA-30009/1397973933/",
+      "location": "Alpharetta, GA, US, 30009 +2 more&hellip;",
+      "postedAt": null
+    },
+    {
+      "title": "Initiativbewerbung für die Wirtschaftsprüfung",
+      "url": "https://careers.ey.com/ey/job/Vienna-Initiativbewerbung-f%C3%BCr-die-Wirtschaftspr%C3%BCfung-1220/1397659633/",
+      "location": "Vienna, AT, 1220 +5 more&hellip;",
+      "postedAt": null
+    },
+    {
+      "title": "EY - GDS Consulting - AIA - Mainframe - Manager",
+      "url": "https://careers.ey.com/ey/job/Chennai-EY-GDS-Consulting-AIA%C2%A0-Mainframe-Manager-TN-600032/1403670433/",
+      "location": "Chennai, TN, IN, 600032 +1 more&hellip;",
+      "postedAt": null
+    },
+    {
+      "title": "Client Technology - Engineering - Software Engineering - EY GDS",
+      "url": "https://careers.ey.com/ey/job/CABA-Client-Technology-Engineering-Software-Engineering-EY-GDS-B-1001/1397734733/",
+      "location": "CABA, B, AR, 1001",
+      "postedAt": null
+    },
+    {
+      "title": "Analyst - Forensics - National - ASU - Forensics - Investigations & Compliance - Noida",
+      "url": "https://careers.ey.com/ey/job/Noida-Analyst-Forensics-National-ASU-Forensics-Investigations-&amp;-Compliance-Noida-UP-201304/1418491233/",
+      "location": "Noida, UP, IN, 201304",
+      "postedAt": null
+    },
+    {
+      "title": "L&D VTH Supervising Associate_Canada Clients & Industries - Learning Specialist",
+      "url": "https://careers.ey.com/ey/job/Taguig-L&amp;D-VTH-Supervising-Associate_Canada-Clients-&amp;-Industries-Learning-Specialist-1634/1408598033/",
+      "location": "Taguig, PH, 1634",
+      "postedAt": null
+    },
+    {
+      "title": "Senior Associate - Post-joining Consultant - Talent Attraction & Acquisition - UAE (National Talent)",
+      "url": "https://careers.ey.com/ey/job/Dubai-Senior-Associate-Post-joining-Consultant-Talent-Attraction-&amp;-Acquisition-UAE-%28National-Talent%29-9267/1418498433/",
+      "location": "Dubai, AE, 9267",
+      "postedAt": null
+    },
+    {
+      "title": "GDS Assurance - Technology Risk (NFS) - Senior Associate - APAC Global",
+      "url": "https://careers.ey.com/ey/job/Taguig-GDS-Assurance-Technology-Risk-%28NFS%29-Senior-Associate-APAC-Global-1634/1408429733/",
+      "location": "Taguig, PH, 1634",
+      "postedAt": null
+    },
+    {
+      "title": "External Workforce Office (EWO) Operations Coordinator",
+      "url": "https://careers.ey.com/ey/job/Taguig-External-Workforce-Office-%28EWO%29-Operations-Coordinator-1634/1408361233/",
+      "location": "Taguig, PH, 1634",
+      "postedAt": null
+    },
+    {
+      "title": "Prácticas I+D Proyectos Europeos",
+      "url": "https://careers.ey.com/ey/job/Madrid-Pr%C3%A1cticas-I%2BD-Proyectos-Europeos-M-28003/1418677533/",
+      "location": "Madrid, M, ES, 28003",
+      "postedAt": null
+    },
+    {
+      "title": "Business Developer CRM H/F",
+      "url": "https://careers.ey.com/ey/job/Business-Developer-CRM-HF/1418680233/",
+      "location": "TN",
+      "postedAt": null
+    },
+    {
+      "title": "Senior Manager, Corporate and Operational Strategy: Financial Services (Toronto)",
+      "url": "https://careers.ey.com/ey/job/Toronto-Senior-Manager%2C-Corporate-and-Operational-Strategy-Financial-Services-%28Toronto%29-ON-M5H-0B3/1418814533/",
+      "location": "Toronto, ON, CA, M5H 0B3",
+      "postedAt": null
+    },
+    {
+      "title": "AI & Automation Careers at EY GDS Poland - Power Platform, Copilot Studio and FDE",
+      "url": "https://careers.ey.com/ey/job/Wroc%C5%82aw-AI-&amp;-Automation-Careers-at-EY-GDS-Poland-Power-Platform%2C-Copilot-Studio-and-FDE-DS-50-086/1418827333/",
+      "location": "Wrocław, DS, PL, 50-086 +2 more&hellip;",
+      "postedAt": null
+    },
+    {
+      "title": "Finance Transformation EPM - Senior Consultant - Anaplan Solution Architect",
+      "url": "https://careers.ey.com/ey/job/Toronto-Finance-Transformation-EPM-Senior-Consultant-Anaplan-Solution-Architect-ON-M5H-0B3/1418835433/",
+      "location": "Toronto, ON, CA, M5H 0B3",
+      "postedAt": null
+    },
+    {
+      "title": "Junior Offensive Security - VA/PT",
+      "url": "https://careers.ey.com/ey/job/Milano-Junior-Offensive-Security-VAPT-20123/1408484233/",
+      "location": "Milano, IT, 20123",
+      "postedAt": null
+    },
+    {
+      "title": "Lead Drupal Developer in EU Institutions Delivery",
+      "url": "https://careers.ey.com/ey/job/Katowice-Lead-Drupal-Developer-in-EU-Institutions-Delivery-%C5%9Al%C4%85s-40-202/1418655633/",
+      "location": "Katowice, Śląskie, PL, 40-202",
+      "postedAt": null
+    },
+    {
+      "title": "Senior, Funds Tax, London",
+      "url": "https://careers.ey.com/ey/job/London-Senior%2C-Funds-Tax%2C-London-SE1-2AF/1418583033/",
+      "location": "London, GB, SE1 2AF",
+      "postedAt": null
+    },
+    {
+      "title": "O2C Finance Transformation Manager - MS Dynamics 365",
+      "url": "https://careers.ey.com/ey/job/Warszawa-O2C-Finance-Transformation-Manager-MS-Dynamics-365-MZ-01-208/1418626933/",
+      "location": "Warszawa, MZ, PL, 01-208 +2 more&hellip;",
+      "postedAt": null
+    },
+    {
+      "title": "Manager Audit - BARI",
+      "url": "https://careers.ey.com/ey/job/Bari-Manager-Audit-BARI-BA-70121/1418642333/",
+      "location": "Bari, BA, IT, 70121",
+      "postedAt": null
+    },
+    {
+      "title": "Lead Developer - Financial Services",
+      "url": "https://careers.ey.com/ey/job/S%C3%A3o-Paulo-JK-Lead-Developer-Financial-Services-SP-04543-011/1408378233/",
+      "location": "São Paulo JK, SP, BR, 04543-011",
+      "postedAt": null
+    },
+    {
+      "title": "FAAS-Global Treasury Services- FIS Integrity-Senior",
+      "url": "https://careers.ey.com/ey/job/New-York-FAAS-Global-Treasury-Services-FIS-Integrity-Senior-NY-10001-8604/1408444433/",
+      "location": "New York, NY, US, 10001-8604 +11 more&hellip;",
+      "postedAt": null
+    },
+    {
+      "title": "Analista de Desarrollo de Negocios",
+      "url": "https://careers.ey.com/ey/job/Santiago-Analista-de-Desarrollo-de-Negocios-Z_-M/1428963533/",
+      "location": "Santiago, Z. Metrop. Santiago, CL",
+      "postedAt": null
+    },
+    {
+      "title": "MS Dynamics 365 CE / Power Apps Architect - Manager- EY GDS Spain - Hybrid",
+      "url": "https://careers.ey.com/ey/job/Malaga-MS-Dynamics-365-CE-Power-Apps-Architect-Manager-EY-GDS-Spain-Hybrid-29590/1408476433/",
+      "location": "Malaga, ES, 29590",
+      "postedAt": null
+    },
+    {
+      "title": "Senior Consultant - TAX - TMT - TAX - GCR - Global Compliance & Reporting - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Senior-Consultant-TAX-TMT-TAX-GCR-Global-Compliance-&amp;-Reporting-Bangalore-KA-560001/1418564733/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "Senior Consultant - TAX - TMT - TAX - GCR - Global Compliance & Reporting - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Senior-Consultant-TAX-TMT-TAX-GCR-Global-Compliance-&amp;-Reporting-Bangalore-KA-560001/1418549633/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "Manager - TAX - TMT - TAX - GCR - Global Compliance & Reporting - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Manager-TAX-TMT-TAX-GCR-Global-Compliance-&amp;-Reporting-Bangalore-KA-560001/1418538633/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "Supervising Associate - EA COE Germany (German Speaking)",
+      "url": "https://careers.ey.com/ey/job/Taguig-Supervising-Associate-EA-COE-Germany-%28German-Speaking%29-1634/1418548833/",
+      "location": "Taguig, PH, 1634",
+      "postedAt": null
+    },
+    {
+      "title": "CBS BMC Marketing Executive",
+      "url": "https://careers.ey.com/ey/job/Kuala-Lumpur-CBS-BMC-Marketing-Executive-Fede-50490/1416554533/",
+      "location": "Kuala Lumpur, Federal Territory of Kuala Lumpur, MY, 50490",
+      "postedAt": null
+    },
+    {
+      "title": "FS-RISK CONSULTING-DR-ITCA-Manager",
+      "url": "https://careers.ey.com/ey/job/Kolkata-FS-RISK-CONSULTING-DR-ITCA-Manager-WB-700091/1428559933/",
+      "location": "Kolkata, WB, IN, 700091 +2 more&hellip;",
+      "postedAt": null
+    },
+    {
+      "title": "Project Consultant - PAS WKFA - National - CNS - PC - WORKFORCE ADVISORY - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Project-Consultant-PAS-WKFA-National-CNS-PC-WORKFORCE-ADVISORY-Bangalore-KA-560001/1428942333/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "Project Consultant - PAS WKFA - National - CNS - PC - WORKFORCE ADVISORY - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Project-Consultant-PAS-WKFA-National-CNS-PC-WORKFORCE-ADVISORY-Bangalore-KA-560001/1428946333/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "Project Consultant - PAS WKFA - National - CNS - PC - WORKFORCE ADVISORY - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Project-Consultant-PAS-WKFA-National-CNS-PC-WORKFORCE-ADVISORY-Bangalore-KA-560001/1428959533/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "Project Consultant - PAS WKFA - National - CNS - PC - WORKFORCE ADVISORY - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Project-Consultant-PAS-WKFA-National-CNS-PC-WORKFORCE-ADVISORY-Bangalore-KA-560001/1428964233/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "Project Consultant - PAS WKFA - National - CNS - PC - WORKFORCE ADVISORY - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Project-Consultant-PAS-WKFA-National-CNS-PC-WORKFORCE-ADVISORY-Bangalore-KA-560001/1428940833/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "Project Consultant - PAS WKFA - National - CNS - PC - WORKFORCE ADVISORY - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Project-Consultant-PAS-WKFA-National-CNS-PC-WORKFORCE-ADVISORY-Bangalore-KA-560001/1428945233/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "Project Consultant - PAS WKFA - National - CNS - PC - WORKFORCE ADVISORY - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Project-Consultant-PAS-WKFA-National-CNS-PC-WORKFORCE-ADVISORY-Bangalore-KA-560001/1428945333/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "Manager/Senior Manager, Business Consulting - SCO (Procurement Transformation)",
+      "url": "https://careers.ey.com/ey/job/ManagerSenior-Manager%2C-Business-Consulting-SCO-%28Procurement-Transformation%29-048583/1090644901/",
+      "location": "SG, 048583",
+      "postedAt": null
+    },
+    {
+      "title": "Manager Consultoría Sector Público",
+      "url": "https://careers.ey.com/ey/job/Bilbao-Manager-Consultor%C3%ADa-Sector-P%C3%BAblico-48009/1140275101/",
+      "location": "Bilbao, ES, 48009",
+      "postedAt": null
+    },
+    {
+      "title": "Bilanzbuchhalter Experte Umsatzrealisierung (w/m/d)",
+      "url": "https://careers.ey.com/ey/job/Eschborn-Frankfurt-%28Main%29-Bilanzbuchhalter-Experte-Umsatzrealisierung-%28wmd%29-HE-65760/1279404001/",
+      "location": "Eschborn / Frankfurt (Main), HE, DE, 65760 +17 more&hellip;",
+      "postedAt": null
+    },
+    {
+      "title": "Tax Intern",
+      "url": "https://careers.ey.com/ey/job/Luxembourg-Tax-Intern-L-1855/1281380001/",
+      "location": "Luxembourg, LU, L-1855",
+      "postedAt": null
+    },
+    {
+      "title": "Executive Reward Specialist",
+      "url": "https://careers.ey.com/ey/job/Amsterdam-Executive-Reward-Specialist-1083-HP/1281460301/",
+      "location": "Amsterdam, NL, 1083 HP",
+      "postedAt": null
+    },
+    {
+      "title": "Consultant expérimenté en stratégie sociale et RH FY26",
+      "url": "https://careers.ey.com/ey/job/Paris-La-D%C3%A9fense-Consultant-exp%C3%A9riment%C3%A9-en-strat%C3%A9gie-sociale-et-RH-FY26-92037/1281305701/",
+      "location": "Paris La Défense, FR, 92037",
+      "postedAt": null
+    },
+    {
+      "title": "Technology Consulting - Data Engineer, AI & Data",
+      "url": "https://careers.ey.com/ey/job/Kuala-Lumpur-Technology-Consulting-Data-Engineer%2C-AI-&amp;-Data-Fede-50490/1128737601/",
+      "location": "Kuala Lumpur, Federal Territory of Kuala Lumpur, MY, 50490",
+      "postedAt": null
+    },
+    {
+      "title": "Tax - Transfer Pricing Consultant",
+      "url": "https://careers.ey.com/ey/job/Jakarta-Tax-Transfer-Pricing-Consultant-12190/703954701/",
+      "location": "Jakarta, ID, 12190",
+      "postedAt": null
+    },
+    {
+      "title": "Technology Consulting - Strategy Manager",
+      "url": "https://careers.ey.com/ey/job/Kuala-Lumpur-Technology-Consulting-Strategy-Manager-Fede-50490/1131267001/",
+      "location": "Kuala Lumpur, Federal Territory of Kuala Lumpur, MY, 50490",
+      "postedAt": null
+    },
+    {
+      "title": "Senior Manager - International Tax and Transaction Services - Financial Services",
+      "url": "https://careers.ey.com/ey/job/Sydney-Senior-Manager-International-Tax-and-Transaction-Services-Financial-Services-NSW-2000/1180177401/",
+      "location": "Sydney, NSW, AU, 2000",
+      "postedAt": null
+    },
+    {
+      "title": "Senior business analyst / functional analyst - Financial Services",
+      "url": "https://careers.ey.com/ey/job/Diegem-Senior-business-analyst-functional-analyst-Financial-Services-1831/1196120601/",
+      "location": "Diegem, BE, 1831",
+      "postedAt": null
+    },
+    {
+      "title": "Financial Crime Compliance, Manager/Senior Manager, Risk Consulting",
+      "url": "https://careers.ey.com/ey/job/Financial-Crime-Compliance%2C-ManagerSenior-Manager%2C-Risk-Consulting-048583/714065001/",
+      "location": "SG, 048583",
+      "postedAt": null
+    },
+    {
+      "title": "Senior Project Consultant - PAS WKFA - National - CNS - PC - WORKFORCE ADVISORY - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Senior-Project-Consultant-PAS-WKFA-National-CNS-PC-WORKFORCE-ADVISORY-Bangalore-KA-560001/1428958733/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "Senior Project Consultant - PAS WKFA - National - CNS - PC - WORKFORCE ADVISORY - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Senior-Project-Consultant-PAS-WKFA-National-CNS-PC-WORKFORCE-ADVISORY-Bangalore-KA-560001/1428954933/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "UKI Technology Consulting- Cyber Security Architect, Senior Manager/ Manager",
+      "url": "https://careers.ey.com/ey/job/Dublin-2-UKI-Technology-Consulting-Cyber-Security-Architect%2C-Senior-Manager-Manager/1418700733/",
+      "location": "Dublin 2, IE",
+      "postedAt": null
+    },
+    {
+      "title": "Auditeur financier expérimenté H/F",
+      "url": "https://careers.ey.com/ey/job/Auditeur-financier-exp%C3%A9riment%C3%A9-HF/1418678833/",
+      "location": "TN",
+      "postedAt": null
+    },
+    {
+      "title": "FS Business Consulting - Business Transformation Delivery - Director - Dublin",
+      "url": "https://careers.ey.com/ey/job/Dublin-2-FS-Business-Consulting-Business-Transformation-Delivery-Director-Dublin/1418679633/",
+      "location": "Dublin 2, IE",
+      "postedAt": null
+    },
+    {
+      "title": "Tax Advisor I Steuerberater:in",
+      "url": "https://careers.ey.com/ey/job/Linz-Tax-Advisor-I-Steuerberaterin-4020/1418580833/",
+      "location": "Linz, AT, 4020 +3 more&hellip;",
+      "postedAt": null
+    },
+    {
+      "title": "EY Parthenon - Senior Manager and Director - Turnaround & Restructuring Strategy",
+      "url": "https://careers.ey.com/ey/job/Sydney-EY-Parthenon-Senior-Manager-and-Director-Turnaround-&amp;-Restructuring-Strategy-NSW-2000/1388354233/",
+      "location": "Sydney, NSW, AU, 2000 +4 more&hellip;",
+      "postedAt": null
+    },
+    {
+      "title": "Consultant Expérimenté Transaction Services (Services Financiers) Assurance EY-Parthenon Paris F/H",
+      "url": "https://careers.ey.com/ey/job/Paris-La-D%C3%A9fense-Consultant-Exp%C3%A9riment%C3%A9-Transaction-Services-%28Services-Financiers%29-Assurance-EY-Parthenon-Paris-FH-92037/1408378733/",
+      "location": "Paris La Défense, FR, 92037",
+      "postedAt": null
+    },
+    {
+      "title": "Manager Digital Forensics & Incident Response (DFIR) - Cyber Security (w/m/d)",
+      "url": "https://careers.ey.com/ey/job/Stuttgart-Manager-Digital-Forensics-&amp;-Incident-Response-%28DFIR%29-Cyber-Security-%28wmd%29-BW-70629/1408320333/",
+      "location": "Stuttgart, BW, DE, 70629 +7 more&hellip;",
+      "postedAt": null
+    },
+    {
+      "title": "BC SECTOR -Lifescience -Pharma forcasting -Manager",
+      "url": "https://careers.ey.com/ey/job/Hyderabad-BC-SECTOR-Lifescience-Pharma-forcasting-Manager-TG-500081/1408393833/",
+      "location": "Hyderabad, TG, IN, 500081",
+      "postedAt": null
+    },
+    {
+      "title": "EY Türkiye - Risk Consulting / Manager (Ankara)",
+      "url": "https://careers.ey.com/ey/job/Ankara-EY-T%C3%BCrkiye-Risk-Consulting-Manager-%28Ankara%29-06510/1408422733/",
+      "location": "Ankara, TR, 06510",
+      "postedAt": null
+    },
+    {
+      "title": "Sales Executive, Financial Services - Associate Director, Tampa, FL - WAM",
+      "url": "https://careers.ey.com/ey/job/Tampa-Sales-Executive%2C-Financial-Services-Associate-Director%2C-Tampa%2C-FL-WAM-FL-33602/1397848033/",
+      "location": "Tampa, FL, US, 33602",
+      "postedAt": null
+    },
+    {
+      "title": "Integration Tech Lead (IBM API Connect & AWS)",
+      "url": "https://careers.ey.com/ey/job/S%C3%A3o-Paulo-JK-Integration-Tech-Lead-%28IBM-API-Connect-&amp;-AWS%29-SP-04543-011/1408451233/",
+      "location": "São Paulo JK, SP, BR, 04543-011",
+      "postedAt": null
+    },
+    {
+      "title": "Agentic AI Evaluation Engineer",
+      "url": "https://careers.ey.com/ey/job/Kolkata-Agentic-AI-Evaluation-Engineer-WB-700091/1408185133/",
+      "location": "Kolkata, WB, IN, 700091 +2 more&hellip;",
+      "postedAt": null
+    },
+    {
+      "title": "(Senior) Consultant - Local Mobility",
+      "url": "https://careers.ey.com/ey/job/Den-Haag-%28Senior%29-Consultant-Local-Mobility-2596-CZ/1378812033/",
+      "location": "Den Haag, NL, 2596 CZ",
+      "postedAt": null
+    },
+    {
+      "title": "Manager - Enterprise Risk - Industries",
+      "url": "https://careers.ey.com/ey/job/Diegem-Manager-Enterprise-Risk-Industries-1831/1408409433/",
+      "location": "Diegem, BE, 1831",
+      "postedAt": null
+    },
+    {
+      "title": "FSO FAAS TAAG - Transactions-Manager",
+      "url": "https://careers.ey.com/ey/job/New-York-FSO-FAAS-TAAG-Transactions-Manager-NY-10001-8604/1408552133/",
+      "location": "New York, NY, US, 10001-8604 +6 more&hellip;",
+      "postedAt": null
+    },
+    {
+      "title": "Senior Manager - Director - Stamp Duty Specialist -Financial Services",
+      "url": "https://careers.ey.com/ey/job/Sydney-Senior-Manager-Director-Stamp-Duty-Specialist-Financial-Services-NSW-2000/1408203633/",
+      "location": "Sydney, NSW, AU, 2000",
+      "postedAt": null
+    },
+    {
+      "title": "(Senior) Consultant - Local Mobility",
+      "url": "https://careers.ey.com/ey/job/Eindhoven-%28Senior%29-Consultant-Local-Mobility-5613-AM/1378811733/",
+      "location": "Eindhoven, NL, 5613 AM +2 more&hellip;",
+      "postedAt": null
+    },
+    {
+      "title": "EY Parthenon - Business Product Manager",
+      "url": "https://careers.ey.com/ey/job/London-EY-Parthenon-Business-Product-Manager-SE1-2AF/1388401033/",
+      "location": "London, GB, SE1 2AF +4 more&hellip;",
+      "postedAt": null
+    },
+    {
+      "title": "GDS Tax - ACR Staff EG - RTR 1",
+      "url": "https://careers.ey.com/ey/job/Taguig-GDS-Tax-ACR-Staff-EG-RTR-1-1634/1383872733/",
+      "location": "Taguig, PH, 1634",
+      "postedAt": null
+    },
+    {
+      "title": "Brand, Marketing and Communications (BMC) - Specialist - Service Lines (3 months contract)",
+      "url": "https://careers.ey.com/ey/job/Toronto-Brand%2C-Marketing-and-Communications-%28BMC%29-Specialist-Service-Lines-%283-months-contract%29-ON-M5H-0B3/1384742333/",
+      "location": "Toronto, ON, CA, M5H 0B3",
+      "postedAt": null
+    },
+    {
+      "title": "Consultor/a Validación de Modelos - EY GDS Spain - Hybrid",
+      "url": "https://careers.ey.com/ey/job/Malaga-Consultora-Validaci%C3%B3n-de-Modelos-EY-GDS-Spain-Hybrid-29590/1397581033/",
+      "location": "Malaga, ES, 29590",
+      "postedAt": null
+    },
+    {
+      "title": "Service Delivery Center - QA Guidewire Testing Senior",
+      "url": "https://careers.ey.com/ey/job/Alpharetta-Service-Delivery-Center-QA-Guidewire-Testing-Senior-GA-30009/1397974033/",
+      "location": "Alpharetta, GA, US, 30009 +2 more&hellip;",
+      "postedAt": null
+    },
+    {
+      "title": "Business Transformation Consultants",
+      "url": "https://careers.ey.com/ey/job/Msida-Business-Transformation-Consultants-MSD-1751/1397840133/",
+      "location": "Msida, MT, MSD 1751",
+      "postedAt": null
+    },
+    {
+      "title": "Manager/Senior Manager Evaluation et Modélisation Financière - Secteur Financier EY-Parthenon (H/F)",
+      "url": "https://careers.ey.com/ey/job/Paris-La-D%C3%A9fense-ManagerSenior-Manager-Evaluation-et-Mod%C3%A9lisation-Financi%C3%A8re-Secteur-Financier-EY-Parthenon-%28HF%29-92037/1418675233/",
+      "location": "Paris La Défense, FR, 92037",
+      "postedAt": null
+    },
+    {
+      "title": "EYifb Consultor/a - Recién graduado/a - Servicios Financieros - Valencia - Enero 2027",
+      "url": "https://careers.ey.com/ey/job/Valencia-EYifb-Consultora-Reci%C3%A9n-graduadoa-Servicios-Financieros-Valencia-Enero-2027-46023/1418676133/",
+      "location": "Valencia, ES, 46023",
+      "postedAt": null
+    },
+    {
+      "title": "Senior Consultant - TAX - TMT - TAX - ITTS - Transfer Pricing - Mumbai",
+      "url": "https://careers.ey.com/ey/job/Mumbai-Senior-Consultant-TAX-TMT-TAX-ITTS-Transfer-Pricing-Mumbai-MH-400028/1428925533/",
+      "location": "Mumbai, MH, IN, 400028",
+      "postedAt": null
+    },
+    {
+      "title": "Assistant Manager - TAX - National - TAX - GCR - ACR - Chennai",
+      "url": "https://careers.ey.com/ey/job/Chennai-Assistant-Manager-TAX-National-TAX-GCR-ACR-Chennai-TN-600113/1418874133/",
+      "location": "Chennai, TN, IN, 600113",
+      "postedAt": null
+    },
+    {
+      "title": "Senior Director - TAX - National - TAX - GCR - Global Compliance & Reporting - Mumbai",
+      "url": "https://careers.ey.com/ey/job/Mumbai-Senior-Director-TAX-National-TAX-GCR-Global-Compliance-&amp;-Reporting-Mumbai-MH-400028/1418943233/",
+      "location": "Mumbai, MH, IN, 400028",
+      "postedAt": null
+    },
+    {
+      "title": "FAAS-Senior Manager",
+      "url": "https://careers.ey.com/ey/job/Kolkata-FAAS-Senior-Manager-WB-700091/1428934533/",
+      "location": "Kolkata, WB, IN, 700091",
+      "postedAt": null
+    },
+    {
+      "title": "Project Consultant - PAS WKFA - National - CNS - PC - WORKFORCE ADVISORY - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Project-Consultant-PAS-WKFA-National-CNS-PC-WORKFORCE-ADVISORY-Bangalore-KA-560001/1428937933/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "Executive - TAX - National - TAX - GCR - ACR - Chennai",
+      "url": "https://careers.ey.com/ey/job/Chennai-Executive-TAX-National-TAX-GCR-ACR-Chennai-TN-600113/1418883533/",
+      "location": "Chennai, TN, IN, 600113",
+      "postedAt": null
+    },
+    {
+      "title": "EY - Manager Business Consulting - Finance",
+      "url": "https://careers.ey.com/ey/job/Buenos-Aires-EY-Manager-Business-Consulting-Finance-CABA-1437/1418943433/",
+      "location": "Buenos Aires, CABA, AR, 1437",
+      "postedAt": null
+    },
+    {
+      "title": "Project Consultant - PAS WKFA - National - CNS - PC - WORKFORCE ADVISORY - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Project-Consultant-PAS-WKFA-National-CNS-PC-WORKFORCE-ADVISORY-Bangalore-KA-560001/1428961833/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "Associate Consultant-Forensics-National-ASU-Forensics-Investigations & Compliance-Gurgaon",
+      "url": "https://careers.ey.com/ey/job/Gurugram-Associate-Consultant-Forensics-National-ASU-Forensics-Investigations-&amp;-Compliance-Gurgaon-HR-122003/1428922433/",
+      "location": "Gurugram, HR, IN, 122003",
+      "postedAt": null
+    },
+    {
+      "title": "Project Consultant - PAS WKFA - National - CNS - PC - WORKFORCE ADVISORY - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Project-Consultant-PAS-WKFA-National-CNS-PC-WORKFORCE-ADVISORY-Bangalore-KA-560001/1428964933/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "Project Consultant - PAS WKFA - National - CNS - PC - WORKFORCE ADVISORY - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Project-Consultant-PAS-WKFA-National-CNS-PC-WORKFORCE-ADVISORY-Bangalore-KA-560001/1428950933/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "Project Consultant - PAS WKFA - National - CNS - PC - WORKFORCE ADVISORY - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Project-Consultant-PAS-WKFA-National-CNS-PC-WORKFORCE-ADVISORY-Bangalore-KA-560001/1428940233/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "Site Reliability Engineer (SRE)",
+      "url": "https://careers.ey.com/ey/job/S%C3%A3o-Paulo-JK-Site-Reliability-Engineer-%28SRE%29-SP-04543-011/1408448633/",
+      "location": "São Paulo JK, SP, BR, 04543-011",
+      "postedAt": null
+    },
+    {
+      "title": "FSO Consulting - Actuarial - Life - Manager",
+      "url": "https://careers.ey.com/ey/job/Camana-Bay-FSO-Consulting-Actuarial-Life-Manager-KY11106/1408575433/",
+      "location": "Camana Bay, KY, KY11106",
+      "postedAt": null
+    },
+    {
+      "title": "Senior Project Consultant - PAS WKFA - National - CNS - PC - WORKFORCE ADVISORY - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Senior-Project-Consultant-PAS-WKFA-National-CNS-PC-WORKFORCE-ADVISORY-Bangalore-KA-560001/1428955833/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "Analista de Consultoría Laboral - Trujillo",
+      "url": "https://careers.ey.com/ey/job/Lima-Analista-de-Consultor%C3%ADa-Laboral-Trujillo-15073/1418885233/",
+      "location": "Lima, PE, 15073",
+      "postedAt": null
+    },
+    {
+      "title": "Project Consultant - PAS WKFA - National - CNS - PC - WORKFORCE ADVISORY - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Project-Consultant-PAS-WKFA-National-CNS-PC-WORKFORCE-ADVISORY-Bangalore-KA-560001/1428941033/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "SAP Delivery Solution Architect-SENIOR MANAGER",
+      "url": "https://careers.ey.com/ey/job/Noida-SAP-Delivery-Solution-Architect-SENIOR-MANAGER-UP-201301/1428940133/",
+      "location": "Noida, UP, IN, 201301 +9 more&hellip;",
+      "postedAt": null
+    },
+    {
+      "title": "Project Consultant - PAS WKFA - National - CNS - PC - WORKFORCE ADVISORY - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Project-Consultant-PAS-WKFA-National-CNS-PC-WORKFORCE-ADVISORY-Bangalore-KA-560001/1428949333/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "Manager, Corporate and Operational Strategy: Financial Services (Toronto)",
+      "url": "https://careers.ey.com/ey/job/Toronto-Manager%2C-Corporate-and-Operational-Strategy-Financial-Services-%28Toronto%29-ON-M5H-0B3/1418929033/",
+      "location": "Toronto, ON, CA, M5H 0B3",
+      "postedAt": null
+    },
+    {
+      "title": "Analyst - Forensics - National - ASU - Forensics - Investigations & Compliance - Mumbai",
+      "url": "https://careers.ey.com/ey/job/Mumbai-Analyst-Forensics-National-ASU-Forensics-Investigations-&amp;-Compliance-Mumbai-MH-400028/1428927333/",
+      "location": "Mumbai, MH, IN, 400028",
+      "postedAt": null
+    },
+    {
+      "title": "Gerente de Folha de Pagamento",
+      "url": "https://careers.ey.com/ey/job/S%C3%A3o-Paulo-JK-Gerente-de-Folha-de-Pagamento-SP-04543-011/1418915033/",
+      "location": "São Paulo JK, SP, BR, 04543-011",
+      "postedAt": null
+    },
+    {
+      "title": "Project Consultant - PAS WKFA - National - CNS - PC - WORKFORCE ADVISORY - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Project-Consultant-PAS-WKFA-National-CNS-PC-WORKFORCE-ADVISORY-Bangalore-KA-560001/1428942533/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "Consultant - TAX - TMT - TAX - ITTS - Transfer Pricing - Noida",
+      "url": "https://careers.ey.com/ey/job/Noida-Consultant-TAX-TMT-TAX-ITTS-Transfer-Pricing-Noida-UP-201304/1418494233/",
+      "location": "Noida, UP, IN, 201304",
+      "postedAt": null
+    },
+    {
+      "title": "Project Consultant - PAS WKFA - National - CNS - PC - WORKFORCE ADVISORY - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Project-Consultant-PAS-WKFA-National-CNS-PC-WORKFORCE-ADVISORY-Bangalore-KA-560001/1428936933/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "Manager - Assurance - National - ASU - FAAS - Financial&AccountingAdv - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Manager-Assurance-National-ASU-FAAS-Financial&amp;AccountingAdv-Bangalore-KA-560001/1418937133/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "EY - Manager en Finance Transformation (Industria Financiera)",
+      "url": "https://careers.ey.com/ey/job/Buenos-Aires-EY-Manager-en-Finance-Transformation-%28Industria-Financiera%29-CABA-1437/1418940933/",
+      "location": "Buenos Aires, CABA, AR, 1437",
+      "postedAt": null
+    },
+    {
+      "title": "Project Consultant - PAS WKFA - National - CNS - PC - WORKFORCE ADVISORY - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Project-Consultant-PAS-WKFA-National-CNS-PC-WORKFORCE-ADVISORY-Bangalore-KA-560001/1428929233/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "Spécialiste en offres de service bilingue (contrat de 18 mois)",
+      "url": "https://careers.ey.com/ey/job/Toronto-Sp%C3%A9cialiste-en-offres-de-service-bilingue-%28contrat-de-18-mois%29-ON-M5H-0B3/1418823933/",
+      "location": "Toronto, ON, CA, M5H 0B3 +16 more&hellip;",
+      "postedAt": null
+    },
+    {
+      "title": "Project Consultant - PAS WKFA - National - CNS - PC - WORKFORCE ADVISORY - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Project-Consultant-PAS-WKFA-National-CNS-PC-WORKFORCE-ADVISORY-Bangalore-KA-560001/1428965833/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "Associate Analyst - TAX - National - TAX - PAS - Mobility Core - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Associate-Analyst-TAX-National-TAX-PAS-Mobility-Core-Bangalore-KA-560001/1428924033/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "Project Consultant - PAS WKFA - National - CNS - PC - WORKFORCE ADVISORY - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Project-Consultant-PAS-WKFA-National-CNS-PC-WORKFORCE-ADVISORY-Bangalore-KA-560001/1428933733/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "Project Consultant - PAS WKFA - National - CNS - PC - WORKFORCE ADVISORY - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Project-Consultant-PAS-WKFA-National-CNS-PC-WORKFORCE-ADVISORY-Bangalore-KA-560001/1428946233/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "Senior Project Consultant - PAS WKFA - National - CNS - PC - WORKFORCE ADVISORY - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Senior-Project-Consultant-PAS-WKFA-National-CNS-PC-WORKFORCE-ADVISORY-Bangalore-KA-560001/1428956333/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "Executive - TAX - National - TAX - GCR - ACR - Chennai",
+      "url": "https://careers.ey.com/ey/job/Chennai-Executive-TAX-National-TAX-GCR-ACR-Chennai-TN-600113/1418885033/",
+      "location": "Chennai, TN, IN, 600113",
+      "postedAt": null
+    },
+    {
+      "title": "Project Consultant - PAS WKFA - National - CNS - PC - WORKFORCE ADVISORY - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Project-Consultant-PAS-WKFA-National-CNS-PC-WORKFORCE-ADVISORY-Bangalore-KA-560001/1428959633/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "Engagement Executive Assistant",
+      "url": "https://careers.ey.com/ey/job/Washington-Engagement-Executive-Assistant-DC-20005/1408541533/",
+      "location": "Washington, DC, US, 20005",
+      "postedAt": null
+    },
+    {
+      "title": "FAAS Manager - Assistant Controller (IFMS) - Zurich, Basel, Geneva",
+      "url": "https://careers.ey.com/ey/job/Zurich-FAAS-Manager-Assistant-Controller-%28IFMS%29-Zurich%2C-Basel%2C-Geneva-8005/1397601433/",
+      "location": "Zurich, CH, 8005 +2 more&hellip;",
+      "postedAt": null
+    },
+    {
+      "title": "FS Business Consulting - Business Transformation Delivery - Senior Consultant - Dublin",
+      "url": "https://careers.ey.com/ey/job/Dublin-2-FS-Business-Consulting-Business-Transformation-Delivery-Senior-Consultant-Dublin/1418677833/",
+      "location": "Dublin 2, IE",
+      "postedAt": null
+    },
+    {
+      "title": "Professional Qualifications Specialist",
+      "url": "https://careers.ey.com/ey/job/Dublin-2-Professional-Qualifications-Specialist/1418791833/",
+      "location": "Dublin 2, IE",
+      "postedAt": null
+    },
+    {
+      "title": "Sênior de Auditoria Externa, Fortaleza",
+      "url": "https://careers.ey.com/ey/job/Fortaleza-S%C3%AAnior-de-Auditoria-Externa%2C-Fortaleza-CE-60811-341/1408481833/",
+      "location": "Fortaleza, CE, BR, 60811-341",
+      "postedAt": null
+    },
+    {
+      "title": "Assistant Manager - TAX - National - TAX - GCR - ACR - Chennai",
+      "url": "https://careers.ey.com/ey/job/Chennai-Assistant-Manager-TAX-National-TAX-GCR-ACR-Chennai-TN-600113/1418876133/",
+      "location": "Chennai, TN, IN, 600113",
+      "postedAt": null
+    },
+    {
+      "title": "Executive - TAX - National - TAX - GCR - ACR - Chennai",
+      "url": "https://careers.ey.com/ey/job/Chennai-Executive-TAX-National-TAX-GCR-ACR-Chennai-TN-600113/1418887233/",
+      "location": "Chennai, TN, IN, 600113",
+      "postedAt": null
+    },
+    {
+      "title": "Senior .Net Developer with Azure",
+      "url": "https://careers.ey.com/ey/job/Katowice-Senior-_Net-Developer-with-Azure-%C5%9Al%C4%85s-40-202/1418829233/",
+      "location": "Katowice, Śląskie, PL, 40-202",
+      "postedAt": null
+    },
+    {
+      "title": "Assistant Manager - TAX - National - TAX - GCR - ACR - Chennai",
+      "url": "https://careers.ey.com/ey/job/Chennai-Assistant-Manager-TAX-National-TAX-GCR-ACR-Chennai-TN-600113/1418878333/",
+      "location": "Chennai, TN, IN, 600113",
+      "postedAt": null
+    },
+    {
+      "title": "Consultant senior FAAS&RISK Insurance H/F",
+      "url": "https://careers.ey.com/ey/job/Consultant-senior-FAAS&amp;RISK-Insurance-HF/1418679433/",
+      "location": "TN",
+      "postedAt": null
+    },
+    {
+      "title": "Government and Public Sector - ACE - Assurance - Analyst",
+      "url": "https://careers.ey.com/ey/job/San-Antonio-Government-and-Public-Sector-ACE-Assurance-Analyst-TX-78205/1418659033/",
+      "location": "San Antonio, TX, US, 78205",
+      "postedAt": null
+    },
+    {
+      "title": "Project Manager with SAP Background",
+      "url": "https://careers.ey.com/ey/job/Katowice-Project-Manager-with-SAP-Background-%C5%9Al%C4%85s-40-202/1418646433/",
+      "location": "Katowice, Śląskie, PL, 40-202",
+      "postedAt": null
+    },
+    {
+      "title": "Project Manager",
+      "url": "https://careers.ey.com/ey/job/S%C3%A3o-Paulo-JK-Project-Manager-SP-04543-011/1418734033/",
+      "location": "São Paulo JK, SP, BR, 04543-011",
+      "postedAt": null
+    },
+    {
+      "title": "Senior Consultant - TAX - TMT - TAX - GCR - Global Compliance & Reporting - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Senior-Consultant-TAX-TMT-TAX-GCR-Global-Compliance-&amp;-Reporting-Bangalore-KA-560001/1418559733/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "Director - TAX - TMT - TAX - GCR - Global Compliance & Reporting - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Director-TAX-TMT-TAX-GCR-Global-Compliance-&amp;-Reporting-Bangalore-KA-560001/1418528133/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "Product Owner Supply Chain Expérimenté H/F FY27",
+      "url": "https://careers.ey.com/ey/job/Paris-La-D%C3%A9fense-Product-Owner-Supply-Chain-Exp%C3%A9riment%C3%A9-HF-FY27-92037/1408582633/",
+      "location": "Paris La Défense, FR, 92037",
+      "postedAt": null
+    },
+    {
+      "title": "SDC Java Software Developer---Staff/Analyst---St. Louis",
+      "url": "https://careers.ey.com/ey/job/St_-Louis-SDC-Java-Software-Developer-StaffAnalyst-St_-Louis-MO-63105/1408475533/",
+      "location": "St. Louis, MO, US, 63105",
+      "postedAt": null
+    },
+    {
+      "title": "Junior Consultant Technology Risk",
+      "url": "https://careers.ey.com/ey/job/Milano-Junior-Consultant-Technology-Risk-20123/1408496633/",
+      "location": "Milano, IT, 20123 +1 more&hellip;",
+      "postedAt": null
+    },
+    {
+      "title": "Senior Manager - TAX - TMT - TAX - GCR - Global Compliance & Reporting - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Senior-Manager-TAX-TMT-TAX-GCR-Global-Compliance-&amp;-Reporting-Bangalore-KA-560001/1418579733/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "eProcurement Consultant",
+      "url": "https://careers.ey.com/ey/job/Katowice-eProcurement-Consultant-%C5%9Al%C4%85s-40-202/1418687833/",
+      "location": "Katowice, Śląskie, PL, 40-202",
+      "postedAt": null
+    },
+    {
+      "title": "Senior Consultant - TAX - TMT - TAX - GCR - Global Compliance & Reporting - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Senior-Consultant-TAX-TMT-TAX-GCR-Global-Compliance-&amp;-Reporting-Bangalore-KA-560001/1418545033/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "Manager CSIRT F/H (Paris)",
+      "url": "https://careers.ey.com/ey/job/Paris-La-D%C3%A9fense-Manager-CSIRT-FH-%28Paris%29-92037/1418686533/",
+      "location": "Paris La Défense, FR, 92037",
+      "postedAt": null
+    },
+    {
+      "title": "Government and Public Sector - ACE - Assurance - Technology Risk - Senior Analyst",
+      "url": "https://careers.ey.com/ey/job/San-Antonio-Government-and-Public-Sector-ACE-Assurance-Technology-Risk-Senior-Analyst-TX-78249/1418813533/",
+      "location": "San Antonio, TX, US, 78249",
+      "postedAt": null
+    },
+    {
+      "title": "AI & Data Careers at EY GDS Poland - Databricks, Snowflake, GenAI and Cloud",
+      "url": "https://careers.ey.com/ey/job/Wroc%C5%82aw-AI-&amp;-Data-Careers-at-EY-GDS-Poland-Databricks%2C-Snowflake%2C-GenAI-and-Cloud-DS-50-086/1418683833/",
+      "location": "Wrocław, DS, PL, 50-086 +1 more&hellip;",
+      "postedAt": null
+    },
+    {
+      "title": "Senior Consultant - TAX - TMT - TAX - GCR - Global Compliance & Reporting - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Senior-Consultant-TAX-TMT-TAX-GCR-Global-Compliance-&amp;-Reporting-Bangalore-KA-560001/1418553733/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "Government and Public Sector - Service Delivery Center - Change Management",
+      "url": "https://careers.ey.com/ey/job/San-Antonio-Government-and-Public-Sector-Service-Delivery-Center-Change-Management-TX-78249/1418921933/",
+      "location": "San Antonio, TX, US, 78249 +3 more&hellip;",
+      "postedAt": null
+    },
+    {
+      "title": "Oil & Gas -Leader",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Oil-&amp;-Gas-Leader-KA-560016/1418723933/",
+      "location": "Bengaluru, KA, IN, 560016",
+      "postedAt": null
+    },
+    {
+      "title": "Analyst - Forensics - National - ASU - Forensics - Investigations & Compliance - Mumbai",
+      "url": "https://careers.ey.com/ey/job/Mumbai-Analyst-Forensics-National-ASU-Forensics-Investigations-&amp;-Compliance-Mumbai-MH-400028/1428926333/",
+      "location": "Mumbai, MH, IN, 400028",
+      "postedAt": null
+    },
+    {
+      "title": "Senior Project Consultant - PAS WKFA - National - CNS - PC - WORKFORCE ADVISORY - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Senior-Project-Consultant-PAS-WKFA-National-CNS-PC-WORKFORCE-ADVISORY-Bangalore-KA-560001/1428958233/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "Data Architecture & Engineering - Manager - Financial Services - Consulting - NYC",
+      "url": "https://careers.ey.com/ey/job/New-York-Data-Architecture-&amp;-Engineering-Manager-Financial-Services-Consulting-NYC-NY-10001-8604/1418901233/",
+      "location": "New York, NY, US, 10001-8604 +2 more&hellip;",
+      "postedAt": null
+    },
+    {
+      "title": "Manager - Assurance - National - ASU - FAAS - Financial&AccountingAdv - Bangalore",
+      "url": "https://careers.ey.com/ey/job/Bengaluru-Manager-Assurance-National-ASU-FAAS-Financial&amp;AccountingAdv-Bangalore-KA-560001/1418936233/",
+      "location": "Bengaluru, KA, IN, 560001",
+      "postedAt": null
+    },
+    {
+      "title": "Supervising Associate - EA COE Germany (English Speaking)",
+      "url": "https://careers.ey.com/ey/job/Taguig-Supervising-Associate-EA-COE-Germany-%28English-Speaking%29-1634/1418550233/",
+      "location": "Taguig, PH, 1634",
+      "postedAt": null
+    },
+    {
+      "title": "Assistant Director - Financial Diligence - EY-Parthenon London",
+      "url": "https://careers.ey.com/ey/job/London-Assistant-Director-Financial-Diligence-EY-Parthenon-London-SE1-2AF/1408296533/",
+      "location": "London, GB, SE1 2AF",
+      "postedAt": null
+    },
+    {
+      "title": "Tax Advisor I Steuerberater:in I International Tax & M&A",
+      "url": "https://careers.ey.com/ey/job/Vienna-Tax-Advisor-I-Steuerberaterin-I-International-Tax-&amp;-M&amp;A-1220/1418585333/",
+      "location": "Vienna, AT, 1220 +1 more&hellip;",
+      "postedAt": null
+    },
+    {
+      "title": "Prácticas I+D Proyectos Europeos",
+      "url": "https://careers.ey.com/ey/job/Barcelona-Pr%C3%A1cticas-I%2BD-Proyectos-Europeos-08017/1418695633/",
+      "location": "Barcelona, ES, 08017",
+      "postedAt": null
+    },
+    {
+      "title": "Industrial Trainee - Business Consulting Risk - CHS - CNS - Risk - Process & Controls - Noida",
+      "url": "https://careers.ey.com/ey/job/Noida-Industrial-Trainee-Business-Consulting-Risk-CHS-CNS-Risk-Process-&amp;-Controls-Noida-UP-201304/1439226533/",
+      "location": "Noida, UP, IN, 201304",
+      "postedAt": null
+    },
+    {
+      "title": "Consultant - TAX - National - TAX - Indirect Tax - Core - Mumbai",
+      "url": "https://careers.ey.com/ey/job/Mumbai-Consultant-TAX-National-TAX-Indirect-Tax-Core-Mumbai-MH-400028/1439229033/",
+      "location": "Mumbai, MH, IN, 400028",
+      "postedAt": null
+    },
+    {
+      "title": "Industrial Trainee - Business Consulting Risk - National - CNS - Risk - Process & Controls - Noida",
+      "url": "https://careers.ey.com/ey/job/Noida-Industrial-Trainee-Business-Consulting-Risk-National-CNS-Risk-Process-&amp;-Controls-Noida-UP-201304/1439226733/",
+      "location": "Noida, UP, IN, 201304",
+      "postedAt": null
+    },
+    {
+      "title": "Director - TAX - AMI - TAX - Indirect Tax - Core - New Delhi",
+      "url": "https://careers.ey.com/ey/job/New-Delhi-Director-TAX-AMI-TAX-Indirect-Tax-Core-New-Delhi-Nati-110037/1439229433/",
+      "location": "New Delhi, National Capital Territory, IN, 110037",
+      "postedAt": null
+    },
+    {
+      "title": "Analyst - Assurance - National - ASU - FAAS - Financial&AccountingAdv - Mumbai",
+      "url": "https://careers.ey.com/ey/job/Mumbai-Analyst-Assurance-National-ASU-FAAS-Financial&amp;AccountingAdv-Mumbai-MH-400028/1439229333/",
+      "location": "Mumbai, MH, IN, 400028",
+      "postedAt": null
+    },
+    {
+      "title": "Director - TAX - AMI - TAX - Indirect Tax - Core - New Delhi",
+      "url": "https://careers.ey.com/ey/job/New-Delhi-Director-TAX-AMI-TAX-Indirect-Tax-Core-New-Delhi-Nati-110037/1439229533/",
+      "location": "New Delhi, National Capital Territory, IN, 110037",
+      "postedAt": null
+    },
+    {
+      "title": "Industrial Trainee - TAX - TMT - TAX - GCR - Global Compliance & Reporting - Mumbai",
+      "url": "https://careers.ey.com/ey/job/Mumbai-Industrial-Trainee-TAX-TMT-TAX-GCR-Global-Compliance-&amp;-Reporting-Mumbai-MH-400028/1439229633/",
+      "location": "Mumbai, MH, IN, 400028",
+      "postedAt": null
+    },
+    {
+      "title": "Industrial Trainee - TAX - TMT - TAX - Indirect Tax - Core - Gurgaon",
+      "url": "https://careers.ey.com/ey/job/Gurugram-Industrial-Trainee-TAX-TMT-TAX-Indirect-Tax-Core-Gurgaon-HR-122003/1439241033/",
+      "location": "Gurugram, HR, IN, 122003",
+      "postedAt": null
+    },
+    {
+      "title": "Consultant - Business Consulting Risk - CHS - CNS - Risk - Process & Controls - Gurgaon",
+      "url": "https://careers.ey.com/ey/job/Gurugram-Consultant-Business-Consulting-Risk-CHS-CNS-Risk-Process-&amp;-Controls-Gurgaon-HR-122003/1439244233/",
+      "location": "Gurugram, HR, IN, 122003",
+      "postedAt": null
+    },
+    {
+      "title": "Consultant - TAX - AMI - TAX - Indirect Tax - Core - New Delhi",
+      "url": "https://careers.ey.com/ey/job/New-Delhi-Consultant-TAX-AMI-TAX-Indirect-Tax-Core-New-Delhi-Nati-110037/1439243533/",
+      "location": "New Delhi, National Capital Territory, IN, 110037",
+      "postedAt": null
+    },
+    {
+      "title": "Analyst - Business Consulting Risk - FS - CNS - RISK - FSRM - Mumbai",
+      "url": "https://careers.ey.com/ey/job/Mumbai-Analyst-Business-Consulting-Risk-FS-CNS-RISK-FSRM-Mumbai-MH-400028/1439231233/",
+      "location": "Mumbai, MH, IN, 400028",
+      "postedAt": null
+    },
+    {
+      "title": "Analyst - Business Consulting Risk - FS - CNS - RISK - FSRM - Mumbai",
+      "url": "https://careers.ey.com/ey/job/Mumbai-Analyst-Business-Consulting-Risk-FS-CNS-RISK-FSRM-Mumbai-MH-400028/1439231133/",
+      "location": "Mumbai, MH, IN, 400028",
+      "postedAt": null
+    }
+  ]
+}

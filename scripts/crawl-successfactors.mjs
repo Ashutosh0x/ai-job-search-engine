@@ -114,7 +114,13 @@ function parsePage(html) {
  */
 function statedTotal(html) {
   const patterns = [
-    /Results?\s+1\s*[–-]\s*\d+\s+of\s+([\d,]+)/i,   // "Results 1 – 25 of 1,234"
+    // SuccessFactors states it in the results table's aria-label:
+    //   "Page 1 of 343, Results 1 to 25 of 8556"
+    // Anchored on "Results N to M of TOTAL" so it cannot capture the PAGE
+    // count instead — on careers.ey.com a looser pattern matched "of 343,"
+    // and reported 343 roles for a board carrying 8,556.
+    /Results?\s+\d+\s+to\s+\d+\s+of\s+([\d,]+)/i,
+    /Results?\s+\d+\s*[–-]\s*\d+\s+of\s+([\d,]+)/i,
     /\bof\s+([\d,]+)\s+(?:Jobs?|Results?|Positions?)\b/i,
     /searchResultsCount[^\d]{0,20}([\d,]+)/i,
   ]
