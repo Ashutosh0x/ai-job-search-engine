@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-20T09:09:37.253Z",
+  "generatedAt": "2026-09-21T12:30:24.584Z",
   "method": "Role addresses published on employers' own careers/contact pages; address patterns inferred from commit authors in a VERIFIED GitHub organisation; MX/SPF/DMARC checked at domain level. Named recruiters carry public source URLs and never carry an address.",
   "notCollected": [
     "addresses belonging to identifiable individuals",
@@ -7,21 +7,22 @@
     "per-mailbox existence (would require SMTP RCPT TO probing)"
   ],
   "summary": {
-    "companies": 387,
-    "crawledThisRun": 387,
-    "carriedForward": 0,
+    "companies": 390,
+    "crawledThisRun": 3,
+    "carriedForward": 387,
     "skippedForBudget": 0,
     "neverCrawled": 0,
     "withPublishedContacts": 29,
     "publishedContactTotal": 34,
     "withNamedRecruiters": 20,
     "namedRecruiterTotal": 170,
-    "withEmailPattern": 0,
-    "atsOnly": 339,
+    "withEmailPattern": 1,
+    "atsOnly": 341,
     "byReachability": {
-      "ats-only": 339,
+      "ats-only": 341,
       "direct": 29,
-      "named": 19
+      "named": 19,
+      "pattern": 1
     }
   },
   "companies": {
@@ -6057,6 +6058,39 @@
       "reachability": "ats-only",
       "atsOnly": true
     },
+    "ey": {
+      "slug": "ey",
+      "name": "EY",
+      "domain": "ey.com",
+      "logoUrl": "https://www.google.com/s2/favicons?domain=ey.com&sz=128",
+      "recruiters": [],
+      "recruiterCount": 0,
+      "publishedContacts": [],
+      "emailPattern": null,
+      "mailPosture": {
+        "hasMx": true,
+        "mx": [
+          "mx2.hc4518-41.iphmx.com",
+          "mx1.hc4518-41.iphmx.com",
+          "mx1.hc497-45.ca.iphmx.com"
+        ],
+        "hasSpf": true,
+        "dmarcPolicy": null
+      },
+      "otherAddressCount": 0,
+      "publicRecords": [
+        {
+          "address": "postmaster@ey.com",
+          "kind": "soa",
+          "evidence": "RNAME field of the ey.com SOA record (RFC 1035)"
+        }
+      ],
+      "robotsAllowsCareers": true,
+      "crawledAt": "2026-09-21T12:30:20.735Z",
+      "error": null,
+      "reachability": "ats-only",
+      "atsOnly": true
+    },
     "ebay": {
       "slug": "ebay",
       "name": "eBay",
@@ -6195,6 +6229,39 @@
       ],
       "robotsAllowsCareers": true,
       "crawledAt": "2026-09-20T09:07:07.738Z",
+      "error": null,
+      "reachability": "ats-only",
+      "atsOnly": true
+    },
+    "att": {
+      "slug": "att",
+      "name": "AT&T",
+      "domain": "att.com",
+      "logoUrl": "https://www.google.com/s2/favicons?domain=att.com&sz=128",
+      "recruiters": [],
+      "recruiterCount": 0,
+      "publishedContacts": [],
+      "emailPattern": null,
+      "mailPosture": {
+        "hasMx": true,
+        "mx": [
+          "mxa-00191d01.gslb.pphosted.com",
+          "mxb-00191d01.gslb.pphosted.com",
+          "mx0a-00191d01.pphosted.com"
+        ],
+        "hasSpf": true,
+        "dmarcPolicy": null
+      },
+      "otherAddressCount": 0,
+      "publicRecords": [
+        {
+          "address": "eiss-dns@att.com",
+          "kind": "soa",
+          "evidence": "RNAME field of the att.com SOA record (RFC 1035)"
+        }
+      ],
+      "robotsAllowsCareers": true,
+      "crawledAt": "2026-09-21T12:30:20.736Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -8906,6 +8973,67 @@
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
+    },
+    "microsoft": {
+      "slug": "microsoft",
+      "name": "Microsoft",
+      "domain": "microsoft.com",
+      "logoUrl": "https://www.google.com/s2/favicons?domain=microsoft.com&sz=128",
+      "recruiters": [],
+      "recruiterCount": 0,
+      "publishedContacts": [],
+      "emailPattern": {
+        "domain": "microsoft.com",
+        "patterns": [
+          {
+            "pattern": "{f}{last}",
+            "share": 0.444,
+            "sampleSize": 4
+          },
+          {
+            "pattern": "{first}{last}",
+            "share": 0.333,
+            "sampleSize": 3
+          },
+          {
+            "pattern": "{first}.{last}",
+            "share": 0.222,
+            "sampleSize": 2
+          }
+        ],
+        "observedFrom": "github-org-commits"
+      },
+      "mailPosture": {
+        "hasMx": true,
+        "mx": [
+          "microsoft-com.mail.protection.outlook.com"
+        ],
+        "hasSpf": true,
+        "dmarcPolicy": null
+      },
+      "otherAddressCount": 0,
+      "publicRecords": [
+        {
+          "address": "azuredns-hostmaster@microsoft.com",
+          "kind": "soa",
+          "evidence": "RNAME field of the microsoft.com SOA record (RFC 1035)"
+        },
+        {
+          "address": "itex-rua@microsoft.com",
+          "kind": "dmarc",
+          "evidence": "rua= in the _dmarc.microsoft.com TXT record (RFC 7489)"
+        },
+        {
+          "address": "itex-ruf@microsoft.com",
+          "kind": "dmarc",
+          "evidence": "ruf= in the _dmarc.microsoft.com TXT record (RFC 7489)"
+        }
+      ],
+      "robotsAllowsCareers": true,
+      "crawledAt": "2026-09-21T12:30:20.736Z",
+      "error": null,
+      "reachability": "pattern",
+      "atsOnly": false
     },
     "nvidia": {
       "slug": "nvidia",
