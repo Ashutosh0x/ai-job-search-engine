@@ -1045,6 +1045,15 @@ export const COMPANIES: CompanyRecord[] = [
     // One portal serves AWS, Whole Foods and the other subsidiaries; the
     // business unit is preserved as the department rather than split out.
     boards: [{ provider: 'custom', token: 'amazon', host: 'www.amazon.jobs' }] },
+  { slug: 'microsoft', name: 'Microsoft', domain: 'microsoft.com', ticker: 'MSFT', valuationKind: 'public', industry: 'Software / Cloud', hqLocation: 'Redmond, WA', foundedYear: 1975,
+    // Microsoft runs Eightfold, but its `/api/apply/v2/jobs` answers
+    // `403 Not authorized for PCSX` -- the endpoint that serves HSBC, Netflix
+    // and Bayer openly is switched off on this tenant. Registering it as
+    // `eightfold` would ingest nothing and report success, so it rides the
+    // `custom` id and reaches the sitemap + JSON-LD adapter. The registry
+    // routes token `microsoft` on either id, so a later edit back to
+    // `eightfold` still reaches a working adapter rather than an empty board.
+    boards: [{ provider: 'custom', token: 'microsoft', host: 'apply.careers.microsoft.com' }] },
   { slug: 'nvidia', name: 'NVIDIA', domain: 'nvidia.com', ticker: 'NVDA', valuationKind: 'public', industry: 'Semiconductors / AI', hqLocation: 'Santa Clara, CA', foundedYear: 1993,
     boards: [{ provider: 'workday', token: 'nvidia', site: 'NVIDIAExternalCareerSite', host: 'nvidia.wd5.myworkdayjobs.com' }] },
   { slug: 'hsbc', name: 'HSBC', domain: 'hsbc.com', ticker: 'HSBC', valuationKind: 'public', industry: 'Banking', hqLocation: 'London, UK', foundedYear: 1865,

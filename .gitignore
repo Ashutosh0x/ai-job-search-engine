@@ -100,6 +100,29 @@ next-env.d.ts
 /synechron-roles.txt
 /microsoft-roles.json
 /microsoft-roles.txt
+
+# Microsoft crawl artifacts (scripts/crawl-microsoft.mjs). All regenerable:
+# roles.json carries the raw JSON-LD and runs to ~20MB, the checkpoint is a
+# resume file, and the historical snapshots are point-in-time evidence kept on
+# disk rather than in git.
+/microsoft-crawl-report.json
+/microsoft-crawl-report.txt
+/microsoft-crawl-report.snapshot-*.json
+/microsoft-sep12-vs-sep21.json
+/microsoft-sep21a-vs-current.json
+/microsoft-validation.json
+/microsoft-validation.txt
+/microsoft-unknown-audit.json
+/microsoft-unknown-audit.txt
+/microsoft-roles.snapshot-*.json
+/microsoft-roles.snapshot-*.txt
+/microsoft-roles.prev-*.json
+/microsoft-roles.prev-*.txt
+/microsoft-roles.pass1-*.json
+/microsoft-roles.pass1-*.txt
+/data/microsoft-crawl-checkpoint.json
+/data/microsoft-corpus-verify.json
+/scripts/microsoft-crawl.jsonl
 /uk-tech-roles.json
 /uk-tech-roles.txt
 /quantiphi-roles.json

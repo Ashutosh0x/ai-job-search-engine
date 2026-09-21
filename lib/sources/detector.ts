@@ -244,6 +244,54 @@ export const SIGNATURES: Signature[] = [
     },
   },
   {
+    /**
+     * Amazon's own portal.
+     *
+     * `AmazonAdapter` already claimed this host, but nothing put it in the
+     * signature list -- so `detectFromUrl` returned `unknown` for an
+     * amazon.jobs URL and `adapterForUrl` returned null, leaving the
+     * orchestrator's hydration path with no adapter to call. The token is a
+     * constant because there is exactly one tenant.
+     */
+    source: 'custom',
+    hosts: [/(^|\.)amazon\.jobs$/i],
+    parseUrl: () => ({
+      token: 'amazon',
+      host: 'www.amazon.jobs',
+      companyDomain: 'amazon.com',
+      companyName: 'Amazon',
+      companySlug: 'amazon',
+    }),
+  },
+  {
+    /**
+     * Microsoft careers.
+     *
+     * Ordered BEFORE the generic eightfold signature on purpose. Microsoft
+     * runs Eightfold, but its `/api/apply/v2/jobs` answers
+     * `403 Not authorized for PCSX`, so classifying a microsoft.com careers
+     * URL as `eightfold` routes it to an adapter that reads nothing and
+     * reports no error. `custom` + token `microsoft` reaches the sitemap +
+     * JSON-LD adapter, which can actually read this board.
+     *
+     * `jobs.careers.microsoft.com` is the retired host -- it 301s to `apply.`
+     * -- and is matched so an old saved URL still classifies.
+     */
+    source: 'custom',
+    hosts: [
+      /(^|\.)apply\.careers\.microsoft\.com$/i,
+      /(^|\.)jobs\.careers\.microsoft\.com$/i,
+      /^careers\.microsoft\.com$/i,
+    ],
+    parseUrl: (u) => ({
+      token: 'microsoft',
+      host: u.host.toLowerCase(),
+      companyDomain: 'microsoft.com',
+      companyName: 'Microsoft',
+      companySlug: 'microsoft',
+    }),
+  },
+  {
     source: 'eightfold',
     hosts: [/(^|\.)eightfold\.ai$/i],
     markers: [/eightfold\.ai/i, /careers\/v2\/search/i],
@@ -319,11 +367,21 @@ export function detectFromUrl(rawUrl: string): DetectionResult {
     return { source: 'unknown', confidence: 0, evidence: ['malformed url'] }
   }
 
-  for (const sig of SIGNATURES) {
-    const hostHit = sig.hosts?.some((re) => re.test(u.host))
-    const pathHit = sig.paths?.some((re) => re.test(u.pathname))
-    if (!hostHit && !pathHit) continue
-
+  /**
+   * Host matches are resolved BEFORE path-only matches, across the whole
+   * signature list -- not in array order.
+   *
+   * The loop used to return the first signature with any hit at all, so a
+   * path-only rule earlier in the list beat a definitive host match later in
+   * it. Keka claims the bare path `^/careers`, which every employer careers
+   * site in the world matches, so `apply.careers.microsoft.com/careers/job/...`
+   * classified as `keka` with no target -- and a result with no target makes
+   * `adapterForUrl` return null, so hydration silently had no adapter to call.
+   *
+   * The confidence values already said host beats path (0.99/0.9 vs 0.75);
+   * this makes the search order agree with them.
+   */
+  const decide = (sig: Signature, hostHit: boolean, pathHit: boolean): DetectionResult => {
     const evidence: string[] = []
     if (hostHit) evidence.push(`host matches ${sig.source}`)
     if (pathHit) evidence.push(`path matches ${sig.source}`)
@@ -339,6 +397,16 @@ export function detectFromUrl(rawUrl: string): DetectionResult {
       evidence,
       target: parsed ? { source: sig.source, ...parsed, confidence, discoveredVia: 'url' } : undefined,
     }
+  }
+
+  for (const sig of SIGNATURES) {
+    if (sig.hosts?.some((re) => re.test(u.host))) {
+      return decide(sig, true, Boolean(sig.paths?.some((re) => re.test(u.pathname))))
+    }
+  }
+
+  for (const sig of SIGNATURES) {
+    if (sig.paths?.some((re) => re.test(u.pathname))) return decide(sig, false, true)
   }
 
   if (isAggregatorUrl(rawUrl)) {

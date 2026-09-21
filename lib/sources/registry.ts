@@ -5,7 +5,9 @@ import {
   OracleAdapter, RadancyAdapter,
   WorkableAdapter, MokaHrAdapter, KekaAdapter,
 } from './adapters/ats'
+import { SuccessFactorsAdapter } from './adapters/successfactors'
 import { CustomSiteAdapter } from './adapters/custom'
+import { MicrosoftCareersAdapter } from './adapters/microsoft'
 import { EightfoldAdapter, AmazonAdapter, OracleRecruitingAdapter } from './adapters/enterprise'
 import { detectFromUrl } from './detector'
 
@@ -30,7 +32,7 @@ const ADAPTERS: JobSource[] = [
   new PersonioAdapter(),
   new WorkableAdapter(),
   new MokaHrAdapter(),
-  new KekaAdapter(),
+  new SuccessFactorsAdapter(),
   new KekaAdapter(),
   new EightfoldAdapter(),
   new CustomSiteAdapter(),
@@ -40,6 +42,10 @@ const BY_ID = new Map<SourceId, JobSource>(ADAPTERS.map((a) => [a.id, a]))
 
 const AMAZON = new AmazonAdapter()
 const ORACLE_RECRUITING = new OracleRecruitingAdapter()
+const MICROSOFT = new MicrosoftCareersAdapter()
+
+/** Hosts Microsoft serves its careers site from, including the retired one. */
+const MICROSOFT_HOST = /(^|\.)(apply|jobs)\.careers\.microsoft\.com$|^careers\.microsoft\.com$/i
 
 /**
  * Amazon's portal is bespoke, so it shares the `custom` SourceId rather than
@@ -47,6 +53,20 @@ const ORACLE_RECRUITING = new OracleRecruitingAdapter()
  */
 export function getAdapter(id: SourceId, token?: string, host?: string): JobSource | null {
   if (id === 'custom' && token === 'amazon') return AMAZON
+
+  // Microsoft rides the `custom` id for the same reason Amazon does.
+  //
+  // It ALSO intercepts the `eightfold` id, which is not defensive padding:
+  // Microsoft genuinely runs Eightfold, so `{ provider: 'eightfold', token:
+  // 'microsoft' }` is the registration a reasonable person writes. That
+  // registration reaches an endpoint Microsoft answers with
+  // `403 Not authorized for PCSX`, and the Eightfold adapter would return
+  // zero jobs and no error -- the silent-empty-board failure this codebase
+  // has already hit with `successfactors` and with Dell. Route both ids to
+  // the adapter that can actually read this board.
+  if (token === 'microsoft' && (id === 'custom' || id === 'eightfold')) return MICROSOFT
+  if (host && MICROSOFT_HOST.test(host)) return MICROSOFT
+
   // Oracle Recruiting Cloud rides the `custom` id. Route on EITHER the vendor
   // host or the site-number token shape.
   //
@@ -75,7 +95,12 @@ export function adapterIds(): SourceId[] {
 export function adapterForUrl(url: string): { adapter: JobSource; target: SourceTarget } | null {
   const detected = detectFromUrl(url)
   if (detected.source === 'unknown' || !detected.target) return null
-  const adapter = BY_ID.get(detected.source)
+  // Route through getAdapter rather than BY_ID so the token/host rules apply.
+  // BY_ID alone maps every `custom` URL to CustomSiteAdapter, which sent
+  // Microsoft (and Amazon, and every Oracle Recruiting tenant) to a generic
+  // HTML scraper instead of the adapter that knows their board -- silently,
+  // because the generic adapter returns an empty result rather than an error.
+  const adapter = getAdapter(detected.source, detected.target.token, detected.target.host)
   if (!adapter) return null
   return { adapter, target: detected.target }
 }
