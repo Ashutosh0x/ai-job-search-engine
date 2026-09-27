@@ -2,7 +2,7 @@
 
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { ProfileAnalysis } from '@/lib/linkedin/types'
+import { ProfileAnalysis, SalaryEstimate } from '@/lib/linkedin/types'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Button } from '@/components/ui/button'
@@ -10,12 +10,28 @@ import { Loader2, AlertCircle, RefreshCw, CheckCircle2, TrendingUp, Target } fro
 
 interface AIAnalysisPanelProps {
   analysis: ProfileAnalysis | null
+  /**
+   * Now a separate analysis, not a field on `analysis`.
+   *
+   * Salary used to live inside `ProfileAnalysis` as a single min/max/currency
+   * object, which meant one model call had to produce both a profile assessment
+   * and a compensation band, and a failure in either lost both. They are
+   * independent calls now, so the salary tab can be empty while the rest of the
+   * panel works — which is the common case when a profile states no location.
+   */
+  salaryEstimate: SalaryEstimate | null
   loading: boolean
   error: string | null
   onRetry: () => void
 }
 
-export function AIAnalysisPanel({ analysis, loading, error, onRetry }: AIAnalysisPanelProps) {
+export function AIAnalysisPanel({
+  analysis,
+  salaryEstimate,
+  loading,
+  error,
+  onRetry,
+}: AIAnalysisPanelProps) {
   if (loading) {
     return (
       <Card>
@@ -116,26 +132,82 @@ export function AIAnalysisPanel({ analysis, loading, error, onRetry }: AIAnalysi
 
           {/* Salary Tab */}
           <TabsContent value="salary" className="space-y-6 mt-0">
-            <div className="space-y-4">
-              <h4 className="font-semibold text-slate-900 dark:text-white">Estimated Salary Range</h4>
-              <div className="relative pt-2 pb-2">
-                <div className="h-4 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden flex">
-                  <div className="h-full bg-slate-200 dark:bg-slate-700" style={{ width: '15%' }} />
-                  <div className="h-full bg-gradient-to-r from-emerald-400 to-emerald-500" style={{ width: '70%' }} />
-                  <div className="h-full bg-slate-200 dark:bg-slate-700" style={{ width: '15%' }} />
-                </div>
-                <div className="flex justify-between text-sm font-medium mt-3">
-                  <span className="text-slate-500">{analysis.salaryEstimate?.currency || '$'}{analysis.salaryEstimate?.min?.toLocaleString()}</span>
-                  <span className="text-emerald-600 dark:text-emerald-400 font-bold">
-                    {analysis.salaryEstimate?.currency || '$'}{Math.round(((analysis.salaryEstimate?.min || 0) + (analysis.salaryEstimate?.max || 0)) / 2).toLocaleString()}
-                  </span>
-                  <span className="text-slate-500">{analysis.salaryEstimate?.currency || '$'}{analysis.salaryEstimate?.max?.toLocaleString()}</span>
-                </div>
-              </div>
+            {/*
+              An absent estimate says so. It used to render `|| '$'` with an
+              undefined amount beside it — an empty currency symbol that reads as
+              a real answer whose number failed to load. A salary band is the most
+              consequential number on this page; it must never be implied.
+            */}
+            {!salaryEstimate?.ranges?.length ? (
               <p className="text-sm text-slate-500 dark:text-slate-400">
-                Confidence: <Badge variant="outline" className="ml-1">{analysis.salaryEstimate?.confidence || 'Medium'}</Badge>
+                No compensation estimate for this profile. LinkedIn profiles without a stated
+                location or dates do not carry enough signal to estimate a range.
               </p>
-            </div>
+            ) : (
+              <div className="space-y-6">
+                {salaryEstimate.ranges.map((range, i) => {
+                  const mid =
+                    typeof range.median === 'number'
+                      ? range.median
+                      : Math.round((range.min + range.max) / 2)
+                  const money = (n: number) =>
+                    `${range.currency} ${Math.round(n).toLocaleString()}`
+                  return (
+                    <div key={`${range.currency}-${i}`} className="space-y-3">
+                      <h4 className="font-semibold text-slate-900 dark:text-white">
+                        Estimated range {i > 0 && <span className="text-slate-400">(secondary)</span>}
+                      </h4>
+                      <div className="relative pt-2 pb-2">
+                        <div className="h-4 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden flex">
+                          <div className="h-full bg-slate-200 dark:bg-slate-700" style={{ width: '15%' }} />
+                          <div className="h-full bg-gradient-to-r from-emerald-400 to-emerald-500" style={{ width: '70%' }} />
+                          <div className="h-full bg-slate-200 dark:bg-slate-700" style={{ width: '15%' }} />
+                        </div>
+                        <div className="flex justify-between text-sm font-medium mt-3">
+                          <span className="text-slate-500">{money(range.min)}</span>
+                          <span className="text-emerald-600 dark:text-emerald-400 font-bold">
+                            {money(mid)}
+                          </span>
+                          <span className="text-slate-500">{money(range.max)}</span>
+                        </div>
+                      </div>
+                      {range.source && (
+                        <p className="text-xs text-slate-400 dark:text-slate-500">
+                          Basis: {range.source}
+                        </p>
+                      )}
+                    </div>
+                  )
+                })}
+
+                <p className="text-sm text-slate-500 dark:text-slate-400">
+                  Confidence:{' '}
+                  <Badge variant="outline" className="ml-1">
+                    {salaryEstimate.confidence}
+                  </Badge>
+                  <span className="ml-2">Modelled estimate, not an offer or market survey.</span>
+                </p>
+
+                {salaryEstimate.factors.length > 0 && (
+                  <div>
+                    <h4 className="text-sm font-semibold mb-2 text-slate-900 dark:text-white">
+                      What drives this estimate
+                    </h4>
+                    <ul className="space-y-1">
+                      {salaryEstimate.factors.map((factor, i) => (
+                        <li
+                          key={i}
+                          className="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400"
+                        >
+                          <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                          <span>{factor}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
           </TabsContent>
 
           {/* Career Path Tab */}
@@ -144,19 +216,19 @@ export function AIAnalysisPanel({ analysis, loading, error, onRetry }: AIAnalysi
               <div className="flex justify-between items-center bg-slate-50 dark:bg-slate-900 p-4 rounded-lg">
                 <div>
                   <div className="text-xs text-slate-500 uppercase font-semibold mb-1">Current Level</div>
-                  <div className="font-medium text-slate-900 dark:text-white">{analysis.careerTrajectory?.currentLevel || 'Professional'}</div>
+                  <div className="font-medium text-slate-900 dark:text-white">{analysis.careerTrajectory?.currentLevel || 'Not stated'}</div>
                 </div>
                 <TrendingUp className="w-6 h-6 text-slate-300 dark:text-slate-600" />
                 <div className="text-right">
-                  <div className="text-xs text-slate-500 uppercase font-semibold mb-1">Next Role ({analysis.careerTrajectory?.timeframe || '1-2 yrs'})</div>
-                  <div className="font-medium text-indigo-600 dark:text-indigo-400">{analysis.careerTrajectory?.nextRole || 'Senior Role'}</div>
+                  <div className="text-xs text-slate-500 uppercase font-semibold mb-1">Next Role ({analysis.careerTrajectory?.timeframe || 'timeframe not stated'})</div>
+                  <div className="font-medium text-indigo-600 dark:text-indigo-400">{analysis.careerTrajectory?.nextRole || 'Not stated'}</div>
                 </div>
               </div>
 
               <div>
                 <h4 className="text-sm font-semibold mb-3 text-slate-900 dark:text-white">Skills to Develop</h4>
                 <ul className="space-y-2">
-                  {analysis.careerTrajectory?.skills_to_develop?.map((skill, i) => (
+                  {analysis.careerTrajectory?.skillsToDevelop?.map((skill: string, i: number) => (
                     <li key={i} className="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400">
                       <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0" />
                       <span>{skill}</span>

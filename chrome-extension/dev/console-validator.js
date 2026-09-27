@@ -120,12 +120,127 @@
     );
   }
 
+  /**
+   * Collapse whitespace and trim.
+   *
+   * `innerText` on LinkedIn's markup returns long runs of newlines and
+   * non-breaking spaces. Left alone they reach the analyzer's prompt as wasted
+   * tokens and make the fenced data block harder to read.
+   */
+  function cleanText(value, maxLength) {
+    if (typeof value !== 'string') return '';
+    const collapsed = value.replace(/ /g, ' ').replace(/\s+/g, ' ').trim();
+    return typeof maxLength === 'number' ? collapsed.slice(0, maxLength) : collapsed;
+  }
+
+  /**
+   * First matching element's text, across a list of candidate selectors.
+   *
+   * The parser was a chain of `document.querySelector('.a')?.innerText.trim() ||
+   * document.querySelector('.b')?.innerText.trim() || ''` — which reads as
+   * tolerant and is not: `?.innerText.trim()` throws when `innerText` is
+   * undefined, which happens for SVG and some custom elements. One such element
+   * matching an early selector took down the whole parse and returned null for
+   * the entire profile.
+   *
+   * LinkedIn's utility class names churn, so taking a list and using the first
+   * that yields text is what survives a layout change rather than a selector
+   * that happens to be right today.
+   */
+  function textFrom(root, selectors, maxLength) {
+    if (!root || typeof root.querySelector !== 'function') return '';
+    const list = Array.isArray(selectors) ? selectors : [selectors];
+    for (const selector of list) {
+      let el = null;
+      try {
+        el = root.querySelector(selector);
+      } catch (_) {
+        continue; // an invalid selector must not end the parse
+      }
+      if (!el) continue;
+      const raw = typeof el.innerText === 'string' ? el.innerText : el.textContent;
+      const text = cleanText(raw, maxLength);
+      if (text) return text;
+    }
+    return '';
+  }
+
+  /** `querySelectorAll` as a real array, never throwing on a bad selector. */
+  function allFrom(root, selectors) {
+    if (!root || typeof root.querySelectorAll !== 'function') return [];
+    const list = Array.isArray(selectors) ? selectors : [selectors];
+    for (const selector of list) {
+      try {
+        const found = root.querySelectorAll(selector);
+        if (found && found.length) return Array.from(found);
+      } catch (_) {
+        continue;
+      }
+    }
+    return [];
+  }
+
+  /**
+   * An https image URL, or ''.
+   *
+   * These are read straight off the page and end up in an `img src` and a
+   * database row. A `data:` or `javascript:` value has no business in either.
+   */
+  function imageUrl(el) {
+    if (!el || typeof el.src !== 'string') return '';
+    try {
+      const parsed = new URL(el.src, 'https://www.linkedin.com');
+      return parsed.protocol === 'https:' ? parsed.toString() : '';
+    } catch (_) {
+      return '';
+    }
+  }
+
+  /**
+   * Drop duplicate roles.
+   *
+   * LinkedIn renders grouped positions (several roles at one employer) inside the
+   * same list item as the ungrouped layout uses, so the old parser pushed both
+   * the group's child roles AND a parent entry, and a promotion history appeared
+   * twice. Keyed on title+company+dates rather than object identity, because the
+   * duplicates are separate objects with equal content.
+   */
+  function dedupeEntries(entries, keyFields) {
+    const seen = new Set();
+    const out = [];
+    for (const entry of entries) {
+      if (!entry) continue;
+      const key = keyFields
+        .map((f) => cleanText(String(entry[f] || '')).toLowerCase())
+        .join('|');
+      if (key === keyFields.map(() => '').join('|')) continue; // entirely empty
+      if (seen.has(key)) continue;
+      seen.add(key);
+      out.push(entry);
+    }
+    return out;
+  }
+
+  /** Split "Jan 2020 - Present · 2 yrs" into its range and duration halves. */
+  function splitDateCaption(caption) {
+    const text = cleanText(caption);
+    if (!text) return { dateRange: '', duration: '' };
+    const parts = text.split('·').map((p) => cleanText(p));
+    return { dateRange: parts[0] || '', duration: parts[1] || '' };
+  }
+
   const helpers = {
     splitName,
     companyFromHeadline,
     normaliseProfileUrl,
     parseConnectionCount,
     isDiscoverable,
+    cleanText,
+    textFrom,
+    allFrom,
+    imageUrl,
+    dedupeEntries,
+    splitDateCaption,
   };
 
   root.AIJobSearchParseHelpers = helpers;
@@ -137,228 +252,502 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this);
 
 (function () {
-  let isParsing = false;
+  'use strict';
 
-  function parseFullProfile() {
-    console.log("Parsing full LinkedIn profile...");
-    try {
-      const profile = {
-        name: document.querySelector('h1.text-heading-xlarge')?.innerText.trim() || document.querySelector('h1')?.innerText.trim() || '',
-        headline: document.querySelector('.text-body-medium')?.innerText.trim() || '',
-        location: document.querySelector('.text-body-small.inline.t-black--light.break-words')?.innerText.trim() || '',
-        profileUrl: window.location.href,
-        photo: document.querySelector('img.pv-top-card-profile-picture__image')?.src || '',
-        about: '',
-        experience: [],
-        education: [],
-        skills: [],
-        certifications: [],
-        connections: '',
-        languages: [],
-        recommendationsCount: ''
-      };
+  /**
+   * Read the LinkedIn profile the user currently has open.
+   *
+   * ONLY THE PAGE IN FRONT OF THEM. This walks the rendered DOM of a profile the
+   * user navigated to and is looking at. It does not call LinkedIn's API, does
+   * not patch `fetch`, and does not touch data about anyone the user is not
+   * viewing — an earlier version of this extension intercepted the private
+   * Voyager API, including `relationships/connections`, and that has been removed.
+   *
+   * THE OUTPUT SHAPE IS A CONTRACT. The web app validates every field against
+   * `profileSchema` in lib/linkedin/types.ts and drops the payload if it does not
+   * match. Field names here must stay in step with that schema: this file used to
+   * emit `photo`, `connections`, `recommendationsCount` and a plain string array
+   * for skills, none of which the schema names, so those values were silently
+   * discarded on arrival and the panel rendered without them.
+   *
+   * ROBUSTNESS OVER PRECISION. LinkedIn's utility class names change without
+   * notice. Every lookup goes through `textFrom`/`allFrom` with a list of
+   * candidate selectors and tolerates all of them missing, because a profile with
+   * three sections read is useful and a thrown exception is not. The previous
+   * version wrapped the whole parse in one try/catch, so a single unexpected
+   * element returned `null` for the entire profile.
+   */
 
-      // Connections
-      const connectionsLink = document.querySelector('a[href*="/connections"]');
-      if (connectionsLink) {
-        profile.connections = connectionsLink.innerText.trim();
-      } else {
-        const followers = Array.from(document.querySelectorAll('span')).find(el => el.innerText.toLowerCase().includes('followers') || el.innerText.toLowerCase().includes('connections'));
-        if (followers) profile.connections = followers.innerText.trim();
+  var H = (typeof globalThis !== 'undefined' ? globalThis : window).AIJobSearchParseHelpers;
+  if (!H) {
+    // parse-helpers.js is listed before this file in the manifest and shares the
+    // isolated-world global. If it is missing, every helper call below would
+    // throw on each profile view; failing loudly once is more useful.
+    console.error('[ai-job-search] parse-helpers.js did not load; parser disabled');
+    return;
+  }
+
+  /** Matches lib/linkedin/types.ts `schemaVersion`. Bump both together. */
+  var SCHEMA_VERSION = 2;
+
+  /** Mirrors LIMITS in the schema, so truncation happens before the wire. */
+  var MAX = { short: 300, medium: 1000, long: 5000 };
+
+  /* ------------------------------------------------------------- selectors -- */
+
+  /**
+   * Candidate selectors, most specific first.
+   *
+   * Named constants rather than inline strings so a layout change is one edit in
+   * one place, and so the fallbacks are visible as a group.
+   */
+  var SEL = {
+    name: ['h1.text-heading-xlarge', 'main h1', 'h1'],
+    headline: ['div.text-body-medium.break-words', '.text-body-medium'],
+    location: [
+      'span.text-body-small.inline.t-black--light.break-words',
+      '.text-body-small.inline.t-black--light.break-words',
+    ],
+    pronouns: ['span.text-body-small.v-align-middle.break-words.t-black--light'],
+    photo: [
+      'img.pv-top-card-profile-picture__image',
+      'img.pv-top-card-profile-picture__image--show',
+      'main img.presence-entity__image',
+    ],
+    banner: ['.profile-background-image__image', '.pv-top-card-profile-background__image'],
+    about: ['.inline-show-more-text', '.pv-shared-text-with-see-more', 'div[class*="display-flex"] span[aria-hidden="true"]'],
+    listItems: ['ul.pvs-list > li.artdeco-list__item', 'ul.pvs-list > li', 'li.artdeco-list__item'],
+    entityTitle: [
+      '.mr1.t-bold > span[aria-hidden="true"]',
+      '.display-flex.align-items-center.t-14.t-bold > span[aria-hidden="true"]',
+      'span.t-bold > span[aria-hidden="true"]',
+      'span[aria-hidden="true"]',
+    ],
+    entitySubtitle: [
+      '.t-14.t-normal.t-black > span[aria-hidden="true"]',
+      'span.t-14.t-normal > span[aria-hidden="true"]',
+    ],
+    caption: ['.pvs-entity__caption-wrapper', 'span.t-14.t-normal.t-black--light > span[aria-hidden="true"]'],
+    entityLocation: ['.t-14.t-normal.t-black--light:not(.pvs-entity__caption-wrapper) > span[aria-hidden="true"]'],
+    description: ['.pvs-list__outer-container .inline-show-more-text', '.inline-show-more-text'],
+    sectionTitle: ['h2.pvs-header__title', 'h2 span[aria-hidden="true"]', 'h2'],
+    groupedMarker: ['.pvs-entity--with-path'],
+    groupedRoles: ['ul.pvs-list > li'],
+  };
+
+  /* --------------------------------------------------------------- sections -- */
+
+  /**
+   * Which profile section an element is.
+   *
+   * Matches on the section id AND its heading text, because LinkedIn uses both
+   * and localised profiles have translated headings while ids stay English.
+   */
+  function sectionKind(section) {
+    var id = (section.id || '').toLowerCase();
+    var heading = H.textFrom(section, SEL.sectionTitle, 80).toLowerCase();
+    var haystack = id + ' ' + heading;
+
+    if (/\babout\b/.test(haystack)) return 'about';
+    if (/experience/.test(haystack)) return 'experience';
+    if (/education/.test(haystack)) return 'education';
+    if (/licens|certificat/.test(haystack)) return 'certifications';
+    if (/\bskills\b/.test(haystack)) return 'skills';
+    if (/languages/.test(haystack)) return 'languages';
+    if (/recommendation/.test(haystack)) return 'recommendations';
+    if (/volunteer/.test(haystack)) return 'volunteering';
+    if (/honor|award/.test(haystack)) return 'honors';
+    if (/activity|posts/.test(haystack)) return 'activity';
+    return null;
+  }
+
+  /** One experience entry from a list item. */
+  function readRole(item, fallbackCompany, logo) {
+    var caption = H.splitDateCaption(H.textFrom(item, SEL.caption, MAX.short));
+    var role = {
+      title: H.textFrom(item, SEL.entityTitle, MAX.short),
+      company: fallbackCompany || '',
+      location: H.textFrom(item, SEL.entityLocation, MAX.short) || undefined,
+      dateRange: caption.dateRange || undefined,
+      duration: caption.duration || undefined,
+      description: H.textFrom(item, SEL.description, MAX.long) || undefined,
+      companyLogo: logo || undefined,
+    };
+
+    if (!role.company) {
+      // The subtitle is "Company · Full-time"; only the first part is the employer.
+      var subtitle = H.textFrom(item, SEL.entitySubtitle, MAX.short);
+      role.company = subtitle ? H.cleanText(subtitle.split('·')[0], MAX.short) : '';
+    }
+
+    if (role.dateRange && /present|current/i.test(role.dateRange)) role.isCurrent = true;
+    return role;
+  }
+
+  /** Experience, handling both the flat and the grouped-by-employer layouts. */
+  function readExperience(section) {
+    var entries = [];
+
+    H.allFrom(section, SEL.listItems).forEach(function (item) {
+      var logo = H.imageUrl(item.querySelector('img'));
+      var grouped = H.allFrom(item, SEL.groupedMarker).length > 0;
+
+      if (grouped) {
+        // Several roles at one employer. The company name sits on the parent and
+        // each child <li> is a role.
+        var company = H.textFrom(item, SEL.entitySubtitle, MAX.short) ||
+          H.textFrom(item, SEL.entityTitle, MAX.short);
+        var roles = H.allFrom(item, SEL.groupedRoles);
+        roles.forEach(function (roleItem) {
+          var role = readRole(roleItem, company, logo);
+          if (role.title) entries.push(role);
+        });
+        // The parent itself is NOT pushed. Doing so was the duplication bug: a
+        // promotion history rendered twice, once as the group and once as a
+        // headless parent entry carrying the company but no title.
+        return;
       }
 
-      // Sections
-      const sections = document.querySelectorAll('section');
-      sections.forEach(section => {
-        const id = section.id || '';
-        const titleEl = section.querySelector('h2.pvs-header__title');
-        const title = titleEl ? titleEl.innerText.trim().toLowerCase() : '';
+      var single = readRole(item, '', logo);
+      if (single.title || single.company) entries.push(single);
+    });
 
-        // About
-        if (id.includes('about') || title.includes('about')) {
-          const aboutEl = section.querySelector('.inline-show-more-text') || section.querySelector('.pv-shared-text-with-see-more');
-          if (aboutEl) profile.about = aboutEl.innerText.trim();
+    // Belt and braces: the two layouts can co-occur on one profile mid-rollout.
+    entries = H.dedupeEntries(entries, ['title', 'company', 'dateRange']);
+
+    // Mark the first entry current only if nothing said so explicitly. LinkedIn
+    // orders most-recent-first, but a profile whose top role ended is not current.
+    if (entries.length && !entries.some(function (e) { return e.isCurrent; })) {
+      var first = entries[0];
+      if (!first.dateRange || /present|current/i.test(first.dateRange)) first.isCurrent = true;
+    }
+    return entries;
+  }
+
+  function readEducation(section) {
+    var entries = H.allFrom(section, SEL.listItems).map(function (item) {
+      var subtitle = H.textFrom(item, SEL.entitySubtitle, MAX.short);
+      var degree = '';
+      var fieldOfStudy = '';
+      if (subtitle) {
+        var parts = subtitle.split(',');
+        degree = H.cleanText(parts[0], MAX.short);
+        if (parts.length > 1) fieldOfStudy = H.cleanText(parts.slice(1).join(','), MAX.short);
+      }
+      return {
+        school: H.textFrom(item, SEL.entityTitle, MAX.short),
+        degree: degree || undefined,
+        fieldOfStudy: fieldOfStudy || undefined,
+        dateRange: H.textFrom(item, SEL.caption, MAX.short) || undefined,
+        logo: H.imageUrl(item.querySelector('img')) || undefined,
+      };
+    }).filter(function (e) { return e.school; });
+
+    return H.dedupeEntries(entries, ['school', 'degree', 'dateRange']);
+  }
+
+  /**
+   * Skills, as objects.
+   *
+   * The schema expects `{ name, endorsements? }`. This used to push bare strings,
+   * which failed validation and lost the whole array.
+   */
+  function readSkills(section) {
+    var entries = H.allFrom(section, SEL.listItems).map(function (item) {
+      var name = H.textFrom(item, SEL.entityTitle, MAX.short);
+      if (!name) return null;
+      // "12 endorsements" appears in a subtitle when present.
+      var subtitle = H.textFrom(item, SEL.entitySubtitle, 120);
+      var count = subtitle ? subtitle.match(/(\d[\d,]*)\s+endorsement/i) : null;
+      var skill = { name: name };
+      if (count) {
+        var n = Number(count[1].replace(/,/g, ''));
+        if (Number.isFinite(n)) skill.endorsements = n;
+      }
+      return skill;
+    }).filter(Boolean);
+
+    return H.dedupeEntries(entries, ['name']);
+  }
+
+  function readCertifications(section) {
+    var entries = H.allFrom(section, SEL.listItems).map(function (item) {
+      return {
+        name: H.textFrom(item, SEL.entityTitle, MAX.short),
+        issuer: H.textFrom(item, SEL.entitySubtitle, MAX.short) || undefined,
+        dateIssued: H.textFrom(item, SEL.caption, MAX.short) || undefined,
+      };
+    }).filter(function (c) { return c.name; });
+
+    return H.dedupeEntries(entries, ['name', 'issuer']);
+  }
+
+  function readSimpleList(section) {
+    var seen = [];
+    H.allFrom(section, SEL.listItems).forEach(function (item) {
+      var value = H.textFrom(item, SEL.entityTitle, MAX.short);
+      if (value && seen.indexOf(value) === -1) seen.push(value);
+    });
+    return seen;
+  }
+
+  function readVolunteering(section) {
+    var entries = H.allFrom(section, SEL.listItems).map(function (item) {
+      return {
+        role: H.textFrom(item, SEL.entityTitle, MAX.short),
+        organization: H.textFrom(item, SEL.entitySubtitle, MAX.short) || undefined,
+        dateRange: H.textFrom(item, SEL.caption, MAX.short) || undefined,
+      };
+    }).filter(function (v) { return v.role; });
+    return H.dedupeEntries(entries, ['role', 'organization']);
+  }
+
+  function readHonors(section) {
+    var entries = H.allFrom(section, SEL.listItems).map(function (item) {
+      return {
+        title: H.textFrom(item, SEL.entityTitle, MAX.short),
+        issuer: H.textFrom(item, SEL.entitySubtitle, MAX.short) || undefined,
+        date: H.textFrom(item, SEL.caption, MAX.short) || undefined,
+      };
+    }).filter(function (h) { return h.title; });
+    return H.dedupeEntries(entries, ['title', 'issuer']);
+  }
+
+  function readPosts(section) {
+    var entries = [];
+    H.allFrom(section, SEL.listItems).slice(0, 5).forEach(function (item) {
+      var text = H.textFrom(item, ['.break-words.tvm-parent-container', 'span[dir="ltr"]'], MAX.medium);
+      if (text) entries.push({ text: text });
+    });
+    return H.dedupeEntries(entries, ['text']);
+  }
+
+  /* ----------------------------------------------------------------- parse -- */
+
+  /**
+   * Build the profile payload.
+   *
+   * Each section is read inside its own try/catch. One section throwing costs
+   * that section, not the profile — which is the difference between a partial
+   * result the user can work with and a null.
+   */
+  function parseProfile() {
+    var profile = {
+      name: H.textFrom(document, SEL.name, MAX.short),
+      headline: H.textFrom(document, SEL.headline, MAX.medium) || undefined,
+      location: H.textFrom(document, SEL.location, MAX.short) || undefined,
+      pronouns: H.textFrom(document, SEL.pronouns, MAX.short) || undefined,
+      photoUrl: H.imageUrl(document.querySelector(SEL.photo.join(','))) || undefined,
+      bannerUrl: H.imageUrl(document.querySelector(SEL.banner.join(','))) || undefined,
+      profileUrl: H.normaliseProfileUrl(window.location.href, window.location.origin) || undefined,
+      about: undefined,
+      experience: [],
+      education: [],
+      skills: [],
+      certifications: [],
+      languages: [],
+      recentPosts: [],
+      volunteerExperience: [],
+      honorsAwards: [],
+      parsedAt: new Date().toISOString(),
+      source: 'dom',
+      schemaVersion: SCHEMA_VERSION,
+    };
+
+    // Connection count as a NUMBER, matching the schema. The parser used to send
+    // the raw label ("500+ connections") under a key the schema does not have.
+    var connectionLabel = '';
+    var link = document.querySelector('a[href*="/connections"]');
+    if (link) {
+      connectionLabel = H.cleanText(link.innerText, 80);
+    } else {
+      var spans = H.allFrom(document, ['main span', 'span']);
+      for (var i = 0; i < spans.length && i < 400; i++) {
+        var t = H.cleanText(spans[i].innerText, 80).toLowerCase();
+        if (t.indexOf('connection') !== -1 || t.indexOf('follower') !== -1) {
+          connectionLabel = t;
+          break;
         }
+      }
+    }
+    var parsedCount = H.parseConnectionCount(connectionLabel);
+    if (typeof parsedCount === 'number' && parsedCount >= 0) profile.connectionCount = parsedCount;
 
-        // Experience
-        if (id.includes('experience') || title.includes('experience')) {
-          const items = section.querySelectorAll('ul.pvs-list > li.artdeco-list__item');
-          items.forEach(item => {
-            const exp = {
-              title: '', company: '', location: '', dateRange: '', duration: '', description: '', companyLogo: ''
-            };
-            
-            const logo = item.querySelector('img');
-            if (logo) exp.companyLogo = logo.src;
-
-            // Check if grouped
-            const isGrouped = item.querySelector('.pvs-entity--with-path');
-            if (isGrouped) {
-              const companyNameEl = item.querySelector('.display-flex.align-items-center.t-14.t-normal.t-black--light > span[aria-hidden="true"]');
-              if (companyNameEl) {
-                exp.company = companyNameEl.innerText.trim();
-              } else {
-                exp.company = item.querySelector('div.display-flex.align-items-center.t-14.t-normal.t-black > span[aria-hidden="true"]')?.innerText.trim() || '';
-              }
-              // Grouped roles can be processed further if needed
-            } else {
-              const titleEl = item.querySelector('.display-flex.align-items-center.t-14.t-bold > span[aria-hidden="true"]') || item.querySelector('.mr1.t-bold > span[aria-hidden="true"]');
-              if (titleEl) exp.title = titleEl.innerText.trim();
-
-              const subtitleEl = item.querySelector('.display-flex.align-items-center.t-14.t-normal.t-black > span[aria-hidden="true"]') || item.querySelector('.t-14.t-normal.t-black > span[aria-hidden="true"]');
-              if (subtitleEl) exp.company = subtitleEl.innerText.trim().split('·')[0].trim();
-
-              const dateEl = item.querySelector('.pvs-entity__caption-wrapper');
-              if (dateEl) {
-                const dateText = dateEl.innerText.trim();
-                exp.dateRange = dateText.split('·')[0]?.trim() || '';
-                exp.duration = dateText.split('·')[1]?.trim() || '';
-              }
-              
-              const locationEl = item.querySelector('.t-14.t-normal.t-black--light:not(.pvs-entity__caption-wrapper) > span[aria-hidden="true"]');
-              if (locationEl) exp.location = locationEl.innerText.trim();
-              
-              const descEl = item.querySelector('.pvs-list__outer-container .inline-show-more-text');
-              if (descEl) exp.description = descEl.innerText.trim();
-            }
-            if (exp.title || exp.company) {
-               profile.experience.push(exp);
-            }
-          });
+    H.allFrom(document, ['section']).forEach(function (section) {
+      var kind = sectionKind(section);
+      if (!kind) return;
+      try {
+        switch (kind) {
+          case 'about':
+            profile.about = H.textFrom(section, SEL.about, MAX.long) || undefined;
+            break;
+          case 'experience':
+            profile.experience = readExperience(section);
+            break;
+          case 'education':
+            profile.education = readEducation(section);
+            break;
+          case 'skills':
+            profile.skills = readSkills(section);
+            break;
+          case 'certifications':
+            profile.certifications = readCertifications(section);
+            break;
+          case 'languages':
+            profile.languages = readSimpleList(section);
+            break;
+          case 'recommendations': {
+            var count = H.allFrom(section, SEL.listItems).length;
+            if (count > 0) profile.recommendationCount = count;
+            break;
+          }
+          case 'volunteering':
+            profile.volunteerExperience = readVolunteering(section);
+            break;
+          case 'honors':
+            profile.honorsAwards = readHonors(section);
+            break;
+          case 'activity':
+            profile.recentPosts = readPosts(section);
+            break;
         }
+      } catch (err) {
+        // Named so a console report says which section, without a payload dump.
+        console.warn('[ai-job-search] could not read the ' + kind + ' section', err && err.message);
+      }
+    });
 
-        // Education
-        if (id.includes('education') || title.includes('education')) {
-          const items = section.querySelectorAll('ul.pvs-list > li.artdeco-list__item');
-          items.forEach(item => {
-            const edu = { school: '', degree: '', fieldOfStudy: '', dateRange: '', description: '' };
-            const schoolEl = item.querySelector('.mr1.t-bold > span[aria-hidden="true"]') || item.querySelector('.display-flex.align-items-center.t-14.t-bold > span[aria-hidden="true"]');
-            if (schoolEl) edu.school = schoolEl.innerText.trim();
+    return profile;
+  }
 
-            const degreeEl = item.querySelector('.t-14.t-normal.t-black > span[aria-hidden="true"]');
-            if (degreeEl) {
-              const degreeText = degreeEl.innerText.trim();
-              const parts = degreeText.split(',');
-              edu.degree = parts[0]?.trim() || '';
-              if (parts.length > 1) edu.fieldOfStudy = parts.slice(1).join(',').trim();
-            }
-
-            const dateEl = item.querySelector('.pvs-entity__caption-wrapper');
-            if (dateEl) edu.dateRange = dateEl.innerText.trim();
-            
-            if (edu.school) profile.education.push(edu);
-          });
-        }
-
-        // Skills
-        if (id.includes('skills') || title.includes('skills')) {
-          const items = section.querySelectorAll('ul.pvs-list > li.artdeco-list__item');
-          items.forEach(item => {
-            const skillEl = item.querySelector('.mr1.t-bold > span[aria-hidden="true"]') || item.querySelector('.display-flex.align-items-center.t-14.t-bold > span[aria-hidden="true"]');
-            if (skillEl) profile.skills.push(skillEl.innerText.trim());
-          });
-        }
-
-        // Certifications
-        if (id.includes('certifications') || id.includes('licenses') || title.includes('certifications') || title.includes('licenses')) {
-          const items = section.querySelectorAll('ul.pvs-list > li.artdeco-list__item');
-          items.forEach(item => {
-            const cert = { name: '', issuer: '', dateIssued: '' };
-            const nameEl = item.querySelector('.mr1.t-bold > span[aria-hidden="true"]') || item.querySelector('.display-flex.align-items-center.t-14.t-bold > span[aria-hidden="true"]');
-            if (nameEl) cert.name = nameEl.innerText.trim();
-
-            const issuerEl = item.querySelector('.t-14.t-normal.t-black > span[aria-hidden="true"]');
-            if (issuerEl) cert.issuer = issuerEl.innerText.trim();
-
-            const dateEl = item.querySelector('.pvs-entity__caption-wrapper');
-            if (dateEl) cert.dateIssued = dateEl.innerText.trim();
-
-            if (cert.name) profile.certifications.push(cert);
-          });
-        }
-        
-        // Languages
-        if (id.includes('languages') || title.includes('languages')) {
-           const items = section.querySelectorAll('ul.pvs-list > li.artdeco-list__item');
-           items.forEach(item => {
-              const langEl = item.querySelector('.mr1.t-bold > span[aria-hidden="true"]') || item.querySelector('.display-flex.align-items-center.t-14.t-bold > span[aria-hidden="true"]');
-              if (langEl) profile.languages.push(langEl.innerText.trim());
-           });
-        }
-        
-        // Recommendations
-        if (id.includes('recommendations') || title.includes('recommendations')) {
-            const items = section.querySelectorAll('ul.pvs-list > li.artdeco-list__item');
-            if (items.length > 0) {
-              profile.recommendationsCount = items.length.toString();
-            }
-        }
-      });
-
-      chrome.runtime.sendMessage({ type: 'linkedin-profile-parsed', payload: profile });
-      return profile;
+  /** Parse and hand to the background worker. Returns the profile, or null. */
+  function parseAndSend() {
+    var profile;
+    try {
+      profile = parseProfile();
     } catch (err) {
-      console.error("Error parsing LinkedIn profile:", err);
+      console.warn('[ai-job-search] profile parse failed', err && err.message);
       return null;
     }
+
+    // A name is the floor. Without it there is nothing to identify the profile
+    // by, and the page's schema rejects the payload anyway — so failing here is
+    // clearer than sending something that will be discarded on arrival.
+    if (!profile.name) {
+      console.warn('[ai-job-search] no name found; the page may still be loading');
+      return null;
+    }
+
+    try {
+      chrome.runtime.sendMessage({ type: 'linkedin-profile-parsed', payload: profile }, function () {
+        // The service worker may be asleep. Reading lastError marks it handled;
+        // leaving it unread logs "Unchecked runtime.lastError" on every parse.
+        if (chrome.runtime.lastError) { /* nothing actionable here */ }
+      });
+    } catch (err) {
+      console.warn('[ai-job-search] could not reach the extension', err && err.message);
+    }
+    return profile;
   }
 
-  function parseProfile() {
-     return parseFullProfile();
-  }
+  /* ---------------------------------------------------------------- overlay -- */
 
+  /**
+   * The on-page button.
+   *
+   * Built with `createElement` and `textContent` rather than an `innerHTML`
+   * template. The old version interpolated `chrome.runtime.getURL(...)` into an
+   * HTML string, which is a habit that breaks the first time an interpolated
+   * value is page-derived — and this file's whole job is handling page-derived
+   * values.
+   */
   function injectOverlay() {
     if (document.getElementById('ai-job-search-overlay')) return;
-    const overlay = document.createElement('div');
-    overlay.id = 'ai-job-search-overlay';
-    overlay.className = 'ai-job-search-fab';
-    overlay.style.cssText = 'position: fixed; bottom: 24px; right: 24px; z-index: 999999;';
-    overlay.innerHTML = `
-      <div class="ai-job-search-fab-content" style="background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); padding: 12px; display: flex; align-items: center; cursor: pointer; border: 1px solid #e2e8f0;">
-        <button id="ai-job-search-btn" style="background: none; border: none; display: flex; align-items: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 600; color: #0f172a; cursor: pointer;">
-          <img src="${chrome.runtime.getURL('icons/icon48.png')}" alt="Logo" style="width:24px;height:24px;vertical-align:middle;margin-right:8px;border-radius:4px;">
-          Find Email
-        </button>
-      </div>
-    `;
-    document.body.appendChild(overlay);
+    if (!document.body) return;
 
-    document.getElementById('ai-job-search-btn').addEventListener('click', () => {
-       const profile = parseFullProfile();
-       if (profile) {
-         alert('Profile parsed! Details sent to extension. Name: ' + profile.name);
-       } else {
-         alert('Failed to parse profile.');
-       }
+    var host = document.createElement('div');
+    host.id = 'ai-job-search-overlay';
+    host.className = 'ai-job-search-fab';
+
+    var button = document.createElement('button');
+    button.id = 'ai-job-search-btn';
+    button.type = 'button';
+    button.setAttribute('aria-label', 'Send this profile to AI Job Search');
+
+    var icon = document.createElement('img');
+    icon.src = chrome.runtime.getURL('icons/icon48.png');
+    icon.alt = '';
+    icon.width = 24;
+    icon.height = 24;
+
+    var label = document.createElement('span');
+    label.textContent = 'Analyse profile';
+
+    button.appendChild(icon);
+    button.appendChild(label);
+    host.appendChild(button);
+
+    button.addEventListener('click', function () {
+      var profile = parseAndSend();
+      label.textContent = profile ? 'Sent ✓' : 'Could not read profile';
+      setTimeout(function () { label.textContent = 'Analyse profile'; }, 2500);
     });
+
+    document.body.appendChild(host);
   }
 
+  function removeOverlay() {
+    var existing = document.getElementById('ai-job-search-overlay');
+    if (existing) existing.remove();
+  }
+
+  /* -------------------------------------------------------------- lifecycle -- */
+
+  var PROFILE_PATH = /\/in\//;
+  var settleTimer = null;
+
+  /**
+   * React to a navigation.
+   *
+   * Debounced, and the timer is replaced rather than stacked. LinkedIn is a SPA
+   * whose mutation stream fires constantly; the previous version started a fresh
+   * unconditional 3-second `setTimeout` on every URL change, so a few quick
+   * navigations queued several parses that all ran against the last page.
+   */
   function handlePageChange() {
-    if (window.location.href.includes('/in/')) {
-      setTimeout(() => {
-        injectOverlay();
-        parseFullProfile();
-      }, 3000); // wait for DOM to settle
-    } else {
-      const overlay = document.getElementById('ai-job-search-overlay');
-      if (overlay) overlay.remove();
+    if (settleTimer) clearTimeout(settleTimer);
+
+    if (!PROFILE_PATH.test(window.location.pathname)) {
+      removeOverlay();
+      return;
     }
+
+    settleTimer = setTimeout(function () {
+      settleTimer = null;
+      injectOverlay();
+      parseAndSend();
+    }, 2000);
   }
 
-  // SPA Navigation observer
-  let lastUrl = location.href; 
-  new MutationObserver(() => {
-    const url = location.href;
-    if (url !== lastUrl) {
-      lastUrl = url;
+  var lastUrl = location.href;
+  var observer = new MutationObserver(function () {
+    if (location.href !== lastUrl) {
+      lastUrl = location.href;
       handlePageChange();
     }
-  }).observe(document, {subtree: true, childList: true});
+  });
 
-  if (document.readyState === 'complete') {
+  // `childList` on the body is enough to notice a SPA route change, and is far
+  // cheaper than `subtree` on the whole document — which fired this callback on
+  // every text node LinkedIn touched, thousands of times per page.
+  if (document.body) {
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
     handlePageChange();
   } else {
-    window.addEventListener('load', handlePageChange);
+    window.addEventListener('load', handlePageChange, { once: true });
   }
 })();
 

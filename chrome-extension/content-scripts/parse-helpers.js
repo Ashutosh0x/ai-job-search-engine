@@ -97,12 +97,127 @@
     );
   }
 
+  /**
+   * Collapse whitespace and trim.
+   *
+   * `innerText` on LinkedIn's markup returns long runs of newlines and
+   * non-breaking spaces. Left alone they reach the analyzer's prompt as wasted
+   * tokens and make the fenced data block harder to read.
+   */
+  function cleanText(value, maxLength) {
+    if (typeof value !== 'string') return '';
+    const collapsed = value.replace(/ /g, ' ').replace(/\s+/g, ' ').trim();
+    return typeof maxLength === 'number' ? collapsed.slice(0, maxLength) : collapsed;
+  }
+
+  /**
+   * First matching element's text, across a list of candidate selectors.
+   *
+   * The parser was a chain of `document.querySelector('.a')?.innerText.trim() ||
+   * document.querySelector('.b')?.innerText.trim() || ''` — which reads as
+   * tolerant and is not: `?.innerText.trim()` throws when `innerText` is
+   * undefined, which happens for SVG and some custom elements. One such element
+   * matching an early selector took down the whole parse and returned null for
+   * the entire profile.
+   *
+   * LinkedIn's utility class names churn, so taking a list and using the first
+   * that yields text is what survives a layout change rather than a selector
+   * that happens to be right today.
+   */
+  function textFrom(root, selectors, maxLength) {
+    if (!root || typeof root.querySelector !== 'function') return '';
+    const list = Array.isArray(selectors) ? selectors : [selectors];
+    for (const selector of list) {
+      let el = null;
+      try {
+        el = root.querySelector(selector);
+      } catch (_) {
+        continue; // an invalid selector must not end the parse
+      }
+      if (!el) continue;
+      const raw = typeof el.innerText === 'string' ? el.innerText : el.textContent;
+      const text = cleanText(raw, maxLength);
+      if (text) return text;
+    }
+    return '';
+  }
+
+  /** `querySelectorAll` as a real array, never throwing on a bad selector. */
+  function allFrom(root, selectors) {
+    if (!root || typeof root.querySelectorAll !== 'function') return [];
+    const list = Array.isArray(selectors) ? selectors : [selectors];
+    for (const selector of list) {
+      try {
+        const found = root.querySelectorAll(selector);
+        if (found && found.length) return Array.from(found);
+      } catch (_) {
+        continue;
+      }
+    }
+    return [];
+  }
+
+  /**
+   * An https image URL, or ''.
+   *
+   * These are read straight off the page and end up in an `img src` and a
+   * database row. A `data:` or `javascript:` value has no business in either.
+   */
+  function imageUrl(el) {
+    if (!el || typeof el.src !== 'string') return '';
+    try {
+      const parsed = new URL(el.src, 'https://www.linkedin.com');
+      return parsed.protocol === 'https:' ? parsed.toString() : '';
+    } catch (_) {
+      return '';
+    }
+  }
+
+  /**
+   * Drop duplicate roles.
+   *
+   * LinkedIn renders grouped positions (several roles at one employer) inside the
+   * same list item as the ungrouped layout uses, so the old parser pushed both
+   * the group's child roles AND a parent entry, and a promotion history appeared
+   * twice. Keyed on title+company+dates rather than object identity, because the
+   * duplicates are separate objects with equal content.
+   */
+  function dedupeEntries(entries, keyFields) {
+    const seen = new Set();
+    const out = [];
+    for (const entry of entries) {
+      if (!entry) continue;
+      const key = keyFields
+        .map((f) => cleanText(String(entry[f] || '')).toLowerCase())
+        .join('|');
+      if (key === keyFields.map(() => '').join('|')) continue; // entirely empty
+      if (seen.has(key)) continue;
+      seen.add(key);
+      out.push(entry);
+    }
+    return out;
+  }
+
+  /** Split "Jan 2020 - Present · 2 yrs" into its range and duration halves. */
+  function splitDateCaption(caption) {
+    const text = cleanText(caption);
+    if (!text) return { dateRange: '', duration: '' };
+    const parts = text.split('·').map((p) => cleanText(p));
+    return { dateRange: parts[0] || '', duration: parts[1] || '' };
+  }
+
   const helpers = {
     splitName,
     companyFromHeadline,
     normaliseProfileUrl,
     parseConnectionCount,
     isDiscoverable,
+    cleanText,
+    textFrom,
+    allFrom,
+    imageUrl,
+    dedupeEntries,
+    splitDateCaption,
   };
 
   root.AIJobSearchParseHelpers = helpers;

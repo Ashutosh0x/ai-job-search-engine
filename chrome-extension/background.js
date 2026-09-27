@@ -1,7 +1,7 @@
-// Background service worker — AI Job Search LinkedIn Insight Extension v2.0.0
+// Background service worker — AI Job Search LinkedIn Insight Extension v2.1.0
 
 chrome.runtime.onInstalled.addListener(() => {
-  console.log('LinkedIn Insight Extension installed (v2.0.0)');
+  console.log('LinkedIn Insight Extension installed (v2.1.0)');
 });
 
 // A Chrome match pattern with no port matches EVERY port on that host. The
@@ -27,8 +27,22 @@ function broadcastToWebApp(message) {
   });
 }
 
+/**
+ * Is this message from one of our own content scripts?
+ *
+ * `sender.id` is set by Chrome and cannot be forged by a page. Without this
+ * check, another extension that learned this one's id could drive these handlers
+ * -- and `discover-contacts` reaches out to the configured API with whatever
+ * profile it is handed.
+ */
+function isOwnContentScript(sender) {
+  return Boolean(sender && sender.id === chrome.runtime.id && sender.tab);
+}
+
 // --- Internal messages (from content scripts) ---
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (!isOwnContentScript(sender)) return false;
+  if (!message || typeof message.type !== 'string') return false;
   // Original discover-contacts handler (backward compat with popup)
   if (message.type === 'discover-contacts') {
     handleDiscoverContacts(message.payload)
@@ -86,10 +100,34 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     });
     return true;
   }
+
+  // The 'xhr-data-intercepted' and 'request-voyager-data' handlers were removed
+  // along with the XHR interceptor that fed them. Worth recording why, because
+  // the code looked functional: the loader sent `{ data, url, timestamp }` and
+  // this handler stored `message.payload`, a key that was never set. It had only
+  // ever stored `undefined`. So the feature carried the full cost of patching
+  // `fetch` and `XMLHttpRequest` on linkedin.com to read a private API --
+  // including `relationships/connections`, data about people the user was not
+  // looking at -- and delivered nothing at all.
+  //
+  // What replaced it is the parser reading the profile page the user has open.
+
+  if (message.type === 'set-profile-type') {
+    chrome.storage.session.set({ profileType: message.payload });
+    return false;
+  }
 });
 
 // --- External messages (from web app via externally_connectable) ---
 chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => {
+  // `externally_connectable` already restricts which origins may connect, but the
+  // manifest pattern `http://localhost/*` covers every port on the machine --
+  // including whatever else the developer happens to be running. Re-checking here
+  // keeps that surface to http(s) origins rather than, say, a file:// page.
+  if (!sender || typeof sender.origin !== 'string') return false;
+  if (!/^https?:\/\//.test(sender.origin)) return false;
+  if (!message || typeof message.type !== 'string') return false;
+
   if (message.type === 'get-linkedin-profile') {
     chrome.storage.session.get('latestLinkedInProfile', (data) => {
       sendResponse({ payload: data.latestLinkedInProfile || null });
@@ -98,7 +136,7 @@ chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => 
   }
 
   if (message.type === 'ping') {
-    sendResponse({ status: 'ok', version: '2.0.0' });
+    sendResponse({ status: 'ok', version: '2.1.0' });
     return false;
   }
 });

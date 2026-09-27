@@ -72,6 +72,7 @@ const SUITES = [
   'test-email-patterns.mjs',
   'test-contact-pipeline.mjs',
   'test-linkedin-parser.mjs',
+  'test-linkedin-pipeline.mjs',
   'test-careers-scraper.mjs',
   'test-merge.mjs',
   'test-hydration.mjs',

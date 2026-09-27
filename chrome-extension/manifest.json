@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
   "name": "AI Job Search - LinkedIn Insight",
-  "version": "2.0.0",
-  "description": "Extract LinkedIn profile insights and find recruiter contacts for your AI-powered job search",
-  "permissions": ["activeTab", "storage"],
+  "version": "2.1.0",
+  "description": "Analyse the LinkedIn profile you have open and find recruiter contacts for your job search",
+  "permissions": ["storage"],
   "host_permissions": ["https://*.linkedin.com/*"],
   "background": {
     "service_worker": "background.js"
