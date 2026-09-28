@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-27T11:54:16.993Z",
+  "generatedAt": "2026-09-28T13:29:06.623Z",
   "method": "Role addresses published on employers' own careers/contact pages; address patterns inferred from commit authors in a VERIFIED GitHub organisation; MX/SPF/DMARC checked at domain level. Named recruiters carry public source URLs and never carry an address.",
   "notCollected": [
     "addresses belonging to identifiable individuals",
@@ -8,8 +8,8 @@
   ],
   "summary": {
     "companies": 390,
-    "crawledThisRun": 387,
-    "carriedForward": 3,
+    "crawledThisRun": 3,
+    "carriedForward": 387,
     "skippedForBudget": 0,
     "neverCrawled": 0,
     "withPublishedContacts": 28,
@@ -6624,8 +6624,8 @@
         "hasMx": true,
         "mx": [
           "mx2.hc4518-41.iphmx.com",
-          "mx1.hc4518-41.iphmx.com",
-          "mx1.hc497-45.ca.iphmx.com"
+          "mx2.hc497-45.ca.iphmx.com",
+          "mx1.hc4518-41.iphmx.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -6639,7 +6639,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-09-21T12:30:20.735Z",
+      "crawledAt": "2026-09-28T13:29:01.564Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -6869,7 +6869,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-09-21T12:30:20.736Z",
+      "crawledAt": "2026-09-28T13:29:01.564Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -9681,18 +9681,18 @@
         "patterns": [
           {
             "pattern": "{f}{last}",
-            "share": 0.444,
-            "sampleSize": 4
-          },
-          {
-            "pattern": "{first}{last}",
-            "share": 0.333,
+            "share": 0.5,
             "sampleSize": 3
           },
           {
             "pattern": "{first}.{last}",
-            "share": 0.222,
+            "share": 0.333,
             "sampleSize": 2
+          },
+          {
+            "pattern": "{first}{last}",
+            "share": 0.167,
+            "sampleSize": 1
           }
         ],
         "observedFrom": "github-org-commits"
@@ -9724,7 +9724,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-09-21T12:30:20.736Z",
+      "crawledAt": "2026-09-28T13:29:01.564Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
