@@ -64,26 +64,29 @@ enforces it, because those routes hold the service-role key.
 
 ## Open issues
 
-Ordered by what I would fix first.
+Re-checked against the code on 2026-10-02 (AUDIT-2026.md §6). Resolved since
+the list was written: `ignoreBuildErrors` is now `false`; Next.js is 14.2.35;
+`middleware.ts` gates `/dashboard`, `/profile` and `/settings`; CI
+(`.github/workflows/ci.yml`) runs `tsc`, `npm test` and `next build`. Fixed on
+2026-10-02: recovery links returned by `/api/generate-magic-link` (account
+takeover) and SSRF through `/api/contacts/discover`.
 
-1. **`ignoreBuildErrors` and `ignoreDuringBuilds` are still on** in
-   `next.config.mjs`. They hid two critical bugs — the build failure and the
-   Stripe webhook crash — both of which TypeScript had already flagged. This is
-   the single highest-value change available. 51 errors remain, 29 in a vendored
-   sub-project the app does not use.
-2. **Next.js 14.2.16 (Oct 2024).** The 2026 releases fixed middleware/proxy
-   **auth bypass**, SSRF, cache poisoning, and an unauthenticated RCE on Windows
-   (CVE-2026-75604). This app has no middleware-based auth today, which limits
-   exposure, but the version gap is large.
-3. **No server-side route protection.** `middleware.ts` only proxies `/docs`.
-   `/dashboard`, `/profile` and `/settings` rely on client-side checks alone —
-   which protect the UI, not the data.
-4. **Rate limiting is per-process.** `lib/rate-limit.ts` uses an in-memory map,
-   so on serverless each instance has its own. It is a speed bump, not a
-   guarantee — and it is the control protecting password reset. Upstash Redis is
-   the fix.
-5. **No CI.** Nothing runs the tests, the typecheck or a dependency audit on
-   push.
+Still open, in the order I would fix them:
+
+1. **Rate limiting is per-process.** `lib/rate-limit.ts` uses an in-memory map,
+   so on serverless each instance has its own: 46/46 requests passed a 40/min
+   limit in production. It is the control protecting password reset, OTP and
+   contact discovery. A shared store (Upstash Redis or Postgres) is the fix.
+2. **Lint never runs.** There is no ESLint config (`next lint` stops at its
+   setup prompt) and `ignoreDuringBuilds: true` is set in `next.config.mjs`.
+3. **Next.js 14.x.** On the patched 14.2 line, but 14.x is behind current
+   majors; plan the upgrade.
+4. **DNS-rebinding race in contact discovery.** Every redirect hop's resolved
+   address is now checked (`fetchPublicFollowingRedirects`), but fetch
+   resolves again after the check, so a near-zero-TTL rebinding server can
+   still race it. Fix: pin the connection to the checked address.
+5. **Extension `externally_connectable` includes `http://localhost/*`** in the
+   shipped manifest.
 
 ## Reporting
 

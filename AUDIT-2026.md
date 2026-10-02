@@ -202,6 +202,124 @@ decision rather than making it unilaterally.
 7. **Add CI.** No test runner, no lint gate, no typecheck in the repo. The
    matching tests are a start (`node --experimental-strip-types scripts/test-job-matching.mjs`).
 
+## 6. Follow-up audit, 2 Oct 2026
+
+Scope: the 112 commits since this audit (`f3412f7..ab1f387`, ~39k lines), plus
+a fresh access-control pass over all 37 API routes (auth call, service-role
+use, rate limit, input schema). Index of the codebase:
+[docs/REPOSITORY_INDEX.md](docs/REPOSITORY_INDEX.md),
+[docs/CODEBASE_MAP.md](docs/CODEBASE_MAP.md). Backlog:
+[docs/IMPROVEMENT_BACKLOG.md](docs/IMPROVEMENT_BACKLOG.md).
+
+### 6.1 Critical: `/api/generate-magic-link` handed out account-takeover links (FIXED)
+
+`app/api/generate-magic-link/route.ts` called
+`supabase.auth.admin.generateLink({ type: 'recovery', email })` with the
+service-role key for **any email in the request body** and returned
+`{ link: action_link }`; `components/auth-form.tsx` rendered it as a clickable
+"reset your password" link. A recovery link signs its holder in as that user.
+The only gates were Cloudflare Turnstile (any human passes) and per-email/IP
+in-memory limits, so typing a victim's address was enough to take over the
+account. Present since the pre-audit baseline (`fcaa23c`).
+
+Fix: the route now calls `auth.resetPasswordForEmail(email, { redirectTo })`,
+which mails the same link to the address, validates the email, and always
+answers with the same generic message, so it no longer reveals which accounts
+exist. The form shows that message instead of a link.
+
+Verified: `scripts/test-auth-link-exposure.mjs` (registered in `npm test`)
+fails if any API route calls `admin.generateLink` or references `action_link`,
+or if the form renders a returned link. It passes on the fix and **fails 4/5
+checks when run against the original two files**.
+
+Not verified: real mail delivery. It needs Supabase SMTP configured; the
+default Supabase mailer is rate-limited. Behaviour changes for users: the link
+now arrives by email instead of on screen, which is the point.
+
+Production exposure (checked 2026-10-02): the Vercel project
+`ai-job-search-engine` has **no environment variables**
+(`vercel env ls`: none). Without `SUPABASE_SERVICE_ROLE_KEY` the route answered
+503 before reaching `generateLink`, and without `TURNSTILE_SECRET_KEY` the CAPTCHA
+check fails closed, so this was not exploitable on the deployed site. It would
+have become exploitable the moment Supabase was configured. The SSRF in §6.2
+needs no configuration and **was** reachable in production.
+
+### 6.2 High: SSRF through `/api/contacts/discover` (FIXED)
+
+The route is anonymous by design (`lib/contacts/client.ts`: "Anonymous callers
+are allowed here"; the extension calls it without a session). Its `domain` was
+interpolated into `https://www.${domain}${path}` (`lib/contacts/scraper.ts`),
+`https://${domain}` and DNS queries (`lib/contacts/sources/public-records.ts`).
+`domain = "evil.com@10.0.0.5"` makes `www.evil.com` the URL's userinfo and
+10.0.0.5 the host, so an unauthenticated caller chose the server's fetch
+target; ports, paths and IP literals worked too. Impact on Vercel is limited (no
+instance-metadata credentials), but it was an open outbound-request proxy with
+5+ fetches per call and no rate limit.
+
+Fix: `lib/contacts/domain.ts` `normalizePublicHostname()` accepts only a plain
+public DNS name (LDH labels, at least two labels, alphabetic or punycode TLD,
+no IPs, ports, paths, userinfo or internal suffixes). It is enforced at the
+single entry point `discoverContact()` (`lib/contacts/enricher.ts`), covering
+every downstream sink, and in both route schemas (`discover`,
+`bulk-discover`) so callers get a 400. `/api/contacts/discover` now has
+`guard(10/min)`. Verified by `scripts/test-contact-domain.mjs` (34 cases, in
+`npm test`).
+
+DNS rebinding and redirects (closed in the release pass the same day): the two
+domain-driven fetches (careers scraper, security.txt) now use
+`fetchPublicFollowingRedirects` (`lib/safe-fetch.ts`). It follows up to 5
+redirects and re-runs `assertPublicHttpUrl` (DNS-resolved addresses checked
+against private, loopback, link-local and metadata ranges) before every hop.
+Verified by `scripts/test-safe-fetch-redirects.mjs` (13 cases). Residual: a
+rebinding DNS server with a near-zero TTL can still race between the check and
+fetch's own resolution; closing that needs a connection pinned to the checked
+address (backlog B-4).
+
+### 6.3 Low: `/api/docs/*` proxied to localhost when unconfigured (FIXED)
+
+The proxy's own comment says an unset `DOCS_PROXY_ORIGIN` means "off", and the
+middleware only rewrites when it is set, but the route was reachable directly
+and forwarded any method and body to the default `http://localhost:3001`. It
+now answers 404 unless `DOCS_PROXY_ORIGIN` is set.
+
+### 6.4 Low: `/api/recruiters` was the only unthrottled public read (FIXED)
+
+It serves the recruiter directory (people's work contact details). It now has
+`guard(PUBLIC_READ)` like the other public reads. Per-process limiter caveat in
+`lib/api-guard.ts` applies.
+
+### 6.5 Checked and found sound
+
+- `ai-interview/*`: every read and write goes through
+  `getOwnedInterview(id, user.id)` or `.eq('user_id', auth.user.id)`.
+- `stripe/webhook`: `constructEvent` signature check plus an `event.id`
+  idempotency table. Note: if the idempotency insert fails it processes anyway
+  (logged), a deliberate availability-over-dedupe choice.
+- `stripe/debug/*`: 404 in production unless `ENABLE_STRIPE_DEBUG_ROUTES=true`.
+- `admin/analytics`: `requireAdmin`.
+- Extension `onMessage`: only same-extension tab senders; `onMessageExternal`:
+  two read-only message types, http(s) origins only.
+
+### 6.6 Open (not fixed; decisions or larger work)
+
+| Severity | Issue | Evidence |
+|---|---|---|
+| Medium | Rate limiting is per-process, so it does not bound distributed abuse of password reset, OTP or contact discovery | `lib/api-guard.ts` header (measured 46/46 allowed in prod) |
+| Medium | Lint never runs: no ESLint config (`next lint` stops at its setup prompt) and `ignoreDuringBuilds: true` | baseline run, `next.config.mjs:4` |
+| Low | Extension `externally_connectable` includes `http://localhost/*` in the shipped manifest, so any local page on any port can read the last captured LinkedIn profile | `chrome-extension/manifest.json` |
+| Low | Extension calls `bulk-discover` without a session, so it always gets 401 | `chrome-extension/background.js:154`, route requires `getUser()` |
+| Info | Local typecheck is unusable: `tsconfig.json` includes `**/*.ts`, which sweeps in the untracked sibling projects (22,898 of 22,920 errors) and runs out of memory. CI is unaffected (they are not committed). | baseline |
+
+### 6.7 Verification for this follow-up
+
+| Check | Before | After |
+|---|---|---|
+| `npm test` | 63/63 suites, 2,382 assertions, 0 failed | **65/65 suites, 2,421 assertions, 0 failed** |
+| `tsc --noEmit` (repo config) | out-of-memory crash (exit 134); with 8 GB heap, 22,920 errors, all but 2 from untracked folders | unchanged locally (environmental) |
+| `tsc --noEmit` excluding the untracked folders (temporary config) | not run | **0 errors** |
+| `next lint` | not configured (exit 1) | unchanged |
+| `next build` | not run locally (disk nearly full) | not run; CI runs it |
+
 ## Sources
 
 - [Stripe: deprecate subscription current_period_start/end](https://docs.stripe.com/changelog/basil/2025-03-31/deprecate-subscription-current-period-start-and-end)
