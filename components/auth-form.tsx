@@ -182,8 +182,11 @@ export default function AuthForm({ mode }: AuthFormProps) {
         body: JSON.stringify({ email, turnstileToken }),
       });
       const data = await res.json();
-      if (data.link) {
-        setMagicLink(data.link);
+      // The server emails the link to the address and returns only a
+      // confirmation; a link shown on screen would let anyone who typed an
+      // email sign in as its owner.
+      if (res.ok && data.ok) {
+        setMagicLink(data.message || "Check your inbox for a sign-in link.");
       } else {
         setMagicLinkError(data.error || "Failed to generate magic link.");
       }
@@ -401,7 +404,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
                   )}
                   {magicLink && (
                     <div className="mt-4 p-3 bg-blue-100 dark:bg-blue-900/20 border border-blue-300 dark:border-blue-800 rounded-lg">
-                      <span className="text-blue-700 dark:text-blue-400 text-sm">Magic Link: <a href={magicLink} className="underline break-all" target="_blank" rel="noopener noreferrer">Click here to reset your password</a></span>
+                      <span role="status" className="text-blue-700 dark:text-blue-400 text-sm">{magicLink}</span>
                     </div>
                   )}
                   {magicLinkError && (

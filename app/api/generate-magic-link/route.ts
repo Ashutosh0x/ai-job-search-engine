@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 // Basic in-memory rate limiting
 const attemptsByEmail = new Map<string, number[]>();
 const attemptsByIp = new Map<string, number[]>();
@@ -71,8 +73,8 @@ export async function POST(req: NextRequest) {
   }
 
   const { email, turnstileToken } = await req.json();
-  if (!email) {
-    return NextResponse.json({ error: 'Email is required' }, { status: 400 });
+  if (typeof email !== 'string' || !EMAIL_RE.test(email.trim()) || email.length > 254) {
+    return NextResponse.json({ error: 'A valid email is required' }, { status: 400 });
   }
 
   const captchaOk = await verifyTurnstileToken(req, turnstileToken)
@@ -89,26 +91,37 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { data, error } = await supabase.auth.admin.generateLink({
-      type: 'recovery',
-      email,
-      options: {
-        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/reset-password`,
-      },
+    // The link is EMAILED to the address, never returned to the caller.
+    //
+    // This route used to call auth.admin.generateLink({ type: 'recovery' }) and
+    // answer `{ link: action_link }`, which components/auth-form.tsx rendered as
+    // a clickable "reset your password" link. A recovery link signs its holder
+    // in as that user, and the only gates were a CAPTCHA and a per-email/IP
+    // limit -- nothing tied the caller to the mailbox. Typing someone else's
+    // email was enough to take over their account.
+    //
+    // resetPasswordForEmail sends the same recovery link through Supabase's
+    // mailer to the address itself, so only its owner can use it.
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/reset-password`,
     });
-    const actionLink = data?.properties?.action_link;
-    if (error || !actionLink) {
-      return NextResponse.json({ error: error?.message || 'Failed to generate magic link' }, { status: 500 });
+    if (error) {
+      // Logged, not returned: the answer must not reveal whether an account
+      // exists for this address.
+      console.error('Magic link email failed:', error.message);
     }
     // Best-effort audit log
     try {
       await supabase.from('audit_logs').insert({
         user_id: null,
-        action: 'magic_link_generated',
+        action: 'magic_link_emailed',
         details: { email, ip },
       });
     } catch {}
-    return NextResponse.json({ link: actionLink });
+    return NextResponse.json({
+      ok: true,
+      message: 'If an account exists for that email, a sign-in link is on its way. Check your inbox.',
+    });
   } catch (e) {
     return NextResponse.json({ error: 'Unexpected error' }, { status: 500 });
   }
