@@ -56,3 +56,15 @@ walmart-roles.ndjson
 # Named individuals (see .gitignore). Not withheld from a public git repo only
 # to be uploaded to a public deployment instead.
 data/recruiter-evidence
+
+# Sibling projects that may be checked out inside this folder on a developer
+# machine. They are not part of this app and are not in git -- but when
+# .vercelignore exists the CLI does NOT consult .gitignore, so a `vercel deploy`
+# from such a working tree would upload them (another project's private source)
+# and `next build` would typecheck them (tsconfig includes **/*.ts) and fail.
+arc-remote-signer
+furlpay-client-audit
+furlpay-identity-work
+furlpay-instagram-mcp
+furlpay-shipping-work
+malachite

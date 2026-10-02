@@ -41,6 +41,13 @@ function forwardHeaders(request: NextRequest) {
 }
 
 async function proxy(request: NextRequest, context: { params: { path: string[] } }) {
+  // Off unless configured. middleware.ts only rewrites /docs here when
+  // DOCS_PROXY_ORIGIN is set, but /api/docs/* is also reachable directly, and
+  // with the variable unset it forwarded any method and body to
+  // localhost:3001 -- a server-side request nobody configured.
+  if (!process.env.DOCS_PROXY_ORIGIN) {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  }
   const targetUrl = buildTargetUrl(request, context.params);
   const method = request.method;
   const headers = forwardHeaders(request);

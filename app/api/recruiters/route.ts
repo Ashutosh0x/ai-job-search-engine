@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { readFile } from 'fs/promises';
 import path from 'path';
+import { guard, PUBLIC_READ } from '@/lib/api-guard';
 
 /**
  * The recruiter directory, as built by the daily crawl.
@@ -64,6 +65,12 @@ async function load(): Promise<Directory | null> {
 }
 
 export async function GET(req: NextRequest) {
+  // The only public read without a limiter (lib/api-guard.ts lists the rest).
+  // It serves people's work contact details, so bulk paging through it is the
+  // abuse case worth slowing. Per-process -- see api-guard for the caveat.
+  const limited = guard(req, 'recruiters', PUBLIC_READ);
+  if (limited) return limited;
+
   const doc = await load();
   if (!doc) {
     return NextResponse.json(
