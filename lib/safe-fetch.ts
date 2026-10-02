@@ -224,3 +224,35 @@ export async function safeFetch(
     clearTimeout(timer)
   }
 }
+
+/**
+ * fetch() a URL derived from caller input, following redirects safely.
+ *
+ * safeFetch() refuses every redirect, which is right for a remote file but
+ * wrong for a company website: careers pages routinely 301 from the apex to
+ * www or from http to https. This variant follows up to `maxRedirects` hops
+ * and runs assertPublicHttpUrl() -- protocol, credentials, IP literal, and the
+ * DNS-resolved addresses -- BEFORE EVERY HOP, so neither a hostname that
+ * resolves to private space nor a Location header pointing at one is fetched.
+ *
+ * Residual: the check resolves DNS, then fetch() resolves again. A rebinding
+ * server with a near-zero TTL can still race between the two; closing that
+ * needs pinning the connection to the checked address (a custom dispatcher).
+ */
+export async function fetchPublicFollowingRedirects(
+  rawUrl: string,
+  init: Omit<RequestInit, 'redirect'> = {},
+  { maxRedirects = 5 }: { maxRedirects?: number } = {}
+): Promise<Response> {
+  let current = rawUrl
+  for (let hop = 0; hop <= maxRedirects; hop++) {
+    const url = await assertPublicHttpUrl(current)
+    const res = await fetch(url, { ...init, redirect: 'manual' })
+    const location = res.status >= 300 && res.status < 400 ? res.headers.get('location') : null
+    if (!location) return res
+    // Drain the redirect body so the connection can be reused/released.
+    await res.body?.cancel().catch(() => {})
+    current = new URL(location, url).toString()
+  }
+  throw new UnsafeUrlError('Too many redirects')
+}

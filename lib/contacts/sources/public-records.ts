@@ -1,4 +1,5 @@
 import { promises as dns } from 'dns';
+import { fetchPublicFollowingRedirects } from '../../safe-fetch';
 
 /**
  * Public-record address sources.
@@ -63,7 +64,8 @@ export async function fromSecurityTxt(domain: string): Promise<PublicRecordAddre
   for (const path of paths) {
     for (const host of [`https://${domain}`, `https://www.${domain}`]) {
       try {
-        const res = await fetch(`${host}${path}`, {
+        // Caller-influenced domain: check every hop's resolved address.
+        const res = await fetchPublicFollowingRedirects(`${host}${path}`, {
           headers: { 'User-Agent': UA },
           signal: AbortSignal.timeout(8000),
         });

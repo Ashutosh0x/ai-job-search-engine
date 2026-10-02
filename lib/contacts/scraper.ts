@@ -1,4 +1,5 @@
 import { mineDomainAuthors } from './github';
+import { fetchPublicFollowingRedirects } from '../safe-fetch';
 
 /**
  * Commit-author addresses on a company's domain, from its GitHub organisation.
@@ -80,7 +81,10 @@ export async function scrapeCareersPage(domain: string): Promise<CareersAddress[
   for (const path of paths) {
     try {
       const url = `https://www.${domain}${path}`;
-      const response = await fetch(url, {
+      // Every hop's resolved address is checked: `domain` comes from an
+      // anonymous caller, and a public name can resolve, or redirect, to
+      // private space (lib/safe-fetch.ts).
+      const response = await fetchPublicFollowingRedirects(url, {
         headers: { 'User-Agent': 'Mozilla/5.0 (compatible; AIJobSearchBot/1.0)' },
         signal: AbortSignal.timeout(15000)
       });

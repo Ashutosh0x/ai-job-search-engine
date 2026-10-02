@@ -8,6 +8,7 @@ import {
 } from './types';
 import { generateEmails } from './email-patterns';
 import { getObservedPatterns } from './pattern-source';
+import { InvalidDomainError, normalizePublicHostname } from './domain';
 import { scrapeCareersPage, scrapeGitHubEmails, scrapePublicProfiles, PublicProfiles } from './scraper';
 import { verifyEmail } from './verify';
 
@@ -44,7 +45,11 @@ function resolveDomain(company: string): string {
  */
 export async function discoverContact(request: ContactDiscoveryRequest): Promise<ContactDiscoveryResult> {
   const startTime = Date.now();
-  const domain = request.domain || resolveDomain(request.company);
+  // Single choke point for every URL, DNS query and address built below: the
+  // anonymous /api/contacts/discover passes a caller-chosen domain, and
+  // `evil.com@10.0.0.5` used to become a fetch of 10.0.0.5 (lib/contacts/domain.ts).
+  const domain = normalizePublicHostname(request.domain || resolveDomain(request.company));
+  if (!domain) throw new InvalidDomainError();
   let cached = true;
   
   try {

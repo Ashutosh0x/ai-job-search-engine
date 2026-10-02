@@ -4,12 +4,18 @@ import { createClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 import { discoverContact } from '@/lib/contacts/enricher';
 import { saveReveal } from '@/lib/contacts/persist';
+import { normalizePublicHostname } from '@/lib/contacts/domain';
 
 const profileSchema = z.object({
   firstName: z.string().min(1).max(100),
   lastName: z.string().min(1).max(100),
   company: z.string().min(1).max(200),
-  domain: z.string().optional(),
+  // Plain public hostname only: it becomes server-side fetches (lib/contacts/domain.ts).
+  domain: z
+    .string()
+    .max(253)
+    .refine((d) => normalizePublicHostname(d) !== null, 'domain must be a plain public hostname, e.g. example.com')
+    .optional(),
   linkedinUrl: z.string().url().optional(),
 });
 
