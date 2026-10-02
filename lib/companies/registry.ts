@@ -1475,6 +1475,49 @@ export const COMPANIES: CompanyRecord[] = [
     boards: [] },
   { slug: 'commerzbank', name: 'Commerzbank', domain: 'commerzbank.com', ticker: 'CBK.DE', valuationKind: 'public', industry: 'Commercial & Retail Banking', hqLocation: 'Frankfurt, Germany', foundedYear: 1870,
     boards: [{ provider: 'successfactors', token: 'commerzbank' }] },
+
+  // ---- Singapore technology employers (added 2026-10-02) ----
+  // Each board was found by reading the careers page (scripts/discover-ats.mjs
+  // or the page's own markup), never guessed, and verified to return live
+  // postings before being added.
+  //
+  // Simular: Ashby board `simular`, 22 live roles (incl. Security Engineer,
+  // Singapore).
+  { slug: 'simular', name: 'Simular', domain: 'simular.ai', valuationKind: 'unknown',
+    industry: 'Artificial Intelligence',
+    boards: [{ provider: 'ashby', token: 'simular' }] },
+  // CSIT (MINDEF agency): Lever board `csit`, 77 live roles. Its postings state
+  // that only Singapore Citizens will be considered.
+  { slug: 'csit', name: 'Centre for Strategic Infocomm Technologies (CSIT)', domain: 'csit.gov.sg', valuationKind: 'unknown',
+    industry: 'Government / Cybersecurity', hqLocation: 'Singapore',
+    boards: [{ provider: 'lever', token: 'csit' }] },
+  // Open Government Products: Recruitee company `opengovernmentproducts`
+  // (from the careers page's own config), 9 live roles. The API returns
+  // careers_url on OGP's own domain (careers.open.gov.sg/o/...).
+  { slug: 'open-government-products', name: 'Open Government Products', domain: 'open.gov.sg', valuationKind: 'unknown',
+    industry: 'Government Technology', hqLocation: 'Singapore',
+    boards: [{ provider: 'recruitee', token: 'opengovernmentproducts' }] },
+  // Singapore Public Service (Careers@Gov), which carries GovTech's roles:
+  // tech.gov.sg/careers resolves to this Workday tenant. 1,051 live roles
+  // across agencies at registration.
+  { slug: 'singapore-public-service', name: 'Singapore Public Service (incl. GovTech)', domain: 'tech.gov.sg', valuationKind: 'unknown',
+    industry: 'Government', hqLocation: 'Singapore',
+    boards: [{ provider: 'workday', token: 'sggovterp', site: 'PublicServiceCareers', host: 'sggovterp.wd102.myworkdayjobs.com' }] },
+  // Singtel Group: SAP SuccessFactors Career Site Builder at
+  // groupcareers.singtel.com. /search/ renders server-side (25 rows/page) and
+  // robots.txt allows it. discover-ats found the SF fingerprint but its generic
+  // probe returned nothing; the CSB search table is what the adapter reads.
+  { slug: 'singtel', name: 'Singtel', domain: 'singtel.com', ticker: 'Z74.SI', valuationKind: 'public',
+    industry: 'Telecommunications', hqLocation: 'Singapore',
+    boards: [{ provider: 'successfactors', token: 'singtel', host: 'groupcareers.singtel.com' }] },
+  // SAP moved jobs.sap.com off Career Site Builder (/search/ now 301s to
+  // /en/jobs/). Its new site applies through SmartRecruiters company
+  // `SAPITBusinessSysteme`, read from the apply link on a live posting: 44
+  // live roles, 0 in Singapore at registration. Older indexed Singapore URLs
+  // (jobs.sap.com/job/Singapore-...) now redirect to the listing, i.e. closed.
+  { slug: 'sap', name: 'SAP', domain: 'sap.com', ticker: 'SAP', valuationKind: 'public',
+    industry: 'Enterprise Software', hqLocation: 'Walldorf, Germany', foundedYear: 1972,
+    boards: [{ provider: 'smartrecruiters', token: 'SAPITBusinessSysteme' }] },
 ]
 
 export const COMPANY_BY_SLUG = new Map(COMPANIES.map((c) => [c.slug, c]))
