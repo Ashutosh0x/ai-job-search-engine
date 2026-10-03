@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-02T12:14:55.427Z",
+  "generatedAt": "2026-10-03T11:25:56.790Z",
   "method": "Role addresses published on employers' own careers/contact pages; address patterns inferred from commit authors in a VERIFIED GitHub organisation; MX/SPF/DMARC checked at domain level. Named recruiters carry public source URLs and never carry an address.",
   "notCollected": [
     "addresses belonging to identifiable individuals",
@@ -7,8 +7,8 @@
     "per-mailbox existence (would require SMTP RCPT TO probing)"
   ],
   "summary": {
-    "companies": 390,
-    "crawledThisRun": 0,
+    "companies": 396,
+    "crawledThisRun": 6,
     "carriedForward": 390,
     "skippedForBudget": 0,
     "neverCrawled": 0,
@@ -16,11 +16,11 @@
     "publishedContactTotal": 33,
     "withNamedRecruiters": 20,
     "namedRecruiterTotal": 170,
-    "withEmailPattern": 112,
-    "atsOnly": 244,
+    "withEmailPattern": 113,
+    "atsOnly": 249,
     "byReachability": {
-      "pattern": 99,
-      "ats-only": 244,
+      "pattern": 100,
+      "ats-only": 249,
       "direct": 28,
       "named": 19
     }
@@ -15802,6 +15802,222 @@
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
+    },
+    "simular": {
+      "slug": "simular",
+      "name": "Simular",
+      "domain": "simular.ai",
+      "logoUrl": "https://www.google.com/s2/favicons?domain=simular.ai&sz=128",
+      "recruiters": [],
+      "recruiterCount": 0,
+      "publishedContacts": [],
+      "emailPattern": null,
+      "mailPosture": {
+        "hasMx": true,
+        "mx": [
+          "aspmx.l.google.com",
+          "alt1.aspmx.l.google.com",
+          "alt2.aspmx.l.google.com"
+        ],
+        "hasSpf": true,
+        "dmarcPolicy": null
+      },
+      "otherAddressCount": 0,
+      "publicRecords": [
+        {
+          "address": "security@simular.ai",
+          "kind": "security-txt",
+          "evidence": "Contact: line in https://simular.ai/.well-known/security.txt (RFC 9116)"
+        }
+      ],
+      "robotsAllowsCareers": true,
+      "crawledAt": "2026-10-03T11:25:47.411Z",
+      "error": null,
+      "reachability": "ats-only",
+      "atsOnly": true
+    },
+    "csit": {
+      "slug": "csit",
+      "name": "Centre for Strategic Infocomm Technologies (CSIT)",
+      "domain": "csit.gov.sg",
+      "logoUrl": "https://www.google.com/s2/favicons?domain=csit.gov.sg&sz=128",
+      "recruiters": [],
+      "recruiterCount": 0,
+      "publishedContacts": [],
+      "emailPattern": null,
+      "mailPosture": {
+        "hasMx": true,
+        "mx": [
+          "csit-gov-sg.mail.protection.outlook.com"
+        ],
+        "hasSpf": true,
+        "dmarcPolicy": null
+      },
+      "otherAddressCount": 0,
+      "publicRecords": [
+        {
+          "address": "adam_soc_report@csit.gov.sg",
+          "kind": "dmarc",
+          "evidence": "ruf= in the _dmarc.csit.gov.sg TXT record (RFC 7489)"
+        },
+        {
+          "address": "leo.cw@csit.gov.sg",
+          "kind": "rdap",
+          "evidence": "RDAP technical entity for csit.gov.sg (rdap.org)"
+        }
+      ],
+      "robotsAllowsCareers": null,
+      "crawledAt": "2026-10-03T11:25:47.411Z",
+      "error": null,
+      "reachability": "ats-only",
+      "atsOnly": true
+    },
+    "open-government-products": {
+      "slug": "open-government-products",
+      "name": "Open Government Products",
+      "domain": "open.gov.sg",
+      "logoUrl": "https://www.google.com/s2/favicons?domain=open.gov.sg&sz=128",
+      "recruiters": [],
+      "recruiterCount": 0,
+      "publishedContacts": [],
+      "emailPattern": null,
+      "mailPosture": {
+        "hasMx": true,
+        "mx": [
+          "aspmx.l.google.com",
+          "aspmx2.googlemail.com",
+          "alt1.aspmx.l.google.com"
+        ],
+        "hasSpf": true,
+        "dmarcPolicy": null
+      },
+      "otherAddressCount": 0,
+      "publicRecords": [],
+      "robotsAllowsCareers": true,
+      "crawledAt": "2026-10-03T11:25:47.411Z",
+      "error": null,
+      "reachability": "ats-only",
+      "atsOnly": true
+    },
+    "singapore-public-service": {
+      "slug": "singapore-public-service",
+      "name": "Singapore Public Service (incl. GovTech)",
+      "domain": "tech.gov.sg",
+      "logoUrl": "https://www.google.com/s2/favicons?domain=tech.gov.sg&sz=128",
+      "recruiters": [],
+      "recruiterCount": 0,
+      "publishedContacts": [],
+      "emailPattern": null,
+      "mailPosture": {
+        "hasMx": true,
+        "mx": [
+          "mx3.sgict.gov.sg",
+          "mx2.sgict.gov.sg",
+          "mx4.sgict.gov.sg"
+        ],
+        "hasSpf": true,
+        "dmarcPolicy": null
+      },
+      "otherAddressCount": 0,
+      "publicRecords": [
+        {
+          "address": "gitd_admin@tech.gov.sg",
+          "kind": "dmarc",
+          "evidence": "ruf= in the _dmarc.tech.gov.sg TXT record (RFC 7489)"
+        },
+        {
+          "address": "poh_quan_wei@tech.gov.sg",
+          "kind": "rdap",
+          "evidence": "RDAP technical entity for tech.gov.sg (rdap.org)"
+        }
+      ],
+      "robotsAllowsCareers": true,
+      "crawledAt": "2026-10-03T11:25:47.411Z",
+      "error": null,
+      "reachability": "ats-only",
+      "atsOnly": true
+    },
+    "singtel": {
+      "slug": "singtel",
+      "name": "Singtel",
+      "domain": "singtel.com",
+      "logoUrl": "https://www.google.com/s2/favicons?domain=singtel.com&sz=128",
+      "recruiters": [],
+      "recruiterCount": 0,
+      "publishedContacts": [],
+      "emailPattern": null,
+      "mailPosture": {
+        "hasMx": true,
+        "mx": [
+          "singtel-com.g-v1.mx.microsoft"
+        ],
+        "hasSpf": true,
+        "dmarcPolicy": null
+      },
+      "otherAddressCount": 0,
+      "publicRecords": [
+        {
+          "address": "dmarc-rua@singtel.com",
+          "kind": "dmarc",
+          "evidence": "rua= in the _dmarc.singtel.com TXT record (RFC 7489)"
+        },
+        {
+          "address": "dmarc-ruf@singtel.com",
+          "kind": "dmarc",
+          "evidence": "ruf= in the _dmarc.singtel.com TXT record (RFC 7489)"
+        }
+      ],
+      "robotsAllowsCareers": true,
+      "crawledAt": "2026-10-03T11:25:47.411Z",
+      "error": null,
+      "reachability": "ats-only",
+      "atsOnly": true
+    },
+    "sap": {
+      "slug": "sap",
+      "name": "SAP",
+      "domain": "sap.com",
+      "logoUrl": "https://www.google.com/s2/favicons?domain=sap.com&sz=128",
+      "recruiters": [],
+      "recruiterCount": 0,
+      "publishedContacts": [],
+      "emailPattern": {
+        "domain": "sap.com",
+        "patterns": [
+          {
+            "pattern": "{first}.{last}",
+            "share": 0.833,
+            "sampleSize": 10
+          },
+          {
+            "pattern": "{f}.{last}",
+            "share": 0.167,
+            "sampleSize": 2
+          }
+        ],
+        "observedFrom": "github-org-commits"
+      },
+      "mailPosture": {
+        "hasMx": true,
+        "mx": [
+          "sap-com.mail.protection.outlook.com"
+        ],
+        "hasSpf": true,
+        "dmarcPolicy": null
+      },
+      "otherAddressCount": 0,
+      "publicRecords": [
+        {
+          "address": "mailauth-reports@sap.com",
+          "kind": "dmarc",
+          "evidence": "rua= in the _dmarc.sap.com TXT record (RFC 7489)"
+        }
+      ],
+      "robotsAllowsCareers": false,
+      "crawledAt": "2026-10-03T11:25:47.411Z",
+      "error": null,
+      "reachability": "pattern",
+      "atsOnly": false
     }
   }
 }
