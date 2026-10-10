@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-09T12:56:45.848Z",
+  "generatedAt": "2026-10-10T12:14:57.989Z",
   "method": "Role addresses published on employers' own careers/contact pages; address patterns inferred from commit authors in a VERIFIED GitHub organisation; MX/SPF/DMARC checked at domain level. Named recruiters carry public source URLs and never carry an address.",
   "notCollected": [
     "addresses belonging to identifiable individuals",
@@ -8,8 +8,8 @@
   ],
   "summary": {
     "companies": 396,
-    "crawledThisRun": 0,
-    "carriedForward": 396,
+    "crawledThisRun": 6,
+    "carriedForward": 390,
     "skippedForBudget": 0,
     "neverCrawled": 0,
     "withPublishedContacts": 28,
@@ -15698,7 +15698,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-03T11:25:47.411Z",
+      "crawledAt": "2026-10-10T12:14:37.424Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -15734,7 +15734,7 @@
         }
       ],
       "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-03T11:25:47.411Z",
+      "crawledAt": "2026-10-10T12:14:37.425Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -15761,7 +15761,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-03T11:25:47.411Z",
+      "crawledAt": "2026-10-10T12:14:37.425Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -15778,9 +15778,9 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "mx3.sgict.gov.sg",
           "mx2.sgict.gov.sg",
-          "mx4.sgict.gov.sg"
+          "mx1.sgict.gov.sg",
+          "mx3.sgict.gov.sg"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -15799,7 +15799,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-03T11:25:47.411Z",
+      "crawledAt": "2026-10-10T12:14:37.425Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -15835,7 +15835,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-03T11:25:47.411Z",
+      "crawledAt": "2026-10-10T12:14:37.425Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -15853,13 +15853,13 @@
         "patterns": [
           {
             "pattern": "{first}.{last}",
-            "share": 0.833,
+            "share": 0.909,
             "sampleSize": 10
           },
           {
             "pattern": "{f}.{last}",
-            "share": 0.167,
-            "sampleSize": 2
+            "share": 0.091,
+            "sampleSize": 1
           }
         ],
         "observedFrom": "github-org-commits"
@@ -15881,7 +15881,7 @@
         }
       ],
       "robotsAllowsCareers": false,
-      "crawledAt": "2026-10-03T11:25:47.411Z",
+      "crawledAt": "2026-10-10T12:14:37.425Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
