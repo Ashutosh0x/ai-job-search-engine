@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-11T12:36:20.138Z",
+  "generatedAt": "2026-10-12T15:00:54.944Z",
   "method": "Role addresses published on employers' own careers/contact pages; address patterns inferred from commit authors in a VERIFIED GitHub organisation; MX/SPF/DMARC checked at domain level. Named recruiters carry public source URLs and never carry an address.",
   "notCollected": [
     "addresses belonging to identifiable individuals",
@@ -8,8 +8,8 @@
   ],
   "summary": {
     "companies": 396,
-    "crawledThisRun": 387,
-    "carriedForward": 9,
+    "crawledThisRun": 3,
+    "carriedForward": 393,
     "skippedForBudget": 0,
     "neverCrawled": 0,
     "withPublishedContacts": 26,
@@ -6657,9 +6657,9 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "mx1.hc497-45.ca.iphmx.com",
+          "mx1.hc4518-41.iphmx.com",
           "mx2.hc4518-41.iphmx.com",
-          "mx1.hc4518-41.iphmx.com"
+          "mx1.hc497-45.ca.iphmx.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -6673,7 +6673,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-05T14:12:00.932Z",
+      "crawledAt": "2026-10-12T15:00:47.896Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -6880,9 +6880,9 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "mxb-00191d01.gslb.pphosted.com",
+          "mx0b-00191d01.pphosted.com",
           "mx0a-00191d01.pphosted.com",
-          "mxa-00191d01.gslb.pphosted.com"
+          "mxb-00191d01.gslb.pphosted.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -6896,7 +6896,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-05T14:12:00.932Z",
+      "crawledAt": "2026-10-12T15:00:47.897Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -9686,13 +9686,23 @@
         "domain": "microsoft.com",
         "patterns": [
           {
+            "pattern": "{last}{first}",
+            "share": 0.333,
+            "sampleSize": 2
+          },
+          {
             "pattern": "{f}{last}",
-            "share": 0.5,
+            "share": 0.333,
+            "sampleSize": 2
+          },
+          {
+            "pattern": "{first}{last}",
+            "share": 0.167,
             "sampleSize": 1
           },
           {
             "pattern": "{first}.{last}",
-            "share": 0.5,
+            "share": 0.167,
             "sampleSize": 1
           }
         ],
@@ -9725,7 +9735,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-05T14:12:00.932Z",
+      "crawledAt": "2026-10-12T15:00:47.897Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
