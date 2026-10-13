@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-12T15:00:54.944Z",
+  "generatedAt": "2026-10-13T13:56:35.054Z",
   "method": "Role addresses published on employers' own careers/contact pages; address patterns inferred from commit authors in a VERIFIED GitHub organisation; MX/SPF/DMARC checked at domain level. Named recruiters carry public source URLs and never carry an address.",
   "notCollected": [
     "addresses belonging to identifiable individuals",
@@ -8,8 +8,8 @@
   ],
   "summary": {
     "companies": 396,
-    "crawledThisRun": 3,
-    "carriedForward": 393,
+    "crawledThisRun": 0,
+    "carriedForward": 396,
     "skippedForBudget": 0,
     "neverCrawled": 0,
     "withPublishedContacts": 26,
