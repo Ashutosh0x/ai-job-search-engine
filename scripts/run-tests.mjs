@@ -95,6 +95,7 @@ const SUITES = [
   'test-dedupe.mjs',
   'test-deploy-index.mjs',
   'test-jobs-query.mjs',
+  'test-job-row.mjs',
   'test-build-safety.mjs',
   'test-deployable-data.mjs',
   'test-recruiter-crawler.mjs',

@@ -292,6 +292,23 @@ export const SIGNATURES: Signature[] = [
     }),
   },
   {
+    /**
+     * Oracle Recruiting Cloud on its own Fusion pod.
+     *
+     * Without this, `detectFromUrl` returned `unknown` for every
+     * `*.oraclecloud.com/.../sites/CX_n/job/<id>` posting, so description
+     * hydration could not recover the pod host and every ORC job (JPMorgan,
+     * Nokia, ...) kept its one-line list teaser. getAdapter routes
+     * `custom` + an oraclecloud host to OracleRecruitingAdapter.
+     */
+    source: 'custom',
+    hosts: [/(^|\.)oraclecloud\.com$/i],
+    parseUrl: (u) => {
+      const m = u.pathname.match(/\/sites\/([^/]+)\/job\//)
+      return m ? { token: m[1], host: u.host.toLowerCase() } : null
+    },
+  },
+  {
     source: 'eightfold',
     hosts: [/(^|\.)eightfold\.ai$/i],
     markers: [/eightfold\.ai/i, /careers\/v2\/search/i],
