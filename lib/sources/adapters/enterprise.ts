@@ -1,5 +1,5 @@
 import { BaseAdapter } from './base'
-import type { FetchOptions, FetchResult, RawJob, SourceId, SourceTarget } from '../types'
+import type { FetchOptions, FetchResult, JobDetailContext, RawJob, SourceId, SourceTarget } from '../types'
 import { toIso } from '../types'
 
 /**
@@ -282,5 +282,81 @@ export class OracleRecruitingAdapter extends BaseAdapter {
     }
 
     return { jobs: all, incremental: false, warnings }
+  }
+
+  /**
+   * One requisition's full posting.
+   *
+   * The list call above carries only `ShortDescriptionStr` -- a one-line
+   * teaser (JPMorgan's average is ~120 characters) -- so every ORC job in the
+   * index had no responsibilities, no qualifications and no sponsorship
+   * language until this existed. The detail resource has them:
+   *
+   *   GET {host}/hcmRestApi/resources/latest/recruitingCEJobRequisitionDetails
+   *       ?expand=all&onlyData=true&finder=ById;Id="{id}",siteNumber={site}
+   *
+   * The pod host comes from the target, or from the posting URL when the
+   * hydration stage only knows the id (an `applyHost` URL on the employer's
+   * own domain cannot address the API, so it is not used as a host).
+   */
+  async fetchJob(target: SourceTarget, id: string, ctx: JobDetailContext = {}): Promise<RawJob | null> {
+    let host = target.host
+    let site = target.token || 'CX_1'
+    if (ctx.url) {
+      try {
+        const u = new URL(ctx.url)
+        if (!host && /(^|\.)oraclecloud\.com$/i.test(u.host)) host = u.host.toLowerCase()
+        const m = u.pathname.match(/\/sites\/([^/]+)\/job\//)
+        if (m && !target.token) site = m[1]
+      } catch {
+        /* not a URL: fall back to the target */
+      }
+    }
+    if (!host || !/^[\w.-]+$/.test(id)) return null
+
+    const url =
+      `https://${host}/hcmRestApi/resources/latest/recruitingCEJobRequisitionDetails` +
+      `?expand=all&onlyData=true&finder=ById;Id=%22${encodeURIComponent(id)}%22,siteNumber=${encodeURIComponent(site)}`
+    const data = await this.json<{ items?: any[] }>(url, { cacheTtlMs: this.ttl.jobDetail, retries: 1 })
+    const d = data?.items?.[0]
+    if (!d || String(d.Id ?? '') !== id) return null
+
+    // Order matters: qualifications are where sponsorship and clearance
+    // statements sit, so they come before the corporate boilerplate.
+    const descriptionHtml = [
+      d.ExternalDescriptionStr,
+      d.ExternalResponsibilitiesStr,
+      d.ExternalQualificationsStr,
+      d.CorporateDescriptionStr,
+      d.OrganizationDescriptionStr,
+    ]
+      .filter((s): s is string => typeof s === 'string' && s.trim().length > 0)
+      .join('\n\n')
+    if (!descriptionHtml) return null
+
+    const others: string[] = Array.isArray(d.secondaryLocations)
+      ? d.secondaryLocations.map((l: any) => l?.Name).filter((n: unknown): n is string => typeof n === 'string')
+      : []
+    const posting = `https://${host}/hcmUI/CandidateExperience/en/sites/${site}/job/${id}`
+    return {
+      source: this.id,
+      target: { ...target, host, token: site },
+      sourceId: id,
+      requisitionId: d.RequisitionId ? String(d.RequisitionId) : id,
+      title: String(d.Title ?? '').trim(),
+      company: target.companyName ?? null,
+      companyDomain: target.companyDomain ?? null,
+      locationRaw: d.PrimaryLocation ?? null,
+      additionalLocations: others,
+      descriptionHtml,
+      department: d.JobFamily ?? d.Category ?? d.JobFunction ?? null,
+      employmentType: d.JobType ?? d.JobSchedule ?? null,
+      remoteFlag: d.WorkplaceTypeCode ? /remote/i.test(String(d.WorkplaceTypeCode)) : null,
+      postedAt: toIso(d.ExternalPostedStartDate),
+      updatedAt: toIso(d.ExternalPostedStartDate),
+      applicationUrl: posting,
+      canonicalUrl: posting,
+      extra: { workplaceTypeCode: d.WorkplaceTypeCode ?? null },
+    }
   }
 }
