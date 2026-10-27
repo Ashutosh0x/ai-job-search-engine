@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-26T12:37:43.623Z",
+  "generatedAt": "2026-10-27T12:01:37.358Z",
   "method": "Role addresses published on employers' own careers/contact pages; address patterns inferred from commit authors in a VERIFIED GitHub organisation; MX/SPF/DMARC checked at domain level. Named recruiters carry public source URLs and never carry an address.",
   "notCollected": [
     "addresses belonging to identifiable individuals",
@@ -8,19 +8,19 @@
   ],
   "summary": {
     "companies": 396,
-    "crawledThisRun": 0,
-    "carriedForward": 396,
+    "crawledThisRun": 390,
+    "carriedForward": 6,
     "skippedForBudget": 0,
     "neverCrawled": 0,
     "withPublishedContacts": 27,
     "publishedContactTotal": 32,
     "withNamedRecruiters": 20,
     "namedRecruiterTotal": 170,
-    "withEmailPattern": 74,
-    "atsOnly": 285,
+    "withEmailPattern": 80,
+    "atsOnly": 280,
     "byReachability": {
-      "pattern": 65,
-      "ats-only": 285,
+      "pattern": 70,
+      "ats-only": 280,
       "direct": 27,
       "named": 19
     }
@@ -39,8 +39,13 @@
         "patterns": [
           {
             "pattern": "{f}{last}",
-            "share": 1,
-            "sampleSize": 5
+            "share": 0.8,
+            "sampleSize": 8
+          },
+          {
+            "pattern": "{first}.{last}",
+            "share": 0.2,
+            "sampleSize": 2
           }
         ],
         "observedFrom": "github-org-commits"
@@ -63,7 +68,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:41.309Z",
+      "crawledAt": "2026-10-27T11:55:48.064Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -82,7 +87,7 @@
           {
             "pattern": "{f}{last}",
             "share": 1,
-            "sampleSize": 3
+            "sampleSize": 7
           }
         ],
         "observedFrom": "github-org-commits"
@@ -110,7 +115,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:41.490Z",
+      "crawledAt": "2026-10-27T11:55:48.769Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -128,8 +133,8 @@
         "hasMx": true,
         "mx": [
           "aspmx.l.google.com",
-          "alt3.aspmx.l.google.com",
-          "alt4.aspmx.l.google.com"
+          "alt1.aspmx.l.google.com",
+          "alt2.aspmx.l.google.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -148,7 +153,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:41.814Z",
+      "crawledAt": "2026-10-27T11:55:49.276Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -167,7 +172,7 @@
           {
             "pattern": "{first}.{last}",
             "share": 1,
-            "sampleSize": 2
+            "sampleSize": 1
           }
         ],
         "observedFrom": "github-org-commits"
@@ -185,7 +190,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:41.935Z",
+      "crawledAt": "2026-10-27T11:55:51.576Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -233,7 +238,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:44.255Z",
+      "crawledAt": "2026-10-27T11:55:51.774Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -270,7 +275,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": false,
-      "crawledAt": "2026-10-19T12:45:44.339Z",
+      "crawledAt": "2026-10-27T11:55:52.963Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -288,8 +293,8 @@
         "hasMx": true,
         "mx": [
           "aspmx.l.google.com",
-          "alt3.aspmx.l.google.com",
-          "alt4.aspmx.l.google.com"
+          "alt1.aspmx.l.google.com",
+          "alt2.aspmx.l.google.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -297,7 +302,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": false,
-      "crawledAt": "2026-10-19T12:45:44.346Z",
+      "crawledAt": "2026-10-27T11:55:53.188Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -339,7 +344,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:45.147Z",
+      "crawledAt": "2026-10-27T11:55:53.862Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -358,7 +363,7 @@
           {
             "pattern": "{f}{last}",
             "share": 1,
-            "sampleSize": 3
+            "sampleSize": 4
           }
         ],
         "observedFrom": "github-org-commits"
@@ -380,7 +385,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:45.851Z",
+      "crawledAt": "2026-10-27T11:55:54.116Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -410,8 +415,11 @@
         "observedFrom": "github-org-commits"
       },
       "mailPosture": {
-        "hasMx": false,
-        "mx": [],
+        "hasMx": true,
+        "mx": [
+          "mxb-001ed902.gslb.pphosted.com",
+          "mxa-001ed902.gslb.pphosted.com"
+        ],
         "hasSpf": true,
         "dmarcPolicy": null
       },
@@ -424,7 +432,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:47.043Z",
+      "crawledAt": "2026-10-27T11:55:54.351Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -461,7 +469,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:47.835Z",
+      "crawledAt": "2026-10-27T11:55:56.521Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -494,7 +502,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:48.542Z",
+      "crawledAt": "2026-10-27T11:55:56.702Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -509,15 +517,18 @@
       "publishedContacts": [],
       "emailPattern": null,
       "mailPosture": {
-        "hasMx": false,
-        "mx": [],
+        "hasMx": true,
+        "mx": [
+          "mxa-003a4d01.gslb.pphosted.com",
+          "mxb-003a4d01.gslb.pphosted.com"
+        ],
         "hasSpf": true,
         "dmarcPolicy": null
       },
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:49.389Z",
+      "crawledAt": "2026-10-27T11:55:57.024Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -544,7 +555,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:50.158Z",
+      "crawledAt": "2026-10-27T11:55:58.002Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -587,7 +598,7 @@
         }
       ],
       "robotsAllowsCareers": false,
-      "crawledAt": "2026-10-19T12:45:50.357Z",
+      "crawledAt": "2026-10-27T11:55:59.163Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -613,8 +624,8 @@
       },
       "otherAddressCount": 0,
       "publicRecords": [],
-      "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-19T12:45:52.397Z",
+      "robotsAllowsCareers": true,
+      "crawledAt": "2026-10-27T11:56:00.010Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -642,8 +653,8 @@
         "hasMx": true,
         "mx": [
           "mail-1.linkedin.com",
-          "mail-c.linkedin.com",
-          "mail-d.linkedin.com"
+          "mail-2.linkedin.com",
+          "mail-3.linkedin.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -657,7 +668,7 @@
         }
       ],
       "robotsAllowsCareers": false,
-      "crawledAt": "2026-10-19T12:45:53.262Z",
+      "crawledAt": "2026-10-27T11:56:00.205Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -690,7 +701,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:53.876Z",
+      "crawledAt": "2026-10-27T11:56:00.319Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -726,7 +737,7 @@
         }
       ],
       "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-19T12:45:54.260Z",
+      "crawledAt": "2026-10-27T11:56:00.768Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -773,7 +784,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:54.582Z",
+      "crawledAt": "2026-10-27T11:56:01.207Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -791,12 +802,12 @@
         "patterns": [
           {
             "pattern": "{first}",
-            "share": 0.929,
-            "sampleSize": 13
+            "share": 0.917,
+            "sampleSize": 11
           },
           {
             "pattern": "{first}{last}",
-            "share": 0.071,
+            "share": 0.083,
             "sampleSize": 1
           }
         ],
@@ -821,7 +832,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:55.350Z",
+      "crawledAt": "2026-10-27T11:56:01.519Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -836,15 +847,18 @@
       "publishedContacts": [],
       "emailPattern": null,
       "mailPosture": {
-        "hasMx": false,
-        "mx": [],
+        "hasMx": true,
+        "mx": [
+          "mxa-00386c03.gslb.pphosted.com",
+          "mxb-00386c03.gslb.pphosted.com"
+        ],
         "hasSpf": true,
         "dmarcPolicy": null
       },
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:57.238Z",
+      "crawledAt": "2026-10-27T11:56:02.077Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -871,7 +885,7 @@
       "otherAddressCount": 1,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:57.946Z",
+      "crawledAt": "2026-10-27T11:56:03.833Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -898,7 +912,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:58.639Z",
+      "crawledAt": "2026-10-27T11:56:04.224Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -931,7 +945,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:58.980Z",
+      "crawledAt": "2026-10-27T11:56:05.219Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -971,7 +985,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:59.567Z",
+      "crawledAt": "2026-10-27T11:56:05.445Z",
       "error": null,
       "reachability": "direct",
       "atsOnly": false
@@ -996,7 +1010,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:59.724Z",
+      "crawledAt": "2026-10-27T11:56:05.780Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -1015,7 +1029,7 @@
           {
             "pattern": "{first}.{last}",
             "share": 1,
-            "sampleSize": 9
+            "sampleSize": 8
           }
         ],
         "observedFrom": "github-org-commits"
@@ -1023,9 +1037,9 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "alt4.aspmx.l.google.com",
           "aspmx.l.google.com",
-          "alt2.aspmx.l.google.com"
+          "alt2.aspmx.l.google.com",
+          "alt1.aspmx.l.google.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -1044,7 +1058,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:00.125Z",
+      "crawledAt": "2026-10-27T11:56:05.952Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -1091,7 +1105,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:02.500Z",
+      "crawledAt": "2026-10-27T11:56:06.060Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -1104,7 +1118,17 @@
       "recruiters": [],
       "recruiterCount": 0,
       "publishedContacts": [],
-      "emailPattern": null,
+      "emailPattern": {
+        "domain": "qualys.com",
+        "patterns": [
+          {
+            "pattern": "{f}{last}",
+            "share": 1,
+            "sampleSize": 8
+          }
+        ],
+        "observedFrom": "github-org-commits"
+      },
       "mailPosture": {
         "hasMx": true,
         "mx": [
@@ -1128,10 +1152,10 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:03.545Z",
+      "crawledAt": "2026-10-27T11:56:06.060Z",
       "error": null,
-      "reachability": "ats-only",
-      "atsOnly": true
+      "reachability": "pattern",
+      "atsOnly": false
     },
     "arctic-wolf": {
       "slug": "arctic-wolf",
@@ -1159,7 +1183,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:04.179Z",
+      "crawledAt": "2026-10-27T11:56:08.585Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -1172,7 +1196,17 @@
       "recruiters": [],
       "recruiterCount": 0,
       "publishedContacts": [],
-      "emailPattern": null,
+      "emailPattern": {
+        "domain": "proofpoint.com",
+        "patterns": [
+          {
+            "pattern": "{f}{last}",
+            "share": 1,
+            "sampleSize": 5
+          }
+        ],
+        "observedFrom": "github-org-commits"
+      },
       "mailPosture": {
         "hasMx": true,
         "mx": [
@@ -1202,10 +1236,10 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:04.493Z",
+      "crawledAt": "2026-10-27T11:56:08.796Z",
       "error": null,
-      "reachability": "ats-only",
-      "atsOnly": true
+      "reachability": "pattern",
+      "atsOnly": false
     },
     "darktrace": {
       "slug": "darktrace",
@@ -1215,7 +1249,17 @@
       "recruiters": [],
       "recruiterCount": 0,
       "publishedContacts": [],
-      "emailPattern": null,
+      "emailPattern": {
+        "domain": "darktrace.com",
+        "patterns": [
+          {
+            "pattern": "{first}.{last}",
+            "share": 1,
+            "sampleSize": 1
+          }
+        ],
+        "observedFrom": "github-org-commits"
+      },
       "mailPosture": {
         "hasMx": true,
         "mx": [
@@ -1238,10 +1282,10 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:04.957Z",
+      "crawledAt": "2026-10-27T11:56:08.856Z",
       "error": null,
-      "reachability": "ats-only",
-      "atsOnly": true
+      "reachability": "pattern",
+      "atsOnly": false
     },
     "fortinet": {
       "slug": "fortinet",
@@ -1251,7 +1295,17 @@
       "recruiters": [],
       "recruiterCount": 0,
       "publishedContacts": [],
-      "emailPattern": null,
+      "emailPattern": {
+        "domain": "fortinet.com",
+        "patterns": [
+          {
+            "pattern": "{f}{last}",
+            "share": 1,
+            "sampleSize": 4
+          }
+        ],
+        "observedFrom": "github-org-commits"
+      },
       "mailPosture": {
         "hasMx": true,
         "mx": [
@@ -1279,10 +1333,10 @@
         }
       ],
       "robotsAllowsCareers": false,
-      "crawledAt": "2026-10-19T12:46:10.063Z",
+      "crawledAt": "2026-10-27T11:56:09.808Z",
       "error": null,
-      "reachability": "ats-only",
-      "atsOnly": true
+      "reachability": "pattern",
+      "atsOnly": false
     },
     "kla": {
       "slug": "kla",
@@ -1303,9 +1357,9 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "mxa-00001b01.gslb.pphosted.com",
           "mxb-00001b01.gslb.pphosted.com",
-          "mx0a-00001b01.pphosted.com"
+          "mx0a-00001b01.pphosted.com",
+          "mx0b-00001b01.pphosted.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -1319,7 +1373,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:10.501Z",
+      "crawledAt": "2026-10-27T11:56:10.052Z",
       "error": null,
       "reachability": "direct",
       "atsOnly": false
@@ -1337,7 +1391,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-19T12:50:03.622Z",
+      "crawledAt": "2026-10-27T12:00:07.355Z",
       "error": "analog.com exceeded 90000ms",
       "reachability": "ats-only",
       "atsOnly": true
@@ -1354,8 +1408,8 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "mxa-0002e601.gslb.pphosted.com",
-          "mxb-0002e601.gslb.pphosted.com"
+          "mxb-0002e601.gslb.pphosted.com",
+          "mxa-0002e601.gslb.pphosted.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -1384,7 +1438,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:10.655Z",
+      "crawledAt": "2026-10-27T11:56:14.301Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -1411,7 +1465,7 @@
       "otherAddressCount": 1,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:12.474Z",
+      "crawledAt": "2026-10-27T11:56:16.329Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -1444,7 +1498,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:12.795Z",
+      "crawledAt": "2026-10-27T11:56:16.884Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -1475,7 +1529,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:13.141Z",
+      "crawledAt": "2026-10-27T11:56:17.369Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -1506,7 +1560,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:14.524Z",
+      "crawledAt": "2026-10-27T11:56:18.199Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -1545,7 +1599,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:14.570Z",
+      "crawledAt": "2026-10-27T11:56:18.553Z",
       "error": null,
       "reachability": "direct",
       "atsOnly": false
@@ -1589,7 +1643,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:16.274Z",
+      "crawledAt": "2026-10-27T11:56:18.615Z",
       "error": null,
       "reachability": "direct",
       "atsOnly": false
@@ -1645,7 +1699,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:16.565Z",
+      "crawledAt": "2026-10-27T11:56:19.396Z",
       "error": null,
       "reachability": "direct",
       "atsOnly": false
@@ -1676,7 +1730,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:16.672Z",
+      "crawledAt": "2026-10-27T11:56:20.259Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -1694,7 +1748,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-19T12:50:07.128Z",
+      "crawledAt": "2026-10-27T12:00:08.650Z",
       "error": "caterpillar.com exceeded 90000ms",
       "reachability": "ats-only",
       "atsOnly": true
@@ -1712,7 +1766,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-19T12:50:11.220Z",
+      "crawledAt": "2026-10-27T12:00:13.341Z",
       "error": "ford.com exceeded 90000ms",
       "reachability": "ats-only",
       "atsOnly": true
@@ -1729,9 +1783,9 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "alt1.aspmx.l.google.com",
           "aspmx3.googlemail.com",
-          "aspmx.l.google.com"
+          "aspmx.l.google.com",
+          "alt1.aspmx.l.google.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -1745,7 +1799,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:16.987Z",
+      "crawledAt": "2026-10-27T11:56:20.818Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -1777,7 +1831,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:17.342Z",
+      "crawledAt": "2026-10-27T11:56:21.003Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -1810,7 +1864,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:18.475Z",
+      "crawledAt": "2026-10-27T11:56:21.057Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -1843,7 +1897,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:19.531Z",
+      "crawledAt": "2026-10-27T11:56:22.017Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -1876,7 +1930,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:19.595Z",
+      "crawledAt": "2026-10-27T11:56:22.744Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -1903,7 +1957,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:20.781Z",
+      "crawledAt": "2026-10-27T11:56:23.669Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -1930,7 +1984,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:21.040Z",
+      "crawledAt": "2026-10-27T11:56:23.860Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -1973,7 +2027,7 @@
         }
       ],
       "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-19T12:46:21.885Z",
+      "crawledAt": "2026-10-27T11:56:24.223Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -2018,7 +2072,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:22.530Z",
+      "crawledAt": "2026-10-27T11:56:24.571Z",
       "error": null,
       "reachability": "direct",
       "atsOnly": false
@@ -2063,7 +2117,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:34.027Z",
+      "crawledAt": "2026-10-27T11:58:35.926Z",
       "error": null,
       "reachability": "direct",
       "atsOnly": false
@@ -2094,7 +2148,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:23.409Z",
+      "crawledAt": "2026-10-27T11:56:26.074Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -2127,7 +2181,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:24.522Z",
+      "crawledAt": "2026-10-27T11:56:27.081Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -2152,7 +2206,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:24.894Z",
+      "crawledAt": "2026-10-27T11:56:27.379Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -2185,7 +2239,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:25.172Z",
+      "crawledAt": "2026-10-27T11:56:27.948Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -2218,7 +2272,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:25.530Z",
+      "crawledAt": "2026-10-27T11:56:28.530Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -2231,27 +2285,7 @@
       "recruiters": [],
       "recruiterCount": 0,
       "publishedContacts": [],
-      "emailPattern": {
-        "domain": "dlocal.com",
-        "patterns": [
-          {
-            "pattern": "{f}{last}",
-            "share": 0.333,
-            "sampleSize": 1
-          },
-          {
-            "pattern": "{first}",
-            "share": 0.333,
-            "sampleSize": 1
-          },
-          {
-            "pattern": "{first}.{last}",
-            "share": 0.333,
-            "sampleSize": 1
-          }
-        ],
-        "observedFrom": "github-org-commits"
-      },
+      "emailPattern": null,
       "mailPosture": {
         "hasMx": true,
         "mx": [
@@ -2271,10 +2305,10 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:26.123Z",
+      "crawledAt": "2026-10-27T11:56:28.769Z",
       "error": null,
-      "reachability": "pattern",
-      "atsOnly": false
+      "reachability": "ats-only",
+      "atsOnly": true
     },
     "andela": {
       "slug": "andela",
@@ -2302,7 +2336,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:27.578Z",
+      "crawledAt": "2026-10-27T11:56:30.039Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -2329,7 +2363,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-19T12:46:27.867Z",
+      "crawledAt": "2026-10-27T11:56:30.210Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -2356,7 +2390,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:28.968Z",
+      "crawledAt": "2026-10-27T11:56:31.009Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -2373,8 +2407,8 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "alt3.aspmx.l.google.com",
           "alt1.aspmx.l.google.com",
+          "alt4.aspmx.l.google.com",
           "aspmx.l.google.com"
         ],
         "hasSpf": true,
@@ -2383,7 +2417,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:29.004Z",
+      "crawledAt": "2026-10-27T11:56:31.198Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -2408,7 +2442,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:29.415Z",
+      "crawledAt": "2026-10-27T11:56:31.322Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -2425,9 +2459,9 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "alt2.aspmx.l.google.com",
+          "aspmx.l.google.com",
           "alt3.aspmx.l.google.com",
-          "aspmx.l.google.com"
+          "alt4.aspmx.l.google.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -2451,7 +2485,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:29.648Z",
+      "crawledAt": "2026-10-27T11:56:31.860Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -2468,9 +2502,9 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "aspmx3.googlemail.com",
-          "aspmx2.googlemail.com",
-          "aspmx.l.google.com"
+          "aspmx.l.google.com",
+          "alt2.aspmx.l.google.com",
+          "aspmx3.googlemail.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -2489,7 +2523,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:30.889Z",
+      "crawledAt": "2026-10-27T11:56:33.104Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -2532,7 +2566,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:31.211Z",
+      "crawledAt": "2026-10-27T11:56:33.647Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -2545,17 +2579,7 @@
       "recruiters": [],
       "recruiterCount": 0,
       "publishedContacts": [],
-      "emailPattern": {
-        "domain": "n26.com",
-        "patterns": [
-          {
-            "pattern": "{first}.{last}",
-            "share": 1,
-            "sampleSize": 4
-          }
-        ],
-        "observedFrom": "github-org-commits"
-      },
+      "emailPattern": null,
       "mailPosture": {
         "hasMx": true,
         "mx": [
@@ -2566,13 +2590,13 @@
         "hasSpf": true,
         "dmarcPolicy": null
       },
-      "otherAddressCount": 0,
+      "otherAddressCount": 1,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:31.938Z",
+      "crawledAt": "2026-10-27T11:56:34.067Z",
       "error": null,
-      "reachability": "pattern",
-      "atsOnly": false
+      "reachability": "ats-only",
+      "atsOnly": true
     },
     "celonis": {
       "slug": "celonis",
@@ -2586,7 +2610,7 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "aspmx.l.google.com",
+          "aspmx3.googlemail.com",
           "aspmx2.googlemail.com",
           "alt1.aspmx.l.google.com"
         ],
@@ -2602,7 +2626,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:31.988Z",
+      "crawledAt": "2026-10-27T11:56:34.190Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -2627,15 +2651,9 @@
         "dmarcPolicy": null
       },
       "otherAddressCount": 0,
-      "publicRecords": [
-        {
-          "address": "dns@doctolib.fr",
-          "kind": "rdap",
-          "evidence": "RDAP technical entity for doctolib.fr (rdap.org)"
-        }
-      ],
+      "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:32.111Z",
+      "crawledAt": "2026-10-27T11:56:35.182Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -2648,23 +2666,13 @@
       "recruiters": [],
       "recruiterCount": 0,
       "publishedContacts": [],
-      "emailPattern": {
-        "domain": "blablacar.com",
-        "patterns": [
-          {
-            "pattern": "{first}.{last}",
-            "share": 1,
-            "sampleSize": 12
-          }
-        ],
-        "observedFrom": "github-org-commits"
-      },
+      "emailPattern": null,
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "alt3.aspmx.l.google.com",
           "aspmx.l.google.com",
-          "alt4.aspmx.l.google.com"
+          "alt3.aspmx.l.google.com",
+          "alt1.aspmx.l.google.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -2672,10 +2680,10 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-19T12:46:32.804Z",
+      "crawledAt": "2026-10-27T11:56:35.595Z",
       "error": null,
-      "reachability": "pattern",
-      "atsOnly": false
+      "reachability": "ats-only",
+      "atsOnly": true
     },
     "cabify": {
       "slug": "cabify",
@@ -2710,7 +2718,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:33.412Z",
+      "crawledAt": "2026-10-27T11:56:35.896Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -2723,17 +2731,7 @@
       "recruiters": [],
       "recruiterCount": 0,
       "publishedContacts": [],
-      "emailPattern": {
-        "domain": "satispay.com",
-        "patterns": [
-          {
-            "pattern": "{first}.{last}",
-            "share": 1,
-            "sampleSize": 3
-          }
-        ],
-        "observedFrom": "github-org-commits"
-      },
+      "emailPattern": null,
       "mailPosture": {
         "hasMx": true,
         "mx": [
@@ -2758,10 +2756,10 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:33.470Z",
+      "crawledAt": "2026-10-27T11:56:37.640Z",
       "error": null,
-      "reachability": "pattern",
-      "atsOnly": false
+      "reachability": "ats-only",
+      "atsOnly": true
     },
     "zego": {
       "slug": "zego",
@@ -2785,7 +2783,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:35.054Z",
+      "crawledAt": "2026-10-27T11:56:38.163Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -2798,17 +2796,7 @@
       "recruiters": [],
       "recruiterCount": 0,
       "publishedContacts": [],
-      "emailPattern": {
-        "domain": "swile.co",
-        "patterns": [
-          {
-            "pattern": "{first}.{last}",
-            "share": 1,
-            "sampleSize": 1
-          }
-        ],
-        "observedFrom": "github-org-commits"
-      },
+      "emailPattern": null,
       "mailPosture": {
         "hasMx": true,
         "mx": [
@@ -2828,10 +2816,10 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:35.897Z",
+      "crawledAt": "2026-10-27T11:56:38.925Z",
       "error": null,
-      "reachability": "pattern",
-      "atsOnly": false
+      "reachability": "ats-only",
+      "atsOnly": true
     },
     "swiggy": {
       "slug": "swiggy",
@@ -2855,7 +2843,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-19T12:46:37.262Z",
+      "crawledAt": "2026-10-27T11:56:39.980Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -2898,7 +2886,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:37.323Z",
+      "crawledAt": "2026-10-27T11:56:40.848Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -2915,9 +2903,9 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "aspmx.l.google.com",
-          "alt4.aspmx.l.google.com",
-          "alt2.aspmx.l.google.com"
+          "alt1.aspmx.l.google.com",
+          "alt3.aspmx.l.google.com",
+          "alt4.aspmx.l.google.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -2925,7 +2913,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:38.096Z",
+      "crawledAt": "2026-10-27T11:56:41.053Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -2938,17 +2926,7 @@
       "recruiters": [],
       "recruiterCount": 0,
       "publishedContacts": [],
-      "emailPattern": {
-        "domain": "canva.com",
-        "patterns": [
-          {
-            "pattern": "{first}.{l}",
-            "share": 1,
-            "sampleSize": 1
-          }
-        ],
-        "observedFrom": "github-org-commits"
-      },
+      "emailPattern": null,
       "mailPosture": {
         "hasMx": true,
         "mx": [
@@ -2973,10 +2951,10 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:38.218Z",
+      "crawledAt": "2026-10-27T11:56:41.575Z",
       "error": null,
-      "reachability": "pattern",
-      "atsOnly": false
+      "reachability": "ats-only",
+      "atsOnly": true
     },
     "paypay": {
       "slug": "paypay",
@@ -3000,7 +2978,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:38.238Z",
+      "crawledAt": "2026-10-27T11:56:42.337Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -3038,7 +3016,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:38.449Z",
+      "crawledAt": "2026-10-27T11:56:43.392Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -3071,7 +3049,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:39.729Z",
+      "crawledAt": "2026-10-27T11:56:46.677Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -3084,17 +3062,7 @@
       "recruiters": [],
       "recruiterCount": 0,
       "publishedContacts": [],
-      "emailPattern": {
-        "domain": "tanium.com",
-        "patterns": [
-          {
-            "pattern": "{first}.{last}",
-            "share": 1,
-            "sampleSize": 3
-          }
-        ],
-        "observedFrom": "github-org-commits"
-      },
+      "emailPattern": null,
       "mailPosture": {
         "hasMx": true,
         "mx": [
@@ -3113,10 +3081,10 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:41.590Z",
+      "crawledAt": "2026-10-27T11:56:47.536Z",
       "error": null,
-      "reachability": "pattern",
-      "atsOnly": false
+      "reachability": "ats-only",
+      "atsOnly": true
     },
     "agoda": {
       "slug": "agoda",
@@ -3144,7 +3112,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:42.092Z",
+      "crawledAt": "2026-10-27T11:56:49.047Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -3186,7 +3154,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:43.628Z",
+      "crawledAt": "2026-10-27T11:56:49.188Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -3212,7 +3180,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-19T12:46:44.242Z",
+      "crawledAt": "2026-10-27T11:56:49.554Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -3255,7 +3223,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:46.120Z",
+      "crawledAt": "2026-10-27T11:56:49.983Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -3293,7 +3261,7 @@
         }
       ],
       "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-19T12:46:46.124Z",
+      "crawledAt": "2026-10-27T11:56:50.166Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -3317,7 +3285,7 @@
         "hasSpf": true,
         "dmarcPolicy": null
       },
-      "otherAddressCount": 0,
+      "otherAddressCount": 1,
       "publicRecords": [
         {
           "address": "dmarc@jumia.com",
@@ -3326,7 +3294,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:46.603Z",
+      "crawledAt": "2026-10-27T11:56:51.181Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -3375,7 +3343,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:46.707Z",
+      "crawledAt": "2026-10-27T11:56:51.198Z",
       "error": null,
       "reachability": "direct",
       "atsOnly": false
@@ -3393,12 +3361,17 @@
         "patterns": [
           {
             "pattern": "{f}{last}",
-            "share": 0.833,
+            "share": 0.714,
             "sampleSize": 5
           },
           {
+            "pattern": "{f}{l}",
+            "share": 0.143,
+            "sampleSize": 1
+          },
+          {
             "pattern": "{first}{last}",
-            "share": 0.167,
+            "share": 0.143,
             "sampleSize": 1
           }
         ],
@@ -3407,9 +3380,9 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "aspmx.l.google.com",
+          "aspmx2.googlemail.com",
           "alt1.aspmx.l.google.com",
-          "alt2.aspmx.l.google.com"
+          "aspmx5.googlemail.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -3423,7 +3396,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:47.248Z",
+      "crawledAt": "2026-10-27T11:56:51.438Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -3456,7 +3429,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:49.304Z",
+      "crawledAt": "2026-10-27T11:56:51.995Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -3490,7 +3463,7 @@
         "mx": [
           "aspmx.l.google.com",
           "alt1.aspmx.l.google.com",
-          "alt2.aspmx.l.google.com"
+          "alt3.aspmx.l.google.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -3504,7 +3477,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:49.317Z",
+      "crawledAt": "2026-10-27T11:56:53.123Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -3528,7 +3501,7 @@
         "hasSpf": true,
         "dmarcPolicy": null
       },
-      "otherAddressCount": 0,
+      "otherAddressCount": 1,
       "publicRecords": [
         {
           "address": "dmarc-reports@anthropic.com",
@@ -3537,7 +3510,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:49.359Z",
+      "crawledAt": "2026-10-27T11:56:54.071Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -3556,7 +3529,7 @@
           {
             "pattern": "{first}.{last}",
             "share": 1,
-            "sampleSize": 13
+            "sampleSize": 12
           }
         ],
         "observedFrom": "github-org-commits"
@@ -3590,7 +3563,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:49.565Z",
+      "crawledAt": "2026-10-27T11:56:54.365Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -3633,7 +3606,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:50.754Z",
+      "crawledAt": "2026-10-27T11:56:54.521Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -3671,7 +3644,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:51.023Z",
+      "crawledAt": "2026-10-27T11:56:54.813Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -3708,7 +3681,7 @@
       "otherAddressCount": 1,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:51.575Z",
+      "crawledAt": "2026-10-27T11:56:55.391Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -3725,8 +3698,8 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "alt2.aspmx.l.google.com",
-          "alt4.aspmx.l.google.com",
+          "aspmx.l.google.com",
+          "alt1.aspmx.l.google.com",
           "alt3.aspmx.l.google.com"
         ],
         "hasSpf": true,
@@ -3751,7 +3724,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:52.426Z",
+      "crawledAt": "2026-10-27T11:56:55.502Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -3778,7 +3751,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:52.747Z",
+      "crawledAt": "2026-10-27T11:56:55.602Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -3805,7 +3778,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:52.919Z",
+      "crawledAt": "2026-10-27T11:56:56.480Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -3845,7 +3818,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:53.519Z",
+      "crawledAt": "2026-10-27T11:56:56.624Z",
       "error": null,
       "reachability": "direct",
       "atsOnly": false
@@ -3878,7 +3851,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:53.811Z",
+      "crawledAt": "2026-10-27T11:56:56.881Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -3895,14 +3868,14 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "alt2.aspmx.l.google.com",
-          "alt3.aspmx.l.google.com",
-          "alt1.aspmx.l.google.com"
+          "alt1.aspmx.l.google.com",
+          "aspmx.l.google.com",
+          "alt3.aspmx.l.google.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
       },
-      "otherAddressCount": 5,
+      "otherAddressCount": 6,
       "publicRecords": [
         {
           "address": "emailreports@figure.com",
@@ -3911,7 +3884,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:53.887Z",
+      "crawledAt": "2026-10-27T11:56:56.965Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -3955,7 +3928,7 @@
       "otherAddressCount": 2,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:54.478Z",
+      "crawledAt": "2026-10-27T11:56:57.567Z",
       "error": null,
       "reachability": "direct",
       "atsOnly": false
@@ -3988,7 +3961,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:54.837Z",
+      "crawledAt": "2026-10-27T11:56:58.179Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -4019,7 +3992,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:55.184Z",
+      "crawledAt": "2026-10-27T11:56:58.282Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -4037,8 +4010,8 @@
         "hasMx": true,
         "mx": [
           "alt2.aspmx.l.google.com",
-          "alt4.aspmx.l.google.com",
-          "alt1.aspmx.l.google.com"
+          "alt1.aspmx.l.google.com",
+          "alt4.aspmx.l.google.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -4052,7 +4025,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:55.381Z",
+      "crawledAt": "2026-10-27T11:56:58.301Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -4079,7 +4052,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:55.685Z",
+      "crawledAt": "2026-10-27T11:56:59.004Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -4115,7 +4088,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:55.690Z",
+      "crawledAt": "2026-10-27T11:56:59.414Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -4156,7 +4129,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:56.477Z",
+      "crawledAt": "2026-10-27T11:56:59.599Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -4175,7 +4148,7 @@
           {
             "pattern": "{first}.{last}",
             "share": 1,
-            "sampleSize": 5
+            "sampleSize": 6
           }
         ],
         "observedFrom": "github-org-commits"
@@ -4208,7 +4181,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:56.652Z",
+      "crawledAt": "2026-10-27T11:56:59.864Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -4227,7 +4200,7 @@
           {
             "pattern": "{first}.{last}",
             "share": 1,
-            "sampleSize": 8
+            "sampleSize": 6
           }
         ],
         "observedFrom": "github-org-commits"
@@ -4235,8 +4208,8 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "us-smtp-inbound-1.mimecast.com",
-          "us-smtp-inbound-2.mimecast.com"
+          "us-smtp-inbound-2.mimecast.com",
+          "us-smtp-inbound-1.mimecast.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -4244,7 +4217,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-19T12:46:57.013Z",
+      "crawledAt": "2026-10-27T11:57:00.111Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -4269,7 +4242,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:51.320Z",
+      "crawledAt": "2026-10-27T11:57:55.723Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -4312,7 +4285,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:57.093Z",
+      "crawledAt": "2026-10-27T11:57:00.114Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -4329,8 +4302,8 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "mxa-003ea501.gslb.gpphosted.com",
-          "mxb-003ea501.gslb.gpphosted.com"
+          "mxb-003ea501.gslb.gpphosted.com",
+          "mxa-003ea501.gslb.gpphosted.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -4344,7 +4317,7 @@
         }
       ],
       "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-19T12:46:58.496Z",
+      "crawledAt": "2026-10-27T11:57:01.696Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -4514,7 +4487,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:59.805Z",
+      "crawledAt": "2026-10-27T11:57:03.044Z",
       "error": null,
       "reachability": "named",
       "atsOnly": false
@@ -4598,8 +4571,8 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "mxa-002a6301.gslb.pphosted.com",
-          "mxb-002a6301.gslb.pphosted.com"
+          "mxb-002a6301.gslb.pphosted.com",
+          "mxa-002a6301.gslb.pphosted.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -4607,7 +4580,7 @@
       "otherAddressCount": 2,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:46:59.941Z",
+      "crawledAt": "2026-10-27T11:57:03.273Z",
       "error": null,
       "reachability": "named",
       "atsOnly": false
@@ -4624,8 +4597,8 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "mx0a-001dcc01.pphosted.com",
-          "mx0b-001dcc01.pphosted.com"
+          "mx0b-001dcc01.pphosted.com",
+          "mx0a-001dcc01.pphosted.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -4639,7 +4612,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:00.277Z",
+      "crawledAt": "2026-10-27T11:57:03.974Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -4675,7 +4648,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:00.475Z",
+      "crawledAt": "2026-10-27T11:57:05.302Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -4700,7 +4673,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-19T12:47:02.631Z",
+      "crawledAt": "2026-10-27T11:57:05.393Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -4727,8 +4700,8 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "mxa-0020ab02.gslb.pphosted.com",
-          "mxb-0020ab02.gslb.pphosted.com"
+          "mxb-0020ab02.gslb.pphosted.com",
+          "mxa-0020ab02.gslb.pphosted.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -4747,7 +4720,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:02.923Z",
+      "crawledAt": "2026-10-27T11:57:05.480Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -4788,7 +4761,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:03.598Z",
+      "crawledAt": "2026-10-27T11:57:06.412Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -4815,7 +4788,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:04.304Z",
+      "crawledAt": "2026-10-27T11:57:06.731Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -4848,7 +4821,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:05.589Z",
+      "crawledAt": "2026-10-27T11:57:07.046Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -4875,7 +4848,7 @@
       "otherAddressCount": 2,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:05.898Z",
+      "crawledAt": "2026-10-27T11:57:07.731Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -4898,7 +4871,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:07.101Z",
+      "crawledAt": "2026-10-27T11:57:07.990Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -4936,7 +4909,7 @@
         }
       ],
       "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-19T12:47:07.294Z",
+      "crawledAt": "2026-10-27T11:57:08.810Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -4969,7 +4942,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:07.464Z",
+      "crawledAt": "2026-10-27T11:57:08.841Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -4994,7 +4967,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:07.808Z",
+      "crawledAt": "2026-10-27T11:57:09.752Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -5021,7 +4994,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:08.911Z",
+      "crawledAt": "2026-10-27T11:57:09.815Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -5048,7 +5021,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-19T12:47:09.097Z",
+      "crawledAt": "2026-10-27T11:57:10.001Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -5073,7 +5046,7 @@
       "otherAddressCount": 1,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:09.433Z",
+      "crawledAt": "2026-10-27T11:57:10.012Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -5096,7 +5069,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:05.801Z",
+      "crawledAt": "2026-10-27T11:58:09.159Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -5129,7 +5102,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:09.924Z",
+      "crawledAt": "2026-10-27T11:57:10.218Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -5156,7 +5129,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:10.203Z",
+      "crawledAt": "2026-10-27T11:57:11.012Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -5194,7 +5167,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:10.300Z",
+      "crawledAt": "2026-10-27T11:57:11.067Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -5227,7 +5200,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:10.448Z",
+      "crawledAt": "2026-10-27T11:57:11.311Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -5245,7 +5218,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-19T12:50:14.538Z",
+      "crawledAt": "2026-10-27T12:00:13.674Z",
       "error": "bybit.com exceeded 90000ms",
       "reachability": "ats-only",
       "atsOnly": true
@@ -5279,7 +5252,7 @@
         "hasSpf": true,
         "dmarcPolicy": null
       },
-      "otherAddressCount": 4,
+      "otherAddressCount": 3,
       "publicRecords": [
         {
           "address": "spam-alerts@gemini.com",
@@ -5293,7 +5266,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:10.607Z",
+      "crawledAt": "2026-10-27T11:57:11.398Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -5319,7 +5292,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:11.077Z",
+      "crawledAt": "2026-10-27T11:57:11.756Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -5344,9 +5317,15 @@
         "dmarcPolicy": null
       },
       "otherAddressCount": 0,
-      "publicRecords": [],
+      "publicRecords": [
+        {
+          "address": "security@bitpanda.com",
+          "kind": "security-txt",
+          "evidence": "Contact: line in https://bitpanda.com/.well-known/security.txt (RFC 9116)"
+        }
+      ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:12.634Z",
+      "crawledAt": "2026-10-27T11:57:13.122Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -5359,7 +5338,22 @@
       "recruiters": [],
       "recruiterCount": 0,
       "publishedContacts": [],
-      "emailPattern": null,
+      "emailPattern": {
+        "domain": "fireblocks.com",
+        "patterns": [
+          {
+            "pattern": "{f}{last}",
+            "share": 0.75,
+            "sampleSize": 3
+          },
+          {
+            "pattern": "{first}",
+            "share": 0.25,
+            "sampleSize": 1
+          }
+        ],
+        "observedFrom": "github-org-commits"
+      },
       "mailPosture": {
         "hasMx": true,
         "mx": [
@@ -5378,10 +5372,10 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:13.320Z",
+      "crawledAt": "2026-10-27T11:57:14.063Z",
       "error": null,
-      "reachability": "ats-only",
-      "atsOnly": true
+      "reachability": "pattern",
+      "atsOnly": false
     },
     "anchorage-digital": {
       "slug": "anchorage-digital",
@@ -5396,8 +5390,8 @@
         "hasMx": true,
         "mx": [
           "alt4.aspmx.l.google.com",
-          "alt3.aspmx.l.google.com",
-          "aspmx.l.google.com"
+          "alt2.aspmx.l.google.com",
+          "alt1.aspmx.l.google.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -5405,7 +5399,7 @@
       "otherAddressCount": 2,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:13.775Z",
+      "crawledAt": "2026-10-27T11:57:14.327Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -5432,7 +5426,7 @@
       "otherAddressCount": 3,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:14.072Z",
+      "crawledAt": "2026-10-27T11:57:15.440Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -5445,7 +5439,17 @@
       "recruiters": [],
       "recruiterCount": 0,
       "publishedContacts": [],
-      "emailPattern": null,
+      "emailPattern": {
+        "domain": "uniswap.org",
+        "patterns": [
+          {
+            "pattern": "{first}.{last}",
+            "share": 1,
+            "sampleSize": 4
+          }
+        ],
+        "observedFrom": "github-org-commits"
+      },
       "mailPosture": {
         "hasMx": true,
         "mx": [
@@ -5463,10 +5467,10 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:14.800Z",
+      "crawledAt": "2026-10-27T11:57:15.814Z",
       "error": null,
-      "reachability": "ats-only",
-      "atsOnly": true
+      "reachability": "pattern",
+      "atsOnly": false
     },
     "offchain-labs": {
       "slug": "offchain-labs",
@@ -5496,7 +5500,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:15.015Z",
+      "crawledAt": "2026-10-27T11:57:16.156Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -5513,8 +5517,8 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "alt4.aspmx.l.google.com",
-          "alt3.aspmx.l.google.com",
+          "alt1.aspmx.l.google.com",
+          "aspmx.l.google.com",
           "alt2.aspmx.l.google.com"
         ],
         "hasSpf": true,
@@ -5529,7 +5533,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:15.314Z",
+      "crawledAt": "2026-10-27T11:57:16.799Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -5542,7 +5546,17 @@
       "recruiters": [],
       "recruiterCount": 0,
       "publishedContacts": [],
-      "emailPattern": null,
+      "emailPattern": {
+        "domain": "mystenlabs.com",
+        "patterns": [
+          {
+            "pattern": "{first}.{last}",
+            "share": 1,
+            "sampleSize": 1
+          }
+        ],
+        "observedFrom": "github-org-commits"
+      },
       "mailPosture": {
         "hasMx": true,
         "mx": [
@@ -5562,10 +5576,10 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:15.755Z",
+      "crawledAt": "2026-10-27T11:57:17.035Z",
       "error": null,
-      "reachability": "ats-only",
-      "atsOnly": true
+      "reachability": "pattern",
+      "atsOnly": false
     },
     "immutable": {
       "slug": "immutable",
@@ -5575,7 +5589,22 @@
       "recruiters": [],
       "recruiterCount": 0,
       "publishedContacts": [],
-      "emailPattern": null,
+      "emailPattern": {
+        "domain": "immutable.com",
+        "patterns": [
+          {
+            "pattern": "{first}.{last}",
+            "share": 0.8,
+            "sampleSize": 4
+          },
+          {
+            "pattern": "{first}",
+            "share": 0.2,
+            "sampleSize": 1
+          }
+        ],
+        "observedFrom": "github-org-commits"
+      },
       "mailPosture": {
         "hasMx": true,
         "mx": [
@@ -5595,10 +5624,10 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:17.003Z",
+      "crawledAt": "2026-10-27T11:57:19.012Z",
       "error": null,
-      "reachability": "ats-only",
-      "atsOnly": true
+      "reachability": "pattern",
+      "atsOnly": false
     },
     "blockdaemon": {
       "slug": "blockdaemon",
@@ -5608,7 +5637,22 @@
       "recruiters": [],
       "recruiterCount": 0,
       "publishedContacts": [],
-      "emailPattern": null,
+      "emailPattern": {
+        "domain": "blockdaemon.com",
+        "patterns": [
+          {
+            "pattern": "{f}{last}",
+            "share": 0.8,
+            "sampleSize": 4
+          },
+          {
+            "pattern": "{first}",
+            "share": 0.2,
+            "sampleSize": 1
+          }
+        ],
+        "observedFrom": "github-org-commits"
+      },
       "mailPosture": {
         "hasMx": true,
         "mx": [
@@ -5628,10 +5672,10 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:17.030Z",
+      "crawledAt": "2026-10-27T11:57:19.140Z",
       "error": null,
-      "reachability": "ats-only",
-      "atsOnly": true
+      "reachability": "pattern",
+      "atsOnly": false
     },
     "ledger": {
       "slug": "ledger",
@@ -5661,7 +5705,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:17.061Z",
+      "crawledAt": "2026-10-27T11:57:19.321Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -5688,7 +5732,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:17.482Z",
+      "crawledAt": "2026-10-27T11:57:19.539Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -5721,7 +5765,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:17.831Z",
+      "crawledAt": "2026-10-27T11:57:20.478Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -5734,13 +5778,23 @@
       "recruiters": [],
       "recruiterCount": 0,
       "publishedContacts": [],
-      "emailPattern": null,
+      "emailPattern": {
+        "domain": "blackrock.com",
+        "patterns": [
+          {
+            "pattern": "{first}.{last}",
+            "share": 1,
+            "sampleSize": 3
+          }
+        ],
+        "observedFrom": "github-org-commits"
+      },
       "mailPosture": {
         "hasMx": true,
         "mx": [
           "mx0a-00162b01.pphosted.com",
-          "mx0b-00162b01.pphosted.com",
-          "mxa-00162b01.gslb.pphosted.com"
+          "mxa-00162b01.gslb.pphosted.com",
+          "mxb-00162b01.gslb.pphosted.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -5754,10 +5808,10 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:18.976Z",
+      "crawledAt": "2026-10-27T11:57:21.684Z",
       "error": null,
-      "reachability": "ats-only",
-      "atsOnly": true
+      "reachability": "pattern",
+      "atsOnly": false
     },
     "tether": {
       "slug": "tether",
@@ -5787,7 +5841,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:18.977Z",
+      "crawledAt": "2026-10-27T11:57:21.968Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -5825,7 +5879,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:19.186Z",
+      "crawledAt": "2026-10-27T11:57:22.067Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -5866,7 +5920,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:19.224Z",
+      "crawledAt": "2026-10-27T11:57:22.352Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -5880,26 +5934,11 @@
       "recruiterCount": 0,
       "publishedContacts": [],
       "emailPattern": null,
-      "mailPosture": {
-        "hasMx": true,
-        "mx": [
-          "aspmx.l.google.com",
-          "alt1.aspmx.l.google.com",
-          "alt2.aspmx.l.google.com"
-        ],
-        "hasSpf": true,
-        "dmarcPolicy": null
-      },
-      "otherAddressCount": 4,
-      "publicRecords": [
-        {
-          "address": "it-dmarc@animocabrands.com",
-          "kind": "dmarc",
-          "evidence": "rua= in the _dmarc.animocabrands.com TXT record (RFC 7489)"
-        }
-      ],
-      "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:19.422Z",
+      "mailPosture": null,
+      "otherAddressCount": 0,
+      "publicRecords": [],
+      "robotsAllowsCareers": null,
+      "crawledAt": "2026-10-27T11:57:23.005Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -5932,7 +5971,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:20.555Z",
+      "crawledAt": "2026-10-27T11:57:23.050Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -5945,7 +5984,17 @@
       "recruiters": [],
       "recruiterCount": 0,
       "publishedContacts": [],
-      "emailPattern": null,
+      "emailPattern": {
+        "domain": "openzeppelin.com",
+        "patterns": [
+          {
+            "pattern": "{first}.{last}",
+            "share": 1,
+            "sampleSize": 1
+          }
+        ],
+        "observedFrom": "github-org-commits"
+      },
       "mailPosture": {
         "hasMx": true,
         "mx": [
@@ -5965,10 +6014,10 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:20.676Z",
+      "crawledAt": "2026-10-27T11:57:23.802Z",
       "error": null,
-      "reachability": "ats-only",
-      "atsOnly": true
+      "reachability": "pattern",
+      "atsOnly": false
     },
     "trail-of-bits": {
       "slug": "trail-of-bits",
@@ -5978,7 +6027,22 @@
       "recruiters": [],
       "recruiterCount": 0,
       "publishedContacts": [],
-      "emailPattern": null,
+      "emailPattern": {
+        "domain": "trailofbits.com",
+        "patterns": [
+          {
+            "pattern": "{first}.{last}",
+            "share": 0.889,
+            "sampleSize": 8
+          },
+          {
+            "pattern": "{first}",
+            "share": 0.111,
+            "sampleSize": 1
+          }
+        ],
+        "observedFrom": "github-org-commits"
+      },
       "mailPosture": {
         "hasMx": true,
         "mx": [
@@ -5998,10 +6062,10 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:21.370Z",
+      "crawledAt": "2026-10-27T11:57:23.905Z",
       "error": null,
-      "reachability": "ats-only",
-      "atsOnly": true
+      "reachability": "pattern",
+      "atsOnly": false
     },
     "hackerone": {
       "slug": "hackerone",
@@ -6031,7 +6095,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:22.304Z",
+      "crawledAt": "2026-10-27T11:57:24.137Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -6051,7 +6115,17 @@
           "evidence": "Published on bugcrowd.com careers/contact pages"
         }
       ],
-      "emailPattern": null,
+      "emailPattern": {
+        "domain": "bugcrowd.com",
+        "patterns": [
+          {
+            "pattern": "{first}.{last}",
+            "share": 1,
+            "sampleSize": 8
+          }
+        ],
+        "observedFrom": "github-org-commits"
+      },
       "mailPosture": {
         "hasMx": true,
         "mx": [
@@ -6065,7 +6139,7 @@
       "otherAddressCount": 2,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:22.516Z",
+      "crawledAt": "2026-10-27T11:57:25.348Z",
       "error": null,
       "reachability": "direct",
       "atsOnly": false
@@ -6090,7 +6164,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:22.746Z",
+      "crawledAt": "2026-10-27T11:57:25.419Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -6107,8 +6181,8 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
+          "alt2.aspmx.l.google.com",
           "aspmx.l.google.com",
-          "aspmx3.googlemail.com",
           "aspmx2.googlemail.com"
         ],
         "hasSpf": true,
@@ -6117,7 +6191,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:22.933Z",
+      "crawledAt": "2026-10-27T11:57:26.061Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -6140,7 +6214,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:23.612Z",
+      "crawledAt": "2026-10-27T11:57:26.495Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -6165,7 +6239,7 @@
       "otherAddressCount": 3,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:24.393Z",
+      "crawledAt": "2026-10-27T11:57:27.310Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -6198,7 +6272,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:24.459Z",
+      "crawledAt": "2026-10-27T11:57:28.114Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -6231,7 +6305,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:25.315Z",
+      "crawledAt": "2026-10-27T11:57:28.266Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -6249,8 +6323,8 @@
         "hasMx": true,
         "mx": [
           "aspmx2.googlemail.com",
-          "alt1.aspmx.l.google.com",
-          "alt2.aspmx.l.google.com"
+          "aspmx.l.google.com",
+          "aspmx3.googlemail.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -6264,7 +6338,7 @@
         }
       ],
       "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-19T12:47:25.530Z",
+      "crawledAt": "2026-10-27T11:57:28.849Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -6295,7 +6369,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:26.057Z",
+      "crawledAt": "2026-10-27T11:57:29.019Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -6326,7 +6400,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:26.129Z",
+      "crawledAt": "2026-10-27T11:57:29.085Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -6359,7 +6433,7 @@
         }
       ],
       "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-19T12:47:27.198Z",
+      "crawledAt": "2026-10-27T11:57:29.162Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -6392,7 +6466,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:27.329Z",
+      "crawledAt": "2026-10-27T11:57:30.110Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -6409,7 +6483,7 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "mx1.hc497-45.ca.iphmx.com",
+          "mx2.hc497-45.ca.iphmx.com",
           "mx2.hc4518-41.iphmx.com",
           "mx1.hc4518-41.iphmx.com"
         ],
@@ -6425,7 +6499,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-20T11:15:31.688Z",
+      "crawledAt": "2026-10-27T12:00:08.650Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -6457,7 +6531,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:28.652Z",
+      "crawledAt": "2026-10-27T11:57:31.563Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -6481,7 +6555,7 @@
         "hasSpf": true,
         "dmarcPolicy": null
       },
-      "otherAddressCount": 0,
+      "otherAddressCount": 1,
       "publicRecords": [
         {
           "address": "dmarc-reports@stripe.com",
@@ -6495,7 +6569,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:28.866Z",
+      "crawledAt": "2026-10-27T11:57:32.012Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -6522,7 +6596,7 @@
       "otherAddressCount": 1,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:29.796Z",
+      "crawledAt": "2026-10-27T11:57:32.953Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -6560,7 +6634,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:30.988Z",
+      "crawledAt": "2026-10-27T11:57:34.260Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -6577,9 +6651,9 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "mxb-00191d01.gslb.pphosted.com",
-          "mxa-00191d01.gslb.pphosted.com",
-          "mx0a-00191d01.pphosted.com"
+          "mx0a-00191d01.pphosted.com",
+          "mx0b-00191d01.pphosted.com",
+          "mxb-00191d01.gslb.pphosted.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -6593,7 +6667,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-20T11:15:31.688Z",
+      "crawledAt": "2026-10-27T12:00:10.828Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -6631,7 +6705,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:32.702Z",
+      "crawledAt": "2026-10-27T11:57:35.445Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -6669,7 +6743,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:33.047Z",
+      "crawledAt": "2026-10-27T11:57:36.114Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -6709,7 +6783,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:33.083Z",
+      "crawledAt": "2026-10-27T11:57:36.617Z",
       "error": null,
       "reachability": "direct",
       "atsOnly": false
@@ -6747,7 +6821,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:33.565Z",
+      "crawledAt": "2026-10-27T11:57:36.789Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -6790,7 +6864,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:33.996Z",
+      "crawledAt": "2026-10-27T11:57:36.939Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -6823,7 +6897,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:34.007Z",
+      "crawledAt": "2026-10-27T11:57:37.079Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -6850,7 +6924,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": false,
-      "crawledAt": "2026-10-19T12:47:34.055Z",
+      "crawledAt": "2026-10-27T11:57:37.529Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -6883,7 +6957,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:34.684Z",
+      "crawledAt": "2026-10-27T11:57:38.115Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -6906,7 +6980,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:34.979Z",
+      "crawledAt": "2026-10-27T11:57:38.249Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -6939,7 +7013,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:35.145Z",
+      "crawledAt": "2026-10-27T11:57:38.441Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -6972,7 +7046,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:35.212Z",
+      "crawledAt": "2026-10-27T11:57:38.476Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -7010,7 +7084,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:35.387Z",
+      "crawledAt": "2026-10-27T11:57:39.258Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -7023,28 +7097,13 @@
       "recruiters": [],
       "recruiterCount": 0,
       "publishedContacts": [],
-      "emailPattern": {
-        "domain": "elevenlabs.io",
-        "patterns": [
-          {
-            "pattern": "{first}",
-            "share": 0.667,
-            "sampleSize": 2
-          },
-          {
-            "pattern": "{first}.{last}",
-            "share": 0.333,
-            "sampleSize": 1
-          }
-        ],
-        "observedFrom": "github-org-commits"
-      },
+      "emailPattern": null,
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "alt1.aspmx.l.google.com",
-          "alt2.aspmx.l.google.com",
-          "aspmx.l.google.com"
+          "aspmx.l.google.com",
+          "alt3.aspmx.l.google.com",
+          "alt4.aspmx.l.google.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -7058,10 +7117,10 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:35.863Z",
+      "crawledAt": "2026-10-27T11:57:39.609Z",
       "error": null,
-      "reachability": "pattern",
-      "atsOnly": false
+      "reachability": "ats-only",
+      "atsOnly": true
     },
     "bank-of-america": {
       "slug": "bank-of-america",
@@ -7217,7 +7276,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:36.834Z",
+      "crawledAt": "2026-10-27T11:57:39.795Z",
       "error": null,
       "reachability": "named",
       "atsOnly": false
@@ -7406,7 +7465,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:36.994Z",
+      "crawledAt": "2026-10-27T11:57:40.094Z",
       "error": null,
       "reachability": "named",
       "atsOnly": false
@@ -7443,7 +7502,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:37.044Z",
+      "crawledAt": "2026-10-27T11:57:40.169Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -7560,7 +7619,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:37.100Z",
+      "crawledAt": "2026-10-27T11:57:40.261Z",
       "error": null,
       "reachability": "direct",
       "atsOnly": false
@@ -7689,7 +7748,7 @@
         "hasMx": true,
         "mx": [
           "mxa-00004003.gslb.pphosted.com",
-          "mxb-00004003.gslb.pphosted.com",
+          "mx0b-00004003.pphosted.com",
           "mx0a-00004003.pphosted.com"
         ],
         "hasSpf": true,
@@ -7709,7 +7768,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:37.393Z",
+      "crawledAt": "2026-10-27T11:57:40.763Z",
       "error": null,
       "reachability": "named",
       "atsOnly": false
@@ -7805,7 +7864,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-19T12:50:21.470Z",
+      "crawledAt": "2026-10-27T12:00:23.738Z",
       "error": "morganstanley.com exceeded 90000ms",
       "reachability": "named",
       "atsOnly": false
@@ -7911,9 +7970,9 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "smtp13.db.com",
-          "smtp14.db.com",
-          "smtp24.db.com"
+          "smtp24.db.com",
+          "smtp23.db.com",
+          "smtp12.db.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -7932,7 +7991,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:38.671Z",
+      "crawledAt": "2026-10-27T11:57:41.486Z",
       "error": null,
       "reachability": "named",
       "atsOnly": false
@@ -8020,7 +8079,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:39.706Z",
+      "crawledAt": "2026-10-27T11:57:42.369Z",
       "error": null,
       "reachability": "named",
       "atsOnly": false
@@ -8105,7 +8164,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-19T12:47:41.468Z",
+      "crawledAt": "2026-10-27T11:57:42.481Z",
       "error": null,
       "reachability": "named",
       "atsOnly": false
@@ -8176,7 +8235,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:41.485Z",
+      "crawledAt": "2026-10-27T11:57:42.490Z",
       "error": null,
       "reachability": "named",
       "atsOnly": false
@@ -8299,7 +8358,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:42.361Z",
+      "crawledAt": "2026-10-27T11:57:45.071Z",
       "error": null,
       "reachability": "named",
       "atsOnly": false
@@ -8435,7 +8494,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:42.794Z",
+      "crawledAt": "2026-10-27T11:57:46.365Z",
       "error": null,
       "reachability": "named",
       "atsOnly": false
@@ -8571,7 +8630,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:42.991Z",
+      "crawledAt": "2026-10-27T11:57:46.646Z",
       "error": null,
       "reachability": "named",
       "atsOnly": false
@@ -8664,7 +8723,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:46.191Z",
+      "crawledAt": "2026-10-27T11:57:49.731Z",
       "error": null,
       "reachability": "named",
       "atsOnly": false
@@ -8696,7 +8755,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:31.427Z",
+      "crawledAt": "2026-10-27T11:54:41.020Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -8937,7 +8996,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:46.990Z",
+      "crawledAt": "2026-10-27T11:57:50.559Z",
       "error": null,
       "reachability": "named",
       "atsOnly": false
@@ -8963,7 +9022,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:47.458Z",
+      "crawledAt": "2026-10-27T11:57:51.179Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -8989,7 +9048,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:47.597Z",
+      "crawledAt": "2026-10-27T11:57:53.031Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -9015,7 +9074,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:48.599Z",
+      "crawledAt": "2026-10-27T11:57:53.287Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -9042,7 +9101,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:50.438Z",
+      "crawledAt": "2026-10-27T11:57:53.422Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -9087,7 +9146,7 @@
       "otherAddressCount": 6,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:51.155Z",
+      "crawledAt": "2026-10-27T11:57:54.319Z",
       "error": null,
       "reachability": "direct",
       "atsOnly": false
@@ -9119,7 +9178,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:51.941Z",
+      "crawledAt": "2026-10-27T11:57:56.226Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -9146,7 +9205,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:52.780Z",
+      "crawledAt": "2026-10-27T11:57:56.564Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -9178,7 +9237,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:52.991Z",
+      "crawledAt": "2026-10-27T11:57:57.391Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -9204,7 +9263,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:53.544Z",
+      "crawledAt": "2026-10-27T11:57:57.597Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -9244,7 +9303,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:53.764Z",
+      "crawledAt": "2026-10-27T11:57:57.747Z",
       "error": null,
       "reachability": "direct",
       "atsOnly": false
@@ -9276,7 +9335,7 @@
       "otherAddressCount": 1,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:54.170Z",
+      "crawledAt": "2026-10-27T11:57:58.819Z",
       "error": null,
       "reachability": "direct",
       "atsOnly": false
@@ -9312,7 +9371,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:56.234Z",
+      "crawledAt": "2026-10-27T11:58:00.117Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -9329,18 +9388,23 @@
         "domain": "microsoft.com",
         "patterns": [
           {
-            "pattern": "{last}{first}",
-            "share": 0.5,
-            "sampleSize": 2
+            "pattern": "{f}{last}",
+            "share": 0.333,
+            "sampleSize": 3
           },
           {
             "pattern": "{first}{last}",
-            "share": 0.25,
-            "sampleSize": 1
+            "share": 0.333,
+            "sampleSize": 3
+          },
+          {
+            "pattern": "{last}{first}",
+            "share": 0.222,
+            "sampleSize": 2
           },
           {
             "pattern": "{first}.{last}",
-            "share": 0.25,
+            "share": 0.111,
             "sampleSize": 1
           }
         ],
@@ -9373,7 +9437,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-20T11:15:31.688Z",
+      "crawledAt": "2026-10-27T12:00:13.341Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -9404,7 +9468,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:34.309Z",
+      "crawledAt": "2026-10-27T11:58:36.177Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -9535,7 +9599,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:47:57.541Z",
+      "crawledAt": "2026-10-27T11:58:00.963Z",
       "error": null,
       "reachability": "named",
       "atsOnly": false
@@ -9553,7 +9617,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-19T12:51:33.623Z",
+      "crawledAt": "2026-10-27T12:01:37.356Z",
       "error": "hpe.com exceeded 90000ms",
       "reachability": "ats-only",
       "atsOnly": true
@@ -9572,7 +9636,7 @@
           {
             "pattern": "{first}.{last}",
             "share": 1,
-            "sampleSize": 20
+            "sampleSize": 18
           }
         ],
         "observedFrom": "github-org-commits"
@@ -9580,8 +9644,8 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "mxb-00069f01.gslb.pphosted.com",
-          "mxa-00069f01.gslb.pphosted.com"
+          "mxa-00069f01.gslb.pphosted.com",
+          "mxb-00069f01.gslb.pphosted.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -9595,7 +9659,7 @@
         }
       ],
       "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-19T12:47:59.533Z",
+      "crawledAt": "2026-10-27T11:58:04.794Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -9613,13 +9677,8 @@
         "patterns": [
           {
             "pattern": "{f}{last}",
-            "share": 0.833,
+            "share": 1,
             "sampleSize": 5
-          },
-          {
-            "pattern": "{first}{last}",
-            "share": 0.167,
-            "sampleSize": 1
           }
         ],
         "observedFrom": "github-org-commits"
@@ -9643,7 +9702,7 @@
         }
       ],
       "robotsAllowsCareers": false,
-      "crawledAt": "2026-10-19T12:48:00.257Z",
+      "crawledAt": "2026-10-27T11:58:04.877Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -9668,7 +9727,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-19T12:48:02.476Z",
+      "crawledAt": "2026-10-27T11:58:05.121Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -9810,7 +9869,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:02.708Z",
+      "crawledAt": "2026-10-27T11:58:05.316Z",
       "error": null,
       "reachability": "named",
       "atsOnly": false
@@ -9895,13 +9954,8 @@
         "patterns": [
           {
             "pattern": "{first}.{last}",
-            "share": 0.833,
-            "sampleSize": 5
-          },
-          {
-            "pattern": "{last}.{first}",
-            "share": 0.167,
-            "sampleSize": 1
+            "share": 1,
+            "sampleSize": 6
           }
         ],
         "observedFrom": "github-org-commits"
@@ -9909,9 +9963,9 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "mxa-00078002.gslb.pphosted.com",
-          "mxb-00078002.gslb.pphosted.com",
-          "mc.smtp.2.mastercard.com"
+          "mc.smtp.2.mastercard.com",
+          "mc.smtp.1.mastercard.com",
+          "mxa-00078002.gslb.pphosted.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -9925,7 +9979,7 @@
         }
       ],
       "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-19T12:48:02.712Z",
+      "crawledAt": "2026-10-27T11:58:06.981Z",
       "error": null,
       "reachability": "named",
       "atsOnly": false
@@ -9998,9 +10052,9 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
+          "portal1i.visa.com",
           "portal2i.visa.com",
-          "portal4i.visa.com",
-          "portal1i.visa.com"
+          "portal4i.visa.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -10008,7 +10062,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:02.848Z",
+      "crawledAt": "2026-10-27T11:58:07.207Z",
       "error": null,
       "reachability": "named",
       "atsOnly": false
@@ -10054,7 +10108,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:04.301Z",
+      "crawledAt": "2026-10-27T11:58:07.480Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -10087,7 +10141,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:04.530Z",
+      "crawledAt": "2026-10-27T11:58:07.892Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -10120,7 +10174,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:05.025Z",
+      "crawledAt": "2026-10-27T11:58:08.851Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -10138,22 +10192,22 @@
         "patterns": [
           {
             "pattern": "{first}.{last}",
-            "share": 0.833,
-            "sampleSize": 15
+            "share": 0.87,
+            "sampleSize": 20
           },
           {
             "pattern": "{last}.{first}",
-            "share": 0.056,
+            "share": 0.043,
             "sampleSize": 1
           },
           {
             "pattern": "{f}.{last}",
-            "share": 0.056,
+            "share": 0.043,
             "sampleSize": 1
           },
           {
             "pattern": "{first}",
-            "share": 0.056,
+            "share": 0.043,
             "sampleSize": 1
           }
         ],
@@ -10178,7 +10232,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:07.259Z",
+      "crawledAt": "2026-10-27T11:58:09.991Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -10196,13 +10250,8 @@
         "patterns": [
           {
             "pattern": "{first}.{last}",
-            "share": 0.947,
-            "sampleSize": 18
-          },
-          {
-            "pattern": "{first}",
-            "share": 0.053,
-            "sampleSize": 1
+            "share": 1,
+            "sampleSize": 13
           }
         ],
         "observedFrom": "github-org-commits"
@@ -10226,7 +10275,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:07.607Z",
+      "crawledAt": "2026-10-27T11:58:10.439Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -10253,9 +10302,9 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "aspmx2.googlemail.com",
-          "alt2.aspmx.l.google.com",
-          "aspmx3.googlemail.com"
+          "alt1.aspmx.l.google.com",
+          "aspmx3.googlemail.com",
+          "aspmx.l.google.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -10269,7 +10318,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:08.003Z",
+      "crawledAt": "2026-10-27T11:58:10.515Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -10295,7 +10344,7 @@
           {
             "pattern": "{first}.{last}",
             "share": 1,
-            "sampleSize": 9
+            "sampleSize": 8
           }
         ],
         "observedFrom": "github-org-commits"
@@ -10323,7 +10372,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:08.853Z",
+      "crawledAt": "2026-10-27T11:58:12.488Z",
       "error": null,
       "reachability": "direct",
       "atsOnly": false
@@ -10341,12 +10390,12 @@
         "patterns": [
           {
             "pattern": "{first}.{last}",
-            "share": 0.875,
-            "sampleSize": 7
+            "share": 0.889,
+            "sampleSize": 8
           },
           {
             "pattern": "{first}",
-            "share": 0.125,
+            "share": 0.111,
             "sampleSize": 1
           }
         ],
@@ -10375,7 +10424,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:10.128Z",
+      "crawledAt": "2026-10-27T11:58:12.883Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -10407,9 +10456,9 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "alt1.aspmx.l.google.com",
           "aspmx.l.google.com",
-          "aspmx3.googlemail.com"
+          "alt1.aspmx.l.google.com",
+          "alt2.aspmx.l.google.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -10428,7 +10477,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:10.885Z",
+      "crawledAt": "2026-10-27T11:58:13.514Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -10476,7 +10525,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:12.509Z",
+      "crawledAt": "2026-10-27T11:58:15.267Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -10524,7 +10573,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:13.214Z",
+      "crawledAt": "2026-10-27T11:58:16.887Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -10556,7 +10605,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:15.409Z",
+      "crawledAt": "2026-10-27T11:58:17.009Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -10573,14 +10622,14 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
+          "aspmx.l.google.com",
           "alt3.aspmx.l.google.com",
-          "alt4.aspmx.l.google.com",
-          "alt1.aspmx.l.google.com"
+          "alt4.aspmx.l.google.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
       },
-      "otherAddressCount": 4,
+      "otherAddressCount": 3,
       "publicRecords": [
         {
           "address": "grc@grafana.com",
@@ -10589,7 +10638,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:15.601Z",
+      "crawledAt": "2026-10-27T11:58:17.078Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -10622,7 +10671,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:16.281Z",
+      "crawledAt": "2026-10-27T11:58:18.407Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -10655,7 +10704,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:16.416Z",
+      "crawledAt": "2026-10-27T11:58:18.658Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -10668,7 +10717,17 @@
       "recruiters": [],
       "recruiterCount": 0,
       "publishedContacts": [],
-      "emailPattern": null,
+      "emailPattern": {
+        "domain": "fivetran.com",
+        "patterns": [
+          {
+            "pattern": "{first}.{last}",
+            "share": 1,
+            "sampleSize": 7
+          }
+        ],
+        "observedFrom": "github-org-commits"
+      },
       "mailPosture": {
         "hasMx": true,
         "mx": [
@@ -10688,10 +10747,10 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:16.430Z",
+      "crawledAt": "2026-10-27T11:58:19.320Z",
       "error": null,
-      "reachability": "ats-only",
-      "atsOnly": true
+      "reachability": "pattern",
+      "atsOnly": false
     },
     "airbyte": {
       "slug": "airbyte",
@@ -10715,7 +10774,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:17.380Z",
+      "crawledAt": "2026-10-27T11:58:20.377Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -10749,7 +10808,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:17.542Z",
+      "crawledAt": "2026-10-27T11:58:21.030Z",
       "error": null,
       "reachability": "direct",
       "atsOnly": false
@@ -10766,9 +10825,9 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "alt4.aspmx.l.google.com",
-          "alt3.aspmx.l.google.com",
-          "aspmx.l.google.com"
+          "aspmx.l.google.com",
+          "alt1.aspmx.l.google.com",
+          "alt2.aspmx.l.google.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -10792,7 +10851,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:18.967Z",
+      "crawledAt": "2026-10-27T11:58:21.243Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -10830,7 +10889,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:19.015Z",
+      "crawledAt": "2026-10-27T11:58:21.585Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -10873,7 +10932,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:20.139Z",
+      "crawledAt": "2026-10-27T11:58:22.203Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -10906,7 +10965,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:20.667Z",
+      "crawledAt": "2026-10-27T11:58:22.520Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -10933,7 +10992,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-19T12:48:22.299Z",
+      "crawledAt": "2026-10-27T11:58:24.194Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -10972,7 +11031,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:22.326Z",
+      "crawledAt": "2026-10-27T11:58:24.424Z",
       "error": null,
       "reachability": "direct",
       "atsOnly": false
@@ -11009,7 +11068,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:22.555Z",
+      "crawledAt": "2026-10-27T11:58:24.994Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -11036,7 +11095,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:23.266Z",
+      "crawledAt": "2026-10-27T11:58:25.057Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -11063,7 +11122,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-19T12:48:25.171Z",
+      "crawledAt": "2026-10-27T11:58:27.026Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -11087,7 +11146,7 @@
         "hasSpf": true,
         "dmarcPolicy": null
       },
-      "otherAddressCount": 0,
+      "otherAddressCount": 1,
       "publicRecords": [
         {
           "address": "dmarc-reports@carta.com",
@@ -11096,7 +11155,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:25.778Z",
+      "crawledAt": "2026-10-27T11:58:27.145Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -11123,7 +11182,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:25.942Z",
+      "crawledAt": "2026-10-27T11:58:27.862Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -11157,7 +11216,7 @@
       "otherAddressCount": 1,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:25.956Z",
+      "crawledAt": "2026-10-27T11:58:27.917Z",
       "error": null,
       "reachability": "direct",
       "atsOnly": false
@@ -11189,7 +11248,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:26.833Z",
+      "crawledAt": "2026-10-27T11:58:29.173Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -11216,7 +11275,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:27.662Z",
+      "crawledAt": "2026-10-27T11:58:30.001Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -11242,7 +11301,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-19T12:44:31.428Z",
+      "crawledAt": "2026-10-27T11:54:41.021Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -11278,7 +11337,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:31.428Z",
+      "crawledAt": "2026-10-27T11:54:41.021Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -11303,13 +11362,13 @@
         "patterns": [
           {
             "pattern": "{f}{last}",
-            "share": 0.824,
-            "sampleSize": 28
+            "share": 0.844,
+            "sampleSize": 27
           },
           {
             "pattern": "{first}{last}",
-            "share": 0.176,
-            "sampleSize": 6
+            "share": 0.156,
+            "sampleSize": 5
           }
         ],
         "observedFrom": "github-org-commits"
@@ -11317,9 +11376,9 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "ASPMX.L.GOOGLE.com",
           "ASPMX3.GOOGLEMAIL.com",
-          "ALT2.ASPMX.L.GOOGLE.com"
+          "ALT1.ASPMX.L.GOOGLE.com",
+          "ASPMX2.GOOGLEMAIL.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -11333,7 +11392,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:31.428Z",
+      "crawledAt": "2026-10-27T11:54:41.021Z",
       "error": null,
       "reachability": "direct",
       "atsOnly": false
@@ -11358,7 +11417,7 @@
       "otherAddressCount": 1,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:31.428Z",
+      "crawledAt": "2026-10-27T11:54:41.021Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -11396,7 +11455,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:31.428Z",
+      "crawledAt": "2026-10-27T11:54:41.021Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -11436,7 +11495,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:32.618Z",
+      "crawledAt": "2026-10-27T11:54:42.763Z",
       "error": null,
       "reachability": "direct",
       "atsOnly": false
@@ -11477,7 +11536,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:33.254Z",
+      "crawledAt": "2026-10-27T11:54:43.357Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -11510,7 +11569,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:34.723Z",
+      "crawledAt": "2026-10-27T11:54:44.626Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -11535,13 +11594,8 @@
         "patterns": [
           {
             "pattern": "{first}",
-            "share": 0.5,
-            "sampleSize": 1
-          },
-          {
-            "pattern": "{first}.{last}",
-            "share": 0.5,
-            "sampleSize": 1
+            "share": 1,
+            "sampleSize": 2
           }
         ],
         "observedFrom": "github-org-commits"
@@ -11563,7 +11617,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:35.575Z",
+      "crawledAt": "2026-10-27T11:54:45.795Z",
       "error": null,
       "reachability": "direct",
       "atsOnly": false
@@ -11581,12 +11635,12 @@
         "patterns": [
           {
             "pattern": "{f}{last}",
-            "share": 0.875,
-            "sampleSize": 7
+            "share": 0.857,
+            "sampleSize": 6
           },
           {
             "pattern": "{first}.{last}",
-            "share": 0.125,
+            "share": 0.143,
             "sampleSize": 1
           }
         ],
@@ -11604,7 +11658,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:35.869Z",
+      "crawledAt": "2026-10-27T11:54:46.096Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -11631,7 +11685,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:36.056Z",
+      "crawledAt": "2026-10-27T11:54:46.710Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -11662,7 +11716,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:36.770Z",
+      "crawledAt": "2026-10-27T11:54:47.702Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -11681,7 +11735,7 @@
           {
             "pattern": "{first}.{last}",
             "share": 1,
-            "sampleSize": 3
+            "sampleSize": 2
           }
         ],
         "observedFrom": "github-org-commits"
@@ -11710,7 +11764,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:38.064Z",
+      "crawledAt": "2026-10-27T11:54:48.393Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -11737,7 +11791,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:39.401Z",
+      "crawledAt": "2026-10-27T11:54:49.558Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -11770,7 +11824,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:39.729Z",
+      "crawledAt": "2026-10-27T11:54:49.915Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -11808,7 +11862,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:39.884Z",
+      "crawledAt": "2026-10-27T11:54:50.447Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -11841,7 +11895,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:40.572Z",
+      "crawledAt": "2026-10-27T11:54:50.910Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -11866,7 +11920,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:40.654Z",
+      "crawledAt": "2026-10-27T11:54:50.971Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -11897,7 +11951,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:40.743Z",
+      "crawledAt": "2026-10-27T11:54:51.131Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -11922,7 +11976,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:41.494Z",
+      "crawledAt": "2026-10-27T11:54:51.339Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -11960,7 +12014,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:42.031Z",
+      "crawledAt": "2026-10-27T11:54:51.962Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -11977,9 +12031,9 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
+          "alt3.aspmx.l.google.com",
           "alt4.aspmx.l.google.com",
-          "alt1.aspmx.l.google.com",
-          "alt3.aspmx.l.google.com"
+          "alt2.aspmx.l.google.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -11987,7 +12041,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:42.068Z",
+      "crawledAt": "2026-10-27T11:54:52.379Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -12020,7 +12074,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:42.837Z",
+      "crawledAt": "2026-10-27T11:54:52.880Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -12073,7 +12127,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:43.061Z",
+      "crawledAt": "2026-10-27T11:54:52.894Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -12105,7 +12159,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:43.076Z",
+      "crawledAt": "2026-10-27T11:54:53.050Z",
       "error": null,
       "reachability": "direct",
       "atsOnly": false
@@ -12138,7 +12192,7 @@
         }
       ],
       "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-19T12:44:43.378Z",
+      "crawledAt": "2026-10-27T11:54:53.110Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -12171,7 +12225,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:44.420Z",
+      "crawledAt": "2026-10-27T11:54:53.840Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -12204,7 +12258,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:44.752Z",
+      "crawledAt": "2026-10-27T11:54:54.355Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -12237,7 +12291,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:44.849Z",
+      "crawledAt": "2026-10-27T11:54:54.628Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -12268,7 +12322,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:45.165Z",
+      "crawledAt": "2026-10-27T11:54:54.913Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -12295,7 +12349,7 @@
       "otherAddressCount": 3,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:45.640Z",
+      "crawledAt": "2026-10-27T11:54:55.562Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -12328,7 +12382,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:46.465Z",
+      "crawledAt": "2026-10-27T11:54:55.849Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -12354,7 +12408,7 @@
       "otherAddressCount": 1,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:46.705Z",
+      "crawledAt": "2026-10-27T11:54:55.979Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -12385,7 +12439,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:47.040Z",
+      "crawledAt": "2026-10-27T11:54:56.806Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -12418,7 +12472,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:47.296Z",
+      "crawledAt": "2026-10-27T11:54:56.975Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -12435,8 +12489,8 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
+          "alt2.aspmx.l.google.com",
           "aspmx.l.google.com",
-          "aspmx2.googlemail.com",
           "aspmx3.googlemail.com"
         ],
         "hasSpf": true,
@@ -12445,7 +12499,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:48.051Z",
+      "crawledAt": "2026-10-27T11:54:57.777Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -12478,7 +12532,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:48.103Z",
+      "crawledAt": "2026-10-27T11:54:57.802Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -12496,8 +12550,8 @@
         "hasMx": true,
         "mx": [
           "aspmx.l.google.com",
-          "ms41818301.msv1.invalid",
-          "alt1.aspmx.l.google.com"
+          "alt2.aspmx.l.google.com",
+          "alt4.aspmx.l.google.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -12516,7 +12570,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:48.694Z",
+      "crawledAt": "2026-10-27T11:54:57.807Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -12559,7 +12613,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:49.838Z",
+      "crawledAt": "2026-10-27T11:54:58.182Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -12586,7 +12640,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:51.573Z",
+      "crawledAt": "2026-10-27T11:54:59.165Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -12619,7 +12673,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:52.836Z",
+      "crawledAt": "2026-10-27T11:55:00.505Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -12652,7 +12706,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:53.869Z",
+      "crawledAt": "2026-10-27T11:55:02.160Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -12685,7 +12739,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:54.005Z",
+      "crawledAt": "2026-10-27T11:55:02.894Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -12708,7 +12762,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:54.849Z",
+      "crawledAt": "2026-10-27T11:55:03.052Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -12735,7 +12789,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:55.062Z",
+      "crawledAt": "2026-10-27T11:55:03.143Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -12777,7 +12831,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:55.614Z",
+      "crawledAt": "2026-10-27T11:55:03.223Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -12801,10 +12855,10 @@
         "hasSpf": true,
         "dmarcPolicy": null
       },
-      "otherAddressCount": 0,
+      "otherAddressCount": 1,
       "publicRecords": [],
-      "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-19T12:44:55.660Z",
+      "robotsAllowsCareers": true,
+      "crawledAt": "2026-10-27T11:55:03.736Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -12831,7 +12885,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:55.751Z",
+      "crawledAt": "2026-10-27T11:55:04.279Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -12869,7 +12923,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:55.789Z",
+      "crawledAt": "2026-10-27T11:55:04.282Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -12906,7 +12960,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-19T12:44:55.812Z",
+      "crawledAt": "2026-10-27T11:55:04.694Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -12942,7 +12996,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:56.459Z",
+      "crawledAt": "2026-10-27T11:55:04.727Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -12959,14 +13013,14 @@
         "domain": "descope.com",
         "patterns": [
           {
-            "pattern": "{first}",
-            "share": 0.667,
-            "sampleSize": 4
+            "pattern": "{first}.{last}",
+            "share": 0.5,
+            "sampleSize": 1
           },
           {
-            "pattern": "{first}.{last}",
-            "share": 0.333,
-            "sampleSize": 2
+            "pattern": "{first}",
+            "share": 0.5,
+            "sampleSize": 1
           }
         ],
         "observedFrom": "github-org-commits"
@@ -12990,7 +13044,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:56.981Z",
+      "crawledAt": "2026-10-27T11:55:05.560Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -13007,9 +13061,9 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "alt4.aspmx.l.google.com",
-          "alt1.aspmx.l.google.com",
-          "aspmx.l.google.com"
+          "aspmx.l.google.com",
+          "alt3.aspmx.l.google.com",
+          "alt1.aspmx.l.google.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -13017,7 +13071,7 @@
       "otherAddressCount": 2,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:57.654Z",
+      "crawledAt": "2026-10-27T11:55:05.609Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -13044,7 +13098,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:57.701Z",
+      "crawledAt": "2026-10-27T11:55:06.776Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -13082,7 +13136,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:58.691Z",
+      "crawledAt": "2026-10-27T11:55:06.983Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -13135,7 +13189,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:58.984Z",
+      "crawledAt": "2026-10-27T11:55:07.107Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -13172,7 +13226,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:59.388Z",
+      "crawledAt": "2026-10-27T11:55:07.634Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -13199,7 +13253,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:44:59.813Z",
+      "crawledAt": "2026-10-27T11:55:08.437Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -13230,7 +13284,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:00.121Z",
+      "crawledAt": "2026-10-27T11:55:08.866Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -13261,7 +13315,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:00.358Z",
+      "crawledAt": "2026-10-27T11:55:09.069Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -13285,8 +13339,8 @@
       },
       "otherAddressCount": 0,
       "publicRecords": [],
-      "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-19T12:45:01.211Z",
+      "robotsAllowsCareers": true,
+      "crawledAt": "2026-10-27T11:55:10.342Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -13304,7 +13358,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-19T12:46:02.446Z",
+      "crawledAt": "2026-10-27T11:56:06.047Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -13335,7 +13389,7 @@
         }
       ],
       "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-19T12:45:01.593Z",
+      "crawledAt": "2026-10-27T11:55:10.362Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -13376,7 +13430,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:01.611Z",
+      "crawledAt": "2026-10-27T11:55:11.538Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -13400,10 +13454,10 @@
         "hasSpf": true,
         "dmarcPolicy": null
       },
-      "otherAddressCount": 4,
+      "otherAddressCount": 1,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:02.923Z",
+      "crawledAt": "2026-10-27T11:55:11.982Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -13451,7 +13505,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:03.077Z",
+      "crawledAt": "2026-10-27T11:55:12.618Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -13484,7 +13538,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:04.098Z",
+      "crawledAt": "2026-10-27T11:55:13.138Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -13508,9 +13562,9 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "aspmx.l.google.com",
-          "alt4.aspmx.l.google.com",
-          "alt3.aspmx.l.google.com"
+          "alt3.aspmx.l.google.com",
+          "alt1.aspmx.l.google.com",
+          "alt2.aspmx.l.google.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -13524,7 +13578,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:06.217Z",
+      "crawledAt": "2026-10-27T11:55:14.572Z",
       "error": null,
       "reachability": "direct",
       "atsOnly": false
@@ -13551,7 +13605,7 @@
       "otherAddressCount": 6,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:06.452Z",
+      "crawledAt": "2026-10-27T11:55:14.859Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -13588,7 +13642,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:07.974Z",
+      "crawledAt": "2026-10-27T11:55:16.613Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -13606,16 +13660,16 @@
         "hasMx": true,
         "mx": [
           "alt1.aspmx.l.google.com",
-          "aspmx.l.google.com",
-          "alt2.aspmx.l.google.com"
+          "alt3.aspmx.l.google.com",
+          "alt4.aspmx.l.google.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
       },
-      "otherAddressCount": 0,
+      "otherAddressCount": 2,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:08.663Z",
+      "crawledAt": "2026-10-27T11:55:17.060Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -13642,7 +13696,7 @@
       "otherAddressCount": 1,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:09.182Z",
+      "crawledAt": "2026-10-27T11:55:17.897Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -13673,7 +13727,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:09.560Z",
+      "crawledAt": "2026-10-27T11:55:18.852Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -13710,7 +13764,7 @@
       "otherAddressCount": 1,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:09.782Z",
+      "crawledAt": "2026-10-27T11:55:18.962Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -13728,7 +13782,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-19T12:50:06.225Z",
+      "crawledAt": "2026-10-27T12:00:07.752Z",
       "error": "slope.so exceeded 90000ms",
       "reachability": "ats-only",
       "atsOnly": true
@@ -13765,7 +13819,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:11.272Z",
+      "crawledAt": "2026-10-27T11:55:19.081Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -13798,7 +13852,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:11.657Z",
+      "crawledAt": "2026-10-27T11:55:21.005Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -13851,7 +13905,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:13.800Z",
+      "crawledAt": "2026-10-27T11:55:22.237Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -13889,7 +13943,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:13.828Z",
+      "crawledAt": "2026-10-27T11:55:22.556Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -13906,9 +13960,9 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "alt4.aspmx.l.google.com",
           "aspmx.l.google.com",
-          "alt1.aspmx.l.google.com"
+          "alt2.aspmx.l.google.com",
+          "alt3.aspmx.l.google.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -13922,7 +13976,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:15.307Z",
+      "crawledAt": "2026-10-27T11:55:22.632Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -13955,7 +14009,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:15.988Z",
+      "crawledAt": "2026-10-27T11:55:24.125Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -13992,7 +14046,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:16.576Z",
+      "crawledAt": "2026-10-27T11:55:24.441Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -14025,7 +14079,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:16.863Z",
+      "crawledAt": "2026-10-27T11:55:25.157Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -14058,7 +14112,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:17.702Z",
+      "crawledAt": "2026-10-27T11:55:25.970Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -14075,9 +14129,9 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "alt2.aspmx.l.google.com",
-          "alt1.aspmx.l.google.com",
-          "aspmx2.googlemail.com"
+          "aspmx.l.google.com",
+          "aspmx2.googlemail.com",
+          "aspmx3.googlemail.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -14085,7 +14139,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:18.122Z",
+      "crawledAt": "2026-10-27T11:55:26.039Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -14137,7 +14191,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:18.367Z",
+      "crawledAt": "2026-10-27T11:55:27.777Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -14164,7 +14218,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:19.563Z",
+      "crawledAt": "2026-10-27T11:55:27.871Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -14189,7 +14243,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:20.390Z",
+      "crawledAt": "2026-10-27T11:55:27.944Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -14237,7 +14291,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:20.447Z",
+      "crawledAt": "2026-10-27T11:55:27.990Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -14264,7 +14318,7 @@
       "otherAddressCount": 1,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:22.029Z",
+      "crawledAt": "2026-10-27T11:55:30.394Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -14291,7 +14345,7 @@
       "otherAddressCount": 1,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:22.984Z",
+      "crawledAt": "2026-10-27T11:55:31.013Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -14318,7 +14372,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:25.690Z",
+      "crawledAt": "2026-10-27T11:55:33.032Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -14343,7 +14397,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:27.567Z",
+      "crawledAt": "2026-10-27T11:55:33.756Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -14376,7 +14430,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:28.091Z",
+      "crawledAt": "2026-10-27T11:55:34.933Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -14403,7 +14457,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:29.054Z",
+      "crawledAt": "2026-10-27T11:55:35.389Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -14443,7 +14497,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:29.319Z",
+      "crawledAt": "2026-10-27T11:55:36.640Z",
       "error": null,
       "reachability": "direct",
       "atsOnly": false
@@ -14477,7 +14531,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:30.235Z",
+      "crawledAt": "2026-10-27T11:55:36.808Z",
       "error": null,
       "reachability": "direct",
       "atsOnly": false
@@ -14502,7 +14556,7 @@
       "otherAddressCount": 2,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:31.100Z",
+      "crawledAt": "2026-10-27T11:55:36.992Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -14545,7 +14599,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:31.225Z",
+      "crawledAt": "2026-10-27T11:55:37.034Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -14562,9 +14616,9 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
+          "aspmx.l.google.com",
           "alt3.aspmx.l.google.com",
-          "alt2.aspmx.l.google.com",
-          "aspmx.l.google.com"
+          "alt2.aspmx.l.google.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -14578,7 +14632,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:32.899Z",
+      "crawledAt": "2026-10-27T11:55:38.789Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -14611,7 +14665,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:33.173Z",
+      "crawledAt": "2026-10-27T11:55:39.643Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -14628,9 +14682,9 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "alt2.aspmx.l.google.com",
-          "alt4.aspmx.l.google.com",
-          "aspmx.l.google.com"
+          "ms23235152.msv1.invalid",
+          "alt1.aspmx.l.google.com",
+          "alt4.aspmx.l.google.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -14644,7 +14698,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:33.384Z",
+      "crawledAt": "2026-10-27T11:55:40.139Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -14675,7 +14729,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:33.523Z",
+      "crawledAt": "2026-10-27T11:55:40.208Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -14700,7 +14754,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:33.985Z",
+      "crawledAt": "2026-10-27T11:55:40.260Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -14717,9 +14771,9 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
+          "alt2.aspmx.l.google.com",
           "alt1.aspmx.l.google.com",
-          "aspmx.l.google.com",
-          "alt2.aspmx.l.google.com"
+          "aspmx2.googlemail.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -14733,7 +14787,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:34.754Z",
+      "crawledAt": "2026-10-27T11:55:40.345Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -14758,7 +14812,7 @@
       "otherAddressCount": 1,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:35.090Z",
+      "crawledAt": "2026-10-27T11:55:41.493Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -14783,7 +14837,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:36.058Z",
+      "crawledAt": "2026-10-27T11:55:42.400Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -14800,9 +14854,9 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "alt2.aspmx.l.google.com",
-          "aspmx.l.google.com",
-          "ALT4.aspmx.l.google.com"
+          "ALT4.ASPMX.L.GOOGLE.com",
+          "ALT3.ASPMX.L.GOOGLE.com",
+          "alt1.ASPMX.L.GOOGLE.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -14810,7 +14864,7 @@
       "otherAddressCount": 1,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:36.084Z",
+      "crawledAt": "2026-10-27T11:55:42.706Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -14835,7 +14889,7 @@
       "otherAddressCount": 4,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:36.804Z",
+      "crawledAt": "2026-10-27T11:55:44.560Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -14866,7 +14920,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:38.385Z",
+      "crawledAt": "2026-10-27T11:55:45.752Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -14903,7 +14957,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:38.574Z",
+      "crawledAt": "2026-10-27T11:55:45.948Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -14936,7 +14990,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:39.276Z",
+      "crawledAt": "2026-10-27T11:55:46.179Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -14963,9 +15017,9 @@
       "mailPosture": {
         "hasMx": true,
         "mx": [
-          "aspmx.l.google.com",
+          "alt3.aspmx.l.google.com",
           "alt4.aspmx.l.google.com",
-          "alt2.aspmx.l.google.com"
+          "alt1.aspmx.l.google.com"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -14979,7 +15033,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:45:39.440Z",
+      "crawledAt": "2026-10-27T11:55:47.019Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
@@ -15005,7 +15059,7 @@
       "otherAddressCount": 1,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:30.643Z",
+      "crawledAt": "2026-10-27T11:58:31.023Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -15041,7 +15095,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:30.832Z",
+      "crawledAt": "2026-10-27T11:58:32.755Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -15074,7 +15128,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:30.845Z",
+      "crawledAt": "2026-10-27T11:58:33.201Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -15115,7 +15169,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:32.143Z",
+      "crawledAt": "2026-10-27T11:58:33.695Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -15147,7 +15201,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:32.657Z",
+      "crawledAt": "2026-10-27T11:58:34.502Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -15161,12 +15215,19 @@
       "recruiterCount": 0,
       "publishedContacts": [],
       "emailPattern": null,
-      "mailPosture": null,
+      "mailPosture": {
+        "hasMx": true,
+        "mx": [
+          "hdfcbank-com.mail.protection.outlook.com"
+        ],
+        "hasSpf": true,
+        "dmarcPolicy": null
+      },
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": null,
-      "crawledAt": "2026-10-19T12:51:36.226Z",
-      "error": "hdfcbank.com exceeded 90000ms",
+      "crawledAt": "2026-10-27T12:00:07.752Z",
+      "error": null,
       "reachability": "ats-only",
       "atsOnly": true
     },
@@ -15201,7 +15262,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:32.979Z",
+      "crawledAt": "2026-10-27T11:58:34.504Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -15219,8 +15280,8 @@
         "hasMx": true,
         "mx": [
           "mh2.npci.org.in",
-          "mh3.npci.org.in",
-          "mh4.npci.org.in"
+          "mh4.npci.org.in",
+          "mh3.npci.org.in"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -15239,7 +15300,7 @@
         }
       ],
       "robotsAllowsCareers": false,
-      "crawledAt": "2026-10-19T12:48:32.996Z",
+      "crawledAt": "2026-10-27T11:58:34.658Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -15275,7 +15336,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-10-19T12:48:33.351Z",
+      "crawledAt": "2026-10-27T11:58:35.551Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
