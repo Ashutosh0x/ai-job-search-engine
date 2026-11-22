@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-21T14:28:24.247Z",
+  "generatedAt": "2026-11-22T14:23:49.234Z",
   "method": "Role addresses published on employers' own careers/contact pages; address patterns inferred from commit authors in a VERIFIED GitHub organisation; MX/SPF/DMARC checked at domain level. Named recruiters carry public source URLs and never carry an address.",
   "notCollected": [
     "addresses belonging to identifiable individuals",
@@ -8,8 +8,8 @@
   ],
   "summary": {
     "companies": 396,
-    "crawledThisRun": 0,
-    "carriedForward": 396,
+    "crawledThisRun": 6,
+    "carriedForward": 390,
     "skippedForBudget": 0,
     "neverCrawled": 0,
     "withPublishedContacts": 28,
@@ -15304,7 +15304,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-11-15T13:45:41.147Z",
+      "crawledAt": "2026-11-22T14:23:39.304Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -15340,7 +15340,7 @@
         }
       ],
       "robotsAllowsCareers": null,
-      "crawledAt": "2026-11-15T13:45:41.148Z",
+      "crawledAt": "2026-11-22T14:23:39.305Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -15367,7 +15367,7 @@
       "otherAddressCount": 0,
       "publicRecords": [],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-11-15T13:45:41.148Z",
+      "crawledAt": "2026-11-22T14:23:39.305Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -15385,8 +15385,8 @@
         "hasMx": true,
         "mx": [
           "mx3.sgict.gov.sg",
-          "mx1.sgict.gov.sg",
-          "mx4.sgict.gov.sg"
+          "mx4.sgict.gov.sg",
+          "mx2.sgict.gov.sg"
         ],
         "hasSpf": true,
         "dmarcPolicy": null
@@ -15405,7 +15405,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-11-15T13:45:41.148Z",
+      "crawledAt": "2026-11-22T14:23:39.305Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -15441,7 +15441,7 @@
         }
       ],
       "robotsAllowsCareers": true,
-      "crawledAt": "2026-11-15T13:45:41.148Z",
+      "crawledAt": "2026-11-22T14:23:39.305Z",
       "error": null,
       "reachability": "ats-only",
       "atsOnly": true
@@ -15459,12 +15459,12 @@
         "patterns": [
           {
             "pattern": "{first}.{last}",
-            "share": 0.917,
-            "sampleSize": 11
+            "share": 0.933,
+            "sampleSize": 14
           },
           {
             "pattern": "{f}.{last}",
-            "share": 0.083,
+            "share": 0.067,
             "sampleSize": 1
           }
         ],
@@ -15487,7 +15487,7 @@
         }
       ],
       "robotsAllowsCareers": false,
-      "crawledAt": "2026-11-15T13:45:41.148Z",
+      "crawledAt": "2026-11-22T14:23:39.305Z",
       "error": null,
       "reachability": "pattern",
       "atsOnly": false
